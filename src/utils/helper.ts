@@ -1,6 +1,5 @@
 import { BadGatewayException } from '@nestjs/common';
 import { Types } from 'mongoose';
-import bs58 from 'bs58';
 
 export const removeDiacritics = (str: string) => {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -29,13 +28,4 @@ export const convertStringToObjectId = (value: any, isArray = false) => {
     }
 
     return new Types.ObjectId(value);
-};
-
-export const isBase58 = (input: string): boolean => {
-    try {
-        bs58.decode(input);
-        return true;
-    } catch (error) {
-        return false;
-    }
 };
