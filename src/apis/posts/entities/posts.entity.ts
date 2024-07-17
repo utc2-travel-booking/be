@@ -1,0 +1,64 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { COLLECTION_NAMES } from 'src/constants';
+import { PostStatus, PostType } from '../constants';
+import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+import { Locale, LocaleType } from 'src/packages/locale';
+import { AutoPopulate } from 'src/packages/super-search';
+import { Category } from 'src/apis/categories/entities/categories.entity';
+import { File } from 'src/apis/media/entities/files.entity';
+@Schema({
+    timestamps: true,
+    collection: COLLECTION_NAMES.POST,
+})
+export class Post extends AggregateRoot {
+    @Prop({ type: LocaleType, required: true })
+    @Locale()
+    name: LocaleType;
+
+    @Prop({ type: String, required: true })
+    slug: string;
+
+    @Prop({ type: LocaleType })
+    @Locale()
+    shortDescription: LocaleType;
+
+    @Prop({ type: LocaleType })
+    @Locale()
+    longDescription: LocaleType;
+
+    @Prop({ type: String, enum: PostType })
+    type: PostType;
+
+    @Prop({ type: String, enum: PostStatus, default: PostStatus.DRAFT })
+    status: PostStatus;
+
+    @Prop({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.FILE,
+    })
+    featuredImage: File;
+
+    @Prop({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.CATEGORIES,
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.CATEGORIES,
+    })
+    category: Category;
+
+    @Prop({ type: Date, default: null })
+    publishedStart: Date;
+
+    @Prop({ type: Date, default: null })
+    publishedEnd: Date;
+}
+
+export type PostDocument = Post & Document;
+export const PostSchema = SchemaFactory.createForClass(Post);
+PostSchema.plugin(autopopulateSoftDelete);

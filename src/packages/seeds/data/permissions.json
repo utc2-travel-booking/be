@@ -1,0 +1,420 @@
+[{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f656"
+  },
+  "deletedAt": null,
+  "name": "admin.files.index",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f657"
+  },
+  "deletedAt": null,
+  "name": "admin.files.create",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f658"
+  },
+  "deletedAt": null,
+  "name": "admin.files.edit",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f659"
+  },
+  "deletedAt": null,
+  "name": "admin.files.destroy",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65a"
+  },
+  "deletedAt": null,
+  "name": "admin.users.index",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65b"
+  },
+  "deletedAt": null,
+  "name": "admin.users.create",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65c"
+  },
+  "deletedAt": null,
+  "name": "admin.users.edit",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65d"
+  },
+  "deletedAt": null,
+  "name": "admin.users.destroy",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65e"
+  },
+  "deletedAt": null,
+  "name": "admin.roles.index",
+  "collectionName": "Roles",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f65f"
+  },
+  "deletedAt": null,
+  "name": "admin.roles.create",
+  "collectionName": "Roles",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f660"
+  },
+  "deletedAt": null,
+  "name": "admin.roles.edit",
+  "collectionName": "Roles",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66793de0f2b6c4781339f661"
+  },
+  "deletedAt": null,
+  "name": "admin.roles.destroy",
+  "collectionName": "Roles",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b7b39462a35d0fbe5d245"
+  },
+  "deletedAt": null,
+  "name": "front.users.index",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b7b39462a35d0fbe5d246"
+  },
+  "deletedAt": null,
+  "name": "front.users.create",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b7b39462a35d0fbe5d247"
+  },
+  "deletedAt": null,
+  "name": "front.users.edit",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b7b39462a35d0fbe5d248"
+  },
+  "deletedAt": null,
+  "name": "front.users.destroy",
+  "collectionName": "Users",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b992d462a35d0fbe5d275"
+  },
+  "deletedAt": null,
+  "name": "admin.categories.###.index",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b992d462a35d0fbe5d276"
+  },
+  "deletedAt": null,
+  "name": "admin.categories.###.create",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b992d462a35d0fbe5d277"
+  },
+  "deletedAt": null,
+  "name": "admin.categories.###.edit",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667b992d462a35d0fbe5d278"
+  },
+  "deletedAt": null,
+  "name": "admin.categories.###.destroy",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667cc905cb72e5f21f7d9f6b"
+  },
+  "deletedAt": null,
+  "name": "front.categories.###.index",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667cc905cb72e5f21f7d9f6c"
+  },
+  "deletedAt": null,
+  "name": "front.categories.###.create",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667cc905cb72e5f21f7d9f6d"
+  },
+  "deletedAt": null,
+  "name": "front.categories.###.edit",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "667cc905cb72e5f21f7d9f6e"
+  },
+  "deletedAt": null,
+  "name": "front.categories.###.destroy",
+  "collectionName": "Categories",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.168Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66879ed3bb2099943bfeec49"
+  },
+  "deletedAt": null,
+  "name": "front.files.index",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66879ed3bb2099943bfeec4a"
+  },
+  "deletedAt": null,
+  "name": "front.files.create",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66879ed3bb2099943bfeec4b"
+  },
+  "deletedAt": null,
+  "name": "front.files.edit",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.169Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "66879ed3bb2099943bfeec4c"
+  },
+  "deletedAt": null,
+  "name": "front.files.destroy",
+  "collectionName": "Files",
+  "__v": 0,
+  "createdAt": {
+    "$date": "2024-07-16T04:20:02.170Z"
+  },
+  "updatedAt": {
+    "$date": "2024-07-16T04:20:02.170Z"
+  }
+}]

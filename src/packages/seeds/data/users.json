@@ -1,0 +1,14 @@
+[
+    {
+        "_id": {
+            "$oid": "667a4598531a324b19865ea0"
+        },
+        "name": "Admin",
+        "email": "admin@gmail.com",
+        "password": "$2a$10$WJCtdSLlM5HqXDm4Eu8N3uharIq9R/ykEjfRx0fGqXyeiNP8UspQO",
+        "role": {
+            "$oid": "667940bbf2b6c4781339f664"
+        },
+        "walletAddress": "aaaaa"
+    }
+]
