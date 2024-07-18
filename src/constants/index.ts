@@ -6,6 +6,7 @@ export const COLLECTION_NAMES = {
     METADATA: 'metadata',
     CATEGORIES: 'categories',
     POST: 'posts',
+    AUDIT: 'audits',
 };
 
 export const PERMISSIONS = {

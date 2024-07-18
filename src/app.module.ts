@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SeedsModule } from './packages/seeds/seeds.module';
 import { appSettings } from './configs/appsettings';
+import { AuditsModule } from './packages/audits/audits.module';
 
 @Module({
     imports: [
@@ -22,9 +23,10 @@ import { appSettings } from './configs/appsettings';
         }),
         EventEmitterModule.forRoot(),
         ScheduleModule.forRoot(),
+        RoutersModule.forRoot(),
         CommonModule,
         // SeedsModule,
-        RoutersModule.forRoot(),
+        AuditsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
