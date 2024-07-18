@@ -291,24 +291,6 @@ export class BaseService<T extends Document, E> {
             .then((result) => result[0]);
     }
 
-    countDocuments(
-        filter: FilterQuery<T>,
-        options?: QueryOptions<T>,
-        filterPipeline?: PipelineStage[],
-    ) {
-        const pipeline: PipelineStage[] = [
-            { $match: { ...filter, deletedAt: null } },
-        ];
-
-        if (filterPipeline && filterPipeline.length) {
-            pipeline.push(...filterPipeline);
-        }
-
-        pipeline.push({ $count: 'totalCount' });
-
-        return this.model.aggregate(pipeline).exec();
-    }
-
     @UpdateWithLocale()
     updateOne(
         filter: FilterQuery<T>,
@@ -359,6 +341,24 @@ export class BaseService<T extends Document, E> {
         locale?: string,
     ) {
         return this.model.findByIdAndUpdate(id, update, options);
+    }
+
+    countDocuments(
+        filter: FilterQuery<T>,
+        options?: QueryOptions<T>,
+        filterPipeline?: PipelineStage[],
+    ) {
+        const pipeline: PipelineStage[] = [
+            { $match: { ...filter, deletedAt: null } },
+        ];
+
+        if (filterPipeline && filterPipeline.length) {
+            pipeline.push(...filterPipeline);
+        }
+
+        pipeline.push({ $count: 'totalCount' });
+
+        return this.model.aggregate(pipeline).exec();
     }
 
     deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
