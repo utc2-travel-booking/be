@@ -25,7 +25,6 @@ export class User {
     @Prop({
         type: String,
         required: false,
-        unique: true,
     })
     email: string;
 

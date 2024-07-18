@@ -7,11 +7,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from 'src/packages/super-search';
 import { Permission } from 'src/apis/permissions/entities/permissions.entity';
-
-export enum RoleType {
-    ADMIN = 100,
-    USER = 1,
-}
+import { RoleType } from '../constants';
 
 @Schema({
     timestamps: true,
@@ -24,6 +20,7 @@ export class Role extends AggregateRoot {
     @Prop({
         type: Number,
         required: true,
+        unique: true,
     })
     type: RoleType;
 

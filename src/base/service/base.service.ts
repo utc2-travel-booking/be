@@ -287,7 +287,7 @@ export class BaseService<T extends Document, E> {
         pipeline: PipelineStage[] = [],
         locale?: string,
     ): Promise<T | null> {
-        const { sort } = options;
+        const { sort } = options || {};
         if (filter) {
             pipeline.push({ $match: filter });
         }
