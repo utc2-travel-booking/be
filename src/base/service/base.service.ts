@@ -13,6 +13,7 @@ import {
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import {
     DynamicLookup,
+    moveFirstToLast,
     pagination,
     projectionConfig,
 } from 'src/packages/super-search';
@@ -215,35 +216,29 @@ export class BaseService<T extends Document, E> {
         filter: FilterQuery<T>,
         projection?: ProjectionType<T> | null | undefined,
         options?: QueryOptions<T> | null | undefined,
-        filterPipeline?: PipelineStage[],
+        filterPipeline: PipelineStage[] = [],
         locale?: string,
     ) {
         const { limit, skip, sort } = options || {};
-        const pipeline: PipelineStage[] = [
-            { $match: { ...filter, deletedAt: null } },
-        ];
+        filterPipeline.push({ $match: { ...filter, deletedAt: null } });
 
         if (sort) {
-            pipeline.push({ $sort: sort });
+            filterPipeline.push({ $sort: sort });
         }
 
         if (limit) {
-            pipeline.push({ $limit: limit });
+            filterPipeline.push({ $limit: limit });
         }
 
         if (skip) {
-            pipeline.push({ $skip: skip });
+            filterPipeline.push({ $skip: skip });
         }
 
         if (projection) {
-            projectionConfig(pipeline, projection);
+            projectionConfig(filterPipeline, projection);
         }
 
-        if (filterPipeline && filterPipeline.length) {
-            pipeline.push(...filterPipeline);
-        }
-
-        return this.model.aggregate(pipeline).exec();
+        return this.model.aggregate(moveFirstToLast(filterPipeline)).exec();
     }
 
     @FindWithLocale()

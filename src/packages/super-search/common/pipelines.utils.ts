@@ -19,3 +19,11 @@ export const projectionConfig = (
 
     pipeline.push({ $project: project });
 };
+
+// match stay first in the pipeline not working with $lookup
+export const moveFirstToLast = (pipeline: PipelineStage[]) => {
+    if (pipeline.length === 0) return pipeline;
+    const firstElement = pipeline.shift();
+    pipeline.push(firstElement);
+    return pipeline;
+};
