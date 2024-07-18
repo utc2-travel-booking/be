@@ -1,27 +1,24 @@
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { TypeMetadataStorage } from '../storages/type-metadata.storage';
 
 export const updateDocumentLocale = async (
     model: Model<any>,
     entity: any,
-    filter?: FilterQuery<any>,
+    filter?: FilterQuery<any> | Types.ObjectId,
     update?: UpdateQuery<any>,
     locale?: string,
 ) => {
     const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
+    if (!localeFields.length) return;
 
-    if (!localeFields.length) {
-        return;
-    }
+    const filterQuery = Types.ObjectId.isValid(filter as Types.ObjectId)
+        ? { _id: new Types.ObjectId(filter.toString()) }
+        : filter;
 
-    const document = await model.findOne(filter);
+    const document = await model.findOne(filterQuery);
+    if (!document) return;
 
-    if (!document) {
-        return;
-    }
-
-    localeFields.forEach((field) => {
-        const { propertyKey } = field;
+    localeFields.forEach(({ propertyKey }) => {
         if (update[propertyKey]) {
             update[propertyKey] = {
                 ...document[propertyKey],

@@ -187,12 +187,16 @@ export class BaseService<T extends Document, E> {
         // return result;
     }
 
-    async findById(
-        id: any,
-        projection?: ProjectionType<T> | null,
-        options?: QueryOptions<T> | null,
-    ) {
-        return this.model.findById(id, projection, options);
+    async delete(filter: FilterQuery<T>) {
+        return await this.model.updateOne(filter, {
+            deletedAt: new Date(),
+        });
+    }
+
+    async unDelete(filter: FilterQuery<T>) {
+        return this.model.updateMany(filter, {
+            deletedAt: null,
+        });
     }
 
     @CreateWithLocale()
@@ -200,43 +204,9 @@ export class BaseService<T extends Document, E> {
         return await this.model.create(doc);
     }
 
-    async createMany<DTO>(arrData: Array<DTO>) {
+    @CreateWithLocale()
+    async createMany(arrData: Partial<Array<T>>, locale?: string) {
         return await this.model.insertMany(arrData);
-    }
-
-    async updateMany<UpdateDto extends T>(
-        filter: FilterQuery<T>,
-        arrData: Array<UpdateDto>,
-    ) {
-        return await this.model.updateMany({ ...filter }, arrData);
-    }
-
-    async delete(filter: FilterQuery<T>) {
-        return await this.model.updateOne(filter, {
-            isDeleted: true,
-        });
-    }
-
-    async unDelete(filter: FilterQuery<T>) {
-        return this.model.updateMany(filter, {
-            isDeleted: false,
-        });
-    }
-
-    async hardDeleteOne(filter: FilterQuery<T>) {
-        return this.model.deleteOne(filter);
-    }
-
-    async getOneAndUpdate<UpdateDto extends T>(
-        filter: FilterQuery<T>,
-        data: any,
-        options: QueryOptions<T> = {},
-    ) {
-        return this.model.findOneAndUpdate(filter, data, options);
-    }
-
-    insertOne(data: Partial<Record<keyof T, unknown>>) {
-        return this.model.create(data);
     }
 
     @FindWithLocale()
@@ -249,11 +219,9 @@ export class BaseService<T extends Document, E> {
         locale?: string,
     ) {
         const { limit, skip, sort } = options || {};
-        const pipeline: PipelineStage[] = [];
-
-        if (filter) {
-            pipeline.push({ $match: filter });
-        }
+        const pipeline: PipelineStage[] = [
+            { $match: { ...filter, deletedAt: null } },
+        ];
 
         if (sort) {
             pipeline.push({ $sort: sort });
@@ -280,17 +248,16 @@ export class BaseService<T extends Document, E> {
 
     @FindWithLocale()
     @DynamicLookup()
-    async findOne(
-        filter?: FilterQuery<T>,
+    findOne(
+        filter: FilterQuery<T>,
         projection?: ProjectionType<T> | null,
         options?: QueryOptions<T> | null,
         pipeline: PipelineStage[] = [],
         locale?: string,
     ): Promise<T | null> {
         const { sort } = options || {};
-        if (filter) {
-            pipeline.push({ $match: filter });
-        }
+
+        pipeline.push({ $match: { ...filter, deletedAt: null } });
 
         if (projection) {
             projectionConfig(pipeline, projection);
@@ -306,16 +273,37 @@ export class BaseService<T extends Document, E> {
             .then((result) => result[0]);
     }
 
+    @FindWithLocale()
+    @DynamicLookup()
+    findById(
+        id: any,
+        projection?: ProjectionType<T> | null,
+        options?: QueryOptions<T> | null,
+        pipeline: PipelineStage[] = [],
+        locale?: string,
+    ) {
+        pipeline.push({
+            $match: { _id: new Types.ObjectId(id.toString()), deletedAt: null },
+        });
+
+        if (projection) {
+            projectionConfig(pipeline, projection);
+        }
+
+        return this.model
+            .aggregate(pipeline)
+            .exec()
+            .then((result) => result[0]);
+    }
+
     countDocuments(
-        filter?: FilterQuery<T>,
+        filter: FilterQuery<T>,
         options?: QueryOptions<T>,
         filterPipeline?: PipelineStage[],
     ) {
-        const pipeline: PipelineStage[] = [];
-
-        if (filter) {
-            pipeline.push({ $match: filter });
-        }
+        const pipeline: PipelineStage[] = [
+            { $match: { ...filter, deletedAt: null } },
+        ];
 
         if (filterPipeline && filterPipeline.length) {
             pipeline.push(...filterPipeline);
@@ -327,25 +315,48 @@ export class BaseService<T extends Document, E> {
     }
 
     @UpdateWithLocale()
-    async updateOne(
-        filter?: FilterQuery<T>,
+    updateOne(
+        filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
         locale?: string,
     ) {
-        return await this.model.updateOne(filter, update, options);
+        return this.model.updateOne(
+            { ...filter, deletedAt: null },
+            update,
+            options,
+        );
     }
 
     @UpdateWithLocale()
-    async findOneAndUpdate(
+    updateMany(
+        filter: FilterQuery<T>,
+        update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
+        options?: QueryOptions<T> | null,
+        locale?: string,
+    ) {
+        return this.model.updateMany(
+            { ...filter, deletedAt: null },
+            update,
+            options,
+        );
+    }
+
+    @UpdateWithLocale()
+    findOneAndUpdate(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
         options?: QueryOptions<T> | null,
         locale?: string,
     ) {
-        return this.model.findOneAndUpdate(filter, update, options);
+        return this.model.findOneAndUpdate(
+            { ...filter, deletedAt: null },
+            update,
+            options,
+        );
     }
 
+    @UpdateWithLocale()
     findByIdAndUpdate(
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
@@ -355,12 +366,8 @@ export class BaseService<T extends Document, E> {
         return this.model.findByIdAndUpdate(id, update, options);
     }
 
-    deleteOne(filter: FilterQuery<T>) {
-        return this.model.deleteOne(filter);
-    }
-
-    deleteMany(filter: FilterQuery<T>) {
-        return this.model.deleteMany(filter);
+    deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
+        return this.model.deleteMany(filter, options);
     }
 
     findByIdAndDelete(id: any, options: QueryOptions<T> = {}) {

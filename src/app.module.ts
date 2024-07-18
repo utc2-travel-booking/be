@@ -23,7 +23,7 @@ import { appSettings } from './configs/appsettings';
         EventEmitterModule.forRoot(),
         ScheduleModule.forRoot(),
         CommonModule,
-        SeedsModule,
+        // SeedsModule,
         RoutersModule.forRoot(),
     ],
     controllers: [AppController],

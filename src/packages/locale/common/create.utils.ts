@@ -3,19 +3,25 @@ import { TypeMetadataStorage } from '../storages/type-metadata.storage';
 
 export const createDocumentLocale = async (
     entity: any,
-    doc: Document,
+    doc: Document | Document[],
     locale?: string,
+    isArrayDocs?: boolean,
 ) => {
     const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
 
-    if (localeFields.length) {
-        localeFields.forEach((field) => {
-            const { propertyKey } = field;
-            if (doc[propertyKey]) {
-                doc[propertyKey] = {
-                    [locale]: doc[propertyKey],
-                };
+    if (!localeFields.length) return;
+
+    const applyLocale = (item: any) => {
+        localeFields.forEach(({ propertyKey }) => {
+            if (item[propertyKey]) {
+                item[propertyKey] = { [locale]: item[propertyKey] };
             }
         });
+    };
+
+    if (isArrayDocs) {
+        (doc as Document[]).forEach(applyLocale);
+    } else {
+        applyLocale(doc);
     }
 };

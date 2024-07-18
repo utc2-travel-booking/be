@@ -10,7 +10,13 @@ export function CreateWithLocale() {
 
         descriptor.value = async function (...args: any[]) {
             const [doc, locale] = args;
-            await createDocumentLocale(this.entity, doc, locale);
+
+            await createDocumentLocale(
+                this.entity,
+                doc,
+                locale,
+                Array.isArray(doc),
+            );
             return originalMethod.apply(this, args);
         };
 
