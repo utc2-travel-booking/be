@@ -32,7 +32,7 @@ export class SeedsService implements OnModuleInit {
     async seedPermissions() {
         const permissions = JSON.parse(
             fs.readFileSync(
-                process.cwd() + '/src/packages/seeds/data/permissions.json',
+                process.cwd() + '/public/data/permissions.json',
                 'utf8',
             ),
         );
@@ -54,10 +54,7 @@ export class SeedsService implements OnModuleInit {
 
     async seedRoles() {
         const roles = JSON.parse(
-            fs.readFileSync(
-                process.cwd() + '/src/packages/seeds/data/roles.json',
-                'utf8',
-            ),
+            fs.readFileSync(process.cwd() + '/public/data/roles.json', 'utf8'),
         );
 
         this.logger.debug('Seeding roles');
@@ -78,10 +75,7 @@ export class SeedsService implements OnModuleInit {
 
     async seedUsers() {
         const users = JSON.parse(
-            fs.readFileSync(
-                process.cwd() + '/src/packages/seeds/data/users.json',
-                'utf8',
-            ),
+            fs.readFileSync(process.cwd() + '/public/data/users.json', 'utf8'),
         );
 
         this.logger.debug('Seeding users');
