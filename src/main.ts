@@ -9,12 +9,23 @@ import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { useContainer } from 'class-validator';
 import { appSettings } from './configs/appsettings';
+import compression from 'compression';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,
         abortOnError: true,
     });
+
+    app.use(
+        compression({
+            filter: () => {
+                return true;
+            },
+            threshold: 0,
+        }),
+    );
+
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     app.setGlobalPrefix('/api');
