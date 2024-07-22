@@ -16,7 +16,7 @@ export class MediaService extends BaseService<FileDocument, File> {
         @InjectModel(COLLECTION_NAMES.FILE)
         private readonly fileModel: Model<FileDocument>,
         private readonly s3Service: S3Service,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(fileModel, File, COLLECTION_NAMES.FILE, eventEmitter);
     }

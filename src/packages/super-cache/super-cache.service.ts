@@ -1,10 +1,11 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { REDIS_FOLDER_NAME } from './constants';
 
 @Injectable()
 export class SuperCacheService {
+    private readonly logger = new Logger(SuperCacheService.name);
     constructor(
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
@@ -23,16 +24,16 @@ export class SuperCacheService {
         try {
             await this.cacheManager.set(key, data, 60000 * 60 * 24 * 1);
         } catch (error) {
-            console.log('error', error);
+            this.logger.debug('error', error);
         }
     }
 
-    async setCollection(
+    async setOneCollection(
         mainCollectionName: string,
         relationCollectionNames: any,
     ) {
         try {
-            const collection = await this.getCollection(mainCollectionName);
+            const collection = await this.getOneCollection(mainCollectionName);
 
             if (collection) {
                 return;
@@ -47,18 +48,28 @@ export class SuperCacheService {
                 60000 * 60 * 24 * 1,
             );
         } catch (error) {
-            console.log('error', error);
+            this.logger.debug('error', error);
         }
     }
 
-    async getCollection(mainCollectionName: string) {
+    async getOneCollection(mainCollectionName: string) {
         try {
             const data = await this.cacheManager.get(
                 `${REDIS_FOLDER_NAME.COLLECTION}:${mainCollectionName}`,
             );
             return data;
         } catch (error) {
-            console.log('error', error);
+            this.logger.debug('error', error);
+        }
+    }
+
+    async deleteForDataCollection(mainCollectionName: string) {
+        try {
+            const collections = await this.getAllCollection();
+
+            console.log('collections', collections);
+        } catch (error) {
+            this.logger.debug('error', error);
         }
     }
 
@@ -70,7 +81,9 @@ export class SuperCacheService {
         try {
             await this.set(`${mainCollectionName}:${key}`, data);
         } catch (error) {
-            console.log('error', error);
+            this.logger.debug('error', error);
+        } finally {
+            await this.setForDataCollectionKey(mainCollectionName, key);
         }
     }
 
@@ -79,7 +92,53 @@ export class SuperCacheService {
             const data = await this.get(`${mainCollectionName}:${key}`);
             return data;
         } catch (error) {
-            console.log('error', error);
+            this.logger.debug('error', error);
+        }
+    }
+
+    private async setForDataCollectionKey(
+        mainCollectionName: string,
+        key: string,
+    ) {
+        try {
+            const folderKeys = `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`;
+            const cacheKeys = await this.cacheManager.get<any>(folderKeys);
+
+            if (cacheKeys) {
+                cacheKeys.addedKeys.push(key);
+                await this.set(folderKeys, cacheKeys);
+
+                return;
+            }
+
+            const newCacheKeys = new Set<string>();
+            newCacheKeys.add(key);
+
+            await this.set(folderKeys, {
+                addedKeys: Array.from(newCacheKeys),
+            });
+        } catch (error) {
+            this.logger.debug('error', error);
+        }
+    }
+
+    private async getAllCollection() {
+        try {
+            const keys = await this.cacheManager.store.keys(
+                `${REDIS_FOLDER_NAME.COLLECTION}:*`,
+            );
+
+            if (!keys.length) {
+                return [];
+            }
+
+            const data = await Promise.all(
+                keys.map((key) => this.cacheManager.get(key)),
+            );
+
+            return data;
+        } catch (error) {
+            this.logger.debug('error', error);
         }
     }
 }

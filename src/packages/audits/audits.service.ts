@@ -13,7 +13,7 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
     constructor(
         @InjectModel(COLLECTION_NAMES.AUDIT)
         private readonly auditModel: Model<AuditDocument>,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(auditModel, Audit, COLLECTION_NAMES.AUDIT, eventEmitter);
     }

@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { CATCH_RETURN_CLASS } from '../constants';
+import { SUPER_CACHE_METADATA_KEY } from '../constants';
 
 export interface SuperCacheOptions {
     mainCollectionName?: string;
@@ -7,4 +7,4 @@ export interface SuperCacheOptions {
 }
 
 export const SuperCache = (options?: SuperCacheOptions) =>
-    SetMetadata(CATCH_RETURN_CLASS, options);
+    SetMetadata(SUPER_CACHE_METADATA_KEY.CATCH_RETURN_CLASS, options);

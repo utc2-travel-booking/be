@@ -27,6 +27,8 @@ import {
 } from 'src/packages/locale';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SUPER_CACHE_EVENT_HANDLER } from 'src/packages/super-cache/constants';
+import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
 
 @Injectable()
 export class BaseService<T extends Document, E> {
@@ -34,8 +36,12 @@ export class BaseService<T extends Document, E> {
         private readonly model: Model<T>,
         private readonly entity: new () => E,
         private readonly collectionName: COLLECTION_NAMES,
-        eventEmitter: EventEmitter2,
-    ) {}
+        public eventEmitter: EventEmitter2,
+    ) {
+        if (!collectionName) {
+            throw new Error('Collection name must be provided');
+        }
+    }
 
     async getAll(
         queryParams: ExtendedPagingDto<T>,
@@ -111,16 +117,17 @@ export class BaseService<T extends Document, E> {
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
-        const { _id: userId } = user;
-
-        const data = await this.model.find({ _id: { $in: _ids } });
-
-        await this.model.updateMany(
-            { _id: { $in: _ids } },
-            { deletedAt: new Date(), deletedBy: userId },
+        this.eventEmitter.emit(
+            SUPER_CACHE_EVENT_HANDLER.DELETE,
+            this.collectionName,
         );
-
-        return data;
+        // const { _id: userId } = user;
+        // const data = await this.model.find({ _id: { $in: _ids } });
+        // await this.model.updateMany(
+        //     { _id: { $in: _ids } },
+        //     { deletedAt: new Date(), deletedBy: userId },
+        // );
+        // return data;
     }
 
     async updateOneById(
@@ -204,16 +211,6 @@ export class BaseService<T extends Document, E> {
         });
     }
 
-    @CreateWithLocale()
-    async create(doc: Partial<T>, locale?: string): Promise<T> {
-        return await this.model.create(doc);
-    }
-
-    @CreateWithLocale()
-    async createMany(arrData: Partial<Array<T>>, locale?: string) {
-        return await this.model.insertMany(arrData);
-    }
-
     @FindWithLocale()
     @DynamicLookup()
     find(
@@ -295,7 +292,20 @@ export class BaseService<T extends Document, E> {
             .then((result) => result[0]);
     }
 
+    @CreateWithLocale()
+    @DeleteCacheEmitEvent()
+    async create(doc: Partial<T>, locale?: string): Promise<T> {
+        return await this.model.create(doc);
+    }
+
+    @CreateWithLocale()
+    @DeleteCacheEmitEvent()
+    async createMany(arrData: Partial<Array<T>>, locale?: string) {
+        return await this.model.insertMany(arrData);
+    }
+
     @UpdateWithLocale()
+    @DeleteCacheEmitEvent()
     updateOne(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
@@ -310,20 +320,22 @@ export class BaseService<T extends Document, E> {
     }
 
     @UpdateWithLocale()
+    @DeleteCacheEmitEvent()
     updateMany(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
         locale?: string,
     ) {
-        return this.model.updateMany(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
+        // return this.model.updateMany(
+        //     { ...filter, deletedAt: null },
+        //     update,
+        //     options,
+        // );
     }
 
     @UpdateWithLocale()
+    @DeleteCacheEmitEvent()
     findOneAndUpdate(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
@@ -338,6 +350,7 @@ export class BaseService<T extends Document, E> {
     }
 
     @UpdateWithLocale()
+    @DeleteCacheEmitEvent()
     findByIdAndUpdate(
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
@@ -365,14 +378,17 @@ export class BaseService<T extends Document, E> {
         return this.model.aggregate(pipeline).exec();
     }
 
+    @DeleteCacheEmitEvent()
     deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
         return this.model.deleteOne(filter, options);
     }
 
+    @DeleteCacheEmitEvent()
     deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
         return this.model.deleteMany(filter, options);
     }
 
+    @DeleteCacheEmitEvent()
     findByIdAndDelete(
         id?: Types.ObjectId | any,
         options?: QueryOptions<T> | null,

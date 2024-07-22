@@ -5,6 +5,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { appSettings } from 'src/configs/appsettings';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { SuperCacheInterceptor } from './interceptors/super-cache.interceptor';
+import { SuperCacheEvent } from './event-handlers/super-cache.event';
 
 @Module({
     imports: [
@@ -29,6 +30,7 @@ import { SuperCacheInterceptor } from './interceptors/super-cache.interceptor';
             provide: APP_INTERCEPTOR,
             useClass: SuperCacheInterceptor,
         },
+        SuperCacheEvent,
     ],
     exports: [SuperCacheService],
 })

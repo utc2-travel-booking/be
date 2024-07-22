@@ -17,7 +17,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
     constructor(
         @InjectModel(COLLECTION_NAMES.POST)
         private readonly postModel: Model<PostDocument>,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(postModel, Post, COLLECTION_NAMES.POST, eventEmitter);
     }
@@ -86,7 +86,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const { _id: userId } = user;
         const data = await this.postModel.find({ _id: { $in: _ids }, type });
 
-        await this.postModel.updateMany(
+        await this.updateMany(
             { _id: { $in: _ids }, type },
             { deletedAt: new Date(), deletedBy: userId },
         );

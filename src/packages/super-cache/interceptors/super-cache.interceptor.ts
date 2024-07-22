@@ -8,7 +8,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import { generateKey } from '../common/genarate-key.utils';
-import { CATCH_RETURN_CLASS, HTTP_METHODS } from '../constants';
+import { SUPER_CACHE_METADATA_KEY, HTTP_METHODS } from '../constants';
 import { SuperCacheOptions } from '../decorators/super-cache.decorator';
 import { SuperCacheService } from '../super-cache.service';
 
@@ -25,7 +25,10 @@ export class SuperCacheInterceptor implements NestInterceptor {
     ): Promise<Observable<any>> {
         const target = context.getClass();
         const options: SuperCacheOptions =
-            this.reflector.get<SuperCacheOptions>(CATCH_RETURN_CLASS, target);
+            this.reflector.get<SuperCacheOptions>(
+                SUPER_CACHE_METADATA_KEY.CATCH_RETURN_CLASS,
+                target,
+            );
 
         const request = context.switchToHttp().getRequest();
         const { body, query, params, user, method } = request;
@@ -33,7 +36,7 @@ export class SuperCacheInterceptor implements NestInterceptor {
         if (method === HTTP_METHODS.GET) {
             const { mainCollectionName, relationCollectionNames } = options;
 
-            await this.superCacheService.setCollection(
+            await this.superCacheService.setOneCollection(
                 mainCollectionName,
                 relationCollectionNames,
             );

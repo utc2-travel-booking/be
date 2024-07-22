@@ -13,7 +13,7 @@ export class MetadataService extends BaseService<MetadataDocument, Metadata> {
         @InjectModel(COLLECTION_NAMES.METADATA)
         private readonly metadataModel: Model<MetadataDocument>,
         private readonly SuperCacheService: SuperCacheService,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(metadataModel, Metadata, COLLECTION_NAMES.METADATA, eventEmitter);
     }

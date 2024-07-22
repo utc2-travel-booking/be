@@ -14,7 +14,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
         private readonly SuperCacheService: SuperCacheService,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
     }

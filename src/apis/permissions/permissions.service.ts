@@ -14,7 +14,7 @@ export class PermissionsService extends BaseService<
     constructor(
         @InjectModel(COLLECTION_NAMES.PERMISSION)
         private readonly permissionModel: Model<PermissionDocument>,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(
             permissionModel,

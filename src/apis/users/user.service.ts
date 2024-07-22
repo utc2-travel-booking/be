@@ -17,7 +17,7 @@ export class UserService extends BaseService<UserDocument, User> {
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
         private readonly roleService: RolesService,
-        private readonly eventEmitter: EventEmitter2,
+        eventEmitter: EventEmitter2,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, eventEmitter);
     }
