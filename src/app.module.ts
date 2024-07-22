@@ -25,7 +25,7 @@ import { AuditsModule } from './packages/audits/audits.module';
         ScheduleModule.forRoot(),
         RoutersModule.forRoot(),
         CommonModule,
-        // SeedsModule,
+        SeedsModule,
         AuditsModule,
     ],
     controllers: [AppController],
