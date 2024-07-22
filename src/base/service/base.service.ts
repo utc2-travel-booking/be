@@ -27,7 +27,6 @@ import {
 } from 'src/packages/locale';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SUPER_CACHE_EVENT_HANDLER } from 'src/packages/super-cache/constants';
 import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
 
 @Injectable()
@@ -117,17 +116,13 @@ export class BaseService<T extends Document, E> {
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
-        this.eventEmitter.emit(
-            SUPER_CACHE_EVENT_HANDLER.DELETE,
-            this.collectionName,
+        const { _id: userId } = user;
+        const data = await this.model.find({ _id: { $in: _ids } });
+        await this.model.updateMany(
+            { _id: { $in: _ids } },
+            { deletedAt: new Date(), deletedBy: userId },
         );
-        // const { _id: userId } = user;
-        // const data = await this.model.find({ _id: { $in: _ids } });
-        // await this.model.updateMany(
-        //     { _id: { $in: _ids } },
-        //     { deletedAt: new Date(), deletedBy: userId },
-        // );
-        // return data;
+        return data;
     }
 
     async updateOneById(
