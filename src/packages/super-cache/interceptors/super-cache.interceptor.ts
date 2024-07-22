@@ -24,16 +24,16 @@ export class SuperCacheInterceptor implements NestInterceptor {
         context: ExecutionContext,
         next: CallHandler,
     ): Promise<Observable<any>> {
-        if (!appSettings.redis.heathCheck) {
-            return next.handle();
-        }
-
         const target = context.getClass();
         const options: SuperCacheOptions =
             this.reflector.get<SuperCacheOptions>(
                 SUPER_CACHE_METADATA_KEY.CATCH_RETURN_CLASS,
                 target,
             );
+
+        if (!appSettings.redis.heathCheck || !options) {
+            return next.handle();
+        }
 
         const request = context.switchToHttp().getRequest();
         const { body, query, params, user, method } = request;
