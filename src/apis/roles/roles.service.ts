@@ -4,21 +4,23 @@ import { Role, RoleDocument } from './entities/roles.entity';
 import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import { CacheManagerService } from 'src/packages/cache-manager/cache-manager.service';
+import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import _ from 'lodash';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
     constructor(
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
-        private readonly cacheManagerService: CacheManagerService,
+        private readonly SuperCacheService: SuperCacheService,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(roleModel, Role);
+        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
     }
 
     async findPermissionsByRole(roleId: Types.ObjectId) {
-        const cachePermissions = await this.cacheManagerService.get(
+        const cachePermissions = await this.SuperCacheService.get(
             `role:${roleId}`,
         );
 
@@ -34,7 +36,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             return _.get(permission, 'name');
         });
 
-        await this.cacheManagerService.set(`role:${roleId}`, permissions);
+        await this.SuperCacheService.set(`role:${roleId}`, permissions);
 
         return permissions;
     }

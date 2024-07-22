@@ -9,6 +9,7 @@ import { UpdateMeDto } from './dto/update-me.dto';
 import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService extends BaseService<UserDocument, User> {
@@ -16,8 +17,9 @@ export class UserService extends BaseService<UserDocument, User> {
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
         private readonly roleService: RolesService,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(userModel, User);
+        super(userModel, User, COLLECTION_NAMES.USER, eventEmitter);
     }
 
     async validateUserLocal(email: string, password: string) {

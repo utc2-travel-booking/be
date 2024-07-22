@@ -25,12 +25,16 @@ import {
     FindWithLocale,
     UpdateWithLocale,
 } from 'src/packages/locale';
+import { COLLECTION_NAMES } from 'src/constants';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class BaseService<T extends Document, E> {
     constructor(
         private readonly model: Model<T>,
         private readonly entity: new () => E,
+        private readonly collectionName: COLLECTION_NAMES,
+        eventEmitter: EventEmitter2,
     ) {}
 
     async getAll(
@@ -361,11 +365,18 @@ export class BaseService<T extends Document, E> {
         return this.model.aggregate(pipeline).exec();
     }
 
+    deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
+        return this.model.deleteOne(filter, options);
+    }
+
     deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
         return this.model.deleteMany(filter, options);
     }
 
-    findByIdAndDelete(id: any, options: QueryOptions<T> = {}) {
+    findByIdAndDelete(
+        id?: Types.ObjectId | any,
+        options?: QueryOptions<T> | null,
+    ) {
         return this.model.findByIdAndDelete(id, options);
     }
 }

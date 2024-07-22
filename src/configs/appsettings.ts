@@ -27,4 +27,10 @@ export const appSettings = {
         bucket: process.env.AWS_BUCKET_NAME,
         folder: process.env.AWS_FOLDER_NAME_DEFAULT || 'marketplace',
     },
+    redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+    },
 };

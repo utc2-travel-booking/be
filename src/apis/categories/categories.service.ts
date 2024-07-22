@@ -6,14 +6,21 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import { UpdateCategoryDto } from './dto/update-categories.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CategoriesService extends BaseService<CategoryDocument, Category> {
     constructor(
         @InjectModel(COLLECTION_NAMES.CATEGORIES)
         private readonly categoryModel: Model<CategoryDocument>,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(categoryModel, Category);
+        super(
+            categoryModel,
+            Category,
+            COLLECTION_NAMES.CATEGORIES,
+            eventEmitter,
+        );
     }
 
     async deleteManyByIdsAndType(

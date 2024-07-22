@@ -4,15 +4,17 @@ import { Metadata, MetadataDocument } from './entities/metadata.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model } from 'mongoose';
-import { CacheManagerService } from 'src/packages/cache-manager/cache-manager.service';
+import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MetadataService extends BaseService<MetadataDocument, Metadata> {
     constructor(
         @InjectModel(COLLECTION_NAMES.METADATA)
         private readonly metadataModel: Model<MetadataDocument>,
-        private readonly cacheManagerService: CacheManagerService,
+        private readonly SuperCacheService: SuperCacheService,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(metadataModel, Metadata);
+        super(metadataModel, Metadata, COLLECTION_NAMES.METADATA, eventEmitter);
     }
 }

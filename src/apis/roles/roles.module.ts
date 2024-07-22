@@ -3,11 +3,11 @@ import { RolesService } from './roles.service';
 import { Module } from '@nestjs/common';
 import { RoleSchema } from './entities/roles.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { CacheManagerModule } from 'src/packages/cache-manager/cache-manager.module';
+import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 
 @Module({
     imports: [
-        CacheManagerModule,
+        SuperCacheModule,
         MongooseModule.forFeature([
             { name: COLLECTION_NAMES.ROLE, schema: RoleSchema },
         ]),

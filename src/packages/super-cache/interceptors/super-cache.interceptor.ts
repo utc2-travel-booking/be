@@ -1,0 +1,66 @@
+import {
+    Injectable,
+    NestInterceptor,
+    ExecutionContext,
+    CallHandler,
+} from '@nestjs/common';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Reflector } from '@nestjs/core';
+import { generateKey } from '../common/genarate-key.utils';
+import { CATCH_RETURN_CLASS, HTTP_METHODS } from '../constants';
+import { SuperCacheOptions } from '../decorators/super-cache.decorator';
+import { SuperCacheService } from '../super-cache.service';
+
+@Injectable()
+export class SuperCacheInterceptor implements NestInterceptor {
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly superCacheService: SuperCacheService,
+    ) {}
+
+    async intercept(
+        context: ExecutionContext,
+        next: CallHandler,
+    ): Promise<Observable<any>> {
+        const target = context.getClass();
+        const options: SuperCacheOptions =
+            this.reflector.get<SuperCacheOptions>(CATCH_RETURN_CLASS, target);
+
+        const request = context.switchToHttp().getRequest();
+        const { body, query, params, user, method } = request;
+
+        if (method === HTTP_METHODS.GET) {
+            const { mainCollectionName, relationCollectionNames } = options;
+
+            await this.superCacheService.setCollection(
+                mainCollectionName,
+                relationCollectionNames,
+            );
+
+            const key = generateKey({ ...body, ...query, ...params, ...user });
+
+            const cacheData = await this.superCacheService.getDataForCollection(
+                mainCollectionName,
+                key,
+            );
+
+            if (cacheData) {
+                return of(cacheData);
+            }
+
+            return next.handle().pipe(
+                switchMap(async (data) => {
+                    await this.superCacheService.setDataForCollection(
+                        mainCollectionName,
+                        key,
+                        data,
+                    );
+                    return data;
+                }),
+            );
+        }
+
+        return next.handle();
+    }
+}

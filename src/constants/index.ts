@@ -1,13 +1,13 @@
-export const COLLECTION_NAMES = {
-    USER: 'users',
-    ROLE: 'roles',
-    PERMISSION: 'permissions',
-    FILE: 'files',
-    METADATA: 'metadata',
-    CATEGORIES: 'categories',
-    POST: 'posts',
-    AUDIT: 'audits',
-};
+export enum COLLECTION_NAMES {
+    USER = 'users',
+    ROLE = 'roles',
+    PERMISSION = 'permissions',
+    FILE = 'files',
+    METADATA = 'metadata',
+    CATEGORIES = 'categories',
+    POST = 'posts',
+    AUDIT = 'audits',
+}
 
 export const PERMISSIONS = {
     USER: {

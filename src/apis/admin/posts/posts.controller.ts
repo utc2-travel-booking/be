@@ -18,8 +18,9 @@ import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { PostsService } from 'src/apis/posts/posts.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -29,6 +30,14 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
 @Controller('posts')
 @ApiTags('Admin: Posts')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.POST,
+    relationCollectionNames: [
+        COLLECTION_NAMES.USER,
+        COLLECTION_NAMES.FILE,
+        COLLECTION_NAMES.CATEGORIES,
+    ],
+})
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
@@ -52,6 +61,7 @@ export class PostsController {
             { type },
             locale,
         );
+
         return result;
     }
 

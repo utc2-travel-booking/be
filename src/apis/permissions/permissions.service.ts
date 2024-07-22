@@ -4,6 +4,7 @@ import { Permission, PermissionDocument } from './entities/permissions.entity';
 import { Model } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PermissionsService extends BaseService<
@@ -13,7 +14,13 @@ export class PermissionsService extends BaseService<
     constructor(
         @InjectModel(COLLECTION_NAMES.PERMISSION)
         private readonly permissionModel: Model<PermissionDocument>,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(permissionModel, Permission);
+        super(
+            permissionModel,
+            Permission,
+            COLLECTION_NAMES.PERMISSION,
+            eventEmitter,
+        );
     }
 }
