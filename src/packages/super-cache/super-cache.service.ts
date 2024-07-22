@@ -18,7 +18,7 @@ export class SuperCacheService {
             const data = await this.cacheManager.get(key);
             return data;
         } catch (error) {
-            console.log('error', error);
+            console.log('error get', error);
         }
     }
 
@@ -26,7 +26,7 @@ export class SuperCacheService {
         try {
             await this.cacheManager.set(key, data, 60000 * 60 * 24 * 1);
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error set', error);
         }
     }
 
@@ -50,7 +50,7 @@ export class SuperCacheService {
                 60000 * 60 * 24 * 1,
             );
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error setOneCollection', error);
         }
     }
 
@@ -61,13 +61,17 @@ export class SuperCacheService {
             );
             return data;
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error getOneCollection', error);
         }
     }
 
     async deleteForDataCollection(mainCollectionName: string) {
         try {
             const collections = await this.getAllCollection();
+
+            if (!collections.length) {
+                return;
+            }
 
             const parentCollections = collections.filter((collection) =>
                 collection.relationCollectionNames.includes(mainCollectionName),
@@ -91,7 +95,7 @@ export class SuperCacheService {
                 await this.deleteForDataCollectionKey(mainCollectionName);
             }
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error deleteForDataCollection', error);
         }
     }
 
@@ -103,7 +107,7 @@ export class SuperCacheService {
         try {
             await this.set(`${mainCollectionName}:${key}`, data);
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error setDataForCollection', error);
         } finally {
             await this.setForDataCollectionKey(mainCollectionName, key);
         }
@@ -114,7 +118,7 @@ export class SuperCacheService {
             const data = await this.get(`${mainCollectionName}:${key}`);
             return data;
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error getDataForCollection', error);
         }
     }
 
@@ -129,7 +133,7 @@ export class SuperCacheService {
                 }),
             );
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error deleteDataForCollections', error);
         }
     }
 
@@ -157,7 +161,7 @@ export class SuperCacheService {
                 addedKeys: Array.from(newCacheKeys),
             });
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error setForDataCollectionKey', error);
         }
     }
 
@@ -173,7 +177,7 @@ export class SuperCacheService {
             const { addedKeys } = cacheKeys || { addedKeys: [] };
             return addedKeys;
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error', error);
         }
     }
 
@@ -183,7 +187,7 @@ export class SuperCacheService {
                 `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`,
             );
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error getForDataCollectionKey', error);
         }
     }
 
@@ -203,7 +207,7 @@ export class SuperCacheService {
 
             return data;
         } catch (error) {
-            this.logger.debug('error', error);
+            this.logger.error('error getAllCollection', error);
         }
     }
 }
