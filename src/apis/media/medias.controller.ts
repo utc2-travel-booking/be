@@ -9,14 +9,19 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { MediaService } from './medias.service';
 import { UploadMediaDto } from './dto/upload-media.dto';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import { appSettings } from 'src/configs/appsettings';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IUploadedMulterFile } from 'src/packages/s3/s3.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @ApiTags('Front: Media')
 @Controller('media')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.FILE,
+    relationCollectionNames: [COLLECTION_NAMES.USER],
+})
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 

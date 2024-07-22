@@ -4,10 +4,15 @@ import { UserService } from './user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @Controller('users')
 @ApiTags('Front: User')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.USER,
+    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
+})
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

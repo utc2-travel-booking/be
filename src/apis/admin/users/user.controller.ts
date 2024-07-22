@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Put, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { UpdateMeDto } from 'src/apis/users/dto/update-me.dto';
 import { UserService } from 'src/apis/users/user.service';
 import { User } from 'aws-sdk/clients/appstream';
@@ -13,9 +13,14 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @Controller('users')
 @ApiTags('Admin: User')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.USER,
+    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
+})
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

@@ -322,11 +322,11 @@ export class BaseService<T extends Document, E> {
         options?: QueryOptions<T> | null,
         locale?: string,
     ) {
-        // return this.model.updateMany(
-        //     { ...filter, deletedAt: null },
-        //     update,
-        //     options,
-        // );
+        return this.model.updateMany(
+            { ...filter, deletedAt: null },
+            update,
+            options,
+        );
     }
 
     @UpdateWithLocale()

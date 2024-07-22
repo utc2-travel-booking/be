@@ -10,9 +10,19 @@ import { PostStatus, PostType } from './constants';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { appSettings } from 'src/configs/appsettings';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 
 @Controller('posts')
 @ApiTags('Front: Posts')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.POST,
+    relationCollectionNames: [
+        COLLECTION_NAMES.USER,
+        COLLECTION_NAMES.FILE,
+        COLLECTION_NAMES.CATEGORIES,
+    ],
+})
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 

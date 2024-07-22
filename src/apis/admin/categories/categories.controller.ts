@@ -17,8 +17,9 @@ import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
 import { Category } from 'src/apis/categories/entities/categories.entity';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -28,6 +29,10 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
 @Controller('categories')
 @ApiTags('Admin: Categories')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.CATEGORIES,
+    relationCollectionNames: [COLLECTION_NAMES.USER],
+})
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 

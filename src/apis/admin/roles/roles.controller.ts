@@ -14,7 +14,7 @@ import { Types } from 'mongoose';
 import { Role } from 'src/apis/roles/entities/roles.entity';
 import { RolesService } from 'src/apis/roles/roles.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import {
     ExtendedPagingDto,
@@ -24,9 +24,17 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.ROLE,
+    relationCollectionNames: [
+        COLLECTION_NAMES.USER,
+        COLLECTION_NAMES.PERMISSION,
+    ],
+})
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
 

@@ -30,12 +30,17 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @ApiTags('Admin: Media')
 @Controller('media')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.FILE,
+    relationCollectionNames: [COLLECTION_NAMES.USER],
+})
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 

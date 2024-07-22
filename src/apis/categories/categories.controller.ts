@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -11,9 +11,14 @@ import { Category } from './entities/categories.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { CategoryType } from './constants';
+import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
+@SuperCache({
+    mainCollectionName: COLLECTION_NAMES.CATEGORIES,
+    relationCollectionNames: [COLLECTION_NAMES.USER],
+})
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
