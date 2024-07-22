@@ -28,6 +28,7 @@ export const appSettings = {
         folder: process.env.AWS_FOLDER_NAME_DEFAULT || 'marketplace',
     },
     redis: {
+        heathCheck: process.env.REDIS_HOST ? true : false,
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
         username: process.env.REDIS_USERNAME,

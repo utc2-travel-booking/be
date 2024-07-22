@@ -5,12 +5,13 @@ import {
     CallHandler,
 } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import { generateKey } from '../common/genarate-key.utils';
 import { SUPER_CACHE_METADATA_KEY, HTTP_METHODS } from '../constants';
 import { SuperCacheOptions } from '../decorators/super-cache.decorator';
 import { SuperCacheService } from '../super-cache.service';
+import { appSettings } from 'src/configs/appsettings';
 
 @Injectable()
 export class SuperCacheInterceptor implements NestInterceptor {
@@ -23,6 +24,10 @@ export class SuperCacheInterceptor implements NestInterceptor {
         context: ExecutionContext,
         next: CallHandler,
     ): Promise<Observable<any>> {
+        if (!appSettings.redis.heathCheck) {
+            return next.handle();
+        }
+
         const target = context.getClass();
         const options: SuperCacheOptions =
             this.reflector.get<SuperCacheOptions>(
@@ -33,14 +38,14 @@ export class SuperCacheInterceptor implements NestInterceptor {
         const request = context.switchToHttp().getRequest();
         const { body, query, params, user, method } = request;
 
+        const { mainCollectionName, relationCollectionNames } = options;
+
+        await this.superCacheService.setOneCollection(
+            mainCollectionName,
+            relationCollectionNames,
+        );
+
         if (method === HTTP_METHODS.GET) {
-            const { mainCollectionName, relationCollectionNames } = options;
-
-            await this.superCacheService.setOneCollection(
-                mainCollectionName,
-                relationCollectionNames,
-            );
-
             const key = generateKey({ ...body, ...query, ...params, ...user });
 
             const cacheData = await this.superCacheService.getDataForCollection(
