@@ -36,6 +36,33 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @Put('ban')
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS.USER.edit)
+    @ApiQuery({ name: 'ids', type: [String] })
+    async ban(
+        @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+
+        const result = await this.userService.ban(_ids, user);
+        return result;
+    }
+
+    @Put('un-ban')
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS.USER.edit)
+    @ApiQuery({ name: 'ids', type: [String] })
+    async unBan(
+        @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.userService.unBan(_ids, user);
+        return result;
+    }
+
     @Get('me')
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.USER.index)

@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { RolesModule } from '../roles/roles.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { appSettings } from 'src/configs/appsettings';
+import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { appSettings } from 'src/configs/appsettings';
                 issuer: appSettings.jwt.issuer,
             },
         }),
+        SuperCacheModule,
         UserModule,
         RolesModule,
         MetadataModule,

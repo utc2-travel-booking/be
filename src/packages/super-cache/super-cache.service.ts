@@ -13,18 +13,18 @@ export class SuperCacheService {
         private cacheManager: Cache,
     ) {}
 
-    async get(key: string) {
+    async get<T>(key: string) {
         try {
-            const data = await this.cacheManager.get(key);
+            const data = await this.cacheManager.get<T>(key);
             return data;
         } catch (error) {
             console.log('error get', error);
         }
     }
 
-    async set(key: string, data: any) {
+    async set(key: string, data: any, ttl?: number) {
         try {
-            await this.cacheManager.set(key, data, 60000 * 60 * 24 * 1);
+            await this.cacheManager.set(key, data, ttl);
         } catch (error) {
             this.logger.error('error set', error);
         }
@@ -47,7 +47,6 @@ export class SuperCacheService {
                     mainCollectionName,
                     relationCollectionNames,
                 },
-                60000 * 60 * 24 * 1,
             );
         } catch (error) {
             this.logger.error('error setOneCollection', error);

@@ -7,6 +7,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import { AutoPopulate } from 'src/packages/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { Role } from 'src/apis/roles/entities/roles.entity';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 
 export type UserDocument = User & Document;
 
@@ -14,7 +15,7 @@ export type UserDocument = User & Document;
     timestamps: true,
     collection: COLLECTION_NAMES.USER,
 })
-export class User {
+export class User extends AggregateRoot {
     @Prop({
         type: String,
         required: false,

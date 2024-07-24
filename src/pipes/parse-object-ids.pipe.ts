@@ -10,6 +10,7 @@ export class ParseObjectIdArrayPipe
         if (!Array.isArray(values)) {
             throw new BadGatewayException('Expected an array of ObjectIds');
         }
+
         const objectIds = values.map((val) => {
             const trimmedVal = val.trim();
             if (!Types.ObjectId.isValid(trimmedVal)) {

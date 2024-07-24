@@ -115,7 +115,7 @@ export class BaseService<T extends Document, E> {
         return result;
     }
 
-    async deletes(_ids: Types.ObjectId[], user: UserPayload) {
+    async deletes(_ids: Types.ObjectId[], user: UserPayload): Promise<T[]> {
         const { _id: userId } = user;
         const data = await this.model.find({ _id: { $in: _ids } });
         await this.model.updateMany(
@@ -214,9 +214,14 @@ export class BaseService<T extends Document, E> {
         options?: QueryOptions<T> | null | undefined,
         filterPipeline: PipelineStage[] = [],
         locale?: string,
-    ) {
+    ): Promise<T[]> {
         const { limit, skip, sort } = options || {};
-        filterPipeline.push({ $match: { ...filter, deletedAt: null } });
+
+        if (!filter?.deletedAt) {
+            filterPipeline.push({ $match: { deletedAt: null, ...filter } });
+        } else {
+            filterPipeline.push({ $match: filter });
+        }
 
         if (sort) {
             filterPipeline.push({ $sort: sort });
@@ -248,7 +253,11 @@ export class BaseService<T extends Document, E> {
     ): Promise<T | null> {
         const { sort } = options || {};
 
-        pipeline.push({ $match: { ...filter, deletedAt: null } });
+        if (!filter?.deletedAt) {
+            pipeline.push({ $match: { deletedAt: null, ...filter } });
+        } else {
+            pipeline.push({ $match: filter });
+        }
 
         if (projection) {
             projectionConfig(pipeline, projection);

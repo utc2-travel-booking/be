@@ -4,6 +4,7 @@ import { UserSchema } from './entities/user.entity';
 import { UserService } from './user.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { RolesModule } from '../roles/roles.module';
+import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 
 @Module({
     imports: [
@@ -11,6 +12,7 @@ import { RolesModule } from '../roles/roles.module';
             { name: COLLECTION_NAMES.USER, schema: UserSchema },
         ]),
         forwardRef(() => RolesModule),
+        SuperCacheModule,
     ],
     controllers: [],
     providers: [UserService],
