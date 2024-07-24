@@ -1,5 +1,15 @@
-import { Body, Controller, Get, Param, Put, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    Query,
+    Req,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -14,6 +24,8 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
+import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -65,6 +77,19 @@ export class UserController {
         return result;
     }
 
+    @Post()
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS.USER.create)
+    async create(
+        @Body() createRoleDto: CreateUserDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+
+        const result = await this.userService.createOne(createRoleDto, user);
+        return result;
+    }
+
     @Put(':id')
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.USER.edit)
@@ -82,6 +107,20 @@ export class UserController {
             user,
         );
 
+        return result;
+    }
+
+    @Delete()
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS.USER.destroy)
+    @ApiQuery({ name: 'ids', type: [String] })
+    async deletes(
+        @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+
+        const result = await this.userService.deletes(_ids, user);
         return result;
     }
 }
