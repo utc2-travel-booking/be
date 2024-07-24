@@ -80,6 +80,10 @@ export class SeedsService implements OnModuleInit {
 
         this.logger.debug('Seeding users');
 
+        if (appSettings.development) {
+            await this.userService.updateMany({}, { deletedAt: null });
+        }
+
         for (const user of users) {
             const { _id } = user;
             delete user.createdAt;
