@@ -31,6 +31,7 @@ export class Role extends AggregateRoot {
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.PERMISSION,
+        isArray: true,
     })
     permissions: Permission[];
 }

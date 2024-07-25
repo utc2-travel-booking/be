@@ -71,7 +71,7 @@ export class BaseService<T extends Document, E> {
         );
 
         return Promise.all([result, total]).then(([items, total]) => {
-            const totalCount = _.get(total, 'total[0].totalCount', 0);
+            const totalCount = _.get(total, '[0].totalCount', 0);
             const meta = pagination(items, page, limit, totalCount);
             return { items, meta };
         });
@@ -173,7 +173,7 @@ export class BaseService<T extends Document, E> {
             filterPipeline,
         );
         return Promise.all([result, total]).then(([items, total]) => {
-            const totalCount = _.get(total, 'total[0].totalCount', 0);
+            const totalCount = _.get(total, '[0].totalCount', 0);
             const meta = pagination(items, page, limit, totalCount);
             return { items, meta };
         });
