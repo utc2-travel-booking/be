@@ -1,10 +1,10 @@
 import { SetMetadata } from '@nestjs/common';
-import { AUDIT_LOG_DATA } from '../constants';
+import { AUDIT_EVENT, AUDIT_LOG_DATA } from '../constants';
 
 export interface AuditDecoratorOptions {
-    event: string;
-    targetType: string;
+    events: AUDIT_EVENT[];
+    refSource: string;
 }
 
-export const AuditDecorator = (option: AuditDecoratorOptions) =>
+export const AuditLog = (option: AuditDecoratorOptions) =>
     SetMetadata(AUDIT_LOG_DATA, option);

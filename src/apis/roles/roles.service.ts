@@ -19,6 +19,36 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
     }
 
+    async getOne(
+        _id: Types.ObjectId,
+        options?: Record<string, any>,
+        locale?: string,
+    ) {
+        const result = await this.findOne(
+            {
+                _id,
+                ...options,
+                deletedAt: null,
+            },
+            null,
+            null,
+            [],
+            locale,
+        );
+        const { permissions } = result;
+        const groupPermissions = {};
+        permissions.map((permission) => {
+            const { collectionName, name } = permission;
+            if (groupPermissions[collectionName]) {
+                groupPermissions[collectionName].push(name);
+            } else {
+                groupPermissions[collectionName] = [name];
+            }
+        });
+
+        return { ...result, permissions: groupPermissions };
+    }
+
     async findPermissionsByRole(roleId: Types.ObjectId) {
         const cachePermissions = await this.SuperCacheService.get(
             `role:${roleId}`,

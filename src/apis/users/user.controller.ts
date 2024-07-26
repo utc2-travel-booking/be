@@ -6,12 +6,23 @@ import { UpdateMeDto } from './dto/update-me.dto';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('users')
 @ApiTags('Front: User')
 @SuperCache({
     mainCollectionName: COLLECTION_NAMES.USER,
     relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
+})
+@AuditLog({
+    events: [
+        AUDIT_EVENT.GET,
+        AUDIT_EVENT.POST,
+        AUDIT_EVENT.PUT,
+        AUDIT_EVENT.DELETE,
+    ],
+    refSource: COLLECTION_NAMES.FILE,
 })
 export class UserController {
     constructor(private readonly userService: UserService) {}

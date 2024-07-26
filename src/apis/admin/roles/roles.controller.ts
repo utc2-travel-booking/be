@@ -25,6 +25,8 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -34,6 +36,15 @@ import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.deco
         COLLECTION_NAMES.USER,
         COLLECTION_NAMES.PERMISSION,
     ],
+})
+@AuditLog({
+    events: [
+        AUDIT_EVENT.GET,
+        AUDIT_EVENT.POST,
+        AUDIT_EVENT.PUT,
+        AUDIT_EVENT.DELETE,
+    ],
+    refSource: COLLECTION_NAMES.ROLE,
 })
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}

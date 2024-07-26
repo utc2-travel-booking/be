@@ -12,6 +12,8 @@ import { Types } from 'mongoose';
 import { appSettings } from 'src/configs/appsettings';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { COLLECTION_NAMES } from 'src/constants';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('posts')
 @ApiTags('Front: Posts')
@@ -22,6 +24,15 @@ import { COLLECTION_NAMES } from 'src/constants';
         COLLECTION_NAMES.FILE,
         COLLECTION_NAMES.CATEGORIES,
     ],
+})
+@AuditLog({
+    events: [
+        AUDIT_EVENT.GET,
+        AUDIT_EVENT.POST,
+        AUDIT_EVENT.PUT,
+        AUDIT_EVENT.DELETE,
+    ],
+    refSource: COLLECTION_NAMES.FILE,
 })
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}

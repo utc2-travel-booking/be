@@ -1,4 +1,5 @@
 export enum COLLECTION_NAMES {
+    NONCE = 'nonces',
     USER = 'users',
     ROLE = 'roles',
     PERMISSION = 'permissions',
@@ -39,6 +40,9 @@ export const PERMISSIONS = {
         create: 'admin.posts.###.create',
         edit: 'admin.posts.###.edit',
         destroy: 'admin.posts.###.destroy',
+    },
+    AUDIT: {
+        index: 'admin.audits.index',
     },
 };
 

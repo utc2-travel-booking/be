@@ -12,7 +12,7 @@ export class AuditLogEvent {
     @OnEvent(AUDIT_LOG)
     async handleSendMailEvent(event: Audit) {
         this.logger.debug(`Created event...`);
-        await this.auditsService.create(event);
+        await this.auditsService.createAudit(event);
         this.logger.debug(`Created event...done`);
     }
 }

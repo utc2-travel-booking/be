@@ -16,6 +16,8 @@ import { PostsModule } from 'src/apis/posts/posts.module';
 import { RolesModule } from 'src/apis/roles/roles.module';
 import { UserModule } from 'src/apis/users/user.module';
 import { CommonModule } from 'src/common/common.module';
+import { AuditsModule } from 'src/packages/audits/audits.module';
+import { AuditsController } from 'src/packages/audits/controllers/admin/audits.controller';
 
 @Module({
     imports: [
@@ -29,6 +31,7 @@ import { CommonModule } from 'src/common/common.module';
         CategoriesModule,
         PostsModule,
         MetadataModule,
+        AuditsModule,
     ],
     controllers: [
         MediaController,
@@ -38,6 +41,7 @@ import { CommonModule } from 'src/common/common.module';
         PostsController,
         MetadataController,
         UserController,
+        AuditsController,
     ],
     providers: [],
 })

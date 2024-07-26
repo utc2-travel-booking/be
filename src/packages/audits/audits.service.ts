@@ -18,15 +18,13 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
         super(auditModel, Audit, COLLECTION_NAMES.AUDIT, eventEmitter);
     }
 
-    async create(data: any) {
-        const audit: Audit = {
-            ...data,
-        };
-        const { event, targetType, refId } = audit;
+    async createAudit(audit: Audit) {
+        const { event, refSource, refId } = audit;
 
-        if (event === AUDIT_EVENT.UPDATED) {
-            audit['old_values'] = await this.findOldData(refId, targetType);
+        if (event === AUDIT_EVENT.PUT) {
+            audit.oldValues = await this.findOldData(refId, refSource);
         }
+
         return await this.create(audit);
     }
 
@@ -41,9 +39,9 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
                         },
                         event: {
                             $in: [
-                                AUDIT_EVENT.CREATED,
-                                AUDIT_EVENT.UPDATED,
-                                AUDIT_EVENT.DELETED,
+                                AUDIT_EVENT.POST,
+                                AUDIT_EVENT.PUT,
+                                AUDIT_EVENT.DELETE,
                             ],
                         },
                     },
@@ -62,7 +60,7 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
                 $and: [
                     {
                         event: {
-                            $in: [AUDIT_EVENT.CREATED, AUDIT_EVENT.UPDATED],
+                            $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
                         },
                     },
                     {
@@ -78,13 +76,5 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
         );
 
         return _.get(result, 'newValues', {});
-    }
-
-    async countUserRequest(userAgent: string, ipAddress: string) {
-        return await this.countDocuments({
-            event: AUDIT_EVENT.UPLOAD_FILE_FRONT,
-            ip_address: ipAddress,
-            user_agent: userAgent,
-        });
     }
 }

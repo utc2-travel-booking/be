@@ -20,6 +20,8 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import {
     ExtendedPagingDto,
@@ -37,6 +39,15 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
         COLLECTION_NAMES.FILE,
         COLLECTION_NAMES.CATEGORIES,
     ],
+})
+@AuditLog({
+    events: [
+        AUDIT_EVENT.GET,
+        AUDIT_EVENT.POST,
+        AUDIT_EVENT.PUT,
+        AUDIT_EVENT.DELETE,
+    ],
+    refSource: COLLECTION_NAMES.POST,
 })
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}

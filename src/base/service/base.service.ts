@@ -81,7 +81,7 @@ export class BaseService<T extends Document, E> {
         _id: Types.ObjectId,
         options?: Record<string, any>,
         locale?: string,
-    ) {
+    ): Promise<any> {
         const result = await this.findOne(
             {
                 _id,
