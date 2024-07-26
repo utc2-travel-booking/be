@@ -7,3 +7,8 @@ export enum AUDIT_EVENT {
     PUT = 'PUT',
     DELETE = 'DELETE',
 }
+
+export enum AuditStatus {
+    BAD_REQUEST = 'BAD_REQUEST',
+    GOOD_REQUEST = 'GOOD_REQUEST',
+}

@@ -4,12 +4,17 @@ import {
     ExecutionContext,
     CallHandler,
 } from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import _ from 'lodash';
 import { AuditDecoratorOptions } from '../decorators/audits.decorator';
-import { AUDIT_EVENT, AUDIT_LOG, AUDIT_LOG_DATA } from '../constants';
+import {
+    AUDIT_EVENT,
+    AUDIT_LOG,
+    AUDIT_LOG_DATA,
+    AuditStatus,
+} from '../constants';
 import { Audit } from '../entity/audits.entity';
 import { Types } from 'mongoose';
 
@@ -35,6 +40,7 @@ export class AuditsInterceptor implements NestInterceptor {
         try {
             const { events, refSource } = audit;
             const request = context.switchToHttp().getRequest();
+            const response = context.switchToHttp().getResponse();
 
             const { user, originalUrl, method } = request;
 
@@ -52,47 +58,56 @@ export class AuditsInterceptor implements NestInterceptor {
                 newValues: {},
                 refId: null,
                 refSource: refSource,
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage || '',
+            };
+
+            const handleAuditEvent = (
+                events: string[],
+                oldValues: any,
+                newValues: any,
+                body?: any,
+            ) => {
+                if (events.includes(method)) {
+                    auditData.oldValues = oldValues;
+                    auditData.newValues = newValues;
+                    auditData.event = method;
+                    auditData.body = body;
+                    if (newValues['_id']) {
+                        auditData.refId = new Types.ObjectId(
+                            newValues['_id'].toString(),
+                        );
+                    }
+                    this.eventEmitter.emit(AUDIT_LOG, auditData);
+                }
             };
 
             return next.handle().pipe(
                 tap((response) => {
                     const data = response?.data ? response?.data : response;
 
-                    const handleAuditEvent = (
-                        events: string[],
-                        oldValues: any,
-                        newValues: any,
-                    ) => {
-                        if (events.includes(method)) {
-                            auditData.oldValues = oldValues;
-                            auditData.newValues = newValues;
-                            auditData.event = method;
-                            if (newValues['_id']) {
-                                auditData.refId = new Types.ObjectId(
-                                    newValues['_id'].toString(),
-                                );
-                            }
-                            this.eventEmitter.emit(AUDIT_LOG, auditData);
-                        }
-                    };
-
                     if ([AUDIT_EVENT.GET].includes(method)) {
                         handleAuditEvent(events, data, {});
                     }
 
                     if ([AUDIT_EVENT.POST, AUDIT_EVENT.PUT].includes(method)) {
-                        handleAuditEvent(events, {}, data);
+                        const body = _.isEmpty(request.body)
+                            ? {}
+                            : request.body;
+                        handleAuditEvent(events, {}, data, body);
                     }
 
-                    // if ([AUDIT_ EVENT.DELETE].includes(method)) {
-                    //     if (Array.isArray(data)) {
-                    //         for (const item of data) {
-                    //             handleAuditEvent(events, item, {});
-                    //         }
-                    //     } else {
-                    //         handleAuditEvent(events, data, {});
-                    //     }
-                    // }
+                    if ([AUDIT_EVENT.DELETE].includes(method)) {
+                        handleAuditEvent(events, data, {});
+                    }
+                }),
+                catchError((err) => {
+                    auditData.status = AuditStatus.BAD_REQUEST;
+                    auditData.statusCode = err.status || 500;
+                    auditData.statusMessage =
+                        err.message || 'Internal server error';
+                    handleAuditEvent(events, {}, { error: err.message });
+                    throw err;
                 }),
             );
         } catch (error) {

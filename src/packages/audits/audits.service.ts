@@ -28,33 +28,7 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
         return await this.create(audit);
     }
 
-    async findAllDataChange(fromDate: Date, toDate: Date) {
-        const data = await this.find(
-            {
-                $and: [
-                    {
-                        created_at: {
-                            $gte: fromDate,
-                            $lte: toDate,
-                        },
-                        event: {
-                            $in: [
-                                AUDIT_EVENT.POST,
-                                AUDIT_EVENT.PUT,
-                                AUDIT_EVENT.DELETE,
-                            ],
-                        },
-                    },
-                ],
-            },
-            null,
-            { sort: { createdAt: -1 } },
-        );
-
-        return data;
-    }
-
-    async findOldData(refId: Types.ObjectId, targetType: string) {
+    async findOldData(refId: Types.ObjectId, refSource: string) {
         const result = await this.findOne(
             {
                 $and: [
@@ -63,16 +37,12 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
                             $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
                         },
                     },
-                    {
-                        targetType,
-                    },
-                    {
-                        refId,
-                    },
                 ],
+                refSource,
+                refId,
             },
             null,
-            { created_at: -1 },
+            { sort: { createdAt: -1 } },
         );
 
         return _.get(result, 'newValues', {});

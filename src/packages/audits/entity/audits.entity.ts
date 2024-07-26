@@ -3,6 +3,7 @@ import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { Document, Types } from 'mongoose';
+import { AuditStatus } from '../constants';
 
 @Schema({
     timestamps: true,
@@ -17,6 +18,15 @@ export class Audit extends AggregateRoot {
 
     @Prop({ type: String })
     event: string;
+
+    @Prop({ type: Number })
+    statusCode: number;
+
+    @Prop({ type: String })
+    statusMessage: string;
+
+    @Prop({ type: String, default: AuditStatus.GOOD_REQUEST })
+    status: string;
 
     @Prop({ type: String })
     url: string;
