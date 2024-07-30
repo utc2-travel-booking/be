@@ -11,8 +11,8 @@ export class AuditLogEvent {
 
     @OnEvent(AUDIT_LOG)
     async handleSendMailEvent(event: Audit) {
-        this.logger.debug(`Created event...`);
+        this.logger.debug(`Created audit...`);
         await this.auditsService.createAudit(event);
-        this.logger.debug(`Created event...done`);
+        this.logger.debug(`Created audit...done`);
     }
 }

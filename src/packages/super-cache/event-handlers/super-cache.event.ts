@@ -11,8 +11,8 @@ export class SuperCacheEvent {
 
     @OnEvent(SUPER_CACHE_EVENT_HANDLER.DELETE)
     async handleDeleteCacheEvent(collectionName: COLLECTION_NAMES) {
-        this.logger.debug(`Deleted cache event...`);
+        this.logger.debug(`Deleted cache event ${collectionName}...`);
         await this.superCacheService.deleteForDataCollection(collectionName);
-        this.logger.debug(`Deleted cache event...done`);
+        this.logger.debug(`Deleted cache event ${collectionName}...done`);
     }
 }

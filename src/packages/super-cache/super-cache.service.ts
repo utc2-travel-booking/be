@@ -22,9 +22,13 @@ export class SuperCacheService {
         }
     }
 
-    async set(key: string, data: any, ttl?: number) {
+    async set(key: string, data: any, ttl = 1) {
         try {
-            await this.cacheManager.set(key, data, ttl);
+            await this.cacheManager
+                .set(key, data, ttl * 24 * 60 * 60 * 6000)
+                .catch((e) => {
+                    console.log(e);
+                });
         } catch (error) {
             this.logger.error('error set', error);
         }
@@ -75,8 +79,16 @@ export class SuperCacheService {
             const parentCollections = collections.filter((collection) =>
                 collection.relationCollectionNames.includes(mainCollectionName),
             );
+            const mainCollection = collections.find(
+                (collection) =>
+                    collection.mainCollectionName === mainCollectionName,
+            );
 
-            const _collections = [...collections, ...parentCollections];
+            if (!mainCollection) {
+                return;
+            }
+
+            const _collections = [...parentCollections, ...[mainCollection]];
 
             const data = await Promise.all(
                 _collections.map(async (collection) => {
@@ -88,6 +100,8 @@ export class SuperCacheService {
                     };
                 }),
             );
+
+            console.log(data);
 
             for (const { mainCollectionName, keys } of data) {
                 await this.deleteDataForCollections(mainCollectionName, keys);
