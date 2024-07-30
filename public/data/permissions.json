@@ -421,10 +421,115 @@
     },
     {
         "_id": {
+            "$oid": "66a718183a85eaaf04f8e386"
+        },
+        "deletedAt": null,
+        "name": "admin.permissions.index",
+        "collectionName": "Permissions",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66a718183a85eaaf04f8e387"
+        },
+        "deletedAt": null,
+        "name": "admin.permissions.create",
+        "collectionName": "Permissions",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66a718183a85eaaf04f8e388"
+        },
+        "deletedAt": null,
+        "name": "admin.permissions.edit",
+        "collectionName": "Permissions",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66a718183a85eaaf04f8e389"
+        },
+        "deletedAt": null,
+        "name": "admin.permissions.destroy",
+        "collectionName": "Permissions",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-26T02:38:56.581Z"
+        }
+    },
+    {
+        "_id": {
             "$oid": "6687a0b3bb2099943bfeec4d"
         },
         "deletedAt": null,
         "name": "admin.audits.index",
+        "collectionName": "Audits",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6687a0b3bb2099943bfeec4e"
+        },
+        "deletedAt": null,
+        "name": "admin.audits.create",
+        "collectionName": "Audits",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6687a0b3bb2099943bfeec4f"
+        },
+        "deletedAt": null,
+        "name": "admin.audits.edit",
+        "collectionName": "Audits",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        },
+        "updatedAt": {
+            "$date": "2024-07-16T04:20:03.170Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "6687a0b3bb2099943bfeec50"
+        },
+        "deletedAt": null,
+        "name": "admin.audits.destroy",
         "collectionName": "Audits",
         "__v": 0,
         "createdAt": {

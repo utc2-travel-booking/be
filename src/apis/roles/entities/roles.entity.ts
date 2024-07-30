@@ -6,7 +6,7 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from 'src/packages/super-search';
-import { Permission } from 'src/apis/permissions/entities/permissions.entity';
+import { PermissionDocument } from 'src/apis/permissions/entities/permissions.entity';
 import { RoleType } from '../constants';
 
 @Schema({
@@ -33,7 +33,7 @@ export class Role extends AggregateRoot {
         ref: COLLECTION_NAMES.PERMISSION,
         isArray: true,
     })
-    permissions: Permission[];
+    permissions: PermissionDocument[];
 }
 
 export type RoleDocument = Role & Document;

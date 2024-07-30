@@ -44,6 +44,9 @@ export const PERMISSIONS = {
     AUDIT: {
         index: 'admin.audits.index',
     },
+    PERMISSION: {
+        index: 'admin.permissions.index',
+    },
 };
 
 export const PERMISSIONS_FRONT = {

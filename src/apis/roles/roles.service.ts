@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Role, RoleDocument } from './entities/roles.entity';
 import { Model, Types } from 'mongoose';
@@ -7,14 +7,19 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import _ from 'lodash';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PermissionsService } from '../permissions/permissions.service';
+import { UserPayload } from 'src/base/models/user-payload.model';
+import { CreateRoleDto } from '../admin/roles/dto/create-role.dto';
+import { UpdateRoleDto } from '../admin/roles/dto/update-role.dto';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
     constructor(
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
-        private readonly SuperCacheService: SuperCacheService,
+        private readonly superCacheService: SuperCacheService,
         eventEmitter: EventEmitter2,
+        private readonly permissionsService: PermissionsService,
     ) {
         super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
     }
@@ -35,22 +40,17 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             [],
             locale,
         );
-        const { permissions } = result;
-        const groupPermissions = {};
-        permissions.map((permission) => {
-            const { collectionName, name } = permission;
-            if (groupPermissions[collectionName]) {
-                groupPermissions[collectionName].push(name);
-            } else {
-                groupPermissions[collectionName] = [name];
-            }
-        });
 
-        return { ...result, permissions: groupPermissions };
+        const { permissions } = result;
+
+        const getAllPermissions =
+            await this.permissionsService.getAllPermissions(permissions);
+
+        return { ...result, permissions: getAllPermissions };
     }
 
     async findPermissionsByRole(roleId: Types.ObjectId) {
-        const cachePermissions = await this.SuperCacheService.get(
+        const cachePermissions = await this.superCacheService.get(
             `role:${roleId}`,
         );
 
@@ -66,9 +66,62 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             return _.get(permission, 'name');
         });
 
-        await this.SuperCacheService.set(`role:${roleId}`, permissions);
+        await this.superCacheService.set(`role:${roleId}`, permissions);
 
         return permissions;
+    }
+
+    async createOne(
+        createRoleDto: CreateRoleDto,
+        user: UserPayload,
+        options?: Record<string, any>,
+        locale?: string,
+    ) {
+        const { _id: userId } = user;
+        const { permissions: permissionsDto } = createRoleDto;
+
+        const permissions =
+            await this.permissionsService.getPermissionIdFromPayload(
+                permissionsDto,
+            );
+
+        const result = new this.roleModel({
+            ...createRoleDto,
+            ...options,
+            permissions,
+            createdBy: userId,
+        });
+        await this.create(result, locale);
+
+        return result;
+    }
+
+    async updateOneById(
+        _id: Types.ObjectId,
+        updateRoleDto: UpdateRoleDto,
+        user: UserPayload,
+        locale?: string,
+    ) {
+        const { _id: userId } = user;
+        const { permissions: permissionsDto } = updateRoleDto;
+
+        const permissions =
+            await this.permissionsService.getPermissionIdFromPayload(
+                permissionsDto,
+            );
+
+        const result = await this.findOneAndUpdate(
+            { _id },
+            { ...updateRoleDto, permissions, updatedBy: userId },
+            { new: true },
+            locale,
+        );
+
+        if (!result) {
+            throw new BadRequestException(`Not found ${_id}`);
+        }
+
+        return result;
     }
 
     async findRoleByType(type: number) {
