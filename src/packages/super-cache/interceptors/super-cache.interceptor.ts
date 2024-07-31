@@ -36,7 +36,7 @@ export class SuperCacheInterceptor implements NestInterceptor {
         }
 
         const request = context.switchToHttp().getRequest();
-        const { body, query, params, user, method } = request;
+        const { body, query, params, user, method, headers } = request;
 
         const { mainCollectionName, relationCollectionNames } = options || {};
 
@@ -46,7 +46,13 @@ export class SuperCacheInterceptor implements NestInterceptor {
         );
 
         if (method === HTTP_METHODS.GET) {
-            const key = generateKey({ ...body, ...query, ...params, ...user });
+            const key = generateKey({
+                ...body,
+                ...query,
+                ...params,
+                ...user,
+                ...headers,
+            });
 
             const cacheData = await this.superCacheService.getDataForCollection(
                 mainCollectionName,
