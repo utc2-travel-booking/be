@@ -50,6 +50,15 @@ export class BaseService<T extends Document, E> {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
 
+        const total = this.countDocuments(
+            {
+                ...options,
+                deletedAt: null,
+            },
+            null,
+            filterPipeline,
+        );
+
         const result = this.find(
             {
                 ...options,
@@ -59,15 +68,6 @@ export class BaseService<T extends Document, E> {
             { limit, skip, sort: { [sortBy]: sortDirection } },
             filterPipeline,
             locale,
-        );
-
-        const total = this.countDocuments(
-            {
-                ...options,
-                deletedAt: null,
-            },
-            null,
-            filterPipeline,
         );
 
         return Promise.all([result, total]).then(([items, total]) => {
@@ -156,14 +156,6 @@ export class BaseService<T extends Document, E> {
 
         activePublications(queryParams.filterPipeline);
 
-        const result = this.find(
-            { deletedAt: null, ...options },
-            '-longDescription',
-            { limit, skip, sort: { [sortBy]: sortDirection } },
-            filterPipeline,
-            locale,
-        );
-
         const total = this.countDocuments(
             {
                 deletedAt: null,
@@ -172,6 +164,15 @@ export class BaseService<T extends Document, E> {
             null,
             filterPipeline,
         );
+
+        const result = this.find(
+            { deletedAt: null, ...options },
+            '-longDescription',
+            { limit, skip, sort: { [sortBy]: sortDirection } },
+            filterPipeline,
+            locale,
+        );
+
         return Promise.all([result, total]).then(([items, total]) => {
             const totalCount = _.get(total, '[0].totalCount', 0);
             const meta = pagination(items, page, limit, totalCount);
