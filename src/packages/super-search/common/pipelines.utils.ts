@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { PipelineStage, ProjectionType } from 'mongoose';
 
 export const projectionConfig = (
@@ -23,6 +24,7 @@ export const projectionConfig = (
 // match stay first in the pipeline not working with $lookup
 export const moveFirstToLast = (pipeline: PipelineStage[]) => {
     if (pipeline.length === 0) return pipeline;
+    if (_.get(pipeline[0], '$lookup')) return pipeline;
     const firstElement = pipeline.shift();
     pipeline.push(firstElement);
     return pipeline;
