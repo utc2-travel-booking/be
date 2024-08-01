@@ -52,7 +52,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
     ],
     refSource: COLLECTION_NAMES.FILE,
 })
-export class MediaController {
+export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
     @Get()

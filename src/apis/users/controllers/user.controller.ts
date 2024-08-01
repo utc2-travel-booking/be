@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Put, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserService } from './user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { UpdateMeDto } from './dto/update-me.dto';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { UpdateMeDto } from '../dto/update-me.dto';
+import { UserService } from '../user.service';
 
 @Controller('users')
 @ApiTags('Front: User')

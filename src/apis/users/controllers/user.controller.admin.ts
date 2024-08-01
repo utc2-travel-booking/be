@@ -22,12 +22,12 @@ import {
     ExtendedPagingDto,
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
-import { CreateUserDto } from './dto/create-user.dto';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -44,7 +44,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
     ],
     refSource: COLLECTION_NAMES.USER,
 })
-export class UserController {
+export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
     @Put('ban')

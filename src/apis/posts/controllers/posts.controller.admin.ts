@@ -49,7 +49,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
     ],
     refSource: COLLECTION_NAMES.POST,
 })
-export class PostsController {
+export class PostsControllerAdmin {
     constructor(private readonly postsService: PostsService) {}
 
     @Get(':type')

@@ -1,12 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { PostsService } from './posts.service';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
 import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
-import { PostStatus, PostType } from './constants';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { appSettings } from 'src/configs/appsettings';
@@ -14,6 +12,8 @@ import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.deco
 import { COLLECTION_NAMES } from 'src/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { PostsService } from '../posts.service';
+import { PostStatus, PostType } from '../constants';
 
 @Controller('posts')
 @ApiTags('Front: Posts')

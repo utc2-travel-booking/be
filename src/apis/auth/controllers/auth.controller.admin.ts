@@ -1,8 +1,8 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../auth.service';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
-import { UserLoginDto } from '../../auth/dto/user-login.dto';
+import { UserLoginDto } from '../dto/user-login.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -19,7 +19,7 @@ import { COLLECTION_NAMES } from 'src/constants';
     ],
     refSource: COLLECTION_NAMES.NONCE,
 })
-export class AuthController {
+export class AuthControllerAdmin {
     constructor(private readonly authService: AuthService) {}
 
     @Post('login')

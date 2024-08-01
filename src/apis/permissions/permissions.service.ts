@@ -5,7 +5,7 @@ import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { PermissionDto } from '../admin/roles/dto/create-role.dto';
+import { PermissionDto } from '../roles/dto/create-role.dto';
 import _ from 'lodash';
 
 @Injectable()

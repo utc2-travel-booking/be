@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
+import { AuthService } from '../auth.service';
 
 @Controller()
 @ApiTags('Front: Auth')

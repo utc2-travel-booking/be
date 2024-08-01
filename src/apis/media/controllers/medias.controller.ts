@@ -6,8 +6,6 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { MediaService } from './medias.service';
-import { UploadMediaDto } from './dto/upload-media.dto';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import { appSettings } from 'src/configs/appsettings';
@@ -17,6 +15,8 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { UploadMediaDto } from '../dto/upload-media.dto';
+import { MediaService } from '../medias.service';
 
 @ApiTags('Front: Media')
 @Controller('media')

@@ -44,7 +44,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
     ],
     refSource: COLLECTION_NAMES.CATEGORIES,
 })
-export class CategoriesController {
+export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
     @Get(':type')

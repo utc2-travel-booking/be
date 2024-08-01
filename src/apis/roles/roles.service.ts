@@ -9,8 +9,8 @@ import _ from 'lodash';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { CreateRoleDto } from '../admin/roles/dto/create-role.dto';
-import { UpdateRoleDto } from '../admin/roles/dto/update-role.dto';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {

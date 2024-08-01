@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AuthController } from 'src/apis/admin/auth/auth.controller';
-import { CategoriesController } from 'src/apis/admin/categories/categories.controller';
-import { MediaController } from 'src/apis/admin/media/medias.controller';
-import { MetadataController } from 'src/apis/admin/metadata/metadata.controller';
-import { PostsController } from 'src/apis/admin/posts/posts.controller';
-import { RolesController } from 'src/apis/admin/roles/roles.controller';
-import { UserController } from 'src/apis/admin/users/user.controller';
+import { RolesControllerAdmin } from 'src/apis/roles/controllers/roles.controller.admin';
+import { UserControllerAdmin } from 'src/apis/users/controllers/user.controller.admin';
 import { AuthModule } from 'src/apis/auth/auth.module';
+import { AuthControllerAdmin } from 'src/apis/auth/controllers/auth.controller.admin';
 import { CategoriesModule } from 'src/apis/categories/categories.module';
+import { CategoriesControllerAdmin } from 'src/apis/categories/controllers/categories.controller.admin';
+import { MediaControllerAdmin } from 'src/apis/media/controllers/medias.controller.admin';
 import { MediaModule } from 'src/apis/media/medias.module';
+import { MetadataControllerAdmin } from 'src/apis/metadata/controllers/metadata.controller.admin';
 import { MetadataModule } from 'src/apis/metadata/metadata.module';
 import { PermissionsModule } from 'src/apis/permissions/permissions.module';
+import { PostsControllerAdmin } from 'src/apis/posts/controllers/posts.controller.admin';
 import { PostsModule } from 'src/apis/posts/posts.module';
 import { RolesModule } from 'src/apis/roles/roles.module';
 import { UserModule } from 'src/apis/users/user.module';
@@ -34,13 +34,13 @@ import { AuditsController } from 'src/packages/audits/controllers/admin/audits.c
         AuditsModule,
     ],
     controllers: [
-        MediaController,
-        RolesController,
-        AuthController,
-        CategoriesController,
-        PostsController,
-        MetadataController,
-        UserController,
+        MediaControllerAdmin,
+        RolesControllerAdmin,
+        AuthControllerAdmin,
+        CategoriesControllerAdmin,
+        PostsControllerAdmin,
+        MetadataControllerAdmin,
+        UserControllerAdmin,
         AuditsController,
     ],
     providers: [],
