@@ -9,7 +9,7 @@ import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Injectable()
-export class SignatureStrategy extends PassportStrategy(
+export class LoginTelegramStrategy extends PassportStrategy(
     Strategy,
     'login-telegram-provider',
 ) {

@@ -8,6 +8,7 @@ import { RolesModule } from '../roles/roles.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { appSettings } from 'src/configs/appsettings';
 import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
+import { LoginTelegramStrategy } from 'src/strategies/login-telegram.strategy';
 
 @Module({
     imports: [
@@ -24,7 +25,7 @@ import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
         MetadataModule,
     ],
     controllers: [],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, LocalStrategy, JwtStrategy, LoginTelegramStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}
