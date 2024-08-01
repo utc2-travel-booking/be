@@ -11,6 +11,7 @@ import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { RoleType } from './constants';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
@@ -22,6 +23,10 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         private readonly permissionsService: PermissionsService,
     ) {
         super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
+    }
+
+    async getRoleByType(type: RoleType) {
+        return this.roleModel.findOne({ type });
     }
 
     async getOne(

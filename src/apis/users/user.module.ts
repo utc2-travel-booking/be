@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { RolesModule } from '../roles/roles.module';
 import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
+import { MediaModule } from '../media/medias.module';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
         ]),
         forwardRef(() => RolesModule),
         SuperCacheModule,
+        MediaModule,
     ],
     controllers: [],
     providers: [UserService],
