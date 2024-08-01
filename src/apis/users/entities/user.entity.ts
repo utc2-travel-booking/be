@@ -6,7 +6,7 @@ import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from 'src/packages/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
-import { Role } from 'src/apis/roles/entities/roles.entity';
+import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 
 export type UserDocument = User & Document;
@@ -53,7 +53,7 @@ export class User extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
     })
-    role: Role;
+    role: RoleDocument;
 
     @Prop({
         type: String,
@@ -61,6 +61,18 @@ export class User extends AggregateRoot {
         default: UserStatus.ACTIVE,
     })
     status: UserStatus;
+
+    @Prop({
+        type: Number,
+        required: true,
+    })
+    telegramUserId: number;
+
+    @Prop({
+        type: String,
+        required: false,
+    })
+    telegramUsername: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

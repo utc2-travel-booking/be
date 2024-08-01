@@ -34,4 +34,9 @@ export const appSettings = {
         username: process.env.REDIS_USERNAME,
         password: process.env.REDIS_PASSWORD,
     },
+    provider: {
+        telegram: {
+            botToken: process.env.TELEGRAM_BOT_TOKEN,
+        },
+    },
 };

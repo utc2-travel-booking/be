@@ -16,6 +16,9 @@ import * as bcrypt from 'bcryptjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
+import { UserLoginTelegramProviderDto } from '../auth/dto/user-login-telegram-provider.dto';
+import { MediaService } from '../media/medias.service';
+import { RoleType } from '../roles/constants';
 
 @Injectable()
 export class UserService
@@ -28,6 +31,7 @@ export class UserService
         private readonly roleService: RolesService,
         eventEmitter: EventEmitter2,
         private readonly superCacheService: SuperCacheService,
+        private readonly mediaService: MediaService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, eventEmitter);
     }
@@ -47,6 +51,39 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+    }
+
+    async createUserTelegramProvider(
+        userLoginTelegramProviderDto: Partial<UserLoginTelegramProviderDto>,
+    ) {
+        const { id, firstName, lastName, username, photoUrl } =
+            userLoginTelegramProviderDto;
+
+        const user = await this.findOne({ 'telegram.id': id });
+
+        if (user) {
+            return user;
+        }
+
+        let avatar = null;
+        if (photoUrl) {
+            avatar = await this.mediaService.create({
+                filename: `avatar-${id}`,
+                filePath: photoUrl,
+            });
+        }
+
+        const role = await this.roleService.getRoleByType(RoleType.USER);
+
+        const newUser = await this.create({
+            name: `${firstName} ${lastName}`,
+            telegramUserId: id,
+            telegramUsername: username,
+            avatar: _.get(avatar, '_id', null),
+            role: role._id,
+        });
+
+        return newUser;
     }
 
     async validateUserLocal(email: string, password: string) {
