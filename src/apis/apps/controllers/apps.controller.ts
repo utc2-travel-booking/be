@@ -3,7 +3,7 @@ import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.deco
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import {
@@ -13,6 +13,7 @@ import {
 import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
+import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -32,6 +33,22 @@ import { Types } from 'mongoose';
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
+    @Get('user-history')
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS_FRONT.APP.index)
+    async getUserAppHistories(
+        @Query(new PagingDtoPipe<App>())
+        queryParams: ExtendedPagingDto<App>,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getUserAppHistories(
+            queryParams,
+            user,
+        );
+        return result;
+    }
+
     @Get()
     @ApiBearerAuth()
     @Authorize(PERMISSIONS_FRONT.APP.index)
@@ -47,8 +64,12 @@ export class AppsController {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.appsService.getOneByIdForFront(_id);
+    async getAppPublish(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getAppPublish(_id, user);
         return result;
     }
 }
