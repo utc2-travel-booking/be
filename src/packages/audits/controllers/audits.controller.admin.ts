@@ -1,19 +1,19 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
-import { AuditsService } from '../../audits.service';
+import { AuditsService } from '../audits.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { PERMISSIONS } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Audit } from '../../entity/audits.entity';
+import { Audit } from '../entity/audits.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 
-@Controller('audits')
+@Controller('admin/audits')
 @ApiTags('Admin: Audit')
-export class AuditsController {
+export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}
 
     @Get()

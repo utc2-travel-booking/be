@@ -6,6 +6,7 @@ import { AuditSchema } from './entity/audits.entity';
 import { AuditLogEvent } from './event-handlers/audit-logs.event';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuditsInterceptor } from './interceptors/audits.interceptor';
+import { AuditsControllerAdmin } from './controllers/audits.controller.admin';
 
 @Module({
     imports: [
@@ -13,7 +14,7 @@ import { AuditsInterceptor } from './interceptors/audits.interceptor';
             { name: COLLECTION_NAMES.AUDIT, schema: AuditSchema },
         ]),
     ],
-    controllers: [],
+    controllers: [AuditsControllerAdmin],
     providers: [
         AuditsService,
         AuditLogEvent,
