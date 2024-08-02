@@ -15,13 +15,14 @@ import { Types } from 'mongoose';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('reviews')
 @ApiTags('Front: Reviews')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.REVIEW,
-    relationCollectionNames: [COLLECTION_NAMES.USER, COLLECTION_NAMES.APP],
-})
+// @SuperCache({
+//     mainCollectionName: COLLECTION_NAMES.REVIEW,
+//     relationCollectionNames: [COLLECTION_NAMES.USER, COLLECTION_NAMES.APP],
+// })
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW,
     events: [
@@ -40,10 +41,15 @@ export class ReviewsController {
         @Query(new PagingDtoPipe<Review>())
         queryParams: ExtendedPagingDto<Review>,
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.reviewsService.getAll(queryParams, {
-            'app._id': appId,
-        });
+        const result = await this.reviewsService.getAll(
+            queryParams,
+            {
+                'app._id': appId,
+            },
+            locale,
+        );
         return result;
     }
 

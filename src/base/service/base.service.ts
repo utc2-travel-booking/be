@@ -248,6 +248,8 @@ export class BaseService<T extends Document, E> {
             projectionConfig(filterPipeline, projection);
         }
 
+        console.log(filterPipeline[0]);
+
         return this.model.aggregate(moveFirstToLast(filterPipeline)).exec();
     }
 

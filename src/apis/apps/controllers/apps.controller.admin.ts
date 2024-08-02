@@ -40,10 +40,10 @@ import { appSettings } from 'src/configs/appsettings';
     ],
     refSource: COLLECTION_NAMES.APP,
 })
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.APP,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
-})
+// @SuperCache({
+//     mainCollectionName: COLLECTION_NAMES.APP,
+//     relationCollectionNames: [COLLECTION_NAMES.USER],
+// })
 export class AppsControllerAdmin {
     constructor(private readonly appsService: AppsService) {}
 

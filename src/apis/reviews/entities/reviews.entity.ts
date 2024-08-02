@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { AppDocument } from 'src/apis/apps/entities/apps.entity';
+import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from 'src/packages/super-search';
@@ -17,11 +17,11 @@ export class Review extends AggregateRoot {
     @Prop({ type: Number, min: 0, max: 5 })
     star: number;
 
-    @Prop({ type: Types.ObjectId })
+    @Prop({ type: Types.ObjectId, relationClass: App })
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })
-    app: AppDocument;
+    app: AppDocument[];
 }
 
 export type ReviewDocument = Review & Document;
