@@ -42,16 +42,11 @@ export class PostsController {
         @Query(new PagingDtoPipe<PostEntity>())
         queryParams: ExtendedPagingDto<PostEntity>,
         @Param('type') type: PostType,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.postsService.getAllForFront(
-            queryParams,
-            {
-                type,
-                status: PostStatus.PUBLISHED,
-            },
-            locale,
-        );
+        const result = await this.postsService.getAllForFront(queryParams, {
+            type,
+            status: PostStatus.PUBLISHED,
+        });
         return result;
     }
 
@@ -60,16 +55,11 @@ export class PostsController {
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Param('type') type: PostType,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.postsService.getOneByIdForFront(
-            _id,
-            {
-                type,
-                status: PostStatus.PUBLISHED,
-            },
-            locale,
-        );
+        const result = await this.postsService.getOneByIdForFront(_id, {
+            type,
+            status: PostStatus.PUBLISHED,
+        });
         return result;
     }
 }

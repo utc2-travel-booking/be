@@ -35,7 +35,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
                 ...options,
                 deletedAt: null,
             },
-            locale,
         });
 
         const { permissions } = result;
@@ -88,7 +87,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             permissions,
             createdBy: userId,
         });
-        await this.create(result, locale);
+        await this.create(result);
 
         return result;
     }
@@ -111,7 +110,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             { _id },
             { ...updateRoleDto, permissions, updatedBy: userId },
             { new: true },
-            locale,
         );
 
         if (!result) {

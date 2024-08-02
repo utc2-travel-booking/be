@@ -65,13 +65,8 @@ export class PostsControllerAdmin {
         @Query(new PagingDtoPipe<PostEntity>())
         queryParams: ExtendedPagingDto<PostEntity>,
         @Param('type') type: PostType,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.postsService.getAll(
-            queryParams,
-            { type },
-            locale,
-        );
+        const result = await this.postsService.getAll(queryParams, { type });
 
         return result;
     }
@@ -89,9 +84,8 @@ export class PostsControllerAdmin {
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Param('type') type: PostType,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.postsService.getOne(_id, { type }, locale);
+        const result = await this.postsService.getOne(_id, { type });
         return result;
     }
 
@@ -108,13 +102,11 @@ export class PostsControllerAdmin {
         @Body() createPostDto: CreatePostDto,
         @Req() req: { user: UserPayload },
         @Param('type') type: PostType,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
         const result = await this.postsService.createByType(
             createPostDto,
             type,
-            locale,
             user,
             {
                 type,
@@ -138,14 +130,12 @@ export class PostsControllerAdmin {
         @Body() updatePostDto: UpdatePostDto,
         @Param('type') type: PostType,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
         const result = await this.postsService.updateOneByIdAndType(
             _id,
             type,
-            locale,
             updatePostDto,
             user,
         );

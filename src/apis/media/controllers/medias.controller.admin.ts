@@ -61,9 +61,8 @@ export class MediaControllerAdmin {
     async getAll(
         @Query(new PagingDtoPipe<File>())
         queryParams: ExtendedPagingDto<File>,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.mediaService.getAll(queryParams, {}, locale);
+        const result = await this.mediaService.getAll(queryParams);
         return result;
     }
 
@@ -71,11 +70,8 @@ export class MediaControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.FILE.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('locale') locale: string = appSettings.mainLanguage,
-    ) {
-        const result = await this.mediaService.getOne(_id, {}, locale);
+    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
+        const result = await this.mediaService.getOne(_id);
         return result;
     }
 
@@ -94,10 +90,9 @@ export class MediaControllerAdmin {
     async create(
         @UploadedFile() file: IUploadedMulterFile,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
-        const result = await this.mediaService.createFile(file, user, locale);
+        const result = await this.mediaService.createFile(file, user);
         return result;
     }
 

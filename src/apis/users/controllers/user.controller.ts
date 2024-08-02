@@ -31,13 +31,10 @@ export class UserController {
     @Get('me')
     @ApiBearerAuth()
     @Authorize(PERMISSIONS_FRONT.USER.index)
-    async getMe(
-        @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
-    ) {
+    async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
-        const result = await this.userService.getMe(user, locale);
+        const result = await this.userService.getMe(user);
         return result;
     }
 
@@ -47,9 +44,8 @@ export class UserController {
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
-        return this.userService.updateMe(user, updateMeDto, locale);
+        return this.userService.updateMe(user, updateMeDto);
     }
 }

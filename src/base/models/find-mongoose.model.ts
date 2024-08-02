@@ -10,5 +10,4 @@ export class FindMongooseModel<T> {
     projection?: ProjectionType<T> | null | undefined;
     options?: QueryOptions<T> | null | undefined;
     filterPipeline?: PipelineStage[];
-    locale?: string;
 }

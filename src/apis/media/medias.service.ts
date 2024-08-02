@@ -24,7 +24,6 @@ export class MediaService extends BaseService<FileDocument, File> {
     async createFile(
         file: IUploadedMulterFile,
         user: UserPayload,
-        locale: string,
         folder: string = appSettings.s3.folder,
     ) {
         const uploadedFile = await this.s3Service.uploadPublicFile(

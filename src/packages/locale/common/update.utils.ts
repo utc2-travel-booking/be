@@ -4,9 +4,9 @@ import { TypeMetadataStorage } from '../storages/type-metadata.storage';
 export const updateDocumentLocale = async (
     model: Model<any>,
     entity: any,
-    filter?: FilterQuery<any> | Types.ObjectId,
-    update?: UpdateQuery<any>,
-    locale?: string,
+    filter: FilterQuery<any> | Types.ObjectId,
+    update: UpdateQuery<any>,
+    locale: string,
 ) => {
     const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
     if (!localeFields.length) return;

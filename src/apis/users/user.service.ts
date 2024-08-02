@@ -78,11 +78,7 @@ export class UserService
         );
     }
 
-    async updateMe(
-        user: UserPayload,
-        updateMeDto: UpdateMeDto,
-        locale: string,
-    ) {
+    async updateMe(user: UserPayload, updateMeDto: UpdateMeDto) {
         await this.updateOne(
             { _id: user._id },
             {
@@ -90,15 +86,14 @@ export class UserService
             },
         );
 
-        const result = await this.getMe(user, locale);
+        const result = await this.getMe(user);
         return result;
     }
 
-    async getMe(user: UserPayload, locale: string) {
+    async getMe(user: UserPayload) {
         return await this.findOne({
             filter: { _id: user._id },
             projection: '-password',
-            locale,
         });
     }
 

@@ -1,4 +1,7 @@
+import { RequestContext } from 'nestjs-request-context';
 import { updateDocumentLocale } from '../common/update.utils';
+import { appSettings } from 'src/configs/appsettings';
+import _ from 'lodash';
 
 export function UpdateWithLocale() {
     return function (
@@ -9,7 +12,20 @@ export function UpdateWithLocale() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
-            const [filter, update, options, locale] = args;
+            const req: Request = _.get(
+                RequestContext,
+                'currentContext.req',
+                null,
+            );
+
+            if (!req) {
+                return originalMethod.apply(this, args);
+            }
+
+            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const locale = _.get(query, 'locale', appSettings.mainLanguage);
+
+            const [filter, update] = args;
             await updateDocumentLocale(
                 this.model,
                 this.entity,
