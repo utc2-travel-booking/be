@@ -3,13 +3,15 @@ import { AppsService } from './apps.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AppSchema } from './entities/apps.entity';
-import { AppEvent } from './controllers/event-handlers/apps.event';
+import { AppEvent } from './event-handlers/apps.event';
+import { UserAppHistoriesModule } from '../user-app-histories/user-app-histories.module';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: COLLECTION_NAMES.APP, schema: AppSchema },
         ]),
+        UserAppHistoriesModule,
     ],
     controllers: [],
     providers: [AppsService, AppEvent],

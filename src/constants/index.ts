@@ -11,6 +11,7 @@ export enum COLLECTION_NAMES {
     APP = 'apps',
     REVIEW = 'reviews',
     ADVERTISER = 'advertisers',
+    USER_APP_HISTORY = 'userAppHistories',
 }
 
 export const PERMISSIONS = {

@@ -7,9 +7,9 @@ import { Model, Types } from 'mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { USER_EVENT_HANDLER } from '../users/constants';
 import _ from 'lodash';
 import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
+import { APP_EVENT_HANDLER } from '../apps/constants';
 
 @Injectable()
 export class ReviewsService extends BaseService<ReviewDocument, Review> {
@@ -45,7 +45,7 @@ export class ReviewsService extends BaseService<ReviewDocument, Review> {
                 star: _.get(result, 'star', 0),
             };
             this.eventEmitter.emit(
-                USER_EVENT_HANDLER.ADD_RATING_FOR_USER,
+                APP_EVENT_HANDLER.ADD_RATING_FOR_USER,
                 sumRatingAppModel,
             );
         }

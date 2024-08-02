@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req } from '@nestjs/common';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -14,6 +14,7 @@ import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { appSettings } from 'src/configs/appsettings';
+import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -32,6 +33,22 @@ import { appSettings } from 'src/configs/appsettings';
 })
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
+
+    @Get('user-history')
+    @ApiBearerAuth()
+    @Authorize(PERMISSIONS_FRONT.APP.index)
+    async getUserAppHistories(
+        @Query(new PagingDtoPipe<App>())
+        queryParams: ExtendedPagingDto<App>,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getUserAppHistories(
+            queryParams,
+            user,
+        );
+        return result;
+    }
 
     @Get()
     @ApiBearerAuth()
@@ -53,15 +70,12 @@ export class AppsController {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(
+    async getAppPublish(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('locale') locale: string = appSettings.mainLanguage,
+        @Req() req: { user: UserPayload },
     ) {
-        const result = await this.appsService.getOneByIdForFront(
-            _id,
-            {},
-            locale,
-        );
+        const { user } = req;
+        const result = await this.appsService.getAppPublish(_id, user);
         return result;
     }
 }
