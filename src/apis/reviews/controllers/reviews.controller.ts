@@ -41,15 +41,10 @@ export class ReviewsController {
         @Query(new PagingDtoPipe<Review>())
         queryParams: ExtendedPagingDto<Review>,
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.reviewsService.getAll(
-            queryParams,
-            {
-                'app._id': appId,
-            },
-            locale,
-        );
+        const result = await this.reviewsService.getAll(queryParams, {
+            'app._id': appId,
+        });
         return result;
     }
 

@@ -56,13 +56,8 @@ export class AppsController {
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.appsService.getAllForFront(
-            queryParams,
-            {},
-            locale,
-        );
+        const result = await this.appsService.getAllForFront(queryParams);
         return result;
     }
 

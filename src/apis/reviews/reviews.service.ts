@@ -25,7 +25,6 @@ export class ReviewsService extends BaseService<ReviewDocument, Review> {
         createReviewDto: CreateReviewDto,
         user: UserPayload,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { _id: userId } = user;
         const { app } = createReviewDto;
@@ -37,7 +36,7 @@ export class ReviewsService extends BaseService<ReviewDocument, Review> {
             ...options,
             createdBy: userId,
         });
-        await this.create(result, locale);
+        await this.create(result);
 
         if (result) {
             const sumRatingAppModel: SumRatingAppModel = {

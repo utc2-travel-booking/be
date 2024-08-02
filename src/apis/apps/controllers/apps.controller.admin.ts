@@ -53,9 +53,8 @@ export class AppsControllerAdmin {
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.appsService.getAll(queryParams, {}, locale);
+        const result = await this.appsService.getAll(queryParams);
         return result;
     }
 
@@ -63,11 +62,8 @@ export class AppsControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('locale') locale: string = appSettings.mainLanguage,
-    ) {
-        const result = await this.appsService.getOne(_id, {}, locale);
+    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
+        const result = await this.appsService.getOne(_id);
         return result;
     }
 
@@ -77,16 +73,10 @@ export class AppsControllerAdmin {
     async create(
         @Body() createAppDto: CreateAppDto,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
-        const result = await this.appsService.createOne(
-            createAppDto,
-            user,
-            {},
-            locale,
-        );
+        const result = await this.appsService.createOne(createAppDto, user);
         return result;
     }
 
@@ -98,7 +88,6 @@ export class AppsControllerAdmin {
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateAppDto: UpdateAppDto,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -106,7 +95,6 @@ export class AppsControllerAdmin {
             _id,
             updateAppDto,
             user,
-            locale,
         );
 
         return result;

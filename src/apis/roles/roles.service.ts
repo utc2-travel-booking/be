@@ -29,11 +29,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         return this.roleModel.findOne({ type });
     }
 
-    async getOne(
-        _id: Types.ObjectId,
-        options?: Record<string, any>,
-        locale?: string,
-    ) {
+    async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
         const result = await this.findOne({
             filter: {
                 _id,
@@ -76,7 +72,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         createRoleDto: CreateRoleDto,
         user: UserPayload,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = createRoleDto;
@@ -101,7 +96,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         _id: Types.ObjectId,
         updateRoleDto: UpdateRoleDto,
         user: UserPayload,
-        locale?: string,
     ) {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = updateRoleDto;
