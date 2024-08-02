@@ -13,6 +13,7 @@ import {
 import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
+import { appSettings } from 'src/configs/appsettings';
 import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Controller('apps')
@@ -55,8 +56,13 @@ export class AppsController {
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.appsService.getAllForFront(queryParams);
+        const result = await this.appsService.getAllForFront(
+            queryParams,
+            {},
+            locale,
+        );
         return result;
     }
 

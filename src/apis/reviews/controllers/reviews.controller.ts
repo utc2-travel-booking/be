@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Req, Get, Query, Param } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from '../reviews.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
@@ -35,6 +35,7 @@ export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
 
     @Get(':appId')
+    @ApiParam({ name: 'appId', type: String })
     async getAll(
         @Query(new PagingDtoPipe<Review>())
         queryParams: ExtendedPagingDto<Review>,

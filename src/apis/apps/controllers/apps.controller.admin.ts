@@ -27,6 +27,7 @@ import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.deco
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -52,8 +53,9 @@ export class AppsControllerAdmin {
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.appsService.getAll(queryParams);
+        const result = await this.appsService.getAll(queryParams, {}, locale);
         return result;
     }
 
@@ -61,8 +63,11 @@ export class AppsControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.appsService.getOne(_id);
+    async getOne(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('locale') locale: string = appSettings.mainLanguage,
+    ) {
+        const result = await this.appsService.getOne(_id, {}, locale);
         return result;
     }
 
@@ -72,10 +77,16 @@ export class AppsControllerAdmin {
     async create(
         @Body() createAppDto: CreateAppDto,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
-        const result = await this.appsService.createOne(createAppDto, user);
+        const result = await this.appsService.createOne(
+            createAppDto,
+            user,
+            {},
+            locale,
+        );
         return result;
     }
 
@@ -87,6 +98,7 @@ export class AppsControllerAdmin {
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateAppDto: UpdateAppDto,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -94,6 +106,7 @@ export class AppsControllerAdmin {
             _id,
             updateAppDto,
             user,
+            locale,
         );
 
         return result;

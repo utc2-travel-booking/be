@@ -13,6 +13,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
 import { Category } from 'aws-sdk/clients/cloudformation';
 import { CategoryType } from '../constants';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
@@ -37,10 +38,15 @@ export class CategoriesController {
         @Query(new PagingDtoPipe<Category>())
         queryParams: ExtendedPagingDto<Category>,
         @Param('type') type: CategoryType,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.categoriesService.getAll(queryParams, {
-            type,
-        });
+        const result = await this.categoriesService.getAll(
+            queryParams,
+            {
+                type,
+            },
+            locale,
+        );
         return result;
     }
 
@@ -49,8 +55,13 @@ export class CategoriesController {
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Param('type') type: CategoryType,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.categoriesService.getOne(_id, { type });
+        const result = await this.categoriesService.getOne(
+            _id,
+            { type },
+            locale,
+        );
         return result;
     }
 }
