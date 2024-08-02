@@ -1,16 +1,12 @@
 import {
     Controller,
-    Delete,
-    Get,
     Param,
-    Post,
     Query,
     Req,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiParam,
@@ -36,6 +32,11 @@ import { appSettings } from 'src/configs/appsettings';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+} from 'src/base/controllers/base.controller';
 
 @ApiTags('Admin: Media')
 @Controller('media')
@@ -55,8 +56,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet('')
     @Authorize(PERMISSIONS.FILE.index)
     async getAll(
         @Query(new PagingDtoPipe<File>())
@@ -66,8 +66,7 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.FILE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -75,8 +74,7 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: UploadMediaDto })
     @Authorize(PERMISSIONS.FILE.create)
@@ -96,9 +94,8 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @Delete()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.FILE.destroy)
-    @ApiBearerAuth()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

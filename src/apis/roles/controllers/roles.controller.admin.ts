@@ -1,15 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { Role } from 'src/apis/roles/entities/roles.entity';
 import { RolesService } from 'src/apis/roles/roles.service';
@@ -27,7 +17,12 @@ import { CreateRoleDto } from '../dto/create-role.dto';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { appSettings } from 'src/configs/appsettings';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -50,8 +45,7 @@ import { appSettings } from 'src/configs/appsettings';
 export class RolesControllerAdmin {
     constructor(private readonly rolesService: RolesService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.ROLE.index)
     async getAll(
         @Query(new PagingDtoPipe<Role>())
@@ -61,8 +55,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.ROLE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -70,8 +63,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.ROLE.create)
     async create(
         @Body() createRoleDto: CreateRoleDto,
@@ -87,8 +79,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.ROLE.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -107,8 +98,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.ROLE.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

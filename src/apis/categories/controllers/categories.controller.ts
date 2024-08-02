@@ -13,7 +13,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
 import { Category } from 'aws-sdk/clients/cloudformation';
 import { CategoryType } from '../constants';
-import { appSettings } from 'src/configs/appsettings';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
@@ -33,7 +33,7 @@ import { appSettings } from 'src/configs/appsettings';
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @Get(':type')
+    @DefaultGet(':type')
     async getAll(
         @Query(new PagingDtoPipe<Category>())
         queryParams: ExtendedPagingDto<Category>,
@@ -45,7 +45,7 @@ export class CategoriesController {
         return result;
     }
 
-    @Get(':type/:id')
+    @DefaultGet(':type/:id')
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

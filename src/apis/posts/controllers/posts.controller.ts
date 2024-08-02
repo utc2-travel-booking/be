@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import {
     ExtendedPagingDto,
@@ -7,13 +7,13 @@ import {
 import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { appSettings } from 'src/configs/appsettings';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { PostsService } from '../posts.service';
 import { PostStatus, PostType } from '../constants';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('posts')
 @ApiTags('Front: Posts')
@@ -37,7 +37,7 @@ import { PostStatus, PostType } from '../constants';
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
-    @Get(':type')
+    @DefaultGet(':type')
     async getAll(
         @Query(new PagingDtoPipe<PostEntity>())
         queryParams: ExtendedPagingDto<PostEntity>,
@@ -50,7 +50,7 @@ export class PostsController {
         return result;
     }
 
-    @Get(':type/:id')
+    @DefaultGet(':type/:id')
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

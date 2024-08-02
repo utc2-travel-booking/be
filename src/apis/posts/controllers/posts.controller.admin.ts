@@ -1,23 +1,18 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostType } from 'src/apis/posts/constants';
 import { CreatePostDto } from 'src/apis/posts/dto/create-posts.dto';
 import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
 import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { PostsService } from 'src/apis/posts/posts.service';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -52,8 +47,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 export class PostsControllerAdmin {
     constructor(private readonly postsService: PostsService) {}
 
-    @Get(':type')
-    @ApiBearerAuth()
+    @DefaultGet(':type')
     @Authorize(PERMISSIONS.POST.index)
     @ApiParam({
         name: 'locale',
@@ -71,8 +65,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @Get(':type/:id')
-    @ApiBearerAuth()
+    @DefaultGet(':type/:id')
     @Authorize(PERMISSIONS.POST.index)
     @ApiParam({ name: 'id', type: String })
     @ApiParam({
@@ -89,8 +82,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @Post(':type')
-    @ApiBearerAuth()
+    @DefaultPost(':type')
     @Authorize(PERMISSIONS.POST.create)
     @ApiParam({
         name: 'locale',
@@ -115,8 +107,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @Put(':type/:id')
-    @ApiBearerAuth()
+    @DefaultPut(':type/:id')
     @Authorize(PERMISSIONS.POST.edit)
     @ApiParam({ name: 'id', type: String })
     @ApiParam({
@@ -143,8 +134,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @Delete(':type')
-    @ApiBearerAuth()
+    @DefaultDelete(':type')
     @Authorize(PERMISSIONS.POST.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
