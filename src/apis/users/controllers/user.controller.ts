@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Put, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
@@ -8,7 +8,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
-import { appSettings } from 'src/configs/appsettings';
+import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -28,8 +28,7 @@ import { appSettings } from 'src/configs/appsettings';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Get('me')
-    @ApiBearerAuth()
+    @DefaultGet('me')
     @Authorize(PERMISSIONS_FRONT.USER.index)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -38,8 +37,7 @@ export class UserController {
         return result;
     }
 
-    @Put('me')
-    @ApiBearerAuth()
+    @DefaultPut('me')
     @Authorize(PERMISSIONS_FRONT.USER.edit)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,

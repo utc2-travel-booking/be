@@ -1,23 +1,18 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { CategoriesService } from 'src/apis/categories/categories.service';
 import { CategoryType } from 'src/apis/categories/constants';
 import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto';
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
 import { Category } from 'src/apis/categories/entities/categories.entity';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -48,8 +43,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @Get(':type')
-    @ApiBearerAuth()
+    @DefaultGet(':type')
     @Authorize(PERMISSIONS.CATEGORIES.index)
     async getAll(
         @Query(new PagingDtoPipe<Category>())
@@ -62,8 +56,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @Get(':type/:id')
-    @ApiBearerAuth()
+    @DefaultGet(':type/:id')
     @Authorize(PERMISSIONS.CATEGORIES.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(
@@ -74,8 +67,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @Post(':type')
-    @ApiBearerAuth()
+    @DefaultPost(':type')
     @Authorize(PERMISSIONS.CATEGORIES.create)
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
@@ -93,8 +85,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @Put(':type/:id')
-    @ApiBearerAuth()
+    @DefaultPut(':type/:id')
     @Authorize(PERMISSIONS.CATEGORIES.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -114,8 +105,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @Delete(':type')
-    @ApiBearerAuth()
+    @DefaultDelete(':type')
     @Authorize(PERMISSIONS.CATEGORIES.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
