@@ -58,8 +58,10 @@ export class ReviewsService extends BaseService<ReviewDocument, Review> {
         app: Types.ObjectId,
     ) {
         const review = await this.findOne({
-            'createdBy._id': createdBy,
-            'app._id': app,
+            filter: {
+                'createdBy._id': createdBy,
+                'app._id': app,
+            },
         });
 
         if (review) {

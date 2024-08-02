@@ -26,7 +26,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
     async sumTotalRating(sumRatingAppModel: SumRatingAppModel) {
         const { app, star } = sumRatingAppModel;
-        const user = await this.findOne({ _id: app });
+        const user = await this.findOne({ filter: { _id: app } });
 
         if (!user) {
             throw new UnprocessableEntityException(
@@ -54,15 +54,13 @@ export class AppsService extends BaseService<AppDocument, App> {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne(
-            {
+        const result = await this.findOne({
+            filter: {
                 _id,
                 deletedAt: null,
             },
-            null,
-            null,
             filterPipeline,
-        );
+        });
 
         if (!result) {
             throw new UnprocessableEntityException(
@@ -95,15 +93,14 @@ export class AppsService extends BaseService<AppDocument, App> {
             filterPipeline,
         );
 
-        const userAppHistories = this.userAppHistoriesService.find(
-            {
+        const userAppHistories = this.userAppHistoriesService.find({
+            filter: {
                 deletedAt: null,
                 'createdBy._id': userId,
             },
-            null,
-            { limit, skip, sort: { updatedAt: -1 } },
+            options: { limit, skip, sort: { updatedAt: -1 } },
             filterPipeline,
-        );
+        });
 
         return Promise.all([userAppHistories, total]).then(
             ([result, total]) => {

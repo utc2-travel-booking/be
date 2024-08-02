@@ -63,7 +63,7 @@ export class UserService
         const { id, firstName, lastName, username, photoUrl } =
             userLoginTelegramProviderDto;
 
-        const user = await this.findOne({ 'telegram.id': id });
+        const user = await this.findOne({ filter: { 'telegram.id': id } });
 
         if (user) {
             return user;
