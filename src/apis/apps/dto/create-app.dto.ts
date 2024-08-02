@@ -45,7 +45,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
 
     @ApiProperty({
         type: String,
-        description: 'Featured image id of the post',
+        description: 'Featured image id of the app',
         default: '60f3b3b3b3b3b3b3b3b3b3',
     })
     @IsOptional()
@@ -56,6 +56,19 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
+    @ApiProperty({
+        type: [String],
+        description: 'Preview images id of the app',
+        default: ['60f3b3b3b3b3b3b3b3b3b3'],
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value, true))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'Featured image does not exist',
+    })
+    previewImages: Types.ObjectId[];
+
     @ApiProperty()
     @IsNotEmpty()
     @MaxLength(1000)
@@ -64,7 +77,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
 
     @ApiProperty({
         type: Date,
-        description: 'Published date of the post',
+        description: 'Published date of the app',
         default: new Date(),
     })
     @IsOptional()
@@ -75,7 +88,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @ApiProperty({
         type: Date,
         default: new Date(),
-        description: 'Published end date of the post',
+        description: 'Published end date of the app',
     })
     @IsOptional()
     @IsDate()

@@ -4,14 +4,16 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import { CategoryType } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+import { Locale, LocaleType } from 'src/packages/locale';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.CATEGORIES,
 })
 export class Category extends AggregateRoot {
-    @Prop({ type: String, required: true })
-    name: string;
+    @Prop({ type: LocaleType, required: true })
+    @Locale()
+    name: LocaleType;
 
     @Prop({ type: Number, default: 0 })
     position: number;

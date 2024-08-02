@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Query, Req } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import {
@@ -13,6 +13,7 @@ import {
 import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -38,8 +39,13 @@ export class AppsController {
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.appsService.getAllForFront(queryParams);
+        const result = await this.appsService.getAllForFront(
+            queryParams,
+            {},
+            locale,
+        );
         return result;
     }
 
@@ -47,8 +53,15 @@ export class AppsController {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.appsService.getOneByIdForFront(_id);
+    async getOne(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('locale') locale: string = appSettings.mainLanguage,
+    ) {
+        const result = await this.appsService.getOneByIdForFront(
+            _id,
+            {},
+            locale,
+        );
         return result;
     }
 }
