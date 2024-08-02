@@ -24,8 +24,21 @@ export const projectionConfig = (
 // match stay first in the pipeline not working with $lookup
 export const moveFirstToLast = (pipeline: PipelineStage[]) => {
     if (pipeline.length === 0) return pipeline;
-    if (_.get(pipeline[0], '$lookup')) return pipeline;
-    const firstElement = pipeline.shift();
-    pipeline.push(firstElement);
-    return pipeline;
+
+    if (_.get(pipeline[0], '$match')) {
+        const firstElement = pipeline.shift();
+        pipeline.push(firstElement);
+    }
+
+    const _pipeline = moveAddFieldsToEnd(pipeline);
+    return _pipeline;
+};
+
+export const moveAddFieldsToEnd = (pipeline: PipelineStage[]) => {
+    if (pipeline.length === 0) return pipeline;
+
+    const addFields = pipeline.filter((stage) => _.get(stage, '$addFields'));
+    const rest = pipeline.filter((stage) => !_.get(stage, '$addFields'));
+
+    return [...rest, ...addFields];
 };
