@@ -185,14 +185,22 @@ export class BaseService<T extends Document, E> {
         options?: Record<string, any>,
         locale?: string,
     ) {
-        // const currentDate = dayjs().toDate();
-        // const result = await this.findOne({
-        //     _id,
-        //     deletedAt: null,
-        //     $or: activePublications(currentDate),
-        //     ...options,
-        // });
-        // return result;
+        const filterPipeline: PipelineStage[] = [];
+        activePublications(filterPipeline);
+
+        const result = await this.findOne(
+            {
+                _id,
+                deletedAt: null,
+                ...options,
+            },
+            null,
+            null,
+            filterPipeline,
+            locale,
+        );
+
+        return result;
     }
 
     async delete(filter: FilterQuery<T>) {

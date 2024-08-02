@@ -8,6 +8,7 @@ export enum COLLECTION_NAMES {
     CATEGORIES = 'categories',
     POST = 'posts',
     AUDIT = 'audits',
+    APP = 'apps',
 }
 
 export const PERMISSIONS = {
@@ -47,6 +48,12 @@ export const PERMISSIONS = {
     PERMISSION: {
         index: 'admin.permissions.index',
     },
+    APP: {
+        index: 'admin.apps.index',
+        create: 'admin.apps.create',
+        edit: 'admin.apps.edit',
+        destroy: 'admin.apps.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {
@@ -73,5 +80,11 @@ export const PERMISSIONS_FRONT = {
         create: 'front.files.create',
         edit: 'front.files.edit',
         destroy: 'front.files.destroy',
+    },
+    APP: {
+        index: 'front.apps.index',
+        create: 'front.apps.create',
+        edit: 'front.apps.edit',
+        destroy: 'front.apps.destroy',
     },
 };

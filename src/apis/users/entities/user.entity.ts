@@ -64,7 +64,7 @@ export class User extends AggregateRoot {
 
     @Prop({
         type: Number,
-        required: true,
+        required: false,
     })
     telegramUserId: number;
 

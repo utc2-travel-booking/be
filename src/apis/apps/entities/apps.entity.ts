@@ -1,0 +1,49 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { CategoryDocument } from 'src/apis/categories/entities/categories.entity';
+import { FileDocument } from 'src/apis/media/entities/files.entity';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { COLLECTION_NAMES } from 'src/constants';
+import { AutoPopulate } from 'src/packages/super-search';
+import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+
+@Schema({
+    timestamps: true,
+    collection: COLLECTION_NAMES.APP,
+})
+export class App extends AggregateRoot {
+    @Prop({ type: String, required: true })
+    name: string;
+
+    @Prop({ type: String, required: true })
+    url: string;
+
+    @Prop({ type: [Types.ObjectId] })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.CATEGORIES,
+        isArray: true,
+    })
+    categories: CategoryDocument[];
+
+    @Prop({ type: Types.ObjectId })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.FILE,
+    })
+    featuredImage: FileDocument;
+
+    @Prop({ type: String })
+    shortDescription: string;
+
+    @Prop({ type: Date, default: null })
+    publishedStart: Date;
+
+    @Prop({ type: Date, default: null })
+    publishedEnd: Date;
+
+    @Prop({ type: Number, default: 0 })
+    totalRating: number;
+}
+
+export type AppDocument = App & Document;
+export const AppSchema = SchemaFactory.createForClass(App);
+AppSchema.plugin(autopopulateSoftDelete);
