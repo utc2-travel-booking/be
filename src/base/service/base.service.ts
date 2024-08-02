@@ -277,7 +277,7 @@ export class BaseService<T extends Document, E> {
         }
 
         return this.model
-            .aggregate(pipeline)
+            .aggregate(moveFirstToLast(pipeline))
             .exec()
             .then((result) => result[0]);
     }

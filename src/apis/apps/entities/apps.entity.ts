@@ -40,8 +40,26 @@ export class App extends AggregateRoot {
     @Prop({ type: Date, default: null })
     publishedEnd: Date;
 
-    @Prop({ type: Number, default: 0 })
+    @Prop({
+        type: Number,
+        required: false,
+        default: 0,
+    })
     totalRating: number;
+
+    @Prop({
+        type: Number,
+        required: false,
+        default: 0,
+    })
+    totalRatingCount: number;
+
+    @Prop({
+        type: Number,
+        required: false,
+        default: 0,
+    })
+    avgRating: number;
 }
 
 export type AppDocument = App & Document;

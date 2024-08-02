@@ -21,7 +21,7 @@ export class Review extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })
-    app: AppDocument[];
+    app: AppDocument;
 }
 
 export type ReviewDocument = Review & Document;
