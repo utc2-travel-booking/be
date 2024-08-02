@@ -1,5 +1,8 @@
 import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
 import { findDocumentLocale } from '../common/find.utils';
+import { RequestContext } from 'nestjs-request-context';
+import _ from 'lodash';
+import { appSettings } from 'src/configs/appsettings';
 
 export function FindWithLocale() {
     return function (
@@ -10,8 +13,21 @@ export function FindWithLocale() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
+            const req: Request = _.get(
+                RequestContext,
+                'currentContext.req',
+                null,
+            );
+
+            if (!req) {
+                return originalMethod.apply(this, args);
+            }
+
+            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const locale = _.get(query, 'locale', appSettings.mainLanguage);
+
             const [option] = args;
-            const { filterPipeline, locale } = option as FindMongooseModel<any>;
+            const { filterPipeline } = option as FindMongooseModel<any>;
 
             const pipeline = Array.isArray(filterPipeline)
                 ? filterPipeline

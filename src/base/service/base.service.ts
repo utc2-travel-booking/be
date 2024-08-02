@@ -26,7 +26,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     async getAll(
         queryParams: ExtendedPagingDto<T>,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
@@ -47,7 +46,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
             },
             options: { limit, skip, sort: { [sortBy]: sortDirection } },
             filterPipeline,
-            locale,
         });
 
         return Promise.all([result, total]).then(([items, total]) => {
@@ -60,7 +58,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     async getOne(
         _id: Types.ObjectId,
         options?: Record<string, any>,
-        locale?: string,
     ): Promise<any> {
         const result = await this.findOne({
             filter: {
@@ -68,7 +65,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
                 ...options,
                 deletedAt: null,
             },
-            locale,
         });
 
         return result;
@@ -78,7 +74,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         payload: any,
         user: UserPayload,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { _id: userId } = user;
 
@@ -87,7 +82,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
             ...options,
             createdBy: userId,
         });
-        await this.create(result, locale);
+        await this.create(result);
 
         return result;
     }
@@ -102,18 +97,12 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         return data;
     }
 
-    async updateOneById(
-        _id: Types.ObjectId,
-        payload: any,
-        user: UserPayload,
-        locale?: string,
-    ) {
+    async updateOneById(_id: Types.ObjectId, payload: any, user: UserPayload) {
         const { _id: userId } = user;
         const result = await this.findOneAndUpdate(
             { _id },
             { ...payload, updatedBy: userId },
             { new: true },
-            locale,
         );
 
         if (!result) {
@@ -126,7 +115,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     async getAllForFront(
         queryParams: ExtendedPagingDto<T>,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
@@ -147,7 +135,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
             projection: '-longDescription',
             options: { limit, skip, sort: { [sortBy]: sortDirection } },
             filterPipeline,
-            locale,
         });
 
         return Promise.all([result, total]).then(([items, total]) => {
@@ -160,7 +147,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     async getOneByIdForFront(
         _id: Types.ObjectId,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
@@ -172,7 +158,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
                 ...options,
             },
             filterPipeline,
-            locale,
         });
 
         return result;

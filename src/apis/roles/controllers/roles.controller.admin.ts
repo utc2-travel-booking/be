@@ -56,9 +56,8 @@ export class RolesControllerAdmin {
     async getAll(
         @Query(new PagingDtoPipe<Role>())
         queryParams: ExtendedPagingDto<Role>,
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.rolesService.getAll(queryParams, {}, locale);
+        const result = await this.rolesService.getAll(queryParams, {});
         return result;
     }
 
@@ -66,11 +65,8 @@ export class RolesControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.ROLE.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('locale') locale: string = appSettings.mainLanguage,
-    ) {
-        const result = await this.rolesService.getOne(_id, {}, locale);
+    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
+        const result = await this.rolesService.getOne(_id, {});
         return result;
     }
 
@@ -80,7 +76,6 @@ export class RolesControllerAdmin {
     async create(
         @Body() createRoleDto: CreateRoleDto,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -88,7 +83,6 @@ export class RolesControllerAdmin {
             createRoleDto,
             user,
             {},
-            locale,
         );
         return result;
     }
@@ -101,7 +95,6 @@ export class RolesControllerAdmin {
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateRoleDto: UpdateRoleDto,
         @Req() req: { user: UserPayload },
-        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -109,7 +102,6 @@ export class RolesControllerAdmin {
             _id,
             updateRoleDto,
             user,
-            locale,
         );
 
         return result;

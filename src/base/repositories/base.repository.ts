@@ -114,13 +114,13 @@ export class BaseRepositories<T extends Document, E> {
 
     @CreateWithLocale()
     @DeleteCacheEmitEvent()
-    async create(doc: Partial<T>, locale?: string): Promise<T> {
+    async create(doc: Partial<T>): Promise<T> {
         return await this.model.create(doc);
     }
 
     @CreateWithLocale()
     @DeleteCacheEmitEvent()
-    async createMany(arrData: Array<Partial<T>>, locale?: string) {
+    async createMany(arrData: Array<Partial<T>>) {
         return await this.model.insertMany(arrData);
     }
 
@@ -130,7 +130,6 @@ export class BaseRepositories<T extends Document, E> {
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-        locale?: string,
     ) {
         return this.model.updateOne(
             { ...filter, deletedAt: null },
@@ -145,7 +144,6 @@ export class BaseRepositories<T extends Document, E> {
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-        locale?: string,
     ) {
         return this.model.updateMany(
             { ...filter, deletedAt: null },
@@ -160,7 +158,6 @@ export class BaseRepositories<T extends Document, E> {
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
         options?: QueryOptions<T> | null,
-        locale?: string,
     ) {
         return this.model.findOneAndUpdate(
             { ...filter, deletedAt: null },
@@ -175,7 +172,6 @@ export class BaseRepositories<T extends Document, E> {
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
         options: QueryOptions<T> = {},
-        locale?: string,
     ) {
         return this.model.findByIdAndUpdate(id, update, options);
     }

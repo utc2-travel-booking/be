@@ -1,4 +1,7 @@
+import { RequestContext } from 'nestjs-request-context';
 import { createDocumentLocale } from '../common/create.utils';
+import _ from 'lodash';
+import { appSettings } from 'src/configs/appsettings';
 
 export function CreateWithLocale() {
     return function (
@@ -9,7 +12,19 @@ export function CreateWithLocale() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
-            const [doc, locale] = args;
+            const req: Request = _.get(
+                RequestContext,
+                'currentContext.req',
+                null,
+            );
+
+            if (!req) {
+                return originalMethod.apply(this, args);
+            }
+
+            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const locale = _.get(query, 'locale', appSettings.mainLanguage);
+            const [doc] = args;
 
             await createDocumentLocale(
                 this.entity,

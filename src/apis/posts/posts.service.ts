@@ -25,7 +25,6 @@ export class PostsService extends BaseService<PostDocument, Post> {
     async createByType(
         createPostDto: CreatePostDto,
         type: PostType,
-        locale: string,
         user: UserPayload,
         options?: Record<string, any>,
     ) {
@@ -51,14 +50,13 @@ export class PostsService extends BaseService<PostDocument, Post> {
             createdBy: user._id,
         });
 
-        await this.create(result, locale);
+        await this.create(result);
         return result;
     }
 
     async updateOneByIdAndType(
         _id: Types.ObjectId,
         type: PostType,
-        locale: string,
         updatePostDto: UpdatePostDto,
         user: UserPayload,
     ) {
@@ -68,7 +66,6 @@ export class PostsService extends BaseService<PostDocument, Post> {
             { _id, type },
             { ...updatePostDto, updatedBy: userId },
             { new: true },
-            locale,
         );
 
         if (!result) {
