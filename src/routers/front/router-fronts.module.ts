@@ -12,6 +12,8 @@ import { MediaController } from 'src/apis/media/controllers/medias.controller';
 import { MetadataController } from 'src/apis/metadata/controllers/metadata.controller';
 import { PostsController } from 'src/apis/posts/controllers/posts.controller';
 import { UserController } from 'src/apis/users/controllers/user.controller';
+import { AppsController } from 'src/apis/apps/controllers/apps.controller';
+import { AppsModule } from 'src/apis/apps/apps.module';
 
 @Module({
     imports: [
@@ -22,6 +24,7 @@ import { UserController } from 'src/apis/users/controllers/user.controller';
         CategoriesModule,
         PostsModule,
         MetadataModule,
+        AppsModule,
     ],
     controllers: [
         UserController,
@@ -30,6 +33,7 @@ import { UserController } from 'src/apis/users/controllers/user.controller';
         CategoriesController,
         PostsController,
         MetadataController,
+        AppsController,
     ],
     providers: [],
 })

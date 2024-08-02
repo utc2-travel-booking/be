@@ -8,7 +8,17 @@
         "password": "$2a$10$WJCtdSLlM5HqXDm4Eu8N3uharIq9R/ykEjfRx0fGqXyeiNP8UspQO",
         "role": {
             "$oid": "667940bbf2b6c4781339f664"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "667a4598531a324b19865ea1"
         },
-        "walletAddress": "aaaaa"
+        "name": "Admin",
+        "email": "user@gmail.com",
+        "password": "$2a$10$WJCtdSLlM5HqXDm4Eu8N3uharIq9R/ykEjfRx0fGqXyeiNP8UspQO",
+        "role": {
+            "$oid": "667b7b83462a35d0fbe5d251"
+        }
     }
 ]
