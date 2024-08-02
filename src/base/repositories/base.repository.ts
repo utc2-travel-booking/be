@@ -83,7 +83,7 @@ export class BaseRepositories<T extends Document, E> {
         }
 
         return this.model
-            .aggregate(filterPipeline)
+            .aggregate(moveFirstToLast(filterPipeline))
             .exec()
             .then((result) => result[0]);
     }
