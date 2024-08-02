@@ -2,10 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { Document } from 'mongoose';
+import { COLLECTION_NAMES } from 'src/constants';
 
 @Schema({
     timestamps: true,
-    collection: `${_.camelCase(Permission.name)}s`,
+    collection: COLLECTION_NAMES.PERMISSION,
 })
 export class Permission extends AggregateRoot {
     @Prop({ type: String, required: true, unique: true })

@@ -29,8 +29,8 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
     }
 
     async findOldData(refId: Types.ObjectId, refSource: string) {
-        const result = await this.findOne(
-            {
+        const result = await this.findOne({
+            filter: {
                 $and: [
                     {
                         event: {
@@ -41,9 +41,8 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
                 refSource,
                 refId,
             },
-            null,
-            { sort: { createdAt: -1 } },
-        );
+            options: { sort: { createdAt: -1 } },
+        });
 
         return _.get(result, 'newValues', {});
     }

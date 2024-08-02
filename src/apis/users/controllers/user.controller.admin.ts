@@ -28,6 +28,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -77,10 +78,13 @@ export class UserControllerAdmin {
     @Get('me')
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.USER.index)
-    async getMe(@Req() req: { user: UserPayload }) {
+    async getMe(
+        @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
+    ) {
         const { user } = req;
 
-        const result = await this.userService.getMe(user);
+        const result = await this.userService.getMe(user, locale);
         return result;
     }
 
@@ -90,9 +94,10 @@ export class UserControllerAdmin {
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
-        return this.userService.updateMe(user, updateMeDto);
+        return this.userService.updateMe(user, updateMeDto, locale);
     }
 
     @Get()

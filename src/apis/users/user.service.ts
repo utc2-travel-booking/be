@@ -37,8 +37,12 @@ export class UserService
     }
 
     async onModuleInit() {
-        const usersBanned = await this.find({ status: UserStatus.INACTIVE });
-        const usersDeleted = await this.find({ deletedAt: { $ne: null } });
+        const usersBanned = await this.find({
+            filter: { status: UserStatus.INACTIVE },
+        });
+        const usersDeleted = await this.find({
+            filter: { deletedAt: { $ne: null } },
+        });
 
         if (usersBanned.length) {
             const ids = usersBanned.map((user) => user._id);
@@ -94,7 +98,7 @@ export class UserService
             );
         }
 
-        const user = await this.findOne({ email });
+        const user = await this.findOne({ filter: { email } });
 
         const isMatch =
             user &&
@@ -111,7 +115,11 @@ export class UserService
         );
     }
 
-    async updateMe(user: UserPayload, updateMeDto: UpdateMeDto) {
+    async updateMe(
+        user: UserPayload,
+        updateMeDto: UpdateMeDto,
+        locale: string,
+    ) {
         await this.updateOne(
             { _id: user._id },
             {
@@ -119,17 +127,21 @@ export class UserService
             },
         );
 
-        const result = await this.getMe(user);
+        const result = await this.getMe(user, locale);
         return result;
     }
 
-    async getMe(user: UserPayload) {
-        return await this.findOne({ _id: user._id }, '-password');
+    async getMe(user: UserPayload, locale: string) {
+        return await this.findOne({
+            filter: { _id: user._id },
+            projection: '-password',
+            locale,
+        });
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
         const { _id: userId } = user;
-        const data = await this.find({ _id: { $in: _ids } });
+        const data = await this.find({ filter: { _id: { $in: _ids } } });
         await this.updateMany(
             { _id: { $in: _ids } },
             { deletedAt: new Date(), deletedBy: userId },

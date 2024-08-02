@@ -1,45 +1,26 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import {
-    Document,
-    FilterQuery,
-    Model,
-    PipelineStage,
-    ProjectionType,
-    QueryOptions,
-    Types,
-    UpdateQuery,
-    UpdateWithAggregationPipeline,
-} from 'mongoose';
+import { Document, FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import {
-    DynamicLookup,
-    moveFirstToLast,
-    pagination,
-    projectionConfig,
-} from 'src/packages/super-search';
+import { pagination } from 'src/packages/super-search';
 import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
 import _ from 'lodash';
-import {
-    CreateWithLocale,
-    FindWithLocale,
-    UpdateWithLocale,
-} from 'src/packages/locale';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
+import { BaseRepositories } from '../repositories/base.repository';
 
 @Injectable()
-export class BaseService<T extends Document, E> {
+export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     constructor(
-        private readonly model: Model<T>,
-        private readonly entity: new () => E,
-        private readonly collectionName: COLLECTION_NAMES,
-        public eventEmitter: EventEmitter2,
+        model: Model<T>,
+        entity: new () => E,
+        collectionName: COLLECTION_NAMES,
+        eventEmitter: EventEmitter2,
     ) {
         if (!collectionName) {
             throw new Error('Collection name must be provided');
         }
+        super(model, entity, collectionName, eventEmitter);
     }
 
     async getAll(
@@ -59,16 +40,15 @@ export class BaseService<T extends Document, E> {
             filterPipeline,
         );
 
-        const result = this.find(
-            {
+        const result = this.find({
+            filter: {
                 ...options,
                 deletedAt: null,
             },
-            null,
-            { limit, skip, sort: { [sortBy]: sortDirection } },
+            options: { limit, skip, sort: { [sortBy]: sortDirection } },
             filterPipeline,
             locale,
-        );
+        });
 
         return Promise.all([result, total]).then(([items, total]) => {
             const totalCount = _.get(total, '[0].totalCount', 0);
@@ -82,17 +62,14 @@ export class BaseService<T extends Document, E> {
         options?: Record<string, any>,
         locale?: string,
     ): Promise<any> {
-        const result = await this.findOne(
-            {
+        const result = await this.findOne({
+            filter: {
                 _id,
                 ...options,
                 deletedAt: null,
             },
-            null,
-            null,
-            [],
             locale,
-        );
+        });
 
         return result;
     }
@@ -165,13 +142,13 @@ export class BaseService<T extends Document, E> {
             filterPipeline,
         );
 
-        const result = this.find(
-            { deletedAt: null, ...options },
-            '-longDescription',
-            { limit, skip, sort: { [sortBy]: sortDirection } },
+        const result = this.find({
+            filter: { deletedAt: null, ...options },
+            projection: '-longDescription',
+            options: { limit, skip, sort: { [sortBy]: sortDirection } },
             filterPipeline,
             locale,
-        );
+        });
 
         return Promise.all([result, total]).then(([items, total]) => {
             const totalCount = _.get(total, '[0].totalCount', 0);
@@ -188,17 +165,15 @@ export class BaseService<T extends Document, E> {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne(
-            {
+        const result = await this.findOne({
+            filter: {
                 _id,
                 deletedAt: null,
                 ...options,
             },
-            null,
-            null,
             filterPipeline,
             locale,
-        );
+        });
 
         return result;
     }
@@ -213,201 +188,5 @@ export class BaseService<T extends Document, E> {
         return this.model.updateMany(filter, {
             deletedAt: null,
         });
-    }
-
-    @FindWithLocale()
-    @DynamicLookup()
-    find(
-        filter: FilterQuery<T>,
-        projection?: ProjectionType<T> | null | undefined,
-        options?: QueryOptions<T> | null | undefined,
-        filterPipeline: PipelineStage[] = [],
-        locale?: string,
-    ): Promise<T[]> {
-        const { limit, skip, sort } = options || {};
-
-        if (!filter?.deletedAt) {
-            filterPipeline.push({ $match: { deletedAt: null, ...filter } });
-        } else {
-            filterPipeline.push({ $match: filter });
-        }
-
-        if (sort) {
-            filterPipeline.push({ $sort: sort });
-        }
-
-        if (limit) {
-            filterPipeline.push({ $limit: limit });
-        }
-
-        if (skip) {
-            filterPipeline.push({ $skip: skip });
-        }
-
-        if (projection) {
-            projectionConfig(filterPipeline, projection);
-        }
-
-        console.log(filterPipeline[0]);
-
-        return this.model.aggregate(moveFirstToLast(filterPipeline)).exec();
-    }
-
-    @FindWithLocale()
-    @DynamicLookup()
-    findOne(
-        filter: FilterQuery<T>,
-        projection?: ProjectionType<T> | null,
-        options?: QueryOptions<T> | null,
-        pipeline: PipelineStage[] = [],
-        locale?: string,
-    ): Promise<T | null> {
-        const { sort } = options || {};
-
-        if (!filter?.deletedAt) {
-            pipeline.push({ $match: { deletedAt: null, ...filter } });
-        } else {
-            pipeline.push({ $match: filter });
-        }
-
-        if (projection) {
-            projectionConfig(pipeline, projection);
-        }
-
-        if (sort) {
-            pipeline.push({ $sort: sort });
-        }
-
-        return this.model
-            .aggregate(moveFirstToLast(pipeline))
-            .exec()
-            .then((result) => result[0]);
-    }
-
-    @FindWithLocale()
-    @DynamicLookup()
-    findById(
-        id: any,
-        projection?: ProjectionType<T> | null,
-        options?: QueryOptions<T> | null,
-        pipeline: PipelineStage[] = [],
-        locale?: string,
-    ) {
-        pipeline.push({
-            $match: { _id: new Types.ObjectId(id.toString()), deletedAt: null },
-        });
-
-        if (projection) {
-            projectionConfig(pipeline, projection);
-        }
-
-        return this.model
-            .aggregate(pipeline)
-            .exec()
-            .then((result) => result[0]);
-    }
-
-    @CreateWithLocale()
-    @DeleteCacheEmitEvent()
-    async create(doc: Partial<T>, locale?: string): Promise<T> {
-        return await this.model.create(doc);
-    }
-
-    @CreateWithLocale()
-    @DeleteCacheEmitEvent()
-    async createMany(arrData: Partial<Array<T>>, locale?: string) {
-        return await this.model.insertMany(arrData);
-    }
-
-    @UpdateWithLocale()
-    @DeleteCacheEmitEvent()
-    updateOne(
-        filter: FilterQuery<T>,
-        update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
-        options?: QueryOptions<T> | null,
-        locale?: string,
-    ) {
-        return this.model.updateOne(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
-    }
-
-    @UpdateWithLocale()
-    @DeleteCacheEmitEvent()
-    updateMany(
-        filter: FilterQuery<T>,
-        update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
-        options?: QueryOptions<T> | null,
-        locale?: string,
-    ) {
-        return this.model.updateMany(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
-    }
-
-    @UpdateWithLocale()
-    @DeleteCacheEmitEvent()
-    findOneAndUpdate(
-        filter?: FilterQuery<T>,
-        update?: UpdateQuery<T>,
-        options?: QueryOptions<T> | null,
-        locale?: string,
-    ) {
-        return this.model.findOneAndUpdate(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
-    }
-
-    @UpdateWithLocale()
-    @DeleteCacheEmitEvent()
-    findByIdAndUpdate(
-        id: Types.ObjectId | any,
-        update: UpdateQuery<T>,
-        options: QueryOptions<T> = {},
-        locale?: string,
-    ) {
-        return this.model.findByIdAndUpdate(id, update, options);
-    }
-
-    countDocuments(
-        filter: FilterQuery<T>,
-        options?: QueryOptions<T>,
-        filterPipeline?: PipelineStage[],
-    ) {
-        const pipeline: PipelineStage[] = [
-            { $match: { ...filter, deletedAt: null } },
-        ];
-
-        if (filterPipeline && filterPipeline.length) {
-            pipeline.push(...filterPipeline);
-        }
-
-        pipeline.push({ $count: 'totalCount' });
-
-        return this.model.aggregate(pipeline).exec();
-    }
-
-    @DeleteCacheEmitEvent()
-    deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
-        return this.model.deleteOne(filter, options);
-    }
-
-    @DeleteCacheEmitEvent()
-    deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
-        return this.model.deleteMany(filter, options);
-    }
-
-    @DeleteCacheEmitEvent()
-    findByIdAndDelete(
-        id?: Types.ObjectId | any,
-        options?: QueryOptions<T> | null,
-    ) {
-        return this.model.findByIdAndDelete(id, options);
     }
 }

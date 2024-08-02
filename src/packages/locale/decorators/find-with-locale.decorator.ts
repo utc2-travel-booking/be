@@ -1,3 +1,4 @@
+import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
 import { findDocumentLocale } from '../common/find.utils';
 
 export function FindWithLocale() {
@@ -9,7 +10,8 @@ export function FindWithLocale() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
-            const [filter, projection, options, filterPipeline, locale] = args;
+            const [option] = args;
+            const { filterPipeline, locale } = option as FindMongooseModel<any>;
 
             const pipeline = Array.isArray(filterPipeline)
                 ? filterPipeline
@@ -17,7 +19,12 @@ export function FindWithLocale() {
 
             findDocumentLocale(this.entity, pipeline, locale);
 
-            const updatedArgs = [filter, projection, options, pipeline, locale];
+            const updatedArgs = [
+                {
+                    ...option,
+                    filterPipeline: pipeline,
+                },
+            ];
             return originalMethod.apply(this, updatedArgs);
         };
 
