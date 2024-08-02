@@ -1,15 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -24,14 +14,19 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
 import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
 import { Advertiser } from '../entities/advertisers.entity';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 
 @Controller('advertisers')
 @ApiTags('Admin: Advertisers')
 export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.ADVERTISER.index)
     async getAll(
         @Query(new PagingDtoPipe<Advertiser>())
@@ -41,8 +36,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.ADVERTISER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -50,8 +44,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.ADVERTISER.create)
     async create(
         @Body() createAdvertiserDto: CreateAdvertiserDto,
@@ -66,8 +59,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.ADVERTISER.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -86,8 +78,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.ADVERTISER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

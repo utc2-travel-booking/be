@@ -1,15 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -23,11 +13,15 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAppDto } from 'src/apis/apps/dto/create-app.dto';
 import { UpdateAppDto } from 'src/apis/apps/dto/update-app.dto';
 import { App } from 'src/apis/apps/entities/apps.entity';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import { appSettings } from 'src/configs/appsettings';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -47,8 +41,7 @@ import { appSettings } from 'src/configs/appsettings';
 export class AppsControllerAdmin {
     constructor(private readonly appsService: AppsService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.APP.index)
     async getAll(
         @Query(new PagingDtoPipe<App>())
@@ -58,8 +51,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.APP.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -67,8 +59,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.APP.create)
     async create(
         @Body() createAppDto: CreateAppDto,
@@ -80,8 +71,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.APP.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -100,8 +90,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.APP.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

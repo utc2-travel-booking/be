@@ -1,5 +1,5 @@
-import { Body, Controller, Post, Req, Get, Query, Param } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Req, Query, Param } from '@nestjs/common';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from '../reviews.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
@@ -12,10 +12,9 @@ import {
 import { Review } from '../entities/reviews.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { appSettings } from 'src/configs/appsettings';
+import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 
 @Controller('reviews')
 @ApiTags('Front: Reviews')
@@ -35,7 +34,7 @@ import { appSettings } from 'src/configs/appsettings';
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
 
-    @Get(':appId')
+    @DefaultGet(':appId')
     @ApiParam({ name: 'appId', type: String })
     async getAll(
         @Query(new PagingDtoPipe<Review>())
@@ -48,8 +47,7 @@ export class ReviewsController {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS_FRONT.REVIEW.create)
     async create(
         @Body() createReviewDto: CreateReviewDto,

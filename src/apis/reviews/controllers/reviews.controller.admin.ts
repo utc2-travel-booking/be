@@ -1,5 +1,5 @@
-import { Controller, Delete, Get, Param, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from '../reviews.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -15,6 +15,10 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import {
+    DefaultDelete,
+    DefaultGet,
+} from 'src/base/controllers/base.controller';
 
 @Controller('reviews')
 @ApiTags('Admin: Reviews')
@@ -34,9 +38,8 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 export class ReviewsControllerAdmin {
     constructor(private readonly reviewsService: ReviewsService) {}
 
-    @Get()
+    @DefaultGet()
     @Authorize(PERMISSIONS.REVIEW.index)
-    @ApiBearerAuth()
     async getAll(
         @Query(new PagingDtoPipe<Review>())
         queryParams: ExtendedPagingDto<Review>,
@@ -45,8 +48,7 @@ export class ReviewsControllerAdmin {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.REVIEW.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -54,8 +56,7 @@ export class ReviewsControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.REVIEW.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

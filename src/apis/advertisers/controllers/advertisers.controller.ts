@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Advertiser } from '../entities/advertisers.entity';
@@ -6,13 +6,14 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('advertisers')
 @ApiTags('Front: Advertisers')
 export class AdvertisersController {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @Get()
+    @DefaultGet()
     async getAll(
         @Query(new PagingDtoPipe<Advertiser>())
         queryParams: ExtendedPagingDto<Advertiser>,

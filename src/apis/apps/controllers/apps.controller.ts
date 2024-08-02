@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Query, Req } from '@nestjs/common';
+import { Controller, Param, Query, Req } from '@nestjs/common';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import {
@@ -13,8 +13,8 @@ import {
 import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { appSettings } from 'src/configs/appsettings';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -34,8 +34,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
-    @Get('user-history')
-    @ApiBearerAuth()
+    @DefaultGet('user-history')
     @Authorize(PERMISSIONS_FRONT.APP.index)
     async getUserAppHistories(
         @Query(new PagingDtoPipe<App>())
@@ -50,8 +49,7 @@ export class AppsController {
         return result;
     }
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS_FRONT.APP.index)
     async getAll(
         @Query(new PagingDtoPipe<App>())
@@ -61,8 +59,7 @@ export class AppsController {
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
     async getAppPublish(

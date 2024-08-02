@@ -7,6 +7,7 @@ import { AuthService } from '../auth.service';
 import { LoginTelegramGuard } from 'src/guards/login-telegram.guard';
 import { UserLoginTelegramProviderDto } from '../dto/user-login-telegram-provider.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { DefaultPost } from 'src/base/controllers/base.controller';
 
 @Controller()
 @ApiTags('Front: Auth')
@@ -22,7 +23,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @Post('login-telegram-provider')
+    @DefaultPost('login-telegram-provider')
     @UseGuards(LoginTelegramGuard)
     async loginTelegramProvider(
         @Body() userLoginTelegramProviderDto: UserLoginTelegramProviderDto,
