@@ -14,6 +14,8 @@ import { PostsController } from 'src/apis/posts/controllers/posts.controller';
 import { UserController } from 'src/apis/users/controllers/user.controller';
 import { AppsController } from 'src/apis/apps/controllers/apps.controller';
 import { AppsModule } from 'src/apis/apps/apps.module';
+import { ReviewsController } from 'src/apis/reviews/controllers/reviews.controller';
+import { ReviewsModule } from 'src/apis/reviews/reviews.module';
 
 @Module({
     imports: [
@@ -25,6 +27,7 @@ import { AppsModule } from 'src/apis/apps/apps.module';
         PostsModule,
         MetadataModule,
         AppsModule,
+        ReviewsModule,
     ],
     controllers: [
         UserController,
@@ -34,6 +37,7 @@ import { AppsModule } from 'src/apis/apps/apps.module';
         PostsController,
         MetadataController,
         AppsController,
+        ReviewsController,
     ],
     providers: [],
 })
