@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import _ from 'lodash';
 import { PipelineStage } from 'mongoose';
 
 export const activePublications = (filterPipeline: PipelineStage[]) => {
@@ -43,9 +44,12 @@ export const activePublications = (filterPipeline: PipelineStage[]) => {
         },
     ];
 
-    if (filterPipeline[0]['$match']['$or']) {
-        filterPipeline[0]['$match']['$or'].push(...pipelines);
-    } else {
-        filterPipeline[0]['$match']['$or'] = pipelines;
+    const orPipelines = _.get(filterPipeline, '[0].$match.$or', []);
+
+    if (!orPipelines) {
+        _.set(filterPipeline, '[0].$match.$or', [...pipelines]);
+        return;
     }
+
+    orPipelines.push(...pipelines);
 };

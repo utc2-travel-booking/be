@@ -17,6 +17,7 @@ import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
 import { Category } from 'src/apis/categories/entities/categories.entity';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { appSettings } from 'src/configs/appsettings';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -54,10 +55,15 @@ export class CategoriesControllerAdmin {
         @Query(new PagingDtoPipe<Category>())
         queryParams: ExtendedPagingDto<Category>,
         @Param('type') type: CategoryType,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.categoriesService.getAll(queryParams, {
-            type,
-        });
+        const result = await this.categoriesService.getAll(
+            queryParams,
+            {
+                type,
+            },
+            locale,
+        );
         return result;
     }
 
@@ -68,8 +74,13 @@ export class CategoriesControllerAdmin {
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Param('type') type: CategoryType,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.categoriesService.getOne(_id, { type });
+        const result = await this.categoriesService.getOne(
+            _id,
+            { type },
+            locale,
+        );
         return result;
     }
 
@@ -80,6 +91,7 @@ export class CategoriesControllerAdmin {
         @Body() createCategoryDto: CreateCategoryDto,
         @Req() req: { user: UserPayload },
         @Param('type') type: CategoryType,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -87,6 +99,7 @@ export class CategoriesControllerAdmin {
             createCategoryDto,
             user,
             { type },
+            locale,
         );
 
         return result;
@@ -101,6 +114,7 @@ export class CategoriesControllerAdmin {
         @Body() updateCategoryDto: UpdateCategoryDto,
         @Param('type') type: CategoryType,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -109,6 +123,7 @@ export class CategoriesControllerAdmin {
             type,
             updateCategoryDto,
             user,
+            locale,
         );
         return result;
     }

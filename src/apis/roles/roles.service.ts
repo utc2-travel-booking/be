@@ -29,17 +29,14 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         options?: Record<string, any>,
         locale?: string,
     ) {
-        const result = await this.findOne(
-            {
+        const result = await this.findOne({
+            filter: {
                 _id,
                 ...options,
                 deletedAt: null,
             },
-            null,
-            null,
-            [],
             locale,
-        );
+        });
 
         const { permissions } = result;
 

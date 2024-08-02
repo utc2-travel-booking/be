@@ -27,6 +27,7 @@ import { CreateRoleDto } from '../dto/create-role.dto';
 import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { appSettings } from 'src/configs/appsettings';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -55,8 +56,9 @@ export class RolesControllerAdmin {
     async getAll(
         @Query(new PagingDtoPipe<Role>())
         queryParams: ExtendedPagingDto<Role>,
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
-        const result = await this.rolesService.getAll(queryParams);
+        const result = await this.rolesService.getAll(queryParams, {}, locale);
         return result;
     }
 
@@ -64,8 +66,11 @@ export class RolesControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.ROLE.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.rolesService.getOne(_id);
+    async getOne(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('locale') locale: string = appSettings.mainLanguage,
+    ) {
+        const result = await this.rolesService.getOne(_id, {}, locale);
         return result;
     }
 
@@ -75,10 +80,16 @@ export class RolesControllerAdmin {
     async create(
         @Body() createRoleDto: CreateRoleDto,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
-        const result = await this.rolesService.createOne(createRoleDto, user);
+        const result = await this.rolesService.createOne(
+            createRoleDto,
+            user,
+            {},
+            locale,
+        );
         return result;
     }
 
@@ -90,6 +101,7 @@ export class RolesControllerAdmin {
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateRoleDto: UpdateRoleDto,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
 
@@ -97,6 +109,7 @@ export class RolesControllerAdmin {
             _id,
             updateRoleDto,
             user,
+            locale,
         );
 
         return result;

@@ -50,13 +50,15 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         type: string,
         updateCategoryDto: UpdateCategoryDto,
         user: UserPayload,
+        locale: string,
     ) {
         const { _id: userId } = user;
 
-        const result = await this.categoryModel.findOneAndUpdate(
+        const result = await this.findOneAndUpdate(
             { _id, type },
             { ...updateCategoryDto, updatedBy: userId },
             { new: true },
+            locale,
         );
 
         if (!result) {

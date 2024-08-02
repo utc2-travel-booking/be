@@ -27,7 +27,7 @@ export class PermissionsService extends BaseService<
     }
 
     async getAllPermissions(rolePermission: PermissionDocument[]) {
-        const permissions = await this.find({});
+        const permissions = await this.find({ filter: {} });
         const groupPermissions: {
             name: string;
             admin: { [key: string]: boolean };
@@ -68,7 +68,7 @@ export class PermissionsService extends BaseService<
     }
 
     async getPermissionIdFromPayload(permissionDto: PermissionDto[]) {
-        const permissions = await this.find({});
+        const permissions = await this.find({ filter: {} });
 
         const permissionIds: Types.ObjectId[] = [];
         permissionDto.forEach((payload: PermissionDto) => {

@@ -1,10 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PostsController } from 'src/apis/posts/controllers/posts.controller';
-import { PostsModule } from 'src/apis/posts/posts.module';
+import { RouterAdminsModule } from './router-admins.module';
 
-@Module({
-    imports: [PostsModule],
-    controllers: [PostsController],
-    providers: [],
-})
-export class RoutesAdminLocaleModule {}
+@Module({})
+export class RoutesAdminLocaleModule extends RouterAdminsModule {}

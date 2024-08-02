@@ -1,5 +1,6 @@
 import {
     Controller,
+    Param,
     Post,
     Req,
     UploadedFile,
@@ -60,9 +61,10 @@ export class MediaController {
     async create(
         @UploadedFile() file: IUploadedMulterFile,
         @Req() req: { user: UserPayload },
+        @Param('locale') locale: string = appSettings.mainLanguage,
     ) {
         const { user } = req;
-        const result = await this.mediaService.createFile(file, user);
+        const result = await this.mediaService.createFile(file, user, locale);
         return result;
     }
 }
