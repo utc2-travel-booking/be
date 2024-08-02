@@ -42,7 +42,7 @@ export class BaseRepositories<T extends Document, E> {
         const { limit, skip, sort } = options || {};
 
         if (filter) {
-            filterPipeline.push({ $match: { filter } });
+            filterPipeline.push({ $match: { ...filter } });
         }
 
         if (sort) {
@@ -71,7 +71,7 @@ export class BaseRepositories<T extends Document, E> {
         const { sort } = options || {};
 
         if (filter) {
-            filterPipeline.push({ $match: filter });
+            filterPipeline.push({ $match: { ...filter } });
         }
 
         if (projection) {
