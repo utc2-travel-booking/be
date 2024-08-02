@@ -9,6 +9,7 @@ export enum COLLECTION_NAMES {
     POST = 'posts',
     AUDIT = 'audits',
     APP = 'apps',
+    REVIEW = 'reviews',
 }
 
 export const PERMISSIONS = {
@@ -54,6 +55,12 @@ export const PERMISSIONS = {
         edit: 'admin.apps.edit',
         destroy: 'admin.apps.destroy',
     },
+    REVIEW: {
+        index: 'admin.reviews.index',
+        create: 'admin.reviews.create',
+        edit: 'admin.reviews.edit',
+        destroy: 'admin.reviews.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {
@@ -86,5 +93,11 @@ export const PERMISSIONS_FRONT = {
         create: 'front.apps.create',
         edit: 'front.apps.edit',
         destroy: 'front.apps.destroy',
+    },
+    REVIEW: {
+        index: 'front.reviews.index',
+        create: 'front.reviews.create',
+        edit: 'front.reviews.edit',
+        destroy: 'front.reviews.destroy',
     },
 };

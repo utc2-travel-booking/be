@@ -19,6 +19,8 @@ import { CommonModule } from 'src/common/common.module';
 import { AuditsModule } from 'src/packages/audits/audits.module';
 import { AppsControllerAdmin } from 'src/apis/apps/controllers/apps.controller.admin';
 import { AppsModule } from 'src/apis/apps/apps.module';
+import { ReviewsControllerAdmin } from 'src/apis/reviews/controllers/reviews.controller.admin';
+import { ReviewsModule } from 'src/apis/reviews/reviews.module';
 
 @Module({
     imports: [
@@ -34,6 +36,7 @@ import { AppsModule } from 'src/apis/apps/apps.module';
         MetadataModule,
         AuditsModule,
         AppsModule,
+        ReviewsModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -44,6 +47,7 @@ import { AppsModule } from 'src/apis/apps/apps.module';
         MetadataControllerAdmin,
         UserControllerAdmin,
         AppsControllerAdmin,
+        ReviewsControllerAdmin,
     ],
     providers: [],
 })
