@@ -17,7 +17,6 @@ import { RolesModule } from 'src/apis/roles/roles.module';
 import { UserModule } from 'src/apis/users/user.module';
 import { CommonModule } from 'src/common/common.module';
 import { AuditsModule } from 'src/packages/audits/audits.module';
-import { AuditsController } from 'src/packages/audits/controllers/admin/audits.controller';
 
 @Module({
     imports: [
@@ -41,7 +40,6 @@ import { AuditsController } from 'src/packages/audits/controllers/admin/audits.c
         PostsControllerAdmin,
         MetadataControllerAdmin,
         UserControllerAdmin,
-        AuditsController,
     ],
     providers: [],
 })
