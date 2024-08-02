@@ -16,6 +16,8 @@ import { AppsController } from 'src/apis/apps/controllers/apps.controller';
 import { AppsModule } from 'src/apis/apps/apps.module';
 import { ReviewsController } from 'src/apis/reviews/controllers/reviews.controller';
 import { ReviewsModule } from 'src/apis/reviews/reviews.module';
+import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
+import { AdvertisersController } from 'src/apis/advertisers/controllers/advertisers.controller';
 
 @Module({
     imports: [
@@ -28,6 +30,7 @@ import { ReviewsModule } from 'src/apis/reviews/reviews.module';
         MetadataModule,
         AppsModule,
         ReviewsModule,
+        AdvertisersModule,
     ],
     controllers: [
         UserController,
@@ -38,6 +41,7 @@ import { ReviewsModule } from 'src/apis/reviews/reviews.module';
         MetadataController,
         AppsController,
         ReviewsController,
+        AdvertisersController,
     ],
     providers: [],
 })

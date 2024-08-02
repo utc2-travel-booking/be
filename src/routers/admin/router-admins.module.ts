@@ -21,6 +21,8 @@ import { AppsControllerAdmin } from 'src/apis/apps/controllers/apps.controller.a
 import { AppsModule } from 'src/apis/apps/apps.module';
 import { ReviewsControllerAdmin } from 'src/apis/reviews/controllers/reviews.controller.admin';
 import { ReviewsModule } from 'src/apis/reviews/reviews.module';
+import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
+import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
 
 @Module({
     imports: [
@@ -37,6 +39,7 @@ import { ReviewsModule } from 'src/apis/reviews/reviews.module';
         AuditsModule,
         AppsModule,
         ReviewsModule,
+        AdvertisersModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -48,6 +51,7 @@ import { ReviewsModule } from 'src/apis/reviews/reviews.module';
         UserControllerAdmin,
         AppsControllerAdmin,
         ReviewsControllerAdmin,
+        AdvertisersControllerAdmin,
     ],
     providers: [],
 })

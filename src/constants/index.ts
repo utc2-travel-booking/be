@@ -10,6 +10,7 @@ export enum COLLECTION_NAMES {
     AUDIT = 'audits',
     APP = 'apps',
     REVIEW = 'reviews',
+    ADVERTISER = 'advertisers',
 }
 
 export const PERMISSIONS = {
@@ -60,6 +61,12 @@ export const PERMISSIONS = {
         create: 'admin.reviews.create',
         edit: 'admin.reviews.edit',
         destroy: 'admin.reviews.destroy',
+    },
+    ADVERTISER: {
+        index: 'admin.advertisers.index',
+        create: 'admin.advertisers.create',
+        edit: 'admin.advertisers.edit',
+        destroy: 'admin.advertisers.destroy',
     },
 };
 
