@@ -1,5 +1,5 @@
 import { Controller, Param, Query, Req } from '@nestjs/common';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
+
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -26,10 +26,6 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
         AUDIT_EVENT.DELETE,
     ],
     refSource: COLLECTION_NAMES.APP,
-})
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.APP,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
 })
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}

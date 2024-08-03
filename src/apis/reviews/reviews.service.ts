@@ -10,15 +10,17 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import _ from 'lodash';
 import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
 import { APP_EVENT_HANDLER } from '../apps/constants';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class ReviewsService extends BaseService<ReviewDocument, Review> {
     constructor(
         @InjectModel(COLLECTION_NAMES.REVIEW)
         private readonly reviewModel: Model<ReviewDocument>,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
+        private readonly eventEmitter: EventEmitter2,
     ) {
-        super(reviewModel, Review, COLLECTION_NAMES.REVIEW, eventEmitter);
+        super(reviewModel, Review, COLLECTION_NAMES.REVIEW, moduleRef);
     }
 
     async createOne(

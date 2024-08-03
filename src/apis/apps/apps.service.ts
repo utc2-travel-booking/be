@@ -4,7 +4,6 @@ import { App, AppDocument } from './entities/apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, PipelineStage, Types } from 'mongoose';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SumRatingAppModel } from './models/sum-rating-app.model';
 import { activePublications } from 'src/base/aggregates/active-publications.aggregates';
 import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
@@ -12,16 +11,17 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import _ from 'lodash';
 import { pagination } from 'src/packages/super-search';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
     constructor(
         @InjectModel(COLLECTION_NAMES.APP)
         private readonly appModel: Model<AppDocument>,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
         private readonly userAppHistoriesService: UserAppHistoriesService,
     ) {
-        super(appModel, App, COLLECTION_NAMES.APP, eventEmitter);
+        super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
 
     async sumTotalRating(sumRatingAppModel: SumRatingAppModel) {

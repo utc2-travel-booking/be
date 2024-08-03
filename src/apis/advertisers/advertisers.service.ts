@@ -4,7 +4,7 @@ import { Advertiser, AdvertiserDocument } from './entities/advertisers.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model } from 'mongoose';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class AdvertisersService extends BaseService<
@@ -14,13 +14,13 @@ export class AdvertisersService extends BaseService<
     constructor(
         @InjectModel(COLLECTION_NAMES.ADVERTISER)
         private readonly advertiserDocument: Model<AdvertiserDocument>,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
         super(
             advertiserDocument,
             Advertiser,
             COLLECTION_NAMES.ADVERTISER,
-            eventEmitter,
+            moduleRef,
         );
     }
 }
