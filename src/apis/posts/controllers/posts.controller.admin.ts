@@ -17,7 +17,6 @@ import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -27,14 +26,6 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
 @Controller('posts')
 @ApiTags('Admin: Posts')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.POST,
-    relationCollectionNames: [
-        COLLECTION_NAMES.USER,
-        COLLECTION_NAMES.FILE,
-        COLLECTION_NAMES.CATEGORIES,
-    ],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

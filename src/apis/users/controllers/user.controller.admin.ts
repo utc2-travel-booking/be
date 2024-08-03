@@ -12,13 +12,11 @@ import {
     ExtendedPagingDto,
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { appSettings } from 'src/configs/appsettings';
 import {
     DefaultDelete,
     DefaultGet,
@@ -28,10 +26,6 @@ import {
 
 @Controller('users')
 @ApiTags('Admin: User')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.USER,
-    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

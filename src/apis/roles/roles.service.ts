@@ -6,12 +6,12 @@ import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import _ from 'lodash';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './constants';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
@@ -19,10 +19,10 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
         private readonly superCacheService: SuperCacheService,
-        eventEmitter: EventEmitter2,
         private readonly permissionsService: PermissionsService,
+        moduleRef: ModuleRef,
     ) {
-        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
+        super(roleModel, Role, COLLECTION_NAMES.ROLE, moduleRef);
     }
 
     async getRoleByType(type: RoleType) {

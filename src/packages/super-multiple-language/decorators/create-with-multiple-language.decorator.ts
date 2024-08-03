@@ -1,7 +1,7 @@
-import { RequestContext } from 'nestjs-request-context';
 import { createDocumentMultipleLanguage } from '../common/create.utils';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
+import { RequestContext } from 'src/packages/super-request-context';
 
 export function CreateWithMultipleLanguage() {
     return function (
@@ -22,7 +22,7 @@ export function CreateWithMultipleLanguage() {
                 return originalMethod.apply(this, args);
             }
 
-            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const query = _.get(req, 'query', {});
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
             const [doc] = args;
 

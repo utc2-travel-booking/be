@@ -1,24 +1,28 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { REDIS_FOLDER_NAME } from './constants';
 import { CollectionModel } from './models/collections.model';
 import { CollectionKey } from './models/collection-keys.model';
 
 @Injectable()
-export class SuperCacheService {
+export class SuperCacheService implements OnModuleInit {
     private readonly logger = new Logger(SuperCacheService.name);
     constructor(
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
     ) {}
 
+    async onModuleInit() {
+        await this.resetCache();
+    }
+
     async get<T>(key: string) {
         try {
             const data = await this.cacheManager.get<T>(key);
             return data;
         } catch (error) {
-            console.log('error get', error);
+            this.logger.error('error get', error);
         }
     }
 
@@ -27,7 +31,7 @@ export class SuperCacheService {
             await this.cacheManager
                 .set(key, data, ttl * 24 * 60 * 60 * 6000)
                 .catch((e) => {
-                    console.log(e);
+                    this.logger.error(e);
                 });
         } catch (error) {
             this.logger.error('error set', error);
@@ -101,8 +105,6 @@ export class SuperCacheService {
                 }),
             );
 
-            console.log(data);
-
             for (const { mainCollectionName, keys } of data) {
                 await this.deleteDataForCollections(mainCollectionName, keys);
                 await this.deleteForDataCollectionKey(mainCollectionName);
@@ -133,6 +135,10 @@ export class SuperCacheService {
         } catch (error) {
             this.logger.error('error getDataForCollection', error);
         }
+    }
+
+    async resetCache() {
+        await this.cacheManager.reset();
     }
 
     private async deleteDataForCollections(

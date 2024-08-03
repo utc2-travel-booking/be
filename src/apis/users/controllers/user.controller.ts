@@ -3,7 +3,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
@@ -12,10 +11,6 @@ import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
 
 @Controller('users')
 @ApiTags('Front: User')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.USER,
-    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

@@ -69,6 +69,9 @@ export const PERMISSIONS = {
         edit: 'admin.advertisers.edit',
         destroy: 'admin.advertisers.destroy',
     },
+    REDIS: {
+        index: 'admin.redis.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {

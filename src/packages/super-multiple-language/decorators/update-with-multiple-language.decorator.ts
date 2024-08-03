@@ -1,7 +1,7 @@
-import { RequestContext } from 'nestjs-request-context';
 import { updateDocumentMultipleLanguage } from '../common/update.utils';
 import { appSettings } from 'src/configs/appsettings';
 import _ from 'lodash';
+import { RequestContext } from 'src/packages/super-request-context';
 
 export function UpdateWithMultipleLanguage() {
     return function (
@@ -22,7 +22,7 @@ export function UpdateWithMultipleLanguage() {
                 return originalMethod.apply(this, args);
             }
 
-            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const query = _.get(req, 'query', {});
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
             const [filter, update] = args;

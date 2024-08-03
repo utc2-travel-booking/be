@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Inject,
     Injectable,
+    Logger,
     Provider,
 } from '@nestjs/common';
 import AWS from 'aws-sdk';
@@ -29,6 +30,7 @@ export const S3ServiceProvider: Provider<AWS.S3> = {
 
 @Injectable()
 export class S3Service {
+    private readonly logger = new Logger('S3Service');
     constructor(@Inject(S3ServiceLib) private readonly s3: AWS.S3) {}
 
     async uploadPublicFile(file: IUploadedMulterFile, folder: string) {
@@ -50,7 +52,7 @@ export class S3Service {
                 mimetype: mimetype,
             };
         } catch (error) {
-            console.log(error);
+            this.logger.error(error);
             throw new BadRequestException(error.message);
         }
     }
@@ -65,7 +67,7 @@ export class S3Service {
 
             return deleteResult;
         } catch (error) {
-            console.log(error);
+            this.logger.error(error);
             throw new BadRequestException(error.message);
         }
     }

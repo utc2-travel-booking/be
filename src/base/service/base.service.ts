@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BaseRepositories } from '../repositories/base.repository';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
@@ -15,12 +16,12 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         model: Model<T>,
         entity: new () => E,
         collectionName: COLLECTION_NAMES,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
         if (!collectionName) {
             throw new Error('Collection name must be provided');
         }
-        super(model, entity, collectionName, eventEmitter);
+        super(model, entity, collectionName, moduleRef);
     }
 
     async getAll(

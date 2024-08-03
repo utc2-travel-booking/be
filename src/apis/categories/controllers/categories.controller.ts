@@ -7,7 +7,6 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
@@ -17,10 +16,6 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.CATEGORIES,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,
