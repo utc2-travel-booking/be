@@ -4,7 +4,10 @@ import { CategoryDocument } from 'src/apis/categories/entities/categories.entity
 import { FileDocument } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Locale, LocaleType } from 'src/packages/locale';
+import {
+    MultipleLanguage,
+    MultipleLanguageType,
+} from 'src/packages/super-multiple-language';
 import { AutoPopulate } from 'src/packages/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
@@ -13,16 +16,16 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @Prop({ type: LocaleType, required: true })
-    @Locale()
-    name: LocaleType;
+    @Prop({ type: MultipleLanguageType, required: true })
+    @MultipleLanguage()
+    name: MultipleLanguageType;
 
     @Prop({ type: String, required: true })
     url: string;
 
-    @Prop({ type: LocaleType })
-    @Locale()
-    shortDescription: string;
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    shortDescription: MultipleLanguageType;
 
     @Prop({ type: [Types.ObjectId] })
     @AutoPopulate({
