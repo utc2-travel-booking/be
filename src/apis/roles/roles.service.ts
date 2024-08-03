@@ -11,6 +11,7 @@ import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
@@ -20,8 +21,9 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         private readonly superCacheService: SuperCacheService,
         eventEmitter: EventEmitter2,
         private readonly permissionsService: PermissionsService,
+        moduleRef: ModuleRef,
     ) {
-        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
+        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter, moduleRef);
     }
 
     async getOne(

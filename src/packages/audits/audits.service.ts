@@ -7,6 +7,7 @@ import { Model, Types } from 'mongoose';
 import { AUDIT_EVENT } from './constants';
 import _ from 'lodash';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class AuditsService extends BaseService<AuditDocument, Audit> {
@@ -14,8 +15,15 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
         @InjectModel(COLLECTION_NAMES.AUDIT)
         private readonly auditModel: Model<AuditDocument>,
         eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
-        super(auditModel, Audit, COLLECTION_NAMES.AUDIT, eventEmitter);
+        super(
+            auditModel,
+            Audit,
+            COLLECTION_NAMES.AUDIT,
+            eventEmitter,
+            moduleRef,
+        );
     }
 
     async createAudit(audit: Audit) {

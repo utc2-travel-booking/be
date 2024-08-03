@@ -38,7 +38,6 @@ export class User extends AggregateRoot {
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
-        autopopulate: true,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,

@@ -7,6 +7,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PermissionDto } from '../roles/dto/create-role.dto';
 import _ from 'lodash';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class PermissionsService extends BaseService<
@@ -17,12 +18,14 @@ export class PermissionsService extends BaseService<
         @InjectModel(COLLECTION_NAMES.PERMISSION)
         private readonly permissionModel: Model<PermissionDocument>,
         eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
         super(
             permissionModel,
             Permission,
             COLLECTION_NAMES.PERMISSION,
             eventEmitter,
+            moduleRef,
         );
     }
 

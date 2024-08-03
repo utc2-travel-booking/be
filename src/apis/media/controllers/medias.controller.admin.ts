@@ -29,7 +29,6 @@ import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
@@ -40,10 +39,6 @@ import {
 
 @ApiTags('Admin: Media')
 @Controller('media')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.FILE,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

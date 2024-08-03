@@ -1,6 +1,5 @@
 import { COLLECTION_NAMES } from 'src/constants';
 import { SUPER_CACHE_EVENT_HANDLER } from '../constants';
-import { appSettings } from 'src/configs/appsettings';
 
 export function DeleteCacheEmitEvent() {
     return (
@@ -17,12 +16,10 @@ export function DeleteCacheEmitEvent() {
                 throw new Error('Collection name must be provided');
             }
 
-            if (appSettings.redis.heathCheck) {
-                this.eventEmitter.emit(
-                    SUPER_CACHE_EVENT_HANDLER.DELETE,
-                    collectionName,
-                );
-            }
+            this.eventEmitter.emit(
+                SUPER_CACHE_EVENT_HANDLER.DELETE,
+                collectionName,
+            );
 
             return originalMethod.apply(this, args);
         };

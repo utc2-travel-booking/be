@@ -7,7 +7,6 @@ import {
 import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -17,14 +16,6 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('posts')
 @ApiTags('Front: Posts')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.POST,
-    relationCollectionNames: [
-        COLLECTION_NAMES.USER,
-        COLLECTION_NAMES.FILE,
-        COLLECTION_NAMES.CATEGORIES,
-    ],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

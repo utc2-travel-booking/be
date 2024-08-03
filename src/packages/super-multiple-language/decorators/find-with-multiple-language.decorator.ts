@@ -1,8 +1,8 @@
 import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
 import { findDocumentMultipleLanguage } from '../common/find.utils';
-import { RequestContext } from 'nestjs-request-context';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
+import { RequestContext } from 'src/packages/super-request-context';
 
 export function FindWithMultipleLanguage() {
     return function (
@@ -23,7 +23,7 @@ export function FindWithMultipleLanguage() {
                 return originalMethod.apply(this, args);
             }
 
-            const query = _.isEmpty(req['query']) ? {} : req['query'];
+            const query = _.get(req, 'query', {});
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
             const [option] = args;

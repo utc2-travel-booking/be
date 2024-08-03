@@ -14,7 +14,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { CreateRoleDto } from '../dto/create-role.dto';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
@@ -26,13 +25,6 @@ import {
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.ROLE,
-    relationCollectionNames: [
-        COLLECTION_NAMES.USER,
-        COLLECTION_NAMES.PERMISSION,
-    ],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

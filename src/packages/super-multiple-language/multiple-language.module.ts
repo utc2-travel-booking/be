@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RequestContextModule } from 'nestjs-request-context';
+import { RequestContextModule } from '../super-request-context';
 
 @Module({
     imports: [RequestContextModule],

@@ -11,6 +11,7 @@ import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 import { PostType } from './constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class PostsService extends BaseService<PostDocument, Post> {
@@ -18,8 +19,9 @@ export class PostsService extends BaseService<PostDocument, Post> {
         @InjectModel(COLLECTION_NAMES.POST)
         private readonly postModel: Model<PostDocument>,
         eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
-        super(postModel, Post, COLLECTION_NAMES.POST, eventEmitter);
+        super(postModel, Post, COLLECTION_NAMES.POST, eventEmitter, moduleRef);
     }
 
     async createByType(

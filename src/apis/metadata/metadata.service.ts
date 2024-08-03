@@ -6,6 +6,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model } from 'mongoose';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class MetadataService extends BaseService<MetadataDocument, Metadata> {
@@ -14,7 +15,14 @@ export class MetadataService extends BaseService<MetadataDocument, Metadata> {
         private readonly metadataModel: Model<MetadataDocument>,
         private readonly SuperCacheService: SuperCacheService,
         eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
-        super(metadataModel, Metadata, COLLECTION_NAMES.METADATA, eventEmitter);
+        super(
+            metadataModel,
+            Metadata,
+            COLLECTION_NAMES.METADATA,
+            eventEmitter,
+            moduleRef,
+        );
     }
 }

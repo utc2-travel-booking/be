@@ -7,6 +7,7 @@ import { Model, Types } from 'mongoose';
 import { UpdateCategoryDto } from './dto/update-categories.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class CategoriesService extends BaseService<CategoryDocument, Category> {
@@ -14,12 +15,14 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         @InjectModel(COLLECTION_NAMES.CATEGORIES)
         private readonly categoryModel: Model<CategoryDocument>,
         eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
         super(
             categoryModel,
             Category,
             COLLECTION_NAMES.CATEGORIES,
             eventEmitter,
+            moduleRef,
         );
     }
 

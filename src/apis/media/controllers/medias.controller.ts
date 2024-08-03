@@ -6,7 +6,6 @@ import { appSettings } from 'src/configs/appsettings';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IUploadedMulterFile } from 'src/packages/s3/s3.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UploadMediaDto } from '../dto/upload-media.dto';
@@ -15,10 +14,6 @@ import { DefaultPost } from 'src/base/controllers/base.controller';
 
 @ApiTags('Front: Media')
 @Controller('media')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.FILE,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
-})
 @AuditLog({
     events: [
         AUDIT_EVENT.GET,

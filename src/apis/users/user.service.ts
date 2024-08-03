@@ -16,6 +16,7 @@ import * as bcrypt from 'bcryptjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class UserService
@@ -28,8 +29,9 @@ export class UserService
         private readonly roleService: RolesService,
         eventEmitter: EventEmitter2,
         private readonly superCacheService: SuperCacheService,
+        moduleRef: ModuleRef,
     ) {
-        super(userModel, User, COLLECTION_NAMES.USER, eventEmitter);
+        super(userModel, User, COLLECTION_NAMES.USER, eventEmitter, moduleRef);
     }
 
     async onModuleInit() {

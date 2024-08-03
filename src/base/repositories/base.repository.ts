@@ -25,18 +25,25 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
 import { FindMongooseModel } from '../models/find-mongoose.model';
 import { FindByIdMongooseModel } from '../models/find-by-id-mongoose.model';
+import { SGetCache } from 'src/packages/super-cache';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class BaseRepositories<T extends Document, E> {
+    public static moduleRef: ModuleRef;
     constructor(
         public readonly model: Model<T>,
         private readonly entity: new () => E,
         private readonly collectionName: COLLECTION_NAMES,
         public eventEmitter: EventEmitter2,
-    ) {}
+        public moduleRef: ModuleRef,
+    ) {
+        BaseRepositories.moduleRef = moduleRef;
+    }
 
     @FindWithMultipleLanguage()
     @DynamicLookup()
+    @SGetCache()
     async find(option: FindMongooseModel<T>): Promise<T[]> {
         const { filter, projection, options, filterPipeline = [] } = option;
         const { limit, skip, sort } = options || {};
