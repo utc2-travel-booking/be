@@ -6,7 +6,6 @@ import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
 import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
 

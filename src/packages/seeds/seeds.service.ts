@@ -49,7 +49,7 @@ export class SeedsService implements OnModuleInit {
             };
         });
 
-        await this.permissionService.createMany(result);
+        await this.permissionService.insertMany(result);
     }
 
     async seedRoles() {

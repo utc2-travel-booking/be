@@ -8,6 +8,9 @@ import {
     Types,
     UpdateQuery,
     UpdateWithAggregationPipeline,
+    HydratedDocument,
+    QueryWithHelpers,
+    GetLeanResultType,
 } from 'mongoose';
 import {
     DynamicLookup,
@@ -26,6 +29,9 @@ import { FindByIdMongooseModel } from '../models/find-by-id-mongoose.model';
 import { DeleteCache, SGetCache } from 'src/packages/super-cache';
 import { ModuleRef } from '@nestjs/core';
 
+type MergeType<T, U> = T & U;
+type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
+
 @Injectable()
 export class BaseRepositories<T extends Document, E> {
     public static moduleRef: ModuleRef;
@@ -41,7 +47,10 @@ export class BaseRepositories<T extends Document, E> {
     @FindWithMultipleLanguage()
     @DynamicLookup()
     @SGetCache()
-    async find(option: FindMongooseModel<T>): Promise<T[]> {
+    async find<ResultDoc = HydratedDocument<T>>(
+        option: FindMongooseModel<ResultDoc>,
+    ): Promise<GetLeanResultType<T, ResultDoc, 'find'>[]> {
+        this.model.find;
         const { filter, projection, options, filterPipeline = [] } = option;
         const { limit, skip, sort } = options || {};
 
@@ -73,24 +82,27 @@ export class BaseRepositories<T extends Document, E> {
     @FindWithMultipleLanguage()
     @DynamicLookup()
     @SGetCache()
-    async findOne(option: FindMongooseModel<T>): Promise<T | null> {
+    async findOne<ResultDoc = HydratedDocument<T>>(
+        option: FindMongooseModel<ResultDoc>,
+    ): Promise<GetLeanResultType<T, ResultDoc, 'findOne'> | null> {
         const { filter, projection, options, filterPipeline = [] } = option;
         const { sort } = options || {};
+        const _filterPipeline = [...filterPipeline];
 
         if (filter) {
-            filterPipeline.push({ $match: { ...filter } });
+            _filterPipeline.push({ $match: { ...filter } });
         }
 
         if (projection) {
-            projectionConfig(filterPipeline, projection);
+            projectionConfig(_filterPipeline, projection);
         }
 
         if (sort) {
-            filterPipeline.push({ $sort: sort });
+            _filterPipeline.push({ $sort: sort });
         }
 
         return await this.model
-            .aggregate(moveFirstToLast(filterPipeline))
+            .aggregate(moveFirstToLast(_filterPipeline))
             .exec()
             .then((result) => result[0]);
     }
@@ -98,11 +110,14 @@ export class BaseRepositories<T extends Document, E> {
     @FindWithMultipleLanguage()
     @DynamicLookup()
     @SGetCache()
-    async findById(option: FindByIdMongooseModel<T>) {
+    async findById<ResultDoc = HydratedDocument<T>>(
+        option: FindByIdMongooseModel<ResultDoc>,
+    ): Promise<GetLeanResultType<T, ResultDoc, 'findOne'> | null> {
         const { id, projection, options, filterPipeline = [] } = option || {};
         const { sort } = options || {};
+        const _filterPipeline = [...filterPipeline];
 
-        filterPipeline.push({
+        _filterPipeline.push({
             $match: { _id: new Types.ObjectId(id.toString()) },
         });
 
@@ -111,77 +126,80 @@ export class BaseRepositories<T extends Document, E> {
         }
 
         if (sort) {
-            filterPipeline.push({ $sort: sort });
+            _filterPipeline.push({ $sort: sort });
         }
 
-        return await this.model
-            .aggregate(filterPipeline)
-            .exec()
-            .then((result) => result[0]);
+        const result = await this.model.aggregate(_filterPipeline).exec();
+        return result[0] || null;
     }
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async create(doc: Partial<T>): Promise<T> {
+    async create<DocContents = AnyKeys<T>>(
+        doc: DocContents | T,
+    ): Promise<HydratedDocument<T>> {
         return await this.model.create(doc);
     }
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    createMany(arrData: Array<Partial<T>>) {
-        return this.model.insertMany(arrData);
+    async insertMany<DocContents = T>(
+        docs: Array<T>,
+    ): Promise<Array<MergeType<T, Omit<DocContents, '_id'>>>> {
+        const insertedDocs = await this.model.insertMany(docs);
+
+        return insertedDocs.map((doc) => {
+            const { _id, ...rest } = doc.toObject();
+            return rest as MergeType<T, Omit<DocContents, '_id'>>;
+        });
     }
 
     @UpdateWithMultipleLanguage()
     @DeleteCache()
-    updateOne(
+    async updateOne<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-    ) {
-        return this.model.updateOne(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
+    ): Promise<QueryWithHelpers<ResultDoc, T>> {
+        const result = await this.model.updateOne(filter, update, options);
+        return result as unknown as ResultDoc;
     }
 
     @UpdateWithMultipleLanguage()
     @DeleteCache()
-    updateMany(
+    async updateMany<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-    ) {
-        return this.model.updateMany(
-            { ...filter, deletedAt: null },
-            update,
-            options,
-        );
+    ): Promise<QueryWithHelpers<ResultDoc, T>> {
+        const result = await this.model.updateMany(filter, update, options);
+        return result as unknown as ResultDoc;
     }
 
     @UpdateWithMultipleLanguage()
     @DeleteCache()
-    findOneAndUpdate(
+    async findOneAndUpdate<ResultDoc = HydratedDocument<T>>(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
         options?: QueryOptions<T> | null,
-    ) {
-        return this.model.findOneAndUpdate(
-            { ...filter, deletedAt: null },
+    ): Promise<QueryWithHelpers<ResultDoc, T> | null> {
+        const result = await this.model.findOneAndUpdate(
+            filter,
             update,
             options,
         );
+        return result as unknown as ResultDoc;
     }
 
     @UpdateWithMultipleLanguage()
     @DeleteCache()
-    findByIdAndUpdate(
+    async findByIdAndUpdate<ResultDoc = HydratedDocument<T>>(
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
         options: QueryOptions<T> = {},
-    ) {
-        return this.model.findByIdAndUpdate(id, update, options);
+    ): Promise<QueryWithHelpers<ResultDoc, T> | null> {
+        const result = await this.model.findByIdAndUpdate(id, update, options);
+        return result as unknown as ResultDoc;
     }
 
     @SGetCache()
@@ -189,7 +207,7 @@ export class BaseRepositories<T extends Document, E> {
         filter: FilterQuery<T>,
         options?: QueryOptions<T>,
         filterPipeline?: PipelineStage[],
-    ) {
+    ): Promise<number> {
         const pipeline: PipelineStage[] = [
             { $match: { ...filter, deletedAt: null } },
         ];
@@ -205,8 +223,12 @@ export class BaseRepositories<T extends Document, E> {
     }
 
     @DeleteCache()
-    deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
-        return this.model.deleteOne(filter, options);
+    async deleteOne(
+        filter: FilterQuery<T>,
+        options?: QueryOptions<T>,
+    ): Promise<QueryWithHelpers<T, T> | null> {
+        const result = await this.model.deleteOne(filter, options);
+        return result as unknown as T;
     }
 
     @DeleteCache()
