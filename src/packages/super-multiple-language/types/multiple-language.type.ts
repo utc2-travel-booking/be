@@ -1,3 +1,3 @@
-export class LocaleType {
+export class MultipleLanguageType {
     [countryCode: string]: string;
 }

@@ -4,7 +4,10 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import { PostStatus, PostType } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { Locale, LocaleType } from 'src/packages/locale';
+import {
+    MultipleLanguage,
+    MultipleLanguageType,
+} from 'src/packages/super-multiple-language';
 import { AutoPopulate } from 'src/packages/super-search';
 import { Category } from 'src/apis/categories/entities/categories.entity';
 import { File } from 'src/apis/media/entities/files.entity';
@@ -13,20 +16,20 @@ import { File } from 'src/apis/media/entities/files.entity';
     collection: COLLECTION_NAMES.POST,
 })
 export class Post extends AggregateRoot {
-    @Prop({ type: LocaleType, required: true })
-    @Locale()
-    name: LocaleType;
+    @Prop({ type: MultipleLanguageType, required: true })
+    @MultipleLanguage()
+    name: MultipleLanguageType;
 
     @Prop({ type: String, required: true })
     slug: string;
 
-    @Prop({ type: LocaleType })
-    @Locale()
-    shortDescription: LocaleType;
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    shortDescription: MultipleLanguageType;
 
-    @Prop({ type: LocaleType })
-    @Locale()
-    longDescription: LocaleType;
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    longDescription: MultipleLanguageType;
 
     @Prop({ type: String, enum: PostType })
     type: PostType;

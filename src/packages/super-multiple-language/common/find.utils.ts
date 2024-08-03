@@ -1,18 +1,19 @@
 import { PipelineStage } from 'mongoose';
-import { TypeMetadataStorage } from '../storages/type-metadata.storage';
-import { TypeMetadataStorage as TypeMetadataStorageMongoose } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
+import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
+import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 
 const getSchemaMetadata = (entity: any) => {
-    return TypeMetadataStorageMongoose.getSchemaMetadataByTarget(entity);
+    return TypeMetadataStorage.getSchemaMetadataByTarget(entity);
 };
 
-const applyLocaleFields = (
+const applyMultipleLanguageFields = (
     entity: any,
     addFieldsStage: any,
     locale: string,
     prefix = '',
 ) => {
-    const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
+    const localeFields =
+        TypeMetadataMultipleLanguageStorage.getMultipleLanguageMetadata(entity);
 
     localeFields.forEach((field) => {
         const { propertyKey } = field;
@@ -22,7 +23,7 @@ const applyLocaleFields = (
     });
 };
 
-const traverseEntityLocale = (
+const traverseEntityMultipleLanguage = (
     entity: any,
     pipeline: PipelineStage[],
     locale: string,
@@ -36,7 +37,7 @@ const traverseEntityLocale = (
         $addFields: {},
     };
 
-    applyLocaleFields(entity, addFieldsStage, locale, prefix);
+    applyMultipleLanguageFields(entity, addFieldsStage, locale, prefix);
 
     if (Object.keys(addFieldsStage.$addFields).length > 0) {
         pipeline.push(addFieldsStage);
@@ -45,7 +46,7 @@ const traverseEntityLocale = (
     schemaMetadata.properties.forEach((property) => {
         if (property.options['relationClass']) {
             const nestedEntity = property.options['relationClass'];
-            traverseEntityLocale(
+            applyMultipleLanguageFields(
                 nestedEntity,
                 pipeline,
                 locale,
@@ -55,12 +56,12 @@ const traverseEntityLocale = (
     });
 };
 
-export const findDocumentLocale = (
+export const findDocumentMultipleLanguage = (
     entity: any,
     pipeline: PipelineStage[],
     locale?: string,
 ) => {
     if (locale) {
-        traverseEntityLocale(entity, pipeline, locale);
+        traverseEntityMultipleLanguage(entity, pipeline, locale);
     }
 };

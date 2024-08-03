@@ -10,7 +10,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SeedsModule } from './packages/seeds/seeds.module';
 import { appSettings } from './configs/appsettings';
 import { AuditsModule } from './packages/audits/audits.module';
-import { LocaleModule } from './packages/locale/locale.module';
+import { MultipleLanguageModule } from './packages/super-multiple-language/multiple-language.module';
 
 @Module({
     imports: [
@@ -28,7 +28,7 @@ import { LocaleModule } from './packages/locale/locale.module';
         CommonModule,
         SeedsModule,
         AuditsModule,
-        LocaleModule,
+        MultipleLanguageModule,
     ],
     controllers: [AppController],
     providers: [AppService],

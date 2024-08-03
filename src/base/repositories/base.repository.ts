@@ -16,10 +16,10 @@ import {
 } from 'src/packages/super-search';
 import _ from 'lodash';
 import {
-    CreateWithLocale,
-    FindWithLocale,
-    UpdateWithLocale,
-} from 'src/packages/locale';
+    CreateWithMultipleLanguage,
+    FindWithMultipleLanguage,
+    UpdateWithMultipleLanguage,
+} from 'src/packages/super-multiple-language';
 import { COLLECTION_NAMES } from 'src/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
@@ -35,9 +35,9 @@ export class BaseRepositories<T extends Document, E> {
         public eventEmitter: EventEmitter2,
     ) {}
 
-    @FindWithLocale()
+    @FindWithMultipleLanguage()
     @DynamicLookup()
-    find(option: FindMongooseModel<T>): Promise<T[]> {
+    async find(option: FindMongooseModel<T>): Promise<T[]> {
         const { filter, projection, options, filterPipeline = [] } = option;
         const { limit, skip, sort } = options || {};
 
@@ -61,10 +61,12 @@ export class BaseRepositories<T extends Document, E> {
             projectionConfig(filterPipeline, projection);
         }
 
-        return this.model.aggregate(moveFirstToLast(filterPipeline)).exec();
+        return await this.model
+            .aggregate(moveFirstToLast(filterPipeline))
+            .exec();
     }
 
-    @FindWithLocale()
+    @FindWithMultipleLanguage()
     @DynamicLookup()
     findOne(option: FindMongooseModel<T>): Promise<T | null> {
         const { filter, projection, options, filterPipeline = [] } = option;
@@ -88,7 +90,7 @@ export class BaseRepositories<T extends Document, E> {
             .then((result) => result[0]);
     }
 
-    @FindWithLocale()
+    @FindWithMultipleLanguage()
     @DynamicLookup()
     findById(option: FindByIdMongooseModel<T>) {
         const { id, projection, options, filterPipeline = [] } = option || {};
@@ -112,19 +114,19 @@ export class BaseRepositories<T extends Document, E> {
             .then((result) => result[0]);
     }
 
-    @CreateWithLocale()
+    @CreateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     async create(doc: Partial<T>): Promise<T> {
         return await this.model.create(doc);
     }
 
-    @CreateWithLocale()
+    @CreateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     async createMany(arrData: Array<Partial<T>>) {
         return await this.model.insertMany(arrData);
     }
 
-    @UpdateWithLocale()
+    @UpdateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     updateOne(
         filter: FilterQuery<T>,
@@ -138,7 +140,7 @@ export class BaseRepositories<T extends Document, E> {
         );
     }
 
-    @UpdateWithLocale()
+    @UpdateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     updateMany(
         filter: FilterQuery<T>,
@@ -152,7 +154,7 @@ export class BaseRepositories<T extends Document, E> {
         );
     }
 
-    @UpdateWithLocale()
+    @UpdateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     findOneAndUpdate(
         filter?: FilterQuery<T>,
@@ -166,7 +168,7 @@ export class BaseRepositories<T extends Document, E> {
         );
     }
 
-    @UpdateWithLocale()
+    @UpdateWithMultipleLanguage()
     @DeleteCacheEmitEvent()
     findByIdAndUpdate(
         id: Types.ObjectId | any,

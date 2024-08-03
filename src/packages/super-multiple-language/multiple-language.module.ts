@@ -6,4 +6,4 @@ import { RequestContextModule } from 'nestjs-request-context';
     controllers: [],
     providers: [],
 })
-export class LocaleModule {}
+export class MultipleLanguageModule {}

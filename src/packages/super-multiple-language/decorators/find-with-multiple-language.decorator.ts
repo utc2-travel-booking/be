@@ -1,10 +1,10 @@
 import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
-import { findDocumentLocale } from '../common/find.utils';
+import { findDocumentMultipleLanguage } from '../common/find.utils';
 import { RequestContext } from 'nestjs-request-context';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
 
-export function FindWithLocale() {
+export function FindWithMultipleLanguage() {
     return function (
         target: any,
         propertyKey: string,
@@ -33,7 +33,7 @@ export function FindWithLocale() {
                 ? filterPipeline
                 : [];
 
-            findDocumentLocale(this.entity, pipeline, locale);
+            findDocumentMultipleLanguage(this.entity, pipeline, locale);
 
             const updatedArgs = [
                 {
