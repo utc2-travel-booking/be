@@ -1,17 +1,18 @@
 import { Document } from 'mongoose';
-import { TypeMetadataStorage } from '../storages/type-metadata.storage';
+import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
 
-export const createDocumentLocale = async (
+export const createDocumentMultipleLanguage = async (
     entity: any,
     doc: Document | Document[],
     locale?: string,
     isArrayDocs?: boolean,
 ) => {
-    const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
+    const localeFields =
+        TypeMetadataMultipleLanguageStorage.getMultipleLanguageMetadata(entity);
 
     if (!localeFields.length) return;
 
-    const applyLocale = (item: any) => {
+    const applyMultipleLanguage = (item: any) => {
         localeFields.forEach(({ propertyKey }) => {
             if (item[propertyKey]) {
                 item[propertyKey] = { [locale]: item[propertyKey] };
@@ -20,8 +21,8 @@ export const createDocumentLocale = async (
     };
 
     if (isArrayDocs) {
-        (doc as Document[]).forEach(applyLocale);
+        (doc as Document[]).forEach(applyMultipleLanguage);
     } else {
-        applyLocale(doc);
+        applyMultipleLanguage(doc);
     }
 };

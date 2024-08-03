@@ -1,9 +1,9 @@
 import { RequestContext } from 'nestjs-request-context';
-import { createDocumentLocale } from '../common/create.utils';
+import { createDocumentMultipleLanguage } from '../common/create.utils';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
 
-export function CreateWithLocale() {
+export function CreateWithMultipleLanguage() {
     return function (
         target: any,
         propertyKey: string,
@@ -26,7 +26,7 @@ export function CreateWithLocale() {
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
             const [doc] = args;
 
-            await createDocumentLocale(
+            await createDocumentMultipleLanguage(
                 this.entity,
                 doc,
                 locale,

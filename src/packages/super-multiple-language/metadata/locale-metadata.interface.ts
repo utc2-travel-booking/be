@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-export interface LocaleMetadata {
+export interface MultipleLanguageMetadata {
     target: Function;
     propertyKey: string;
 }

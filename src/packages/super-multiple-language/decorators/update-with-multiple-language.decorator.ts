@@ -1,9 +1,9 @@
 import { RequestContext } from 'nestjs-request-context';
-import { updateDocumentLocale } from '../common/update.utils';
+import { updateDocumentMultipleLanguage } from '../common/update.utils';
 import { appSettings } from 'src/configs/appsettings';
 import _ from 'lodash';
 
-export function UpdateWithLocale() {
+export function UpdateWithMultipleLanguage() {
     return function (
         target: any,
         propertyKey: string,
@@ -26,7 +26,7 @@ export function UpdateWithLocale() {
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
             const [filter, update] = args;
-            await updateDocumentLocale(
+            await updateDocumentMultipleLanguage(
                 this.model,
                 this.entity,
                 filter,

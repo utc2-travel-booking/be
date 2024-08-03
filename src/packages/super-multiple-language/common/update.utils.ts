@@ -1,14 +1,15 @@
 import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
-import { TypeMetadataStorage } from '../storages/type-metadata.storage';
+import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
 
-export const updateDocumentLocale = async (
+export const updateDocumentMultipleLanguage = async (
     model: Model<any>,
     entity: any,
     filter: FilterQuery<any> | Types.ObjectId,
     update: UpdateQuery<any>,
     locale: string,
 ) => {
-    const localeFields = TypeMetadataStorage.getLocaleMetadata(entity);
+    const localeFields =
+        TypeMetadataMultipleLanguageStorage.getMultipleLanguageMetadata(entity);
     if (!localeFields.length) return;
 
     const filterQuery = Types.ObjectId.isValid(filter as Types.ObjectId)
