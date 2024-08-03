@@ -47,6 +47,9 @@ export const PERMISSIONS = {
     PERMISSION: {
         index: 'admin.permissions.index',
     },
+    REDIS: {
+        index: 'admin.redis.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {

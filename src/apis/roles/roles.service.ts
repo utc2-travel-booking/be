@@ -19,18 +19,13 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
         private readonly superCacheService: SuperCacheService,
-        eventEmitter: EventEmitter2,
         private readonly permissionsService: PermissionsService,
         moduleRef: ModuleRef,
     ) {
-        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter, moduleRef);
+        super(roleModel, Role, COLLECTION_NAMES.ROLE, moduleRef);
     }
 
-    async getOne(
-        _id: Types.ObjectId,
-        options?: Record<string, any>,
-        locale?: string,
-    ) {
+    async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
         const result = await this.findOne({
             filter: {
                 _id,

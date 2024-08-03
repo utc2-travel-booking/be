@@ -7,7 +7,7 @@ import { SUPER_CACHE_EVENT_HANDLER } from '../constants';
 import _ from 'lodash';
 import { RequestContext } from 'src/packages/super-request-context';
 import { appSettings } from 'src/configs/appsettings';
-import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
+import { createRedisFolderCollection } from '../common/create-redis-folder-collection.utils';
 
 export function SGetCache() {
     let superCacheService: SuperCacheService;
@@ -80,7 +80,7 @@ export function SGetCache() {
 
             const result = await originalMethod.apply(this, args);
 
-            this.eventEmitter.emit(
+            eventEmitter.emit(
                 SUPER_CACHE_EVENT_HANDLER.SET,
                 this.collectionName,
                 key,
@@ -93,26 +93,3 @@ export function SGetCache() {
         return descriptor;
     };
 }
-
-const createRedisFolderCollection = async (
-    collectionName: string,
-    entity: any,
-    superCacheService: SuperCacheService,
-) => {
-    const schemaMetadata =
-        TypeMetadataStorage.getSchemaMetadataByTarget(entity);
-
-    if (!schemaMetadata) return;
-
-    const relationCollectionNames = [];
-    schemaMetadata.properties.forEach((property) => {
-        if (property.options['ref']) {
-            relationCollectionNames.push(property.options['ref']);
-        }
-    });
-
-    await superCacheService.setOneCollection(
-        collectionName,
-        relationCollectionNames,
-    );
-};

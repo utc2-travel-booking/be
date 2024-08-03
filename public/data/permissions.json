@@ -538,5 +538,20 @@
         "updatedAt": {
             "$date": "2024-07-16T04:20:03.170Z"
         }
+    },
+    {
+        "_id": {
+            "$oid": "66ada1e798341b30f508d691"
+        },
+        "deletedAt": null,
+        "name": "admin.redis.destroy",
+        "collectionName": "Redis",
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-08-03T03:18:54.924Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-03T03:18:54.924Z"
+        }
     }
 ]

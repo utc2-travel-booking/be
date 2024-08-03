@@ -16,13 +16,12 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         model: Model<T>,
         entity: new () => E,
         collectionName: COLLECTION_NAMES,
-        eventEmitter: EventEmitter2,
         moduleRef: ModuleRef,
     ) {
         if (!collectionName) {
             throw new Error('Collection name must be provided');
         }
-        super(model, entity, collectionName, eventEmitter, moduleRef);
+        super(model, entity, collectionName, moduleRef);
     }
 
     async getAll(

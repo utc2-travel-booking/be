@@ -8,7 +8,6 @@ import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
@@ -17,10 +16,9 @@ export class MediaService extends BaseService<FileDocument, File> {
         @InjectModel(COLLECTION_NAMES.FILE)
         private readonly fileModel: Model<FileDocument>,
         private readonly s3Service: S3Service,
-        eventEmitter: EventEmitter2,
         moduleRef: ModuleRef,
     ) {
-        super(fileModel, File, COLLECTION_NAMES.FILE, eventEmitter, moduleRef);
+        super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
     }
 
     async createFile(

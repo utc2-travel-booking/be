@@ -14,16 +14,9 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
     constructor(
         @InjectModel(COLLECTION_NAMES.CATEGORIES)
         private readonly categoryModel: Model<CategoryDocument>,
-        eventEmitter: EventEmitter2,
         moduleRef: ModuleRef,
     ) {
-        super(
-            categoryModel,
-            Category,
-            COLLECTION_NAMES.CATEGORIES,
-            eventEmitter,
-            moduleRef,
-        );
+        super(categoryModel, Category, COLLECTION_NAMES.CATEGORIES, moduleRef);
     }
 
     async deleteManyByIdsAndType(

@@ -21,11 +21,9 @@ import {
     UpdateWithMultipleLanguage,
 } from 'src/packages/super-multiple-language';
 import { COLLECTION_NAMES } from 'src/constants';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DeleteCacheEmitEvent } from 'src/packages/super-cache/decorators/delete-cache-emit-event.decorator';
 import { FindMongooseModel } from '../models/find-mongoose.model';
 import { FindByIdMongooseModel } from '../models/find-by-id-mongoose.model';
-import { SGetCache } from 'src/packages/super-cache';
+import { DeleteCache, SGetCache } from 'src/packages/super-cache';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
@@ -35,7 +33,6 @@ export class BaseRepositories<T extends Document, E> {
         public readonly model: Model<T>,
         private readonly entity: new () => E,
         private readonly collectionName: COLLECTION_NAMES,
-        public eventEmitter: EventEmitter2,
         public moduleRef: ModuleRef,
     ) {
         BaseRepositories.moduleRef = moduleRef;
@@ -75,7 +72,8 @@ export class BaseRepositories<T extends Document, E> {
 
     @FindWithMultipleLanguage()
     @DynamicLookup()
-    findOne(option: FindMongooseModel<T>): Promise<T | null> {
+    @SGetCache()
+    async findOne(option: FindMongooseModel<T>): Promise<T | null> {
         const { filter, projection, options, filterPipeline = [] } = option;
         const { sort } = options || {};
 
@@ -91,7 +89,7 @@ export class BaseRepositories<T extends Document, E> {
             filterPipeline.push({ $sort: sort });
         }
 
-        return this.model
+        return await this.model
             .aggregate(moveFirstToLast(filterPipeline))
             .exec()
             .then((result) => result[0]);
@@ -99,7 +97,8 @@ export class BaseRepositories<T extends Document, E> {
 
     @FindWithMultipleLanguage()
     @DynamicLookup()
-    findById(option: FindByIdMongooseModel<T>) {
+    @SGetCache()
+    async findById(option: FindByIdMongooseModel<T>) {
         const { id, projection, options, filterPipeline = [] } = option || {};
         const { sort } = options || {};
 
@@ -115,26 +114,26 @@ export class BaseRepositories<T extends Document, E> {
             filterPipeline.push({ $sort: sort });
         }
 
-        return this.model
+        return await this.model
             .aggregate(filterPipeline)
             .exec()
             .then((result) => result[0]);
     }
 
     @CreateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     async create(doc: Partial<T>): Promise<T> {
         return await this.model.create(doc);
     }
 
     @CreateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
-    async createMany(arrData: Array<Partial<T>>) {
-        return await this.model.insertMany(arrData);
+    @DeleteCache()
+    createMany(arrData: Array<Partial<T>>) {
+        return this.model.insertMany(arrData);
     }
 
     @UpdateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     updateOne(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
@@ -148,7 +147,7 @@ export class BaseRepositories<T extends Document, E> {
     }
 
     @UpdateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     updateMany(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
@@ -162,7 +161,7 @@ export class BaseRepositories<T extends Document, E> {
     }
 
     @UpdateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     findOneAndUpdate(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
@@ -176,7 +175,7 @@ export class BaseRepositories<T extends Document, E> {
     }
 
     @UpdateWithMultipleLanguage()
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     findByIdAndUpdate(
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
@@ -185,7 +184,8 @@ export class BaseRepositories<T extends Document, E> {
         return this.model.findByIdAndUpdate(id, update, options);
     }
 
-    countDocuments(
+    @SGetCache()
+    async countDocuments(
         filter: FilterQuery<T>,
         options?: QueryOptions<T>,
         filterPipeline?: PipelineStage[],
@@ -200,20 +200,21 @@ export class BaseRepositories<T extends Document, E> {
 
         pipeline.push({ $count: 'totalCount' });
 
-        return this.model.aggregate(pipeline).exec();
+        const result = await this.model.aggregate(pipeline).exec();
+        return _.get(result, '[0].totalCount', 0);
     }
 
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
         return this.model.deleteOne(filter, options);
     }
 
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
         return this.model.deleteMany(filter, options);
     }
 
-    @DeleteCacheEmitEvent()
+    @DeleteCache()
     findByIdAndDelete(
         id?: Types.ObjectId | any,
         options?: QueryOptions<T> | null,

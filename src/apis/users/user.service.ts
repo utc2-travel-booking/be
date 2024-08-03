@@ -13,7 +13,6 @@ import { UpdateMeDto } from './dto/update-me.dto';
 import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
@@ -27,11 +26,10 @@ export class UserService
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
         private readonly roleService: RolesService,
-        eventEmitter: EventEmitter2,
         private readonly superCacheService: SuperCacheService,
         moduleRef: ModuleRef,
     ) {
-        super(userModel, User, COLLECTION_NAMES.USER, eventEmitter, moduleRef);
+        super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
 
     async onModuleInit() {
