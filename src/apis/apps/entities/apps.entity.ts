@@ -30,6 +30,10 @@ export class App extends AggregateRoot {
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    caption: MultipleLanguageType;
+
     @Prop({ type: [Types.ObjectId], refClass: Category })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,

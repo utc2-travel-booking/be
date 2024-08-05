@@ -9,7 +9,7 @@ import {
 } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
-import { moveFirstToLast } from '../../super-search';
+import { moveMatchesToEnd } from '../../super-search';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
 
 export class CustomQueryFindAllService<T extends Document>
@@ -60,12 +60,16 @@ export class CustomQueryFindAllService<T extends Document>
     async exec<ResultDoc = HydratedDocument<T>>(): Promise<
         GetLeanResultType<T, ResultDoc, 'find'>[]
     > {
-        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+        let pipeline: PipelineStage[] = [{ $match: this._conditions }];
 
         if (this._pipeline.length) {
             pipeline.push(...this._pipeline);
         }
 
-        return await this.model.aggregate(moveFirstToLast(pipeline)).exec();
+        pipeline = moveMatchesToEnd(pipeline);
+
+        console.log('pipeline', pipeline);
+
+        return await this.model.aggregate(pipeline).exec();
     }
 }
