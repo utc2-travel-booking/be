@@ -1,4 +1,4 @@
-import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
+import { PipelineStage } from 'mongoose';
 import { dynamicLookupAggregates } from '../aggregates';
 
 export function DynamicLookup() {
@@ -9,23 +9,23 @@ export function DynamicLookup() {
     ) {
         const originalMethod = descriptor.value;
 
-        descriptor.value = async function (...args: any[]) {
-            const [option] = args;
-            const { filterPipeline } = option as FindMongooseModel<any>;
+        descriptor.value = function (...args: any[]) {
+            const [filter, pipeline] = args;
 
-            const pipeline = Array.isArray(filterPipeline)
-                ? filterPipeline
+            const _pipeline: PipelineStage[] = Array.isArray(pipeline)
+                ? [...pipeline]
                 : [];
 
-            dynamicLookupAggregates(pipeline, this.entity);
+            dynamicLookupAggregates(_pipeline, this.entity);
 
-            const updatedArgs = [
-                {
-                    ...option,
-                    filterPipeline: pipeline,
-                },
-            ];
-            return originalMethod.apply(this, updatedArgs);
+            const updatedArgs = [filter, _pipeline];
+
+            try {
+                const result = originalMethod.apply(this, updatedArgs);
+                return result;
+            } catch (error) {
+                throw error;
+            }
         };
 
         return descriptor;

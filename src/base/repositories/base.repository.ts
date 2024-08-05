@@ -10,13 +10,8 @@ import {
     UpdateWithAggregationPipeline,
     HydratedDocument,
     QueryWithHelpers,
-    GetLeanResultType,
 } from 'mongoose';
-import {
-    DynamicLookup,
-    moveFirstToLast,
-    projectionConfig,
-} from 'src/packages/super-search';
+import { DynamicLookup } from 'src/packages/super-search';
 import _ from 'lodash';
 import {
     CreateWithMultipleLanguage,
@@ -24,10 +19,11 @@ import {
     UpdateWithMultipleLanguage,
 } from 'src/packages/super-multiple-language';
 import { COLLECTION_NAMES } from 'src/constants';
-import { FindMongooseModel } from '../models/find-mongoose.model';
-import { FindByIdMongooseModel } from '../models/find-by-id-mongoose.model';
-import { DeleteCache, SGetCache } from 'src/packages/super-cache';
+import { DeleteCache } from 'src/packages/super-cache';
 import { ModuleRef } from '@nestjs/core';
+import { CustomQueryFindAllService } from 'src/packages/super-core/services/custom-query-find-all.service';
+import { CustomQueryFindOneService } from 'src/packages/super-core/services/custom-query-find-one.service';
+import { CustomQueryCountDocumentsService } from 'src/packages/super-core/services/custom-query-count-documents.service';
 
 type MergeType<T, U> = T & U;
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
@@ -35,6 +31,7 @@ type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 @Injectable()
 export class BaseRepositories<T extends Document, E> {
     public static moduleRef: ModuleRef;
+
     constructor(
         public readonly model: Model<T>,
         private readonly entity: new () => E,
@@ -44,93 +41,49 @@ export class BaseRepositories<T extends Document, E> {
         BaseRepositories.moduleRef = moduleRef;
     }
 
-    @FindWithMultipleLanguage()
     @DynamicLookup()
-    @SGetCache()
-    async find<ResultDoc = HydratedDocument<T>>(
-        option: FindMongooseModel<ResultDoc>,
-    ): Promise<GetLeanResultType<T, ResultDoc, 'find'>[]> {
-        this.model.find;
-        const { filter, projection, options, filterPipeline = [] } = option;
-        const { limit, skip, sort } = options || {};
-
-        if (filter) {
-            filterPipeline.push({ $match: { ...filter } });
-        }
-
-        if (sort) {
-            filterPipeline.push({ $sort: sort });
-        }
-
-        if (limit) {
-            filterPipeline.push({ $limit: limit });
-        }
-
-        if (skip) {
-            filterPipeline.push({ $skip: skip });
-        }
-
-        if (projection) {
-            projectionConfig(filterPipeline, projection);
-        }
-
-        return await this.model
-            .aggregate(moveFirstToLast(filterPipeline))
-            .exec();
+    @FindWithMultipleLanguage()
+    find<ResultDoc = HydratedDocument<T>>(
+        filter: FilterQuery<ResultDoc>,
+        pipeline: PipelineStage[] = [],
+    ) {
+        return new CustomQueryFindAllService(
+            this.model,
+            this.entity,
+            this.collectionName,
+            this.moduleRef,
+            filter,
+            pipeline,
+        );
     }
 
     @FindWithMultipleLanguage()
     @DynamicLookup()
-    @SGetCache()
-    async findOne<ResultDoc = HydratedDocument<T>>(
-        option: FindMongooseModel<ResultDoc>,
-    ): Promise<GetLeanResultType<T, ResultDoc, 'findOne'> | null> {
-        const { filter, projection, options, filterPipeline = [] } = option;
-        const { sort } = options || {};
-        const _filterPipeline = [...filterPipeline];
-
-        if (filter) {
-            _filterPipeline.push({ $match: { ...filter } });
-        }
-
-        if (projection) {
-            projectionConfig(_filterPipeline, projection);
-        }
-
-        if (sort) {
-            _filterPipeline.push({ $sort: sort });
-        }
-
-        return await this.model
-            .aggregate(moveFirstToLast(_filterPipeline))
-            .exec()
-            .then((result) => result[0]);
+    findOne<ResultDoc = HydratedDocument<T>>(
+        filter: FilterQuery<ResultDoc>,
+        pipeline: PipelineStage[] = [],
+    ) {
+        return new CustomQueryFindOneService(
+            this.model,
+            this.entity,
+            this.collectionName,
+            this.moduleRef,
+            filter,
+            pipeline,
+        );
     }
 
     @FindWithMultipleLanguage()
     @DynamicLookup()
-    @SGetCache()
-    async findById<ResultDoc = HydratedDocument<T>>(
-        option: FindByIdMongooseModel<ResultDoc>,
-    ): Promise<GetLeanResultType<T, ResultDoc, 'findOne'> | null> {
-        const { id, projection, options, filterPipeline = [] } = option || {};
-        const { sort } = options || {};
-        const _filterPipeline = [...filterPipeline];
-
-        _filterPipeline.push({
-            $match: { _id: new Types.ObjectId(id.toString()) },
-        });
-
-        if (projection) {
-            projectionConfig(filterPipeline, projection);
-        }
-
-        if (sort) {
-            _filterPipeline.push({ $sort: sort });
-        }
-
-        const result = await this.model.aggregate(_filterPipeline).exec();
-        return result[0] || null;
+    findById(id: any, pipeline: PipelineStage[] = []) {
+        return new CustomQueryFindOneService(
+            this.model,
+            this.entity,
+            this.collectionName,
+            this.moduleRef,
+            { _id: new Types.ObjectId(id.toString()) },
+            pipeline,
+        );
     }
 
     @CreateWithMultipleLanguage()
@@ -202,24 +155,14 @@ export class BaseRepositories<T extends Document, E> {
         return result as unknown as ResultDoc;
     }
 
-    @SGetCache()
-    async countDocuments(
-        filter: FilterQuery<T>,
-        options?: QueryOptions<T>,
-        filterPipeline?: PipelineStage[],
-    ): Promise<number> {
-        const pipeline: PipelineStage[] = [
-            { $match: { ...filter, deletedAt: null } },
-        ];
-
-        if (filterPipeline && filterPipeline.length) {
-            pipeline.push(...filterPipeline);
-        }
-
-        pipeline.push({ $count: 'totalCount' });
-
-        const result = await this.model.aggregate(pipeline).exec();
-        return _.get(result, '[0].totalCount', 0);
+    countDocuments(filter: FilterQuery<T>) {
+        return new CustomQueryCountDocumentsService(
+            this.model,
+            this.entity,
+            this.collectionName,
+            this.moduleRef,
+            filter,
+        );
     }
 
     @DeleteCache()

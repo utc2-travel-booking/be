@@ -158,9 +158,17 @@ export const addSearchConditionToPipeline = (
     }
 
     if (searchType === SearchType.AND) {
-        pipeline.push({ $match: { $and: [matchStage] } });
+        if (_.get(pipeline, '[0].$match.$and')) {
+            pipeline[0].$match.$and.push(matchStage);
+        } else {
+            pipeline.push({ $match: { $and: [matchStage] } });
+        }
     } else if (searchType === SearchType.OR) {
-        pipeline.push({ $match: { $or: [matchStage] } });
+        if (_.get(pipeline, '[0].$match.$or')) {
+            pipeline[0].$match.$or.push(matchStage);
+        } else {
+            pipeline.push({ $match: { $or: [matchStage] } });
+        }
     }
 };
 

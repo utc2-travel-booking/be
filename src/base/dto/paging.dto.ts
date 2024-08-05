@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { SortOrder } from 'mongoose';
+import { Expression, SortOrder } from 'mongoose';
 import { SearchType } from 'src/constants/enums';
 
 export class PagingDto {
@@ -47,7 +47,7 @@ export class PagingDto {
         required: false,
     })
     @IsOptional()
-    sortDirection: SortOrder;
+    sortDirection: 1 | -1 | Expression.Meta;
 
     @ApiProperty({
         name: 'search',

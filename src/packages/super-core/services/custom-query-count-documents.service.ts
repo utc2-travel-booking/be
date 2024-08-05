@@ -1,0 +1,63 @@
+import { ModuleRef } from '@nestjs/core';
+import { Model, PipelineStage, Document, Expression } from 'mongoose';
+import { COLLECTION_NAMES } from 'src/constants';
+import { SGetCache } from '../../super-cache';
+import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
+import _ from 'lodash';
+
+export class CustomQueryCountDocumentsService<T extends Document>
+    implements ICustomQueryCountDocuments<T>
+{
+    private id: string;
+    private model: Model<T>;
+    private _conditions: Record<string, any> = {};
+    private _pipeline: PipelineStage[] = [];
+    public static moduleRef: ModuleRef;
+
+    constructor(
+        model: Model<T>,
+        entity: new () => any,
+        collectionName: COLLECTION_NAMES,
+        moduleRef: ModuleRef,
+        conditions: Record<string, any> = {},
+    ) {
+        this.id = CustomQueryCountDocumentsService.name;
+        CustomQueryCountDocumentsService.moduleRef = moduleRef;
+        this.model = model;
+        this._conditions = conditions;
+    }
+
+    select(fields: Record<string, number>): this {
+        this._pipeline.push({ $project: fields });
+        return this;
+    }
+
+    skip(value: number): this {
+        this._pipeline.push({ $skip: value });
+        return this;
+    }
+
+    limit(value: number): this {
+        this._pipeline.push({ $limit: value });
+        return this;
+    }
+
+    sort(sort: Record<string, 1 | -1 | Expression.Meta>): this {
+        this._pipeline.push({ $sort: sort });
+        return this;
+    }
+
+    @SGetCache()
+    async exec(): Promise<number> {
+        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+
+        if (this._pipeline.length) {
+            pipeline.push(...this._pipeline);
+        }
+
+        pipeline.push({ $count: 'totalCount' });
+
+        const result = await this.model.aggregate(pipeline).exec();
+        return _.get(result, '[0].totalCount', 0);
+    }
+}

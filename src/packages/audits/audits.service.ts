@@ -30,19 +30,18 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
 
     async findOldData(refId: Types.ObjectId, refSource: string) {
         const result = await this.findOne({
-            filter: {
-                $and: [
-                    {
-                        event: {
-                            $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
-                        },
+            $and: [
+                {
+                    event: {
+                        $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
                     },
-                ],
-                refSource,
-                refId,
-            },
-            options: { sort: { createdAt: -1 } },
-        });
+                },
+            ],
+            refSource,
+            refId,
+        })
+            .sort({ createdAt: -1 })
+            .exec();
 
         return _.get(result, 'newValues', {});
     }

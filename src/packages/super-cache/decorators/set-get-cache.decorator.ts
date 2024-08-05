@@ -1,6 +1,5 @@
 import { SuperCacheService } from '../super-cache.service';
 import { ModuleRef } from '@nestjs/core';
-import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
 import { generateKey } from '../common/genarate-key.utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SUPER_CACHE_EVENT_HANDLER } from '../constants';
@@ -47,15 +46,10 @@ export function SGetCache() {
             const query = _.get(req, 'query', {});
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
-            const [option] = args;
-            const { filterPipeline, filter, projection, options } =
-                option as FindMongooseModel<any>;
-
             const key = generateKey({
-                ...filterPipeline,
-                ...filter,
-                projection,
-                ...options,
+                ...this._filterPipeline,
+                ...this._pipeline,
+                ...(this.id ? { id: this.id } : {}),
                 locale,
             });
 
@@ -75,6 +69,8 @@ export function SGetCache() {
                     return cacheData.map((item) => _.set(item, 'cached', true));
                 } else if (cacheData && typeof cacheData === 'object') {
                     return _.set(cacheData, 'cached', true);
+                } else {
+                    return cacheData;
                 }
             }
 

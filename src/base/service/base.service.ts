@@ -30,27 +30,25 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
 
-        const total = this.countDocuments(
+        const result = this.find(
             {
                 ...options,
                 deletedAt: null,
             },
-            null,
             filterPipeline,
-        );
+        )
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .exec();
 
-        const result = this.find({
-            filter: {
-                ...options,
-                deletedAt: null,
-            },
-            options: { limit, skip, sort: { [sortBy]: sortDirection } },
-            filterPipeline,
-        });
+        const total = this.countDocuments({
+            ...options,
+            deletedAt: null,
+        }).exec();
 
         return Promise.all([result, total]).then(([items, total]) => {
-            const totalCount = _.get(total, '[0].totalCount', 0);
-            const meta = pagination(items, page, limit, totalCount);
+            const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
     }
@@ -60,12 +58,10 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         options?: Record<string, any>,
     ): Promise<any> {
         const result = await this.findOne({
-            filter: {
-                _id,
-                ...options,
-                deletedAt: null,
-            },
-        });
+            _id,
+            ...options,
+            deletedAt: null,
+        }).exec();
 
         return result;
     }
@@ -121,25 +117,26 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
 
         activePublications(queryParams.filterPipeline);
 
-        const total = this.countDocuments(
+        const result = this.find(
             {
                 deletedAt: null,
                 ...options,
             },
-            null,
             filterPipeline,
-        );
+        )
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .select({ longDescription: 0 })
+            .exec();
 
-        const result = this.find({
-            filter: { deletedAt: null, ...options },
-            projection: '-longDescription',
-            options: { limit, skip, sort: { [sortBy]: sortDirection } },
-            filterPipeline,
-        });
+        const total = this.countDocuments({
+            deletedAt: null,
+            ...options,
+        }).exec();
 
         return Promise.all([result, total]).then(([items, total]) => {
-            const totalCount = _.get(total, '[0].totalCount', 0);
-            const meta = pagination(items, page, limit, totalCount);
+            const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
     }
@@ -151,14 +148,14 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne({
-            filter: {
+        const result = await this.findOne(
+            {
                 _id,
                 deletedAt: null,
                 ...options,
             },
             filterPipeline,
-        });
+        ).exec();
 
         return result;
     }
