@@ -52,7 +52,6 @@ export class AppsController {
 
     @Get()
     @ApiBearerAuth()
-    @Authorize(PERMISSIONS_FRONT.APP.index)
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
