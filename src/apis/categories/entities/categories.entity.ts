@@ -24,7 +24,6 @@ export class Category extends AggregateRoot {
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.CATEGORIES,
-        refClass: Category,
     })
     parent: Category;
 

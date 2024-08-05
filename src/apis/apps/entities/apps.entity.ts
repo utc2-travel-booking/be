@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { CategoryDocument } from 'src/apis/categories/entities/categories.entity';
+import {
+    Category,
+    CategoryDocument,
+} from 'src/apis/categories/entities/categories.entity';
 import { FileDocument } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -27,20 +30,20 @@ export class App extends AggregateRoot {
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @Prop({ type: [Types.ObjectId] })
+    @Prop({ type: [Types.ObjectId], refClass: Category })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
         isArray: true,
     })
     categories: CategoryDocument[];
 
-    @Prop({ type: Types.ObjectId })
+    @Prop({ type: Types.ObjectId, refClass: File })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
     featuredImage: FileDocument;
 
-    @Prop({ type: [Types.ObjectId] })
+    @Prop({ type: [Types.ObjectId], refClass: File })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
         isArray: true,

@@ -26,7 +26,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
     async sumTotalRating(sumRatingAppModel: SumRatingAppModel) {
         const { app, star } = sumRatingAppModel;
-        const user = await this.findOne({ filter: { _id: app } });
+        const user = await this.findOne({ _id: app }).exec();
 
         if (!user) {
             throw new UnprocessableEntityException(
@@ -54,13 +54,13 @@ export class AppsService extends BaseService<AppDocument, App> {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne({
-            filter: {
+        const result = await this.findOne(
+            {
                 _id,
                 deletedAt: null,
             },
             filterPipeline,
-        });
+        ).exec();
 
         if (!result) {
             throw new UnprocessableEntityException(
@@ -85,27 +85,31 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
 
-        const total = this.userAppHistoriesService.countDocuments(
-            {
-                deletedAt: null,
-            },
-            null,
-            filterPipeline,
-        );
+        const total = this.userAppHistoriesService
+            .countDocuments(
+                {
+                    deletedAt: null,
+                },
+                filterPipeline,
+            )
+            .exec();
 
-        const userAppHistories = this.userAppHistoriesService.find({
-            filter: {
-                deletedAt: null,
-                'createdBy._id': userId,
-            },
-            options: { limit, skip, sort: { updatedAt: -1 } },
-            filterPipeline,
-        });
+        const userAppHistories = this.userAppHistoriesService
+            .find(
+                {
+                    deletedAt: null,
+                    'createdBy._id': userId,
+                },
+                filterPipeline,
+            )
+            .limit(limit)
+            .skip(skip)
+            .sort({ updatedAt: -1 })
+            .exec();
 
         return Promise.all([userAppHistories, total]).then(
             ([result, total]) => {
-                const totalCount = _.get(total, '[0].totalCount', 0);
-                const meta = pagination(result, page, limit, totalCount);
+                const meta = pagination(result, page, limit, total);
                 const items = result.map((item) => item.app);
                 return { items, meta };
             },

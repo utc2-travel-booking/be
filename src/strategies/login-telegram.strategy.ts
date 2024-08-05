@@ -23,7 +23,7 @@ export class LoginTelegramStrategy extends PassportStrategy(
             const encoder = new TextEncoder();
             const { hash } = body;
 
-            const checkString = await Object.keys(body)
+            const checkString = Object.keys(body)
                 .filter((key) => key !== 'hash')
                 .map((key) => `${key}=${body[key]}`)
                 .sort()

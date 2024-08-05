@@ -16,6 +16,7 @@ export class Advertiser extends AggregateRoot {
     @Prop({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.FILE,
+        refClass: File,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,

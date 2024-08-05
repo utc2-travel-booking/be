@@ -17,6 +17,7 @@ const applyMultipleLanguageFields = (
 
     localeFields.forEach((field) => {
         const { propertyKey } = field;
+
         addFieldsStage.$addFields[`${prefix}${propertyKey}`] = {
             $ifNull: [`$${prefix}${propertyKey}.${locale}`, 'NO DATA'],
         };
