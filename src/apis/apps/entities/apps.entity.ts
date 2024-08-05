@@ -4,7 +4,7 @@ import {
     Category,
     CategoryDocument,
 } from 'src/apis/categories/entities/categories.entity';
-import { FileDocument } from 'src/apis/media/entities/files.entity';
+import { File, FileDocument } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import {
