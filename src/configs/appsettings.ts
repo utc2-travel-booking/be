@@ -10,7 +10,7 @@ export const appSettings = {
     },
     jwt: {
         secret: process.env.JWT_SECRET,
-        expireIn: process.env.EXPIRES_IN,
+        expireIn: process.env.JWT_EXPIRES_IN,
         refreshSecret: process.env.JWT_REFRESH_SECRET,
         refreshExpireIn: process.env.JWT_REFRESH_EXPIRES_IN,
         issuer: process.env.JWT_ISSUER,
