@@ -15,6 +15,10 @@ export class Category extends AggregateRoot {
     @Locale()
     name: LocaleType;
 
+    @Prop({ type: LocaleType })
+    @Locale()
+    shortDescription: LocaleType;
+
     @Prop({ type: Number, default: 0 })
     position: number;
 

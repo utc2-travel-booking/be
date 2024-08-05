@@ -22,7 +22,11 @@ export class App extends AggregateRoot {
 
     @Prop({ type: LocaleType })
     @Locale()
-    shortDescription: string;
+    shortDescription: LocaleType;
+
+    @Prop({ type: LocaleType })
+    @Locale()
+    caption: LocaleType;
 
     @Prop({ type: [Types.ObjectId] })
     @AutoPopulate({
