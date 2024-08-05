@@ -155,13 +155,16 @@ export class BaseRepositories<T extends Document, E> {
         return result as unknown as ResultDoc;
     }
 
-    countDocuments(filter: FilterQuery<T>) {
+    @DynamicLookup()
+    @FindWithMultipleLanguage()
+    countDocuments(filter: FilterQuery<T>, pipeline: PipelineStage[] = []) {
         return new CustomQueryCountDocumentsService(
             this.model,
             this.entity,
             this.collectionName,
             this.moduleRef,
             filter,
+            pipeline,
         );
     }
 

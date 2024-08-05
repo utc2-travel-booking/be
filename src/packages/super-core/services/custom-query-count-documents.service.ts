@@ -20,11 +20,13 @@ export class CustomQueryCountDocumentsService<T extends Document>
         collectionName: COLLECTION_NAMES,
         moduleRef: ModuleRef,
         conditions: Record<string, any> = {},
+        pipeline: PipelineStage[] = [],
     ) {
         this.id = CustomQueryCountDocumentsService.name;
         CustomQueryCountDocumentsService.moduleRef = moduleRef;
         this.model = model;
         this._conditions = conditions;
+        this._pipeline = pipeline;
     }
 
     select(fields: Record<string, number>): this {
