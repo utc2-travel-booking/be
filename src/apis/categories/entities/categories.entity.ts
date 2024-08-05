@@ -18,6 +18,10 @@ export class Category extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
+    @Prop({ type: LocaleType })
+    @Locale()
+    shortDescription: LocaleType;
+
     @Prop({ type: Number, default: 0 })
     position: number;
 
