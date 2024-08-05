@@ -62,8 +62,6 @@ export class CustomQueryCountDocumentsService<T extends Document>
 
         pipeline = sortPipelines(pipeline);
 
-        console.log('pipeline', pipeline);
-
         const result = await this.model.aggregate(pipeline).exec();
         return _.get(result, '[0].totalCount', 0);
     }

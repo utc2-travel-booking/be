@@ -152,7 +152,6 @@ export class BaseRepositories<T extends Document, E> {
 
     @DynamicLookup()
     countDocuments(filter: FilterQuery<T>, pipeline: PipelineStage[] = []) {
-        console.log('filter>>>>', pipeline);
         return new CustomQueryCountDocumentsService(
             this.model,
             this.entity,

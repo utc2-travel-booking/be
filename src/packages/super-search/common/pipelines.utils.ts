@@ -30,6 +30,7 @@ export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
     const addFields: PipelineStage[] = [];
     const limit: PipelineStage[] = [];
     const skip: PipelineStage[] = [];
+    const count: PipelineStage[] = [];
 
     for (const stage of pipeline) {
         if (_.has(stage, '$match')) {
@@ -42,10 +43,20 @@ export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
             limit.push(stage);
         } else if (_.has(stage, '$skip')) {
             skip.push(stage);
+        } else if (_.has(stage, '$count')) {
+            count.push(stage);
         } else {
             others.push(stage);
         }
     }
 
-    return [...others, ...matches, ...project, ...addFields, ...skip, ...limit];
+    return [
+        ...others,
+        ...matches,
+        ...project,
+        ...addFields,
+        ...skip,
+        ...limit,
+        ...count,
+    ];
 };
