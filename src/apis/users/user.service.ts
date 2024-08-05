@@ -38,11 +38,11 @@ export class UserService
 
     async onModuleInit() {
         const usersBanned = await this.find({
-            filter: { status: UserStatus.INACTIVE },
-        });
+            status: UserStatus.INACTIVE,
+        }).exec();
         const usersDeleted = await this.find({
-            filter: { deletedAt: { $ne: null } },
-        });
+            deletedAt: { $ne: null },
+        }).exec();
 
         if (usersBanned.length) {
             const ids = usersBanned.map((user) => user._id);
@@ -98,7 +98,7 @@ export class UserService
             );
         }
 
-        const user = await this.findOne({ filter: { email } });
+        const user = await this.findOne({ email }).exec();
 
         const isMatch =
             user &&
@@ -129,14 +129,15 @@ export class UserService
 
     async getMe(user: UserPayload) {
         return await this.findOne({
-            filter: { _id: user._id },
-            projection: '-password',
-        });
+            _id: user._id,
+        })
+            .select({ password: 0 })
+            .exec();
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
         const { _id: userId } = user;
-        const data = await this.find({ filter: { _id: { $in: _ids } } });
+        const data = await this.find({ _id: { $in: _ids } }).exec();
         await this.updateMany(
             { _id: { $in: _ids } },
             { deletedAt: new Date(), deletedBy: userId },

@@ -31,12 +31,10 @@ export class RolesService extends BaseService<RoleDocument, Role> {
 
     async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
         const result = await this.findOne({
-            filter: {
-                _id,
-                ...options,
-                deletedAt: null,
-            },
-        });
+            _id,
+            ...options,
+            deletedAt: null,
+        }).exec();
 
         const { permissions } = result;
 

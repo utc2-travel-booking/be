@@ -26,7 +26,7 @@ import { MultipleLanguageModule } from './packages/super-multiple-language/multi
         ScheduleModule.forRoot(),
         RoutersModule.forRoot(),
         CommonModule,
-        SeedsModule,
+        // SeedsModule,
         AuditsModule,
         MultipleLanguageModule,
     ],

@@ -1,4 +1,3 @@
-import { FindMongooseModel } from 'src/base/models/find-mongoose.model';
 import { findDocumentMultipleLanguage } from '../common/find.utils';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
@@ -12,7 +11,7 @@ export function FindWithMultipleLanguage() {
     ) {
         const originalMethod = descriptor.value;
 
-        descriptor.value = async function (...args: any[]) {
+        descriptor.value = function (...args: any[]) {
             const req: Request = _.get(
                 RequestContext,
                 'currentContext.req',
@@ -26,22 +25,20 @@ export function FindWithMultipleLanguage() {
             const query = _.get(req, 'query', {});
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
-            const [option] = args;
-            const { filterPipeline } = option as FindMongooseModel<any>;
+            const [filter, pipeline] = args;
 
-            const pipeline = Array.isArray(filterPipeline)
-                ? filterPipeline
-                : [];
+            const _pipeline = Array.isArray(pipeline) ? pipeline : [];
 
-            findDocumentMultipleLanguage(this.entity, pipeline, locale);
+            findDocumentMultipleLanguage(this.entity, _pipeline, locale);
 
-            const updatedArgs = [
-                {
-                    ...option,
-                    filterPipeline: pipeline,
-                },
-            ];
-            return originalMethod.apply(this, updatedArgs);
+            const updatedArgs = [filter, _pipeline];
+
+            try {
+                const result = originalMethod.apply(this, updatedArgs);
+                return result;
+            } catch (error) {
+                throw error;
+            }
         };
 
         return descriptor;

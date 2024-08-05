@@ -44,9 +44,9 @@ const traverseEntityMultipleLanguage = (
     }
 
     schemaMetadata.properties.forEach((property) => {
-        if (property.options['relationClass']) {
-            const nestedEntity = property.options['relationClass'];
-            applyMultipleLanguageFields(
+        if (property.options['refClass']) {
+            const nestedEntity = property.options['refClass'];
+            traverseEntityMultipleLanguage(
                 nestedEntity,
                 pipeline,
                 locale,

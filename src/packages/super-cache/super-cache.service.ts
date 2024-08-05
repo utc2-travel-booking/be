@@ -81,11 +81,14 @@ export class SuperCacheService implements OnModuleInit {
             }
 
             const parentCollections = collections.filter((collection) =>
-                collection.relationCollectionNames.includes(mainCollectionName),
+                collection?.relationCollectionNames?.includes(
+                    mainCollectionName,
+                ),
             );
+
             const mainCollection = collections.find(
                 (collection) =>
-                    collection.mainCollectionName === mainCollectionName,
+                    collection?.mainCollectionName === mainCollectionName,
             );
 
             if (!mainCollection) {
