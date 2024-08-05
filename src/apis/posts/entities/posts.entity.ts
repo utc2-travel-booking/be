@@ -40,6 +40,7 @@ export class Post extends AggregateRoot {
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
+        refClass: File,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
@@ -49,6 +50,7 @@ export class Post extends AggregateRoot {
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.CATEGORIES,
+        refClass: Category,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,

@@ -16,7 +16,11 @@ export class Category extends AggregateRoot {
     @Prop({ type: Number, default: 0 })
     position: number;
 
-    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.CATEGORIES })
+    @Prop({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.CATEGORIES,
+        refClass: Category,
+    })
     parent: Category;
 
     @Prop({ type: String, enum: CategoryType })
