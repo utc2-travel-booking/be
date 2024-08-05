@@ -4,6 +4,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
 import _ from 'lodash';
+import { sortPipelines } from 'src/packages/super-search';
 
 export class CustomQueryCountDocumentsService<T extends Document>
     implements ICustomQueryCountDocuments<T>
@@ -51,13 +52,17 @@ export class CustomQueryCountDocumentsService<T extends Document>
 
     @SGetCache()
     async exec(): Promise<number> {
-        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+        let pipeline: PipelineStage[] = [{ $match: this._conditions }];
 
         if (this._pipeline.length) {
             pipeline.push(...this._pipeline);
         }
 
         pipeline.push({ $count: 'totalCount' });
+
+        pipeline = sortPipelines(pipeline);
+
+        console.log('pipeline', pipeline);
 
         const result = await this.model.aggregate(pipeline).exec();
         return _.get(result, '[0].totalCount', 0);

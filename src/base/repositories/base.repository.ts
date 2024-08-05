@@ -9,7 +9,6 @@ import {
     UpdateQuery,
     UpdateWithAggregationPipeline,
     HydratedDocument,
-    QueryWithHelpers,
 } from 'mongoose';
 import { DynamicLookup } from 'src/packages/super-search';
 import _ from 'lodash';
@@ -88,17 +87,13 @@ export class BaseRepositories<T extends Document, E> {
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async create<DocContents = AnyKeys<T>>(
-        doc: DocContents | T,
-    ): Promise<HydratedDocument<T>> {
+    async create<DocContents = AnyKeys<T>>(doc: DocContents | T): Promise<T> {
         return await this.model.create(doc);
     }
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async insertMany<DocContents = T>(
-        docs: Array<T>,
-    ): Promise<Array<MergeType<T, Omit<DocContents, '_id'>>>> {
+    async insertMany<DocContents = T>(docs: Array<T>) {
         const insertedDocs = await this.model.insertMany(docs);
 
         return insertedDocs.map((doc) => {
@@ -113,7 +108,7 @@ export class BaseRepositories<T extends Document, E> {
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-    ): Promise<QueryWithHelpers<ResultDoc, T>> {
+    ) {
         const result = await this.model.updateOne(filter, update, options);
         return result as unknown as ResultDoc;
     }
@@ -124,7 +119,7 @@ export class BaseRepositories<T extends Document, E> {
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
-    ): Promise<QueryWithHelpers<ResultDoc, T>> {
+    ) {
         const result = await this.model.updateMany(filter, update, options);
         return result as unknown as ResultDoc;
     }
@@ -135,7 +130,7 @@ export class BaseRepositories<T extends Document, E> {
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
         options?: QueryOptions<T> | null,
-    ): Promise<QueryWithHelpers<ResultDoc, T> | null> {
+    ) {
         const result = await this.model.findOneAndUpdate(
             filter,
             update,
@@ -150,14 +145,14 @@ export class BaseRepositories<T extends Document, E> {
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
         options: QueryOptions<T> = {},
-    ): Promise<QueryWithHelpers<ResultDoc, T> | null> {
+    ) {
         const result = await this.model.findByIdAndUpdate(id, update, options);
         return result as unknown as ResultDoc;
     }
 
     @DynamicLookup()
-    @FindWithMultipleLanguage()
     countDocuments(filter: FilterQuery<T>, pipeline: PipelineStage[] = []) {
+        console.log('filter>>>>', pipeline);
         return new CustomQueryCountDocumentsService(
             this.model,
             this.entity,
@@ -169,10 +164,7 @@ export class BaseRepositories<T extends Document, E> {
     }
 
     @DeleteCache()
-    async deleteOne(
-        filter: FilterQuery<T>,
-        options?: QueryOptions<T>,
-    ): Promise<QueryWithHelpers<T, T> | null> {
+    async deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
         const result = await this.model.deleteOne(filter, options);
         return result as unknown as T;
     }
