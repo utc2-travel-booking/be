@@ -9,7 +9,7 @@ import {
 import { ICustomQueryFindOne } from './interfaces/custom-query-find-one.interface';
 import { ModuleRef } from '@nestjs/core';
 import { COLLECTION_NAMES } from 'src/constants';
-import { moveFirstToLast } from 'src/packages/super-search';
+import { sortPipelines } from 'src/packages/super-search';
 import { SGetCache } from 'src/packages/super-cache';
 
 export class CustomQueryFindOneService<T extends Document>
@@ -47,20 +47,16 @@ export class CustomQueryFindOneService<T extends Document>
     }
 
     @SGetCache()
-    async exec<ResultDoc = HydratedDocument<T>>(): Promise<GetLeanResultType<
-        T,
-        ResultDoc,
-        'findOne'
-    > | null> {
-        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+    async exec(): Promise<T | null> {
+        let pipeline: PipelineStage[] = [{ $match: this._conditions }];
 
         if (this._pipeline.length) {
             pipeline.push(...this._pipeline);
         }
 
-        const result = await this.model
-            .aggregate(moveFirstToLast(pipeline))
-            .exec();
+        pipeline = sortPipelines(pipeline);
+
+        const result = await this.model.aggregate(pipeline).exec();
         return result.length ? result[0] : null;
     }
 }

@@ -42,10 +42,13 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
             .sort({ [sortBy]: sortDirection })
             .exec();
 
-        const total = this.countDocuments({
-            ...options,
-            deletedAt: null,
-        }).exec();
+        const total = this.countDocuments(
+            {
+                ...options,
+                deletedAt: null,
+            },
+            filterPipeline,
+        ).exec();
 
         return Promise.all([result, total]).then(([items, total]) => {
             const meta = pagination(items, page, limit, total);
