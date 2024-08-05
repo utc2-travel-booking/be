@@ -23,12 +23,16 @@ export class App extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    shortDescription: MultipleLanguageType;
+
     @Prop({ type: String, required: true })
     url: string;
 
     @Prop({ type: MultipleLanguageType })
     @MultipleLanguage()
-    shortDescription: MultipleLanguageType;
+    caption: MultipleLanguageType;
 
     @Prop({ type: [Types.ObjectId], refClass: Category })
     @AutoPopulate({

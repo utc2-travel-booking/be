@@ -46,7 +46,6 @@ export class AppsController {
     }
 
     @DefaultGet()
-    @Authorize(PERMISSIONS_FRONT.APP.index)
     async getAll(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
