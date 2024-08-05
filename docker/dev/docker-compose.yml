@@ -9,7 +9,7 @@ services:
       - db
       - redis
     ports:
-      - "3080:${PORT}"
+      - "3082:${PORT}"
     volumes:
       - .env:/app/.env
     networks:
