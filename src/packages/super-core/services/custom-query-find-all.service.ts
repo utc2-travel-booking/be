@@ -1,15 +1,8 @@
 import { ModuleRef } from '@nestjs/core';
-import {
-    Model,
-    PipelineStage,
-    Document,
-    HydratedDocument,
-    GetLeanResultType,
-    Expression,
-} from 'mongoose';
+import { Model, PipelineStage, Document, Expression } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
-import { moveFirstToLast } from '../../super-search';
+import { sortPipelines } from '../../super-search';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
 
 export class CustomQueryFindAllService<T extends Document>
@@ -57,15 +50,15 @@ export class CustomQueryFindAllService<T extends Document>
     }
 
     @SGetCache()
-    async exec<ResultDoc = HydratedDocument<T>>(): Promise<
-        GetLeanResultType<T, ResultDoc, 'find'>[]
-    > {
-        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+    async exec(): Promise<T[]> {
+        let pipeline: PipelineStage[] = [{ $match: this._conditions }];
 
         if (this._pipeline.length) {
             pipeline.push(...this._pipeline);
         }
 
-        return await this.model.aggregate(moveFirstToLast(pipeline)).exec();
+        pipeline = sortPipelines(pipeline);
+
+        return await this.model.aggregate(pipeline).exec();
     }
 }
