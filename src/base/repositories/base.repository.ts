@@ -94,12 +94,7 @@ export class BaseRepositories<T extends Document, E> {
     @CreateWithMultipleLanguage()
     @DeleteCache()
     async insertMany<DocContents = T>(docs: Array<T>) {
-        const insertedDocs = await this.model.insertMany(docs);
-
-        return insertedDocs.map((doc) => {
-            const { _id, ...rest } = doc.toObject();
-            return rest as MergeType<T, Omit<DocContents, '_id'>>;
-        });
+        return await this.model.insertMany(docs);
     }
 
     @UpdateWithMultipleLanguage()

@@ -16,7 +16,7 @@ export class UserLoginTelegramDto {
     })
     @IsNotEmpty()
     @IsString()
-    firstName: string;
+    first_name: string;
 
     @ApiProperty({
         description: 'Telegram user last name',
@@ -24,7 +24,7 @@ export class UserLoginTelegramDto {
     })
     @IsNotEmpty()
     @IsString()
-    lastName: string;
+    last_name: string;
 
     @ApiProperty({
         description: 'Telegram user username',
@@ -40,7 +40,15 @@ export class UserLoginTelegramDto {
     })
     @IsOptional()
     @IsString()
-    photoUrl: string;
+    photo_url: string;
+
+    @ApiProperty({
+        description: 'Telegram user auth date',
+        example: 1720496880,
+    })
+    @IsNotEmpty()
+    @IsNumber()
+    auth_date: number;
 
     @ApiProperty({
         description: 'Telegram user hash',
@@ -49,12 +57,4 @@ export class UserLoginTelegramDto {
     @IsNotEmpty()
     @IsString()
     hash: string;
-
-    @ApiProperty({
-        description: 'Telegram user auth date',
-        example: 1720496880,
-    })
-    @IsNotEmpty()
-    @IsNumber()
-    authDate: number;
 }

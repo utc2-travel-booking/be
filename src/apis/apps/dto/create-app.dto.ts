@@ -30,6 +30,14 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     url: string;
 
     @ApiProperty({
+        default: 'https://example.com',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(500)
+    caption: string;
+
+    @ApiProperty({
         type: [String],
         description: 'Categories of the app',
         default: [],
@@ -72,7 +80,6 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     previewImages: Types.ObjectId[];
 
     @ApiProperty()
-    @IsNotEmpty()
     @MaxLength(1000)
     @IsString()
     shortDescription: string;

@@ -60,8 +60,14 @@ export class UserService
     async createUserTelegram(
         userLoginTelegramDto: Partial<UserLoginTelegramDto>,
     ) {
-        const { id, firstName, lastName, username, photoUrl } =
-            userLoginTelegramDto;
+        const {
+            id,
+            first_name: firstName,
+            last_name: lastName,
+
+            photo_url: photoUrl,
+            username,
+        } = userLoginTelegramDto;
 
         const user = await this.findOne({ telegramUserId: id }).exec();
 

@@ -34,8 +34,20 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
             const initData = parse(authData);
             const { user } = initData;
 
+            const {
+                username,
+                id,
+                firstName: first_name,
+                lastName: last_name,
+                photoUrl: photo_url,
+            } = user;
+
             const userLoginTelegramDto = {
-                ...user,
+                username,
+                id,
+                first_name,
+                last_name,
+                photo_url,
             } as UserLoginTelegramDto;
 
             const createUserTelegram =

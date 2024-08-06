@@ -88,7 +88,8 @@ export class SeedsService implements OnModuleInit {
             const { _id } = user;
             delete user.createdAt;
             delete user.updatedAt;
-            const exit = await this.userService.findById({ id: _id.$oid });
+            const exit = await this.userService.findById(_id.$oid).exec();
+
             if (!exit) {
                 await this.userService.create({
                     ...user,
