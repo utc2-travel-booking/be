@@ -9,7 +9,7 @@ export enum COLLECTION_NAMES {
     POST = 'posts',
     AUDIT = 'audits',
     APP = 'apps',
-    REVIEW = 'reviews',
+    REVIEW_RATING = 'review-ratings',
     ADVERTISER = 'advertisers',
     USER_APP_HISTORY = 'userAppHistories',
 }

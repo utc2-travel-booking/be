@@ -14,7 +14,7 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
-export class CreateReviewDto extends PartialType(ExcludeDto) {
+export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
     @ApiProperty({
         type: String,
         description: 'Content of the review',

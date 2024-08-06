@@ -82,8 +82,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         user: UserPayload,
     ) {
         const { _id: userId } = user;
-        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
-            queryParams;
+        const { page, limit, skip, filterPipeline } = queryParams;
 
         const total = this.userAppHistoriesService
             .countDocuments(

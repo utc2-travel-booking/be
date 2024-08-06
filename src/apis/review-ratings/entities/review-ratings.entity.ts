@@ -8,9 +8,9 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 
 @Schema({
     timestamps: true,
-    collection: COLLECTION_NAMES.REVIEW,
+    collection: COLLECTION_NAMES.REVIEW_RATING,
 })
-export class Review extends AggregateRoot {
+export class ReviewRating extends AggregateRoot {
     @Prop({ type: String })
     content: string;
 
@@ -24,6 +24,6 @@ export class Review extends AggregateRoot {
     app: AppDocument[];
 }
 
-export type ReviewDocument = Review & Document;
-export const ReviewSchema = SchemaFactory.createForClass(Review);
-ReviewSchema.plugin(autopopulateSoftDelete);
+export type ReviewRatingDocument = ReviewRating & Document;
+export const ReviewRatingSchema = SchemaFactory.createForClass(ReviewRating);
+ReviewRatingSchema.plugin(autopopulateSoftDelete);

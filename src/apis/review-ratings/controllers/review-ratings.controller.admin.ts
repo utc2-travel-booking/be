@@ -1,13 +1,13 @@
 import { Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ReviewsService } from '../reviews.service';
+import { ReviewRatingService } from '../review-ratings.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Review } from '../entities/reviews.entity';
+import { ReviewRating } from '../entities/review-ratings.entity';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
@@ -19,10 +19,10 @@ import {
     DefaultGet,
 } from 'src/base/controllers/base.controller';
 
-@Controller('reviews')
+@Controller('review-ratings')
 @ApiTags('Admin: Reviews')
 @AuditLog({
-    refSource: COLLECTION_NAMES.REVIEW,
+    refSource: COLLECTION_NAMES.REVIEW_RATING,
     events: [
         AUDIT_EVENT.GET,
         AUDIT_EVENT.POST,
@@ -30,16 +30,16 @@ import {
         AUDIT_EVENT.DELETE,
     ],
 })
-export class ReviewsControllerAdmin {
-    constructor(private readonly reviewsService: ReviewsService) {}
+export class ReviewRatingControllerAdmin {
+    constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
     @DefaultGet()
     @Authorize(PERMISSIONS.REVIEW.index)
     async getAll(
-        @Query(new PagingDtoPipe<Review>())
-        queryParams: ExtendedPagingDto<Review>,
+        @Query(new PagingDtoPipe<ReviewRating>())
+        queryParams: ExtendedPagingDto<ReviewRating>,
     ) {
-        const result = await this.reviewsService.getAll(queryParams);
+        const result = await this.reviewRatingService.getAll(queryParams);
         return result;
     }
 
@@ -47,7 +47,7 @@ export class ReviewsControllerAdmin {
     @Authorize(PERMISSIONS.REVIEW.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.reviewsService.getOne(_id);
+        const result = await this.reviewRatingService.getOne(_id);
         return result;
     }
 
@@ -60,7 +60,7 @@ export class ReviewsControllerAdmin {
     ) {
         const { user } = req;
 
-        const result = await this.reviewsService.deletes(_ids, user);
+        const result = await this.reviewRatingService.deletes(_ids, user);
         return result;
     }
 }

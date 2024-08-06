@@ -19,8 +19,8 @@ import { CommonModule } from 'src/common/common.module';
 import { AuditsModule } from 'src/packages/audits/audits.module';
 import { AppsControllerAdmin } from 'src/apis/apps/controllers/apps.controller.admin';
 import { AppsModule } from 'src/apis/apps/apps.module';
-import { ReviewsControllerAdmin } from 'src/apis/reviews/controllers/reviews.controller.admin';
-import { ReviewsModule } from 'src/apis/reviews/reviews.module';
+import { ReviewRatingControllerAdmin } from 'src/apis/review-ratings/controllers/review-ratings.controller.admin';
+import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
 
@@ -38,7 +38,7 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         MetadataModule,
         AuditsModule,
         AppsModule,
-        ReviewsModule,
+        ReviewRatingModule,
         AdvertisersModule,
     ],
     controllers: [
@@ -50,7 +50,7 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         MetadataControllerAdmin,
         UserControllerAdmin,
         AppsControllerAdmin,
-        ReviewsControllerAdmin,
+        ReviewRatingControllerAdmin,
         AdvertisersControllerAdmin,
     ],
     providers: [],

@@ -1,40 +1,51 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
-import { Review, ReviewDocument } from './entities/reviews.entity';
+import {
+    ReviewRating,
+    ReviewRatingDocument,
+} from './entities/review-ratings.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { CreateReviewDto } from './dto/create-review.dto';
+import { CreateReviewRatingDto } from './dto/create-review-rating.dto';
 import _ from 'lodash';
 import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
 import { APP_EVENT_HANDLER } from '../apps/constants';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
-export class ReviewsService extends BaseService<ReviewDocument, Review> {
+export class ReviewRatingService extends BaseService<
+    ReviewRatingDocument,
+    ReviewRating
+> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.REVIEW)
-        private readonly reviewModel: Model<ReviewDocument>,
+        @InjectModel(COLLECTION_NAMES.REVIEW_RATING)
+        private readonly reviewModel: Model<ReviewRatingDocument>,
         moduleRef: ModuleRef,
         private readonly eventEmitter: EventEmitter2,
     ) {
-        super(reviewModel, Review, COLLECTION_NAMES.REVIEW, moduleRef);
+        super(
+            reviewModel,
+            ReviewRating,
+            COLLECTION_NAMES.REVIEW_RATING,
+            moduleRef,
+        );
     }
 
     async createOne(
-        createReviewDto: CreateReviewDto,
+        CreateReviewRatingDto: CreateReviewRatingDto,
         user: UserPayload,
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { app } = createReviewDto;
+        const { app } = CreateReviewRatingDto;
 
         await this.userJustOneReviewEachApp(userId, app);
 
         const result = new this.reviewModel({
-            ...createReviewDto,
+            ...CreateReviewRatingDto,
             ...options,
             createdBy: userId,
         });
