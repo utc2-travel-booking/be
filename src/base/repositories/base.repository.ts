@@ -24,7 +24,6 @@ import { CustomQueryFindAllService } from 'src/packages/super-core/services/cust
 import { CustomQueryFindOneService } from 'src/packages/super-core/services/custom-query-find-one.service';
 import { CustomQueryCountDocumentsService } from 'src/packages/super-core/services/custom-query-count-documents.service';
 
-type MergeType<T, U> = T & U;
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
 @Injectable()
@@ -104,7 +103,11 @@ export class BaseRepositories<T extends Document, E> {
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
     ) {
-        const result = await this.model.updateOne(filter, update, options);
+        const result = await this.model.updateOne(
+            { deletedAt: null, ...filter },
+            update,
+            options,
+        );
         return result as unknown as ResultDoc;
     }
 
@@ -115,7 +118,11 @@ export class BaseRepositories<T extends Document, E> {
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
     ) {
-        const result = await this.model.updateMany(filter, update, options);
+        const result = await this.model.updateMany(
+            { deletedAt: null, ...filter },
+            update,
+            options,
+        );
         return result as unknown as ResultDoc;
     }
 
@@ -127,7 +134,7 @@ export class BaseRepositories<T extends Document, E> {
         options?: QueryOptions<T> | null,
     ) {
         const result = await this.model.findOneAndUpdate(
-            filter,
+            { deletedAt: null, ...filter },
             update,
             options,
         );

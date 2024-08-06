@@ -25,10 +25,18 @@ export const createSearchPipeline = (search: any, searchType: string) => {
 
         if (_.upperCase(operator) === OPERATOR.BETWEEN) {
             const [from, to] = search[key].split(',');
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+
+            if (fromDate.toDateString() === toDate.toDateString()) {
+                fromDate.setHours(0, 0, 0, 0);
+                toDate.setHours(23, 59, 59, 999);
+            }
+
             return {
                 field,
                 operator,
-                value: { from: new Date(from), to: new Date(to) },
+                value: { from: fromDate, to: toDate },
             };
         }
 

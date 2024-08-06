@@ -43,7 +43,7 @@ export class MediaService extends BaseService<FileDocument, File> {
             alt: originalname,
             mime: mimetype,
             size,
-            path: uploadedFile.url,
+            filePath: uploadedFile.url,
             folder,
             createdBy: user._id,
         });
