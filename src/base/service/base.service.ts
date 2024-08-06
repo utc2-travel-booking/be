@@ -88,8 +88,8 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload): Promise<T[]> {
         const { _id: userId } = user;
-        const data = await this.model.find({ _id: { $in: _ids } });
-        await this.model.updateMany(
+        const data = await this.find({ _id: { $in: _ids } }).exec();
+        await this.updateMany(
             { _id: { $in: _ids } },
             { deletedAt: new Date(), deletedBy: userId },
         );
@@ -167,13 +167,13 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     }
 
     async delete(filter: FilterQuery<T>) {
-        return await this.model.updateOne(filter, {
+        return await this.updateOne(filter, {
             deletedAt: new Date(),
         });
     }
 
     async unDelete(filter: FilterQuery<T>) {
-        return this.model.updateMany(filter, {
+        return this.updateMany(filter, {
             deletedAt: null,
         });
     }
