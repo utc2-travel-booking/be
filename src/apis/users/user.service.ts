@@ -16,6 +16,7 @@ import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService
@@ -51,6 +52,25 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+    }
+
+    async createOne(
+        createUserDto: CreateUserDto,
+        user: UserPayload,
+        options?: Record<string, any>,
+    ) {
+        const { _id: userId } = user;
+        const { password } = createUserDto;
+
+        const result = new this.model({
+            ...createUserDto,
+            ...options,
+            createdBy: userId,
+            password: await this.hashPassword(password),
+        });
+        await this.create(result);
+
+        return result;
     }
 
     async validateUserLocal(email: string, password: string) {
@@ -131,6 +151,11 @@ export class UserService
         await this.removeCacheBannedUser(_ids);
 
         return _ids;
+    }
+
+    private async hashPassword(password: string) {
+        const salt = await bcrypt.genSalt(10);
+        return await bcrypt.hash(password, salt);
     }
 
     private async addCacheBannedUser(_ids: Types.ObjectId[]) {
