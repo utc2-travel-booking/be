@@ -9,6 +9,7 @@ export class CustomQueryFindAllService<T extends Document>
     implements ICustomQueryFindAll<T>
 {
     private id: string;
+    private collectionName: COLLECTION_NAMES;
     private model: Model<T>;
     private _conditions: Record<string, any> = {};
     private _pipeline: PipelineStage[] = [];
@@ -27,6 +28,7 @@ export class CustomQueryFindAllService<T extends Document>
         this.model = model;
         this._conditions = conditions;
         this._pipeline = pipeline;
+        this.collectionName = collectionName;
     }
 
     select(fields: Record<string, number>): this {
