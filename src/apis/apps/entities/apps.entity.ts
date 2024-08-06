@@ -19,20 +19,19 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @Prop({ type: MultipleLanguageType, required: true })
-    @MultipleLanguage()
-    name: MultipleLanguageType;
+    @Prop({ type: String, required: true })
+    name: string;
 
     @Prop({ type: MultipleLanguageType })
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @Prop({ type: String, required: true })
-    url: string;
-
     @Prop({ type: MultipleLanguageType })
     @MultipleLanguage()
     caption: MultipleLanguageType;
+
+    @Prop({ type: String, required: true })
+    url: string;
 
     @Prop({ type: [Types.ObjectId], refClass: Category })
     @AutoPopulate({
