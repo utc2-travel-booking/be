@@ -20,9 +20,6 @@ export class File extends AggregateRoot {
     note: string;
 
     @Prop({ type: String })
-    path: string;
-
-    @Prop({ type: String })
     mime: string;
 
     @Prop({ type: Number })

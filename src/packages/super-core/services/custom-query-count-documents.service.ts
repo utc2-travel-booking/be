@@ -51,7 +51,9 @@ export class CustomQueryCountDocumentsService<T extends Document>
 
     @SGetCache()
     async exec(): Promise<number> {
-        const pipeline: PipelineStage[] = [{ $match: this._conditions }];
+        const pipeline: PipelineStage[] = [
+            { $match: { deletedAt: null, ...this._conditions } },
+        ];
 
         if (this._pipeline.length) {
             pipeline.push(...this._pipeline);

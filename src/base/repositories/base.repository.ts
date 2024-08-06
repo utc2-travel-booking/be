@@ -24,7 +24,6 @@ import { CustomQueryFindAllService } from 'src/packages/super-core/services/cust
 import { CustomQueryFindOneService } from 'src/packages/super-core/services/custom-query-find-one.service';
 import { CustomQueryCountDocumentsService } from 'src/packages/super-core/services/custom-query-count-documents.service';
 
-type MergeType<T, U> = T & U;
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
 @Injectable()
@@ -94,12 +93,7 @@ export class BaseRepositories<T extends Document, E> {
     @CreateWithMultipleLanguage()
     @DeleteCache()
     async insertMany<DocContents = T>(docs: Array<T>) {
-        const insertedDocs = await this.model.insertMany(docs);
-
-        return insertedDocs.map((doc) => {
-            const { _id, ...rest } = doc.toObject();
-            return rest as MergeType<T, Omit<DocContents, '_id'>>;
-        });
+        return await this.model.insertMany(docs);
     }
 
     @UpdateWithMultipleLanguage()
@@ -109,7 +103,11 @@ export class BaseRepositories<T extends Document, E> {
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
     ) {
-        const result = await this.model.updateOne(filter, update, options);
+        const result = await this.model.updateOne(
+            { deletedAt: null, ...filter },
+            update,
+            options,
+        );
         return result as unknown as ResultDoc;
     }
 
@@ -120,7 +118,11 @@ export class BaseRepositories<T extends Document, E> {
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
         options?: QueryOptions<T> | null,
     ) {
-        const result = await this.model.updateMany(filter, update, options);
+        const result = await this.model.updateMany(
+            { deletedAt: null, ...filter },
+            update,
+            options,
+        );
         return result as unknown as ResultDoc;
     }
 
@@ -132,7 +134,7 @@ export class BaseRepositories<T extends Document, E> {
         options?: QueryOptions<T> | null,
     ) {
         const result = await this.model.findOneAndUpdate(
-            filter,
+            { deletedAt: null, ...filter },
             update,
             options,
         );

@@ -50,6 +50,7 @@ export function SGetCache() {
                 ...this._filterPipeline,
                 ...this._pipeline,
                 ...(this.id ? { id: this.id } : {}),
+                ...this.collectionName,
                 locale,
             });
 
