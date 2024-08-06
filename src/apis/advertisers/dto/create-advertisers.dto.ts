@@ -21,13 +21,14 @@ export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
     @ApiProperty({
         type: [String],
         description: 'bannerImages image id of the post',
-        default: [],
+        default: ['idMedia1', 'idMedia2'],
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value, true))
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,
         message: 'bannerImages image does not exist',
+        isArray: true,
     })
     bannerImages: Types.ObjectId;
 }

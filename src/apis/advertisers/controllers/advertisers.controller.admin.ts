@@ -20,6 +20,8 @@ import {
     DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
+import _ from 'lodash';
+import { removeDiacritics } from 'src/utils/helper';
 
 @Controller('advertisers')
 @ApiTags('Admin: Advertisers')
@@ -53,7 +55,10 @@ export class AdvertisersControllerAdmin {
         const { user } = req;
 
         const result = await this.advertisersService.createOne(
-            createAdvertiserDto,
+            {
+                ...createAdvertiserDto,
+                slug: _.kebabCase(removeDiacritics(createAdvertiserDto.name)),
+            },
             user,
         );
         return result;

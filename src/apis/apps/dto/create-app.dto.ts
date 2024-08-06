@@ -39,6 +39,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsExist({
         collectionName: COLLECTION_NAMES.CATEGORIES,
         message: 'Category does not exist',
+        isArray: true,
     })
     @IsArray()
     categories: Types.ObjectId[];
@@ -66,6 +67,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,
         message: 'Featured image does not exist',
+        isArray: true,
     })
     previewImages: Types.ObjectId[];
 

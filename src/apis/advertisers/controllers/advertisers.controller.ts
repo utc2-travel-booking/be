@@ -1,4 +1,4 @@
-import { Controller, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Advertiser } from '../entities/advertisers.entity';
@@ -19,6 +19,12 @@ export class AdvertisersController {
         queryParams: ExtendedPagingDto<Advertiser>,
     ) {
         const result = await this.advertisersService.getAll(queryParams);
+        return result;
+    }
+
+    @DefaultGet(':slug')
+    async getOne(@Param('slug') slug: string) {
+        const result = await this.advertisersService.findOne({ slug }).exec();
         return result;
     }
 }

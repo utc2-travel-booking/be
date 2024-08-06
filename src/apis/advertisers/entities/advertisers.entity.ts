@@ -11,8 +11,11 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.ADVERTISER,
 })
 export class Advertiser extends AggregateRoot {
-    @Prop({ type: String })
+    @Prop({ type: String, required: true })
     name: string;
+
+    @Prop({ type: String, unique: true })
+    slug: string;
 
     @Prop({
         type: [Types.ObjectId],

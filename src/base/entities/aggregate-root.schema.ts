@@ -1,6 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { User } from 'src/apis/users/entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from 'src/packages/super-search';
 
