@@ -23,6 +23,8 @@ import { ReviewRatingControllerAdmin } from 'src/apis/review-ratings/controllers
 import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
+import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller';
+import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
 
 @Module({
     imports: [
@@ -40,6 +42,7 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         AppsModule,
         ReviewRatingModule,
         AdvertisersModule,
+        TelegramBotModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -52,6 +55,7 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         AppsControllerAdmin,
         ReviewRatingControllerAdmin,
         AdvertisersControllerAdmin,
+        TelegramBotControllerAdmin,
     ],
     providers: [],
 })

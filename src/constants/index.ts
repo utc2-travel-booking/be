@@ -12,6 +12,7 @@ export enum COLLECTION_NAMES {
     REVIEW_RATING = 'review-ratings',
     ADVERTISER = 'advertisers',
     USER_APP_HISTORY = 'userAppHistories',
+    TELEGRAM_BOT = 'telegramBots',
 }
 
 export const PERMISSIONS = {
@@ -71,6 +72,12 @@ export const PERMISSIONS = {
     },
     REDIS: {
         index: 'admin.redis.destroy',
+    },
+    TELEGRAM_BOT: {
+        index: 'admin.telegramBots.index',
+        create: 'admin.telegramBots.create',
+        edit: 'admin.telegramBots.edit',
+        destroy: 'admin.telegramBots.destroy',
     },
 };
 
