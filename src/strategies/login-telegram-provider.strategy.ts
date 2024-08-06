@@ -3,13 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import _ from 'lodash';
 import { subtle } from 'crypto';
 import { Strategy } from 'passport-custom';
-import { UserLoginTelegramProviderDto } from 'src/apis/auth/dto/user-login-telegram-provider.dto';
 import { appSettings } from 'src/configs/appsettings';
 import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
 
 @Injectable()
-export class LoginTelegramStrategy extends PassportStrategy(
+export class LoginTelegramProviderStrategy extends PassportStrategy(
     Strategy,
     'login-telegram-provider',
 ) {
@@ -19,7 +19,7 @@ export class LoginTelegramStrategy extends PassportStrategy(
 
     async validate(req: Request) {
         try {
-            const body = req.body as Partial<UserLoginTelegramProviderDto>;
+            const body = req.body as Partial<UserLoginTelegramDto>;
             const encoder = new TextEncoder();
             const { hash } = body;
 
@@ -56,9 +56,7 @@ export class LoginTelegramStrategy extends PassportStrategy(
                 throw new UnauthorizedException('Unauthorized');
             }
 
-            const user = await this.userService.createUserTelegramProvider(
-                body,
-            );
+            const user = await this.userService.createUserTelegram(body);
 
             const { _id, role, name } = user;
             const userPayload: UserPayload = {

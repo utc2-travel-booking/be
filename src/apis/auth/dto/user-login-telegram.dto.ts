@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class UserLoginTelegramProviderDto {
+export class UserLoginTelegramDto {
     @ApiProperty({
         description: 'Telegram user id',
         example: 653520423,

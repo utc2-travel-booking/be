@@ -15,7 +15,7 @@ import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
-import { UserLoginTelegramProviderDto } from '../auth/dto/user-login-telegram-provider.dto';
+import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
 import { MediaService } from '../media/medias.service';
 import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
@@ -57,11 +57,11 @@ export class UserService
         }
     }
 
-    async createUserTelegramProvider(
-        userLoginTelegramProviderDto: Partial<UserLoginTelegramProviderDto>,
+    async createUserTelegram(
+        userLoginTelegramDto: Partial<UserLoginTelegramDto>,
     ) {
         const { id, firstName, lastName, username, photoUrl } =
-            userLoginTelegramProviderDto;
+            userLoginTelegramDto;
 
         const user = await this.findOne({ telegramUserId: id }).exec();
 

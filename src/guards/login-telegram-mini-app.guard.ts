@@ -7,7 +7,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class LoginTelegramGuard extends AuthGuard('login-telegram-provider') {
+export class LoginTelegramMiniAppGuard extends AuthGuard(
+    'login-telegram-mini-app',
+) {
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
