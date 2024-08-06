@@ -20,7 +20,7 @@ import {
 } from 'src/base/controllers/base.controller';
 
 @Controller('review-ratings')
-@ApiTags('Admin: Reviews')
+@ApiTags('Admin: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,
     events: [

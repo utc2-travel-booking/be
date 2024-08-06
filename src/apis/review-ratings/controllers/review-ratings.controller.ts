@@ -17,7 +17,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 
 @Controller('review-ratings')
-@ApiTags('Front: Reviews')
+@ApiTags('Front: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,
     events: [
@@ -29,6 +29,15 @@ import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 })
 export class ReviewRatingController {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
+
+    @DefaultGet('overview/:appId')
+    @ApiParam({ name: 'appId', type: String })
+    @Authorize(PERMISSIONS_FRONT.REVIEW.index)
+    async reviewRatingOverviewForApp(
+        @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
+    ) {
+        return await this.reviewRatingService.reviewRatingOverviewForApp(appId);
+    }
 
     @DefaultGet(':appId')
     @ApiParam({ name: 'appId', type: String })
@@ -57,17 +66,4 @@ export class ReviewRatingController {
         );
         return result;
     }
-
-    // @DefaultGet('ratings/:appId')
-    // @ApiParam({ name: 'appId', type: String })
-    // async getAll(
-    //     @Query(new PagingDtoPipe<Review>())
-    //     queryParams: ExtendedPagingDto<Review>,
-    //     @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
-    // ) {
-    //     const result = await this.reviewRatingService.getAll(queryParams, {
-    //         'app._id': appId,
-    //     });
-    //     return result;
-    // }
 }

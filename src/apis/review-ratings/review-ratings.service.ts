@@ -80,4 +80,25 @@ export class ReviewRatingService extends BaseService<
             throw new BadRequestException('You have already reviewed this app');
         }
     }
+
+    async reviewRatingOverviewForApp(appId: Types.ObjectId) {
+        const reviews = await this.find({
+            'app._id': appId,
+        }).exec();
+
+        const totalReviews = reviews.length;
+        const starRatingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+        reviews.forEach((review) => {
+            starRatingDistribution[review.star] += 1;
+        });
+
+        const avgRating = reviews.reduce((acc, review) => acc + review.star, 0);
+
+        return {
+            totalReviews,
+            avgRating,
+            starRatingDistribution,
+        };
+    }
 }
