@@ -70,11 +70,9 @@ export class ReviewRatingService extends BaseService<
         app: Types.ObjectId,
     ) {
         const review = await this.findOne({
-            filter: {
-                'createdBy._id': createdBy,
-                'app._id': app,
-            },
-        });
+            'createdBy._id': createdBy,
+            'app._id': app,
+        }).exec();
 
         if (review) {
             throw new BadRequestException('You have already reviewed this app');
