@@ -1,4 +1,3 @@
-import { PipelineStage } from 'mongoose';
 import { dynamicLookupAggregates } from '../aggregates';
 
 export function DynamicLookup() {
@@ -12,13 +11,9 @@ export function DynamicLookup() {
         descriptor.value = function (...args: any[]) {
             const [filter, pipeline] = args;
 
-            const _pipeline: PipelineStage[] = Array.isArray(pipeline)
-                ? [...pipeline]
-                : [];
+            const _pipeline = dynamicLookupAggregates(this.entity);
 
-            dynamicLookupAggregates(_pipeline, this.entity);
-
-            const updatedArgs = [filter, _pipeline];
+            const updatedArgs = [filter, [..._pipeline, ...(pipeline || [])]];
 
             try {
                 const result = originalMethod.apply(this, updatedArgs);

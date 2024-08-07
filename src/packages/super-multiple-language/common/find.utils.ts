@@ -56,12 +56,10 @@ const traverseEntityMultipleLanguage = (
     });
 };
 
-export const findDocumentMultipleLanguage = (
-    entity: any,
-    pipeline: PipelineStage[],
-    locale?: string,
-) => {
+export const findDocumentMultipleLanguage = (entity: any, locale?: string) => {
     if (locale) {
+        const pipeline: PipelineStage[] = [];
         traverseEntityMultipleLanguage(entity, pipeline, locale);
+        return pipeline;
     }
 };

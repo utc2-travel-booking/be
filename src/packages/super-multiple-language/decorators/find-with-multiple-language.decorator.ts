@@ -27,11 +27,9 @@ export function FindWithMultipleLanguage() {
 
             const [filter, pipeline] = args;
 
-            const _pipeline = Array.isArray(pipeline) ? pipeline : [];
+            const _pipeline = findDocumentMultipleLanguage(this.entity, locale);
 
-            findDocumentMultipleLanguage(this.entity, _pipeline, locale);
-
-            const updatedArgs = [filter, _pipeline];
+            const updatedArgs = [filter, [..._pipeline, ...(pipeline || [])]];
 
             try {
                 const result = originalMethod.apply(this, updatedArgs);

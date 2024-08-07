@@ -14,6 +14,8 @@ import _ from 'lodash';
 import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
 import { APP_EVENT_HANDLER } from '../apps/constants';
 import { ModuleRef } from '@nestjs/core';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import { pagination } from 'src/packages/super-search';
 
 @Injectable()
 export class ReviewRatingService extends BaseService<
@@ -32,6 +34,55 @@ export class ReviewRatingService extends BaseService<
             COLLECTION_NAMES.REVIEW_RATING,
             moduleRef,
         );
+    }
+
+    async getAllForFront(
+        queryParams: ExtendedPagingDto<ReviewRatingDocument>,
+        options?: Record<string, any>,
+    ) {
+        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
+            queryParams;
+
+        const result = this.find(
+            {
+                ...options,
+                deletedAt: null,
+            },
+            [
+                ...filterPipeline,
+                {
+                    $lookup: {
+                        from: 'files',
+                        localField: 'createdBy.avatar',
+                        foreignField: '_id',
+                        as: 'createdBy.avatar',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$createdBy.avatar',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+            ],
+        )
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .exec();
+
+        const total = this.countDocuments(
+            {
+                ...options,
+                deletedAt: null,
+            },
+            filterPipeline,
+        ).exec();
+
+        return Promise.all([result, total]).then(([items, total]) => {
+            const meta = pagination(items, page, limit, total);
+            return { items, meta };
+        });
     }
 
     async createOne(

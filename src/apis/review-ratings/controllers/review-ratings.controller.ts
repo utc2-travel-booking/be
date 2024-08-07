@@ -46,9 +46,12 @@ export class ReviewRatingController {
         queryParams: ExtendedPagingDto<ReviewRating>,
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
     ) {
-        const result = await this.reviewRatingService.getAll(queryParams, {
-            'app._id': appId,
-        });
+        const result = await this.reviewRatingService.getAllForFront(
+            queryParams,
+            {
+                'app._id': appId,
+            },
+        );
         return result;
     }
 
