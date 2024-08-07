@@ -9,6 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model } from 'mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ModuleRef } from '@nestjs/core';
+import { appSettings } from 'src/configs/appsettings';
 
 @Injectable()
 export class TelegramBotService extends BaseService<
@@ -29,6 +30,14 @@ export class TelegramBotService extends BaseService<
     }
 
     async findByDomain(domain: string): Promise<TelegramBotDocument> {
+        if (appSettings.development) {
+            const domains = domain.split('.');
+            if (domains[1] === 'ngrok-free') {
+                return await this.findOne({
+                    domain: 'https://ngrok-free.app',
+                }).exec();
+            }
+        }
         const result = await this.findOne({ domain }).exec();
         return result;
     }

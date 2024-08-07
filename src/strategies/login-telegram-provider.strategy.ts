@@ -7,18 +7,26 @@ import { appSettings } from 'src/configs/appsettings';
 import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
+import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
+import { Request } from 'express';
 
 @Injectable()
 export class LoginTelegramProviderStrategy extends PassportStrategy(
     Strategy,
     'login-telegram-provider',
 ) {
-    constructor(private readonly userService: UserService) {
+    constructor(
+        private readonly userService: UserService,
+        private readonly telegramBotService: TelegramBotService,
+    ) {
         super();
     }
 
-    async validate(req: Request) {
+    async validate(req: Request): Promise<any> {
         try {
+            const domain = req.get('origin');
+            const bot = await this.telegramBotService.findByDomain(domain);
+            const { token } = bot || {};
             const body = req.body as Partial<UserLoginTelegramDto>;
             const encoder = new TextEncoder();
             const { hash } = body;
@@ -31,7 +39,7 @@ export class LoginTelegramProviderStrategy extends PassportStrategy(
 
             const tokenKey = await subtle.digest(
                 'SHA-256',
-                encoder.encode(appSettings.provider.telegram.botToken),
+                encoder.encode(token),
             );
 
             const secretKey = await subtle.importKey(

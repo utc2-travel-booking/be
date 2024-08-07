@@ -965,5 +965,57 @@
         "updatedAt": {
             "$date": "2024-08-03T03:18:54.924Z"
         }
+    },
+    {
+        "_id": {
+            "$oid": "66989f4d38d0c8d572a9975b"
+        },
+        "name": "admin.telegram-bots.index",
+        "collectionName": "Telegram bots",
+        "createdAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66989f4d38d0c8d572a9975c"
+        },
+        "name": "admin.telegram-bots.create",
+        "collectionName": "Telegram bots",
+        "createdAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66989f4d38d0c8d572a9975d"
+        },
+        "name": "admin.telegram-bots.edit",
+        "collectionName": "Telegram bots",
+        "createdAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "66989f4d38d0c8d572a9975e"
+        },
+        "name": "admin.telegram-bots.destroy",
+        "collectionName": "Telegram bots",
+        "createdAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-24T09:29:31.489Z"
+        }
     }
 ]

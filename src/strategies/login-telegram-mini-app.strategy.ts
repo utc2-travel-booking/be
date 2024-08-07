@@ -8,13 +8,17 @@ import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
+import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 
 @Injectable()
 export class LoginTelegramMiniAppStrategy extends PassportStrategy(
     Strategy,
     'login-telegram-mini-app',
 ) {
-    constructor(private readonly userService: UserService) {
+    constructor(
+        private readonly userService: UserService,
+        private readonly telegramBotService: TelegramBotService,
+    ) {
         super();
     }
 
@@ -28,7 +32,9 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
         }
 
         try {
-            const token = appSettings.provider.telegram.botToken;
+            const domain = req.get('origin');
+            const bot = await this.telegramBotService.findByDomain(domain);
+            const { token } = bot || {};
             validate(authData, token, {});
 
             const initData = parse(authData);

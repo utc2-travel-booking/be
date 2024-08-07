@@ -74,10 +74,10 @@ export const PERMISSIONS = {
         index: 'admin.redis.destroy',
     },
     TELEGRAM_BOT: {
-        index: 'admin.telegramBots.index',
-        create: 'admin.telegramBots.create',
-        edit: 'admin.telegramBots.edit',
-        destroy: 'admin.telegramBots.destroy',
+        index: 'admin.telegram-bots.index',
+        create: 'admin.telegram-bots.create',
+        edit: 'admin.telegram-bots.edit',
+        destroy: 'admin.telegram-bots.destroy',
     },
 };
 
