@@ -40,6 +40,19 @@ import { removeDiacritics } from 'src/utils/helper';
 export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
+    // @DefaultGet(':type')
+    // @Authorize(PERMISSIONS.CATEGORIES.index)
+    // async getAllByType(
+    //     @Query(new PagingDtoPipe<Category>())
+    //     queryParams: ExtendedPagingDto<Category>,
+    //     @Param('type') type: CategoryType,
+    // ) {
+    //     const result = await this.categoriesService.getAll(queryParams, {
+    //         type,
+    //     });
+    //     return result;
+    // }
+
     @DefaultGet(':id')
     @Authorize(PERMISSIONS.CATEGORIES.index)
     @ApiParam({ name: 'id', type: String })
@@ -48,86 +61,73 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':type')
-    @Authorize(PERMISSIONS.CATEGORIES.index)
-    async getAllByType(
-        @Query(new PagingDtoPipe<Category>())
-        queryParams: ExtendedPagingDto<Category>,
-        @Param('type') type: CategoryType,
-    ) {
-        const result = await this.categoriesService.getAll(queryParams, {
-            type,
-        });
-        return result;
-    }
+    // @DefaultGet(':type/:id')
+    // @Authorize(PERMISSIONS.CATEGORIES.index)
+    // @ApiParam({ name: 'id', type: String })
+    // async getOneByType(
+    //     @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+    //     @Param('type') type: CategoryType,
+    // ) {
+    //     const result = await this.categoriesService.getOne(_id, { type });
+    //     return result;
+    // }
 
-    @DefaultGet(':type/:id')
-    @Authorize(PERMISSIONS.CATEGORIES.index)
-    @ApiParam({ name: 'id', type: String })
-    async getOneByType(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('type') type: CategoryType,
-    ) {
-        const result = await this.categoriesService.getOne(_id, { type });
-        return result;
-    }
+    // @DefaultPost(':type')
+    // @Authorize(PERMISSIONS.CATEGORIES.create)
+    // async createByType(
+    //     @Body() createCategoryDto: CreateCategoryDto,
+    //     @Req() req: { user: UserPayload },
+    //     @Param('type') type: CategoryType,
+    // ) {
+    //     const { user } = req;
+    //     const { name } = createCategoryDto;
 
-    @DefaultPost(':type')
-    @Authorize(PERMISSIONS.CATEGORIES.create)
-    async createByType(
-        @Body() createCategoryDto: CreateCategoryDto,
-        @Req() req: { user: UserPayload },
-        @Param('type') type: CategoryType,
-    ) {
-        const { user } = req;
-        const { name } = createCategoryDto;
+    //     const result = await this.categoriesService.createOne(
+    //         createCategoryDto,
+    //         user,
+    //         { type, slug: _.kebabCase(removeDiacritics(name)) },
+    //     );
 
-        const result = await this.categoriesService.createOne(
-            createCategoryDto,
-            user,
-            { type, slug: _.kebabCase(removeDiacritics(name)) },
-        );
+    //     return result;
+    // }
 
-        return result;
-    }
+    // @DefaultPut(':type/:id')
+    // @Authorize(PERMISSIONS.CATEGORIES.edit)
+    // @ApiParam({ name: 'id', type: String })
+    // async updateByType(
+    //     @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+    //     @Body() updateCategoryDto: UpdateCategoryDto,
+    //     @Param('type') type: CategoryType,
+    //     @Req() req: { user: UserPayload },
+    // ) {
+    //     const { user } = req;
 
-    @DefaultPut(':type/:id')
-    @Authorize(PERMISSIONS.CATEGORIES.edit)
-    @ApiParam({ name: 'id', type: String })
-    async updateByType(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Body() updateCategoryDto: UpdateCategoryDto,
-        @Param('type') type: CategoryType,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    //     const result = await this.categoriesService.updateOneByIdAndType(
+    //         _id,
+    //         type,
+    //         updateCategoryDto,
+    //         user,
+    //     );
+    //     return result;
+    // }
 
-        const result = await this.categoriesService.updateOneByIdAndType(
-            _id,
-            type,
-            updateCategoryDto,
-            user,
-        );
-        return result;
-    }
+    // @DefaultDelete(':type')
+    // @Authorize(PERMISSIONS.CATEGORIES.destroy)
+    // @ApiQuery({ name: 'ids', type: [String] })
+    // async deletesByType(
+    //     @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
+    //     @Param('type') type: CategoryType,
+    //     @Req() req: { user: UserPayload },
+    // ) {
+    //     const { user } = req;
 
-    @DefaultDelete(':type')
-    @Authorize(PERMISSIONS.CATEGORIES.destroy)
-    @ApiQuery({ name: 'ids', type: [String] })
-    async deletesByType(
-        @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Param('type') type: CategoryType,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
-
-        const result = await this.categoriesService.deleteManyByIdsAndType(
-            _ids,
-            type,
-            user,
-        );
-        return result;
-    }
+    //     const result = await this.categoriesService.deleteManyByIdsAndType(
+    //         _ids,
+    //         type,
+    //         user,
+    //     );
+    //     return result;
+    // }
 
     @DefaultGet()
     @Authorize(PERMISSIONS.CATEGORIES.index)
