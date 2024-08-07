@@ -8,6 +8,8 @@ import {
     MultipleLanguage,
     MultipleLanguageType,
 } from 'src/packages/super-multiple-language';
+import { AutoPopulate } from 'src/packages/super-search';
+import { File } from 'src/apis/media/entities/files.entity';
 
 @Schema({
     timestamps: true,
@@ -17,6 +19,9 @@ export class Category extends AggregateRoot {
     @Prop({ type: MultipleLanguageType, required: true })
     @MultipleLanguage()
     name: MultipleLanguageType;
+
+    @Prop({ type: String, required: true, unique: true })
+    slug: string;
 
     @Prop({ type: MultipleLanguageType })
     @MultipleLanguage()
@@ -33,6 +38,16 @@ export class Category extends AggregateRoot {
 
     @Prop({ type: String, enum: CategoryType })
     type: CategoryType;
+
+    @Prop({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        refClass: File,
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.FILE,
+    })
+    featuredImage: File;
 }
 
 export type CategoryDocument = Category & Document;

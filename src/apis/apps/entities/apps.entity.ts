@@ -22,6 +22,9 @@ export class App extends AggregateRoot {
     @Prop({ type: String, required: true })
     name: string;
 
+    @Prop({ type: String, required: true, unique: true })
+    slug: string;
+
     @Prop({ type: MultipleLanguageType })
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;

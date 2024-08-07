@@ -1,5 +1,6 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import _ from 'lodash';
 import { Types } from 'mongoose';
 import { CategoriesService } from 'src/apis/categories/categories.service';
 import { CategoryType } from 'src/apis/categories/constants';
@@ -23,6 +24,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
+import { removeDiacritics } from 'src/utils/helper';
 
 @Controller('categories')
 @ApiTags('Admin: Categories')
@@ -70,11 +72,12 @@ export class CategoriesControllerAdmin {
         @Param('type') type: CategoryType,
     ) {
         const { user } = req;
+        const { name } = createCategoryDto;
 
         const result = await this.categoriesService.createOne(
             createCategoryDto,
             user,
-            { type },
+            { type, slug: _.kebabCase(removeDiacritics(name)) },
         );
 
         return result;

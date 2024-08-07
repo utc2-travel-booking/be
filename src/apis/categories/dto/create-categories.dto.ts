@@ -30,4 +30,17 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
         message: 'Parent category does not exist',
     })
     parent: Types.ObjectId;
+
+    @ApiProperty({
+        type: String,
+        description: 'Featured image id of the post',
+        default: '60f3b3b3b3b3b3b3b3b3b3',
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'Featured image does not exist',
+    })
+    featuredImage: Types.ObjectId;
 }

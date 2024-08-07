@@ -22,6 +22,8 @@ import {
     DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
+import _ from 'lodash';
+import { removeDiacritics } from 'src/utils/helper';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -62,8 +64,11 @@ export class AppsControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = createAppDto;
 
-        const result = await this.appsService.createOne(createAppDto, user);
+        const result = await this.appsService.createOne(createAppDto, user, {
+            slug: _.kebabCase(removeDiacritics(name)),
+        });
         return result;
     }
 
