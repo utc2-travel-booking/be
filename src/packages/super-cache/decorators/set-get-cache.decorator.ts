@@ -47,12 +47,11 @@ export function SGetCache() {
             const locale = _.get(query, 'locale', appSettings.mainLanguage);
 
             const key = generateKey({
-                ...this._filterPipeline,
-                ...this._pipeline,
-                ...(this.id ? { id: this.id } : {}),
-                ...this.collectionName,
+                _pipeline: this._pipeline,
+                _conditions: this._conditions,
+                id: this.id,
+                collectionName: this.collectionName,
                 locale,
-                ...this.collectionName,
             });
 
             await createRedisFolderCollection(
