@@ -40,6 +40,14 @@ import { removeDiacritics } from 'src/utils/helper';
 export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
+    @DefaultGet(':id')
+    @Authorize(PERMISSIONS.CATEGORIES.index)
+    @ApiParam({ name: 'id', type: String })
+    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
+        const result = await this.categoriesService.getOne(_id);
+        return result;
+    }
+
     @DefaultGet(':type')
     @Authorize(PERMISSIONS.CATEGORIES.index)
     async getAllByType(
@@ -128,14 +136,6 @@ export class CategoriesControllerAdmin {
         queryParams: ExtendedPagingDto<Category>,
     ) {
         const result = await this.categoriesService.getAll(queryParams);
-        return result;
-    }
-
-    @DefaultGet(':id')
-    @Authorize(PERMISSIONS.CATEGORIES.index)
-    @ApiParam({ name: 'id', type: String })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.categoriesService.getOne(_id);
         return result;
     }
 
