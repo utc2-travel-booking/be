@@ -88,6 +88,9 @@ export const PERMISSIONS = {
         edit: 'admin.tags.edit',
         destroy: 'admin.tags.destroy',
     },
+    USER_TRANSACTION: {
+        index: 'admin.user-transactions.index',
+    },
 };
 
 export const PERMISSIONS_FRONT = {

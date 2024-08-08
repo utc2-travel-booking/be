@@ -12,6 +12,9 @@ import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import _ from 'lodash';
 import { pagination } from 'src/packages/super-search';
 import { ModuleRef } from '@nestjs/core';
+import { UserService } from '../users/user.service';
+import { AddPointForUserDto } from './models/add-point-for-user.model';
+import { UserTransactionType } from '../user-transaction/constants';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -20,6 +23,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         private readonly appModel: Model<AppDocument>,
         moduleRef: ModuleRef,
         private readonly userAppHistoriesService: UserAppHistoriesService,
+        private readonly userServices: UserService,
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }

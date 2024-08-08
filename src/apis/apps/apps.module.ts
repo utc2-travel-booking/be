@@ -5,6 +5,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { AppSchema } from './entities/apps.entity';
 import { AppEvent } from './event-handlers/apps.event';
 import { UserAppHistoriesModule } from '../user-app-histories/user-app-histories.module';
+import { UserModule } from '../users/user.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { UserAppHistoriesModule } from '../user-app-histories/user-app-histories
             { name: COLLECTION_NAMES.APP, schema: AppSchema },
         ]),
         UserAppHistoriesModule,
+        UserModule,
     ],
     controllers: [],
     providers: [AppsService, AppEvent],
