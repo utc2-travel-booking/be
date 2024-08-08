@@ -29,6 +29,8 @@ import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
 import { NotificationsControllerAdmin } from 'src/apis/notifications/controllers/notifications.controller.admin';
 import { NotificationsModule } from 'src/apis/notifications/notifications.module';
+import { TagAppsControllerAdmin } from 'src/apis/tag-apps/controllers/tag-apps.controller.admin';
+import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
 
 @Module({
     imports: [
@@ -49,6 +51,7 @@ import { NotificationsModule } from 'src/apis/notifications/notifications.module
         TelegramBotModule,
         TagsModule,
         NotificationsModule,
+        TagAppsModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -64,6 +67,7 @@ import { NotificationsModule } from 'src/apis/notifications/notifications.module
         TelegramBotControllerAdmin,
         TagsControllerAdmin,
         NotificationsControllerAdmin,
+        TagAppsControllerAdmin,
     ],
     providers: [],
 })

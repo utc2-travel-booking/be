@@ -96,11 +96,16 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         return data;
     }
 
-    async updateOneById(_id: Types.ObjectId, payload: any, user: UserPayload) {
+    async updateOneById(
+        _id: Types.ObjectId,
+        payload: any,
+        user: UserPayload,
+        options?: Record<string, any>,
+    ) {
         const { _id: userId } = user;
         const result = await this.findOneAndUpdate(
             { _id },
-            { ...payload, updatedBy: userId },
+            { ...payload, ...options, updatedBy: userId },
             { new: true },
         );
 

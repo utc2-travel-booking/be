@@ -14,6 +14,7 @@ export enum COLLECTION_NAMES {
     USER_APP_HISTORY = 'userAppHistories',
     TELEGRAM_BOT = 'telegramBots',
     TAG = 'tags',
+    TAG_APP = 'tagApps',
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
 }

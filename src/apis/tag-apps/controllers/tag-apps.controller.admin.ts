@@ -1,37 +1,30 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { TagsService } from '../tags.service';
-import _ from 'lodash';
-import { Types } from 'mongoose';
+import { TagAppsService } from '../tag-apps.service';
 import {
+    DefaultDelete,
     DefaultGet,
     DefaultPost,
     DefaultPut,
-    DefaultDelete,
 } from 'src/base/controllers/base.controller';
-import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
+import _ from 'lodash';
+import { Types } from 'mongoose';
+import { UserPayload } from 'src/base/models/user-payload.model';
+import { PERMISSIONS } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { removeDiacritics } from 'src/utils/helper';
-import { CreateTagDto } from '../dto/create-tags.dto';
-import { UpdateTagDto } from '../dto/update-tags.dto';
-import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
-import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { CreateTagAppDto } from '../dto/create-tag-apps.dto';
+import { UpdateTagAppDto } from '../dto/update-tag-apps.dto';
 
-@Controller('tags')
-@ApiTags('Admin: Tags')
-@AuditLog({
-    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
-    refSource: COLLECTION_NAMES.TAG,
-})
-export class TagsControllerAdmin {
-    constructor(private readonly tagsService: TagsService) {}
+@Controller('tag-apps')
+@ApiTags('Admin: Tag Apps')
+export class TagAppsControllerAdmin {
+    constructor(private readonly tagAppsService: TagAppsService) {}
 
     @DefaultGet()
     @Authorize(PERMISSIONS.TAG.index)
@@ -39,7 +32,7 @@ export class TagsControllerAdmin {
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
     ) {
-        const result = await this.tagsService.getAll(queryParams);
+        const result = await this.tagAppsService.getAll(queryParams);
         return result;
     }
 
@@ -47,22 +40,22 @@ export class TagsControllerAdmin {
     @Authorize(PERMISSIONS.TAG.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.tagsService.getOne(_id);
+        const result = await this.tagAppsService.getOne(_id);
         return result;
     }
 
     @DefaultPost()
     @Authorize(PERMISSIONS.TAG.create)
     async create(
-        @Body() createTagDto: CreateTagDto,
+        @Body() createTagAppDto: CreateTagAppDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const { name } = createTagDto;
 
-        const result = await this.tagsService.createOne(createTagDto, user, {
-            slug: _.kebabCase(removeDiacritics(name)),
-        });
+        const result = await this.tagAppsService.createOne(
+            createTagAppDto,
+            user,
+        );
         return result;
     }
 
@@ -71,19 +64,15 @@ export class TagsControllerAdmin {
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Body() updateTagDto: UpdateTagDto,
+        @Body() updateTagAppDto: UpdateTagAppDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const { name } = updateTagDto;
 
-        const result = await this.tagsService.updateOneById(
+        const result = await this.tagAppsService.updateOneById(
             _id,
-            updateTagDto,
+            updateTagAppDto,
             user,
-            {
-                slug: _.kebabCase(removeDiacritics(name)),
-            },
         );
 
         return result;
@@ -98,7 +87,7 @@ export class TagsControllerAdmin {
     ) {
         const { user } = req;
 
-        const result = await this.tagsService.deletes(_ids, user);
+        const result = await this.tagAppsService.deletes(_ids, user);
         return result;
     }
 }
