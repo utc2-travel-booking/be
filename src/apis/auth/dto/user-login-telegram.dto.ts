@@ -14,7 +14,7 @@ export class UserLoginTelegramDto {
         description: 'Telegram user first name',
         example: 'John',
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     first_name: string;
 
@@ -22,7 +22,7 @@ export class UserLoginTelegramDto {
         description: 'Telegram user last name',
         example: 'Doe',
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     last_name: string;
 
