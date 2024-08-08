@@ -3,7 +3,7 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import {
     PagingDtoPipe,
@@ -13,7 +13,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
 import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
-import { Advertiser } from '../entities/advertisers.entity';
 import {
     DefaultDelete,
     DefaultGet,
@@ -22,9 +21,15 @@ import {
 } from 'src/base/controllers/base.controller';
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('advertisers')
 @ApiTags('Admin: Advertisers')
+@AuditLog({
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.ADVERTISER,
+})
 export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 

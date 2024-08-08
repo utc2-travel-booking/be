@@ -15,12 +15,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 @Controller('user-transactions')
 @ApiTags('Admin: User Transactions')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.USER_TRANSACTION,
 })
 export class UserTransactionControllerAdmin {

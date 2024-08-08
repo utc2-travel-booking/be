@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
 import {
@@ -10,19 +10,13 @@ import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
-import { Category } from 'aws-sdk/clients/cloudformation';
 import { CategoryType } from '../constants';
 import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.CATEGORIES,
 })
 export class CategoriesController {

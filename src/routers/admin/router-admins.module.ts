@@ -27,6 +27,8 @@ import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/te
 import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
 import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
+import { NotificationsControllerAdmin } from 'src/apis/notifications/controllers/notifications.controller.admin';
+import { NotificationsModule } from 'src/apis/notifications/notifications.module';
 
 @Module({
     imports: [
@@ -46,6 +48,7 @@ import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.a
         AdvertisersModule,
         TelegramBotModule,
         TagsModule,
+        NotificationsModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -60,6 +63,7 @@ import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.a
         AdvertisersControllerAdmin,
         TelegramBotControllerAdmin,
         TagsControllerAdmin,
+        NotificationsControllerAdmin,
     ],
     providers: [],
 })

@@ -1,17 +1,8 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -20,14 +11,24 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { Types } from 'mongoose';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateStatusNotificationDto } from '../dto/update-status-notifications.dto';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('notifications')
 @ApiTags('Front: Notifications')
+@AuditLog({
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.NOTIFICATION,
+})
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -43,8 +44,7 @@ export class NotificationsController {
         return result;
     }
 
-    @Put('read')
-    @ApiBearerAuth()
+    @DefaultPut('read')
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
@@ -60,8 +60,7 @@ export class NotificationsController {
         return result;
     }
 
-    @Delete(':id')
-    @ApiBearerAuth()
+    @DefaultDelete(':id')
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.destroy)
     @ApiParam({ name: 'id', type: String })
     async deleteOne(

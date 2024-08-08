@@ -10,7 +10,7 @@ import {
     DefaultDelete,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import {
     PagingDtoPipe,
@@ -19,12 +19,17 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { removeDiacritics } from 'src/utils/helper';
-import { Tag } from '../entities/tags.entity';
 import { CreateTagDto } from '../dto/create-tags.dto';
 import { UpdateTagDto } from '../dto/update-tags.dto';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('tags')
 @ApiTags('Admin: Tags')
+@AuditLog({
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.TAG,
+})
 export class TagsControllerAdmin {
     constructor(private readonly tagsService: TagsService) {}
 

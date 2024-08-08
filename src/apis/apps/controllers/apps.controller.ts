@@ -19,12 +19,7 @@ import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 @Controller('apps')
 @ApiTags('Front: Apps')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.APP,
 })
 export class AppsController {

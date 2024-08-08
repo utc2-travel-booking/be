@@ -9,7 +9,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { ReviewRating } from '../entities/review-ratings.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -20,12 +19,7 @@ import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 @ApiTags('Front: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
 })
 export class ReviewRatingController {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}

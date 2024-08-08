@@ -5,7 +5,6 @@ import { Types } from 'mongoose';
 import { CategoriesService } from 'src/apis/categories/categories.service';
 import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto';
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
-import { Category } from 'src/apis/categories/entities/categories.entity';
 import {
     DefaultDelete,
     DefaultGet,
@@ -28,12 +27,7 @@ import { removeDiacritics } from 'src/utils/helper';
 @Controller('categories')
 @ApiTags('Admin: Categories')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.CATEGORIES,
 })
 export class CategoriesControllerAdmin {

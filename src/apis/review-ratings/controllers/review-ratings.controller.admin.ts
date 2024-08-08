@@ -23,12 +23,7 @@ import {
 @ApiTags('Admin: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
 })
 export class ReviewRatingControllerAdmin {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}

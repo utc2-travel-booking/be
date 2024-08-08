@@ -91,6 +91,12 @@ export const PERMISSIONS = {
     USER_TRANSACTION: {
         index: 'admin.user-transactions.index',
     },
+    NOTIFICATION: {
+        index: 'admin.notifications.index',
+        create: 'admin.notifications.create',
+        edit: 'admin.notifications.edit',
+        destroy: 'admin.notifications.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {

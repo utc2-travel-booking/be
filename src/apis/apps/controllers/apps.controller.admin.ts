@@ -28,12 +28,7 @@ import { removeDiacritics } from 'src/utils/helper';
 @Controller('apps')
 @ApiTags('Admin: Apps')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.APP,
 })
 export class AppsControllerAdmin {

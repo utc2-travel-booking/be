@@ -8,9 +8,16 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { DefaultGet } from 'src/base/controllers/base.controller';
 import { populateGroupBannerImageAggregate } from '../common/populate-group-banner-image.aggregate';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 
 @Controller('advertisers')
 @ApiTags('Front: Advertisers')
+@AuditLog({
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.ADVERTISER,
+})
 export class AdvertisersController {
     constructor(private readonly advertisersService: AdvertisersService) {}
 

@@ -17,12 +17,7 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
 @Controller('posts')
 @ApiTags('Front: Posts')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,
 })
 export class PostsController {

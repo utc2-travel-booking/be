@@ -26,12 +26,7 @@ import {
 @Controller('roles')
 @ApiTags('Admin: Roles')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.ROLE,
 })
 export class RolesControllerAdmin {

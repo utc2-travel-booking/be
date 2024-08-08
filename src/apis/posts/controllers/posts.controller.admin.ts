@@ -27,12 +27,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 @Controller('posts')
 @ApiTags('Admin: Posts')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.POST,
 })
 export class PostsControllerAdmin {

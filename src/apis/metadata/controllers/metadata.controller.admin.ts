@@ -8,12 +8,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 @Controller('metadata')
 @ApiTags('Admin: Metadata')
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.METADATA,
 })
 export class MetadataControllerAdmin {
