@@ -49,7 +49,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         );
     }
 
-    async getAppPublish(_id: Types.ObjectId, userPayload: UserPayload) {
+    async getOneAppPublish(_id: Types.ObjectId, userPayload: UserPayload) {
         const { _id: userId } = userPayload;
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);

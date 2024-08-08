@@ -46,7 +46,7 @@ export class AppsController {
     }
 
     @DefaultGet()
-    async getAll(
+    async getAllForFront(
         @Query(new PagingDtoPipe<App>())
         queryParams: ExtendedPagingDto<App>,
     ) {
@@ -57,12 +57,12 @@ export class AppsController {
     @DefaultGet(':id')
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async getAppPublish(
+    async getOneAppPublish(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.appsService.getAppPublish(_id, user);
+        const result = await this.appsService.getOneAppPublish(_id, user);
         return result;
     }
 }
