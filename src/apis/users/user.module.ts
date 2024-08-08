@@ -7,6 +7,7 @@ import { RolesModule } from '../roles/roles.module';
 import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { UserTransactionModule } from '../user-transaction/user-transaction.modu
         SuperCacheModule,
         MediaModule,
         UserTransactionModule,
+        forwardRef(() => NotificationsModule),
     ],
     controllers: [],
     providers: [UserService],

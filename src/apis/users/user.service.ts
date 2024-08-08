@@ -1,4 +1,6 @@
 import {
+    forwardRef,
+    Inject,
     Injectable,
     OnModuleInit,
     UnprocessableEntityException,
@@ -23,6 +25,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
+import { NotificationsService } from '../notifications/notifications.service';
+import { AppDocument } from '../apps/entities/apps.entity';
 
 @Injectable()
 export class UserService
@@ -37,6 +41,8 @@ export class UserService
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
+        @Inject(forwardRef(() => NotificationsService))
+        private readonly notificationService: NotificationsService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -64,10 +70,12 @@ export class UserService
 
     async addPointForUser(
         addPointForUserDto: AddPointForUserDto,
+        appDocument: AppDocument,
         userPayload: UserPayload,
     ) {
         const { _id: userId } = userPayload;
         const { point, type, description, app } = addPointForUserDto;
+        const { name: appName } = appDocument;
 
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
@@ -107,6 +115,15 @@ export class UserService
                 },
             );
         }
+
+        await this.notificationService.create({
+            name: `+${point}`,
+            shortDescription: `You open ${appName}`,
+            user: userId,
+            refId: app,
+            refSource: COLLECTION_NAMES.APP,
+        });
+
         return await this.getMe(userPayload);
     }
 

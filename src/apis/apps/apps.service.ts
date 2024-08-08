@@ -28,16 +28,19 @@ export class AppsService extends BaseService<AppDocument, App> {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
 
-    async openApp(app: Types.ObjectId, userPayload: UserPayload) {
+    async openApp(appId: Types.ObjectId, userPayload: UserPayload) {
+        const app = await this.findOne({ _id: appId }).exec();
+
         const addPointForUserDto: AddPointForUserDto = {
             point: 10,
             type: UserTransactionType.SUM,
             description: 'Open app',
-            app,
+            app: appId,
         };
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,
+            app,
             userPayload,
         );
     }
