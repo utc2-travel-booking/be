@@ -6,6 +6,8 @@ import { AppSchema } from './entities/apps.entity';
 import { AppEvent } from './event-handlers/apps.event';
 import { UserAppHistoriesModule } from '../user-app-histories/user-app-histories.module';
 import { UserModule } from '../users/user.module';
+import { TagAppsModule } from '../tag-apps/tag-apps.module';
+import { TagsModule } from '../tags/tags.module';
 
 @Module({
     imports: [
@@ -14,6 +16,8 @@ import { UserModule } from '../users/user.module';
         ]),
         UserAppHistoriesModule,
         UserModule,
+        TagAppsModule,
+        TagsModule,
     ],
     controllers: [],
     providers: [AppsService, AppEvent],

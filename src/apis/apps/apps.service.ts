@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    UnprocessableEntityException,
+} from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import { App, AppDocument } from './entities/apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,6 +19,8 @@ import { ModuleRef } from '@nestjs/core';
 import { UserService } from '../users/user.service';
 import { AddPointForUserDto } from './models/add-point-for-user.model';
 import { UserTransactionType } from '../user-transaction/constants';
+import { TagAppsService } from '../tag-apps/tag-apps.service';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -24,8 +30,47 @@ export class AppsService extends BaseService<AppDocument, App> {
         moduleRef: ModuleRef,
         private readonly userAppHistoriesService: UserAppHistoriesService,
         private readonly userServices: UserService,
+        private readonly tagAppsService: TagAppsService,
+        private readonly tagService: TagsService,
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
+    }
+
+    async getAppsByTag(tagSlug: string, queryParams: ExtendedPagingDto) {
+        const tag = await this.tagService.findOne({ slug: tagSlug }).exec();
+
+        if (!tag) {
+            throw new BadRequestException(`Not found tag ${tagSlug}`);
+        }
+
+        const { page, limit, skip, filterPipeline } = queryParams;
+
+        const tagApps = this.tagAppsService
+            .find(
+                {
+                    'tag._id': tag._id,
+                },
+                filterPipeline,
+            )
+            .limit(limit)
+            .skip(skip)
+            .sort({ position: 1 })
+            .exec();
+
+        const total = this.tagAppsService
+            .countDocuments(
+                {
+                    'tag._id': tag._id,
+                },
+                filterPipeline,
+            )
+            .exec();
+
+        return Promise.all([tagApps, total]).then(([result, total]) => {
+            const meta = pagination(result, page, limit, total);
+            const items = result.map((item) => item.app);
+            return { items, meta };
+        });
     }
 
     async openApp(appId: Types.ObjectId, userPayload: UserPayload) {

@@ -1,5 +1,4 @@
 import { Controller, Param, Query, Req } from '@nestjs/common';
-
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -10,7 +9,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -24,6 +22,19 @@ import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 })
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
+
+    @DefaultGet('tags/:tagSlug')
+    async getAppsByTag(
+        @Param('tagSlug') tagSlug: string,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+    ) {
+        const result = await this.appsService.getAppsByTag(
+            tagSlug,
+            queryParams,
+        );
+        return result;
+    }
 
     @DefaultPost(':id/open')
     @Authorize(PERMISSIONS_FRONT.APP.index)

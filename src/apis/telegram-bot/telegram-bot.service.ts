@@ -29,6 +29,10 @@ export class TelegramBotService extends BaseService<
     }
 
     async findByDomain(domain: string): Promise<TelegramBotDocument> {
+        if (!domain) {
+            return null;
+        }
+
         if (appSettings.development) {
             const domains = domain.split('.');
             if (domains[1] === 'ngrok-free') {
