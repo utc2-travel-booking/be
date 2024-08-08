@@ -22,9 +22,6 @@ export class Tag extends AggregateRoot {
     @Prop({ type: String, required: true, unique: true })
     slug: string;
 
-    @Prop({ type: Number, default: 0 })
-    position: number;
-
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,

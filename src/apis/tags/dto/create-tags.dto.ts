@@ -46,13 +46,4 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
         message: 'Featured image does not exist',
     })
     featuredImage: Types.ObjectId;
-
-    @ApiProperty({
-        type: Number,
-        description: 'Position of the tag',
-        default: 0,
-    })
-    @IsOptional()
-    @IsNumber()
-    position: number;
 }
