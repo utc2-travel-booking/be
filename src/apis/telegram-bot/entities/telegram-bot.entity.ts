@@ -9,14 +9,14 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.TELEGRAM_BOT,
 })
 export class TelegramBot extends AggregateRoot {
+    @Prop()
+    name: string;
+
     @Prop({ required: true })
     token: string;
 
     @Prop()
     botId: string;
-
-    @Prop()
-    name: string;
 
     @Prop()
     domain: string;

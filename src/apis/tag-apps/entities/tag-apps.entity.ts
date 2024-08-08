@@ -18,7 +18,7 @@ export class TagApp extends AggregateRoot {
         refClass: Tag,
     })
     @AutoPopulate({
-        ref: COLLECTION_NAMES.FILE,
+        ref: COLLECTION_NAMES.TAG,
     })
     tag: TagDocument;
 
@@ -32,7 +32,7 @@ export class TagApp extends AggregateRoot {
     })
     app: AppDocument;
 
-    @Prop({ type: Number, default: 0 })
+    @Prop({ type: Number, default: 1 })
     position: number;
 }
 
