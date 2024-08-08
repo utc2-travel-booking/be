@@ -42,8 +42,8 @@ export class ReviewRatingController {
     @DefaultGet(':appId')
     @ApiParam({ name: 'appId', type: String })
     async getAll(
-        @Query(new PagingDtoPipe<ReviewRating>())
-        queryParams: ExtendedPagingDto<ReviewRating>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
     ) {
         const result = await this.reviewRatingService.getAllForFront(

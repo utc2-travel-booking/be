@@ -78,7 +78,7 @@ export class AppsService extends BaseService<AppDocument, App> {
     }
 
     async getUserAppHistories(
-        queryParams: ExtendedPagingDto<App>,
+        queryParams: ExtendedPagingDto,
         user: UserPayload,
     ) {
         const { _id: userId } = user;

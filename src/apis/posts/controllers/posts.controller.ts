@@ -30,8 +30,8 @@ export class PostsController {
 
     @DefaultGet(':type')
     async getAll(
-        @Query(new PagingDtoPipe<PostEntity>())
-        queryParams: ExtendedPagingDto<PostEntity>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
         @Param('type') type: PostType,
     ) {
         const result = await this.postsService.getAllForFront(queryParams, {

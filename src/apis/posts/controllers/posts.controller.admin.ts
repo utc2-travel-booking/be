@@ -47,8 +47,8 @@ export class PostsControllerAdmin {
         description: 'The locale of the content',
     })
     async getAll(
-        @Query(new PagingDtoPipe<PostEntity>())
-        queryParams: ExtendedPagingDto<PostEntity>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
         @Param('type') type: PostType,
     ) {
         const result = await this.postsService.getAll(queryParams, { type });

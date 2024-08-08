@@ -33,8 +33,8 @@ export class AppsController {
     @DefaultGet('user-history')
     @Authorize(PERMISSIONS_FRONT.APP.index)
     async getUserAppHistories(
-        @Query(new PagingDtoPipe<App>())
-        queryParams: ExtendedPagingDto<App>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
@@ -47,8 +47,8 @@ export class AppsController {
 
     @DefaultGet()
     async getAllForFront(
-        @Query(new PagingDtoPipe<App>())
-        queryParams: ExtendedPagingDto<App>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.appsService.getAllForFront(queryParams);
         return result;

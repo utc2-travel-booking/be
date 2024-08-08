@@ -18,6 +18,8 @@ import { ReviewRatingController } from 'src/apis/review-ratings/controllers/revi
 import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
 import { AdvertisersController } from 'src/apis/advertisers/controllers/advertisers.controller';
+import { TagsModule } from 'src/apis/tags/tags.module';
+import { TagsController } from 'src/apis/tags/controllers/tags.controller';
 
 @Module({
     imports: [
@@ -31,6 +33,7 @@ import { AdvertisersController } from 'src/apis/advertisers/controllers/advertis
         AppsModule,
         ReviewRatingModule,
         AdvertisersModule,
+        TagsModule,
     ],
     controllers: [
         UserController,
@@ -42,6 +45,7 @@ import { AdvertisersController } from 'src/apis/advertisers/controllers/advertis
         AppsController,
         ReviewRatingController,
         AdvertisersController,
+        TagsController,
     ],
     providers: [],
 })

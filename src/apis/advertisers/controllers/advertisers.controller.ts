@@ -15,8 +15,8 @@ export class AdvertisersController {
 
     @DefaultGet()
     async getAll(
-        @Query(new PagingDtoPipe<Advertiser>())
-        queryParams: ExtendedPagingDto<Advertiser>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.advertisersService.getAll(queryParams);
         return result;

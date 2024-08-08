@@ -7,7 +7,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Audit } from '../entity/audits.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { DefaultGet } from 'src/base/controllers/base.controller';
@@ -20,8 +19,8 @@ export class AuditsControllerAdmin {
     @DefaultGet()
     @Authorize(PERMISSIONS.AUDIT.index)
     async getAll(
-        @Query(new PagingDtoPipe<Audit>())
-        queryParams: ExtendedPagingDto<Audit>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.auditsService.getAll(queryParams);
         return result;

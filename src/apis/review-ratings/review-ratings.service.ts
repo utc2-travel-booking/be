@@ -37,7 +37,7 @@ export class ReviewRatingService extends BaseService<
     }
 
     async getAllForFront(
-        queryParams: ExtendedPagingDto<ReviewRatingDocument>,
+        queryParams: ExtendedPagingDto,
         options?: Record<string, any>,
     ) {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =

@@ -50,8 +50,8 @@ export class CategoriesControllerAdmin {
     @DefaultGet()
     @Authorize(PERMISSIONS.CATEGORIES.index)
     async getAll(
-        @Query(new PagingDtoPipe<Category>())
-        queryParams: ExtendedPagingDto<Category>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.categoriesService.getAll(queryParams);
         return result;
