@@ -74,6 +74,12 @@ export class User extends AggregateRoot {
         required: false,
     })
     telegramUsername: string;
+
+    @Prop({
+        type: Number,
+        default: 0,
+    })
+    currentPoint: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
