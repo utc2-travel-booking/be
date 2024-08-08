@@ -31,6 +31,8 @@ import { NotificationsControllerAdmin } from 'src/apis/notifications/controllers
 import { NotificationsModule } from 'src/apis/notifications/notifications.module';
 import { TagAppsControllerAdmin } from 'src/apis/tag-apps/controllers/tag-apps.controller.admin';
 import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
+import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/controllers/user-transaction.controller.admin';
+import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 
 @Module({
     imports: [
@@ -52,6 +54,7 @@ import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
         TagsModule,
         NotificationsModule,
         TagAppsModule,
+        UserTransactionModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -68,6 +71,7 @@ import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
         TagsControllerAdmin,
         NotificationsControllerAdmin,
         TagAppsControllerAdmin,
+        UserTransactionControllerAdmin,
     ],
     providers: [],
 })
