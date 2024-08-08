@@ -91,4 +91,13 @@ export class NotificationsService extends BaseService<
         );
         return result;
     }
+
+    async updateAllStatus(user: UserPayload) {
+        const { _id } = user;
+
+        await this.updateMany(
+            { user: _id },
+            { status: UserNotificationStatus.READ },
+        );
+    }
 }

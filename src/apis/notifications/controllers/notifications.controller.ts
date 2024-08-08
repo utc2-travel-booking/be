@@ -60,6 +60,15 @@ export class NotificationsController {
         return result;
     }
 
+    @DefaultPut('read/all')
+    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    async updateAllStatus(@Req() req: { user: UserPayload }) {
+        const { user } = req;
+
+        const result = await this.notificationsService.updateAllStatus(user);
+        return result;
+    }
+
     @DefaultDelete(':id')
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.destroy)
     @ApiParam({ name: 'id', type: String })
