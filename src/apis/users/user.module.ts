@@ -6,6 +6,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { RolesModule } from '../roles/roles.module';
 import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 import { MediaModule } from '../media/medias.module';
+import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { MediaModule } from '../media/medias.module';
         forwardRef(() => RolesModule),
         SuperCacheModule,
         MediaModule,
+        UserTransactionModule,
     ],
     controllers: [],
     providers: [UserService],

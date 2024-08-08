@@ -14,6 +14,7 @@ export enum COLLECTION_NAMES {
     USER_APP_HISTORY = 'userAppHistories',
     TELEGRAM_BOT = 'telegramBots',
     TAG = 'tags',
+    USER_TRANSACTION = 'userTransactions',
 }
 
 export const PERMISSIONS = {
@@ -85,6 +86,9 @@ export const PERMISSIONS = {
         create: 'admin.tags.create',
         edit: 'admin.tags.edit',
         destroy: 'admin.tags.destroy',
+    },
+    USER_TRANSACTION: {
+        index: 'admin.user-transactions.index',
     },
 };
 

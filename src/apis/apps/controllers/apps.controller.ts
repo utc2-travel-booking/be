@@ -14,7 +14,7 @@ import { App } from '../entities/apps.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -29,6 +29,18 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
 })
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
+
+    @DefaultPost(':id/open')
+    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @ApiParam({ name: 'id', type: String })
+    async openApp(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.openApp(_id, user);
+        return result;
+    }
 
     @DefaultGet('user-history')
     @Authorize(PERMISSIONS_FRONT.APP.index)
