@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { File } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
-import { AutoPopulate } from 'src/packages/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+
+export class BannerImage {
+    @Prop({ type: String, required: true })
+    urlRedirect: string;
+
+    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, required: true })
+    file: Types.ObjectId;
+}
 
 @Schema({
     timestamps: true,
@@ -18,15 +24,9 @@ export class Advertiser extends AggregateRoot {
     slug: string;
 
     @Prop({
-        type: [Types.ObjectId],
-        ref: COLLECTION_NAMES.FILE,
-        refClass: File,
+        type: [BannerImage],
     })
-    @AutoPopulate({
-        ref: COLLECTION_NAMES.FILE,
-        isArray: true,
-    })
-    bannerImages: File[];
+    bannerImages: BannerImage[];
 }
 
 export type AdvertiserDocument = Advertiser & Document;

@@ -7,6 +7,7 @@ import {
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
 import { DefaultGet } from 'src/base/controllers/base.controller';
+import { populateGroupBannerImageAggregate } from '../common/populate-group-banner-image.aggregate';
 
 @Controller('advertisers')
 @ApiTags('Front: Advertisers')
@@ -23,8 +24,10 @@ export class AdvertisersController {
     }
 
     @DefaultGet(':slug')
-    async getOne(@Param('slug') slug: string) {
-        const result = await this.advertisersService.findOne({ slug }).exec();
+    async getOneBySlug(@Param('slug') slug: string) {
+        const result = await this.advertisersService
+            .findOne({ slug }, populateGroupBannerImageAggregate)
+            .exec();
         return result;
     }
 }

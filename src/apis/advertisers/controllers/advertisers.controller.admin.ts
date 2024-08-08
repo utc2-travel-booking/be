@@ -53,7 +53,6 @@ export class AdvertisersControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-
         const result = await this.advertisersService.createOne(
             {
                 ...createAdvertiserDto,
