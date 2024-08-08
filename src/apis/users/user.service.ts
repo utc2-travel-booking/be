@@ -132,9 +132,8 @@ export class UserService
     ) {
         const {
             id,
-            first_name: firstName,
-            last_name: lastName,
-
+            first_name: firstName = '',
+            last_name: lastName = '',
             photo_url: photoUrl,
             username,
         } = userLoginTelegramDto;
