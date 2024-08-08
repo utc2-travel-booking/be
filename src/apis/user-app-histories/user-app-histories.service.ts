@@ -45,7 +45,7 @@ export class UserAppHistoriesService extends BaseService<
         }
 
         await this.create({
-            app: appId,
+            app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
         });
     }

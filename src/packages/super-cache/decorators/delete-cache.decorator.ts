@@ -45,7 +45,13 @@ export function DeleteCache() {
                 throw new Error('Collection name must be provided');
             }
 
-            eventEmitter.emit(SUPER_CACHE_EVENT_HANDLER.DELETE, collectionName);
+            await superCacheService.deleteForDataCollection(collectionName);
+
+            await createRedisFolderCollection(
+                this.collectionName,
+                this.entity,
+                superCacheService,
+            );
 
             return originalMethod.apply(this, args);
         };
