@@ -14,6 +14,8 @@ export enum COLLECTION_NAMES {
     USER_APP_HISTORY = 'userAppHistories',
     TELEGRAM_BOT = 'telegramBots',
     TAG = 'tags',
+    USER_TRANSACTION = 'userTransactions',
+    NOTIFICATION = 'notifications',
 }
 
 export const PERMISSIONS = {
@@ -124,5 +126,10 @@ export const PERMISSIONS_FRONT = {
         create: 'front.reviews.create',
         edit: 'front.reviews.edit',
         destroy: 'front.reviews.destroy',
+    },
+    NOTIFICATION: {
+        index: 'front.notifications.index',
+        edit: 'front.notifications.edit',
+        destroy: 'front.notifications.destroy',
     },
 };

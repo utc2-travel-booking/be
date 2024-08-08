@@ -1,4 +1,6 @@
 import {
+    forwardRef,
+    Inject,
     Injectable,
     OnModuleInit,
     UnprocessableEntityException,
@@ -20,6 +22,11 @@ import { MediaService } from '../media/medias.service';
 import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserTransactionService } from '../user-transaction/user-transaction.service';
+import { UserTransactionType } from '../user-transaction/constants';
+import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
+import { NotificationsService } from '../notifications/notifications.service';
+import { AppDocument } from '../apps/entities/apps.entity';
 
 @Injectable()
 export class UserService
@@ -33,6 +40,9 @@ export class UserService
         private readonly superCacheService: SuperCacheService,
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
+        private readonly userTransactionService: UserTransactionService,
+        @Inject(forwardRef(() => NotificationsService))
+        private readonly notificationService: NotificationsService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -56,6 +66,65 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+    }
+
+    async addPointForUser(
+        addPointForUserDto: AddPointForUserDto,
+        appDocument: AppDocument,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
+        const { point, type, description, app } = addPointForUserDto;
+        const { name: appName } = appDocument;
+
+        const userTransactionThisApp = await this.userTransactionService
+            .findOne({
+                'createdBy._id': userId,
+                'app._id': app,
+            })
+            .exec();
+
+        if (userTransactionThisApp) {
+            return await this.getMe(userPayload);
+        }
+
+        const user = await this.findOne({ _id: userId }).exec();
+
+        const { currentPoint = 0, _id } = user;
+
+        const after =
+            type === UserTransactionType.SUM
+                ? parseFloat(currentPoint.toString()) + point
+                : parseFloat(currentPoint.toString()) - point;
+
+        const userTransaction = await this.userTransactionService.create({
+            createdBy: _id,
+            type,
+            amount: point,
+            before: currentPoint,
+            after,
+            app: new Types.ObjectId(app.toString()),
+            description,
+        });
+
+        if (userTransaction) {
+            await this.userModel.updateOne(
+                { _id },
+                {
+                    currentPoint: after,
+                },
+            );
+        }
+
+        await this.notificationService.create({
+            name: `+${point}`,
+            shortDescription: `You open ${appName}`,
+            user: userId,
+            refId: app,
+            refSource: COLLECTION_NAMES.APP,
+        });
+
+        return await this.getMe(userPayload);
     }
 
     async createUserTelegram(
