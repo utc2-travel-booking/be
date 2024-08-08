@@ -25,6 +25,8 @@ import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/adv
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
 import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller';
 import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
+import { TagsModule } from 'src/apis/tags/tags.module';
+import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
 
 @Module({
     imports: [
@@ -43,6 +45,7 @@ import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
         ReviewRatingModule,
         AdvertisersModule,
         TelegramBotModule,
+        TagsModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -56,6 +59,7 @@ import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
         ReviewRatingControllerAdmin,
         AdvertisersControllerAdmin,
         TelegramBotControllerAdmin,
+        TagsControllerAdmin,
     ],
     providers: [],
 })

@@ -54,8 +54,8 @@ export class MediaControllerAdmin {
     @DefaultGet('')
     @Authorize(PERMISSIONS.FILE.index)
     async getAll(
-        @Query(new PagingDtoPipe<File>())
-        queryParams: ExtendedPagingDto<File>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.mediaService.getAll(queryParams);
         return result;

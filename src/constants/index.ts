@@ -13,6 +13,7 @@ export enum COLLECTION_NAMES {
     ADVERTISER = 'advertisers',
     USER_APP_HISTORY = 'userAppHistories',
     TELEGRAM_BOT = 'telegramBots',
+    TAG = 'tags',
 }
 
 export const PERMISSIONS = {
@@ -78,6 +79,12 @@ export const PERMISSIONS = {
         create: 'admin.telegram-bots.create',
         edit: 'admin.telegram-bots.edit',
         destroy: 'admin.telegram-bots.destroy',
+    },
+    TAG: {
+        index: 'admin.tags.index',
+        create: 'admin.tags.create',
+        edit: 'admin.tags.edit',
+        destroy: 'admin.tags.destroy',
     },
 };
 

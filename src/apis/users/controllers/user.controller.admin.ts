@@ -85,8 +85,8 @@ export class UserControllerAdmin {
     @DefaultGet('')
     @Authorize(PERMISSIONS.USER.index)
     async getAll(
-        @Query(new PagingDtoPipe<User>())
-        queryParams: ExtendedPagingDto<User>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.userService.getAll(queryParams);
         return result;

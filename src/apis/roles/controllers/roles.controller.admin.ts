@@ -40,8 +40,8 @@ export class RolesControllerAdmin {
     @DefaultGet()
     @Authorize(PERMISSIONS.ROLE.index)
     async getAll(
-        @Query(new PagingDtoPipe<Role>())
-        queryParams: ExtendedPagingDto<Role>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.rolesService.getAll(queryParams, {});
         return result;

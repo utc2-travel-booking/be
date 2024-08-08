@@ -1,7 +1,14 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { AdvertisersService } from '../advertisers.service';
+import { TagsService } from '../tags.service';
+import _ from 'lodash';
 import { Types } from 'mongoose';
+import {
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+    DefaultDelete,
+} from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -11,72 +18,62 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
-import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
-import { Advertiser } from '../entities/advertisers.entity';
-import {
-    DefaultDelete,
-    DefaultGet,
-    DefaultPost,
-    DefaultPut,
-} from 'src/base/controllers/base.controller';
-import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
+import { Tag } from '../entities/tags.entity';
+import { CreateTagDto } from '../dto/create-tags.dto';
+import { UpdateTagDto } from '../dto/update-tags.dto';
 
-@Controller('advertisers')
-@ApiTags('Admin: Advertisers')
-export class AdvertisersControllerAdmin {
-    constructor(private readonly advertisersService: AdvertisersService) {}
+@Controller('tags')
+@ApiTags('Admin: Tags')
+export class TagsControllerAdmin {
+    constructor(private readonly tagsService: TagsService) {}
 
     @DefaultGet()
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @Authorize(PERMISSIONS.TAG.index)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
     ) {
-        const result = await this.advertisersService.getAll(queryParams);
+        const result = await this.tagsService.getAll(queryParams);
         return result;
     }
 
     @DefaultGet(':id')
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @Authorize(PERMISSIONS.TAG.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.advertisersService.getOne(_id);
+        const result = await this.tagsService.getOne(_id);
         return result;
     }
 
     @DefaultPost()
-    @Authorize(PERMISSIONS.ADVERTISER.create)
+    @Authorize(PERMISSIONS.TAG.create)
     async create(
-        @Body() createAdvertiserDto: CreateAdvertiserDto,
+        @Body() createTagDto: CreateTagDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = createTagDto;
 
-        const result = await this.advertisersService.createOne(
-            {
-                ...createAdvertiserDto,
-                slug: _.kebabCase(removeDiacritics(createAdvertiserDto.name)),
-            },
-            user,
-        );
+        const result = await this.tagsService.createOne(createTagDto, user, {
+            slug: _.kebabCase(removeDiacritics(name)),
+        });
         return result;
     }
 
     @DefaultPut(':id')
-    @Authorize(PERMISSIONS.ADVERTISER.edit)
+    @Authorize(PERMISSIONS.TAG.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Body() updateAdvertiserDto: UpdateAdvertiserDto,
+        @Body() updateTagDto: UpdateTagDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
 
-        const result = await this.advertisersService.updateOneById(
+        const result = await this.tagsService.updateOneById(
             _id,
-            updateAdvertiserDto,
+            updateTagDto,
             user,
         );
 
@@ -84,7 +81,7 @@ export class AdvertisersControllerAdmin {
     }
 
     @DefaultDelete()
-    @Authorize(PERMISSIONS.ADVERTISER.destroy)
+    @Authorize(PERMISSIONS.TAG.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
@@ -92,7 +89,7 @@ export class AdvertisersControllerAdmin {
     ) {
         const { user } = req;
 
-        const result = await this.advertisersService.deletes(_ids, user);
+        const result = await this.tagsService.deletes(_ids, user);
         return result;
     }
 }

@@ -24,7 +24,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     }
 
     async getAll(
-        queryParams: ExtendedPagingDto<T>,
+        queryParams: ExtendedPagingDto,
         options?: Record<string, any>,
     ) {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
@@ -112,7 +112,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
     }
 
     async getAllForFront(
-        queryParams: ExtendedPagingDto<T>,
+        queryParams: ExtendedPagingDto,
         options?: Record<string, any>,
     ) {
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =

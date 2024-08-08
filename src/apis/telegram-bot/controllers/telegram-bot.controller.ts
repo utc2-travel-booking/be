@@ -36,8 +36,8 @@ export class TelegramBotControllerAdmin {
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     async getAll(
-        @Query(new PagingDtoPipe<TelegramBot>())
-        queryParams: ExtendedPagingDto<TelegramBot>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.telegramBotService.getAll(queryParams);
         return result;

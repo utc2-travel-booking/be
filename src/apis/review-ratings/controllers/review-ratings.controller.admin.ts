@@ -36,8 +36,8 @@ export class ReviewRatingControllerAdmin {
     @DefaultGet()
     @Authorize(PERMISSIONS.REVIEW.index)
     async getAll(
-        @Query(new PagingDtoPipe<ReviewRating>())
-        queryParams: ExtendedPagingDto<ReviewRating>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.reviewRatingService.getAll(queryParams);
         return result;

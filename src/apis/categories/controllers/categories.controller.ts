@@ -30,8 +30,8 @@ export class CategoriesController {
 
     @DefaultGet(':type')
     async getAll(
-        @Query(new PagingDtoPipe<Category>())
-        queryParams: ExtendedPagingDto<Category>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
         @Param('type') type: CategoryType,
     ) {
         const result = await this.categoriesService.getAll(queryParams, {
