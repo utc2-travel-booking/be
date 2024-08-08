@@ -1,6 +1,7 @@
 export enum UserNotificationStatus {
     READ = 'READ',
     UNREAD = 'UNREAD',
+    DELETED = 'DELETED',
 }
 
 export const NOTIFICATION_EVENT = {

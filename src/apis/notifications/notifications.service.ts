@@ -47,6 +47,7 @@ export class NotificationsService extends BaseService<
         const result = this.find(
             {
                 'user._id': _id,
+                status: { $ne: UserNotificationStatus.DELETED },
             },
             filterPipeline,
         )
@@ -86,7 +87,7 @@ export class NotificationsService extends BaseService<
 
         const result = await this.findOneAndUpdate(
             { _id, user: userId },
-            { deletedAt: new Date() },
+            { status: UserNotificationStatus.DELETED },
         );
         return result;
     }
