@@ -22,7 +22,6 @@ export class BannerImageDto extends BannerImage {
         description: 'Url redirect of the post',
         default: 'https://www.google.com',
     })
-    @IsUrl()
     urlRedirect: string;
 
     @ApiProperty({
