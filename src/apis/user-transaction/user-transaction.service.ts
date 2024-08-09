@@ -9,6 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
+import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -32,6 +33,7 @@ export class UserTransactionService extends BaseService<
         const userTransactions = await this.findOne({
             'createdBy._id': userId,
             'app._id': appId,
+            description: TYPE_ADD_POINT_FOR_USER.open,
         }).exec();
 
         return !_.isEmpty(userTransactions);
