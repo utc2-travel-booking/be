@@ -1,5 +1,6 @@
 import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 import { SuperCacheService } from '../super-cache.service';
+import _ from 'lodash';
 
 export const createRedisFolderCollection = async (
     collectionName: string,
@@ -24,6 +25,6 @@ export const createRedisFolderCollection = async (
 
     await superCacheService.setOneCollection(
         collectionName,
-        relationCollectionNames,
+        _.uniq(relationCollectionNames),
     );
 };
