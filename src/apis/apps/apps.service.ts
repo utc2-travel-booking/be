@@ -51,7 +51,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         if (authorization) {
             const [, token] = authorization.split(' ');
             const payload = jsonwebtoken.decode(token);
-            const { _id } = payload as UserPayload;
+            const { _id } = (payload as UserPayload) || {};
             userId = new Types.ObjectId(_id);
         }
 
