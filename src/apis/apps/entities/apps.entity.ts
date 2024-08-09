@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { CategoryDocument } from 'src/apis/categories/entities/categories.entity';
-import { FileDocument } from 'src/apis/media/entities/files.entity';
+import {
+    Category,
+    CategoryDocument,
+} from 'src/apis/categories/entities/categories.entity';
+import { File, FileDocument } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Locale, LocaleType } from 'src/packages/locale';
+import {
+    MultipleLanguage,
+    MultipleLanguageType,
+} from 'src/packages/super-multiple-language';
 import { AutoPopulate } from 'src/packages/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
@@ -13,31 +19,45 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @Prop({ type: LocaleType, required: true })
-    @Locale()
-    name: LocaleType;
+    @Prop({ type: String, required: true })
+    name: string;
+
+    @Prop({ type: String, required: true, unique: true })
+    slug: string;
+
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    shortDescription: MultipleLanguageType;
+
+    @Prop({ type: MultipleLanguageType })
+    @MultipleLanguage()
+    caption: MultipleLanguageType;
 
     @Prop({ type: String, required: true })
     url: string;
 
-    @Prop({ type: LocaleType })
-    @Locale()
-    shortDescription: string;
-
-    @Prop({ type: [Types.ObjectId] })
+    @Prop({
+        type: [Types.ObjectId],
+        ref: COLLECTION_NAMES.CATEGORIES,
+        refClass: Category,
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
         isArray: true,
     })
     categories: CategoryDocument[];
 
-    @Prop({ type: Types.ObjectId })
+    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, refClass: File })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
     featuredImage: FileDocument;
 
-    @Prop({ type: [Types.ObjectId] })
+    @Prop({
+        type: [Types.ObjectId],
+        ref: COLLECTION_NAMES.FILE,
+        refClass: File,
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
         isArray: true,

@@ -10,22 +10,21 @@ import { CreatePostDto } from './dto/create-posts.dto';
 import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 import { PostType } from './constants';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class PostsService extends BaseService<PostDocument, Post> {
     constructor(
         @InjectModel(COLLECTION_NAMES.POST)
         private readonly postModel: Model<PostDocument>,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
-        super(postModel, Post, COLLECTION_NAMES.POST, eventEmitter);
+        super(postModel, Post, COLLECTION_NAMES.POST, moduleRef);
     }
 
     async createByType(
         createPostDto: CreatePostDto,
         type: PostType,
-        locale: string,
         user: UserPayload,
         options?: Record<string, any>,
     ) {
@@ -51,14 +50,13 @@ export class PostsService extends BaseService<PostDocument, Post> {
             createdBy: user._id,
         });
 
-        await this.create(result, locale);
+        await this.create(result);
         return result;
     }
 
     async updateOneByIdAndType(
         _id: Types.ObjectId,
         type: PostType,
-        locale: string,
         updatePostDto: UpdatePostDto,
         user: UserPayload,
     ) {
@@ -68,7 +66,6 @@ export class PostsService extends BaseService<PostDocument, Post> {
             { _id, type },
             { ...updatePostDto, updatedBy: userId },
             { new: true },
-            locale,
         );
 
         if (!result) {

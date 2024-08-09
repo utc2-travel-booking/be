@@ -2,7 +2,7 @@
 switch(env.BRANCH_NAME) {
     case "dev":
         // Secret
-        env.SECRET_FILE_ID = 'f89f5289-3def-4468-b289-1788d1943f86'
+        env.SECRET_FILE_ID = '6a4dbbb8-e2a6-4c99-9394-a80cdcde384f'
         // Server
         env.SERVER_CREDENTIALS = '5e7982bd-6f22-4cb5-961d-3c18032ed467'
         env.SERVER_USERNAME = 'ubuntu'
@@ -11,7 +11,7 @@ switch(env.BRANCH_NAME) {
         break
     case "staging":
         // Secret
-        env.SECRET_FILE_ID = 'e8d550f6-e237-451c-a1b3-d0c023a553ca'
+        env.SECRET_FILE_ID = '2a4986e7-7eee-4d48-a1c2-e1bd09ffbf63'
         // Server
         env.SERVER_CREDENTIALS = '5e7982bd-6f22-4cb5-961d-3c18032ed467'
         env.SERVER_USERNAME = 'ubuntu'
@@ -20,11 +20,11 @@ switch(env.BRANCH_NAME) {
         break
     case "production":
         // Secret
-        env.SECRET_FILE_ID = '97852bdb-bfbe-46eb-afe7-909b72987027'
+        env.SECRET_FILE_ID = 'c6e7e7d3-585a-48b6-8230-999b595f7f58'
         break
     default:
         // Secret
-        env.SECRET_FILE_ID = 'f89f5289-3def-4468-b289-1788d1943f86'
+        env.SECRET_FILE_ID = '6a4dbbb8-e2a6-4c99-9394-a80cdcde384f'
         // Server
         env.SERVER_CREDENTIALS = '5e7982bd-6f22-4cb5-961d-3c18032ed467'
         env.SERVER_USERNAME = 'ubuntu'

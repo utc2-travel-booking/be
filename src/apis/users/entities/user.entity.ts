@@ -38,7 +38,7 @@ export class User extends AggregateRoot {
     @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
-        autopopulate: true,
+        refClass: File,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
@@ -49,6 +49,7 @@ export class User extends AggregateRoot {
         type: Types.ObjectId,
         required: true,
         ref: COLLECTION_NAMES.ROLE,
+        refClass: Role,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
@@ -73,6 +74,12 @@ export class User extends AggregateRoot {
         required: false,
     })
     telegramUsername: string;
+
+    @Prop({
+        type: Number,
+        default: 0,
+    })
+    currentPoint: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

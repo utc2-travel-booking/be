@@ -19,10 +19,20 @@ import { CommonModule } from 'src/common/common.module';
 import { AuditsModule } from 'src/packages/audits/audits.module';
 import { AppsControllerAdmin } from 'src/apis/apps/controllers/apps.controller.admin';
 import { AppsModule } from 'src/apis/apps/apps.module';
-import { ReviewsControllerAdmin } from 'src/apis/reviews/controllers/reviews.controller.admin';
-import { ReviewsModule } from 'src/apis/reviews/reviews.module';
+import { ReviewRatingControllerAdmin } from 'src/apis/review-ratings/controllers/review-ratings.controller.admin';
+import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
+import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller';
+import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
+import { TagsModule } from 'src/apis/tags/tags.module';
+import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
+import { NotificationsControllerAdmin } from 'src/apis/notifications/controllers/notifications.controller.admin';
+import { NotificationsModule } from 'src/apis/notifications/notifications.module';
+import { TagAppsControllerAdmin } from 'src/apis/tag-apps/controllers/tag-apps.controller.admin';
+import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
+import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/controllers/user-transaction.controller.admin';
+import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 
 @Module({
     imports: [
@@ -38,8 +48,13 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         MetadataModule,
         AuditsModule,
         AppsModule,
-        ReviewsModule,
+        ReviewRatingModule,
         AdvertisersModule,
+        TelegramBotModule,
+        TagsModule,
+        NotificationsModule,
+        TagAppsModule,
+        UserTransactionModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -50,8 +65,13 @@ import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
         MetadataControllerAdmin,
         UserControllerAdmin,
         AppsControllerAdmin,
-        ReviewsControllerAdmin,
+        ReviewRatingControllerAdmin,
         AdvertisersControllerAdmin,
+        TelegramBotControllerAdmin,
+        TagsControllerAdmin,
+        NotificationsControllerAdmin,
+        TagAppsControllerAdmin,
+        UserTransactionControllerAdmin,
     ],
     providers: [],
 })

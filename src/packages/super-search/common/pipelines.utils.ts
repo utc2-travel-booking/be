@@ -21,11 +21,51 @@ export const projectionConfig = (
     pipeline.push({ $project: project });
 };
 
-// match stay first in the pipeline not working with $lookup
-export const moveFirstToLast = (pipeline: PipelineStage[]) => {
+export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
     if (pipeline.length === 0) return pipeline;
-    if (_.get(pipeline[0], '$lookup')) return pipeline;
-    const firstElement = pipeline.shift();
-    pipeline.push(firstElement);
-    return pipeline;
+
+    const matches: PipelineStage[] = [];
+    const project: PipelineStage[] = [];
+    const others: PipelineStage[] = [];
+    const addFields: PipelineStage[] = [];
+    const limit: PipelineStage[] = [];
+    const skip: PipelineStage[] = [];
+    const count: PipelineStage[] = [];
+
+    for (const stage of pipeline) {
+        if (_.has(stage, '$match')) {
+            matches.push(stage);
+        } else if (_.has(stage, '$project')) {
+            project.push(stage);
+        } else if (_.has(stage, '$addFields')) {
+            addFields.push(stage);
+        } else if (_.has(stage, '$limit')) {
+            limit.push(stage);
+        } else if (_.has(stage, '$skip')) {
+            skip.push(stage);
+        } else if (_.has(stage, '$count')) {
+            count.push(stage);
+        } else {
+            others.push(stage);
+        }
+    }
+
+    return [
+        ...others,
+        ...matches,
+        ...project,
+        ...addFields,
+        ...skip,
+        ...limit,
+        ...count,
+    ];
+};
+
+export const deleteAllLookup = (pipeline: PipelineStage[]): PipelineStage[] => {
+    return pipeline.filter(
+        (stage) =>
+            !_.has(stage, '$lookup') &&
+            !_.has(stage, '$unwind') &&
+            !_.has(stage, '$addFields'),
+    );
 };

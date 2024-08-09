@@ -15,7 +15,7 @@ import {
     AUDIT_LOG_DATA,
     AuditStatus,
 } from '../constants';
-import { Audit } from '../entity/audits.entity';
+import { Audit } from '../entities/audits.entity';
 import { Types } from 'mongoose';
 
 @Injectable()

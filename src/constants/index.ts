@@ -9,9 +9,14 @@ export enum COLLECTION_NAMES {
     POST = 'posts',
     AUDIT = 'audits',
     APP = 'apps',
-    REVIEW = 'reviews',
+    REVIEW_RATING = 'review-ratings',
     ADVERTISER = 'advertisers',
     USER_APP_HISTORY = 'userAppHistories',
+    TELEGRAM_BOT = 'telegramBots',
+    TAG = 'tags',
+    TAG_APP = 'tagApps',
+    USER_TRANSACTION = 'userTransactions',
+    NOTIFICATION = 'notifications',
 }
 
 export const PERMISSIONS = {
@@ -69,6 +74,30 @@ export const PERMISSIONS = {
         edit: 'admin.advertisers.edit',
         destroy: 'admin.advertisers.destroy',
     },
+    REDIS: {
+        index: 'admin.redis.destroy',
+    },
+    TELEGRAM_BOT: {
+        index: 'admin.telegram-bots.index',
+        create: 'admin.telegram-bots.create',
+        edit: 'admin.telegram-bots.edit',
+        destroy: 'admin.telegram-bots.destroy',
+    },
+    TAG: {
+        index: 'admin.tags.index',
+        create: 'admin.tags.create',
+        edit: 'admin.tags.edit',
+        destroy: 'admin.tags.destroy',
+    },
+    USER_TRANSACTION: {
+        index: 'admin.user-transactions.index',
+    },
+    NOTIFICATION: {
+        index: 'admin.notifications.index',
+        create: 'admin.notifications.create',
+        edit: 'admin.notifications.edit',
+        destroy: 'admin.notifications.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {
@@ -107,5 +136,10 @@ export const PERMISSIONS_FRONT = {
         create: 'front.reviews.create',
         edit: 'front.reviews.edit',
         destroy: 'front.reviews.destroy',
+    },
+    NOTIFICATION: {
+        index: 'front.notifications.index',
+        edit: 'front.notifications.edit',
+        destroy: 'front.notifications.destroy',
     },
 };

@@ -1,16 +1,12 @@
 import {
     Controller,
-    Delete,
-    Get,
     Param,
-    Post,
     Query,
     Req,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiParam,
@@ -33,41 +29,34 @@ import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+} from 'src/base/controllers/base.controller';
 
 @ApiTags('Admin: Media')
 @Controller('media')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.FILE,
-    relationCollectionNames: [COLLECTION_NAMES.USER],
-})
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,
 })
 export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet('')
     @Authorize(PERMISSIONS.FILE.index)
     async getAll(
-        @Query(new PagingDtoPipe<File>())
-        queryParams: ExtendedPagingDto<File>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.mediaService.getAll(queryParams);
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.FILE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -75,8 +64,7 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: UploadMediaDto })
     @Authorize(PERMISSIONS.FILE.create)
@@ -96,9 +84,8 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @Delete()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.FILE.destroy)
-    @ApiBearerAuth()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

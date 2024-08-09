@@ -1,34 +1,26 @@
-import { Body, Controller, Get, Put, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
+import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
+import { TYPE_ADD_POINT_FOR_USER } from 'src/apis/apps/constants';
+import { ParseEnumPipe } from 'src/pipes/parse-enum.pipe';
 
 @Controller('users')
 @ApiTags('Front: User')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.USER,
-    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
-})
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,
 })
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Get('me')
-    @ApiBearerAuth()
+    @DefaultGet('me')
     @Authorize(PERMISSIONS_FRONT.USER.index)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -37,8 +29,7 @@ export class UserController {
         return result;
     }
 
-    @Put('me')
-    @ApiBearerAuth()
+    @DefaultPut('me')
     @Authorize(PERMISSIONS_FRONT.USER.edit)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
@@ -46,5 +37,15 @@ export class UserController {
     ) {
         const { user } = req;
         return this.userService.updateMe(user, updateMeDto);
+    }
+
+    @DefaultGet('history-reward/:type')
+    @Authorize(PERMISSIONS_FRONT.USER.index)
+    async getHistoryReward(
+        @Param('type', ParseEnumPipe) type: TYPE_ADD_POINT_FOR_USER,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        return this.userService.getHistoryReward(user, type);
     }
 }

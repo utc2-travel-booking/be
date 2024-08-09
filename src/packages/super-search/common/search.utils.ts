@@ -8,58 +8,72 @@ export const createSearchPipeline = (search: any, searchType: string) => {
         return [];
     }
     const keys = Object.keys(search);
-    const result = keys.map((key) => {
-        const [field, operator] = key.split(':');
+    const result = keys
+        .map((key) => {
+            const [field, operator] = key.split(':');
 
-        if (!operator) {
-            throw new UnprocessableEntityException(
-                'Invalid search query operator',
-            );
-        }
+            if (!operator) {
+                throw new UnprocessableEntityException(
+                    'Invalid search query operator',
+                );
+            }
 
-        if (!field) {
-            throw new UnprocessableEntityException(
-                'Invalid search query search by',
-            );
-        }
+            if (!field) {
+                throw new UnprocessableEntityException(
+                    'Invalid search query search by',
+                );
+            }
 
-        if (_.upperCase(operator) === OPERATOR.BETWEEN) {
-            const [from, to] = search[key].split(',');
-            return {
-                field,
-                operator,
-                value: { from: new Date(from), to: new Date(to) },
-            };
-        }
+            if (!search[key]) {
+                return null;
+            }
 
-        if (
-            operator.toLocaleUpperCase() === OPERATOR.IN ||
-            operator.toLocaleUpperCase() === OPERATOR.NOT_IN
-        ) {
-            const array = search[key].split(',');
-            for (let i = 0; i < array.length; i++) {
-                if (Number(array[i])) {
-                    array[i] = Number(array[i]);
+            if (_.upperCase(operator) === OPERATOR.BETWEEN) {
+                const [from, to] = search[key].split(',');
+                const fromDate = new Date(from);
+                const toDate = new Date(to);
+
+                if (fromDate.toDateString() === toDate.toDateString()) {
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
                 }
 
-                if (_.isString(array[i])) {
-                    array[i] = array[i].replace(/%3C/g, '<');
+                return {
+                    field,
+                    operator,
+                    value: { from: fromDate, to: toDate },
+                };
+            }
+
+            if (
+                operator.toLocaleUpperCase() === OPERATOR.IN ||
+                operator.toLocaleUpperCase() === OPERATOR.NOT_IN
+            ) {
+                const array = search[key].split(',');
+                for (let i = 0; i < array.length; i++) {
+                    if (Number(array[i])) {
+                        array[i] = Number(array[i]);
+                    }
+
+                    if (_.isString(array[i])) {
+                        array[i] = array[i].replace(/%3C/g, '<');
+                    }
                 }
+
+                return {
+                    field,
+                    operator,
+                    value: array,
+                };
             }
 
             return {
                 field,
                 operator,
-                value: array,
+                value: Number(search[key]) ? Number(search[key]) : search[key],
             };
-        }
-
-        return {
-            field,
-            operator,
-            value: Number(search[key]) ? Number(search[key]) : search[key],
-        };
-    });
+        })
+        .filter((item) => item);
 
     const pipeline: PipelineStage[] = [];
 
@@ -158,9 +172,17 @@ export const addSearchConditionToPipeline = (
     }
 
     if (searchType === SearchType.AND) {
-        pipeline.push({ $match: { $and: [matchStage] } });
+        if (_.get(pipeline, '[0].$match.$and')) {
+            pipeline[0].$match.$and.push(matchStage);
+        } else {
+            pipeline.push({ $match: { $and: [matchStage] } });
+        }
     } else if (searchType === SearchType.OR) {
-        pipeline.push({ $match: { $or: [matchStage] } });
+        if (_.get(pipeline, '[0].$match.$or')) {
+            pipeline[0].$match.$or.push(matchStage);
+        } else {
+            pipeline.push({ $match: { $or: [matchStage] } });
+        }
     }
 };
 

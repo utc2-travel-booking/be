@@ -1,20 +1,17 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { FilterQuery, PipelineStage, SortOrder } from 'mongoose';
+import { Expression, FilterQuery, PipelineStage, SortOrder } from 'mongoose';
 import { PagingDto } from 'src/base/dto/paging.dto';
 import { SearchType } from 'src/constants/enums';
 import { createSearchPipeline } from 'src/packages/super-search/common/search.utils';
 
-export class ExtendedPagingDto<T> extends PagingDto {
+export class ExtendedPagingDto extends PagingDto {
     skip: number;
     filterPipeline: PipelineStage[];
 }
 
 @Injectable()
-export class PagingDtoPipe<T> implements PipeTransform {
-    transform(
-        value: PagingDto,
-        metadata: ArgumentMetadata,
-    ): ExtendedPagingDto<T> {
+export class PagingDtoPipe implements PipeTransform {
+    transform(value: PagingDto, metadata: ArgumentMetadata): ExtendedPagingDto {
         const {
             page = 1,
             search,
@@ -35,7 +32,7 @@ export class PagingDtoPipe<T> implements PipeTransform {
             limit: Number(limit),
             skip: (Number(page) - 1) * Number(limit),
             sortBy,
-            sortDirection: Number(sortDirection) as SortOrder,
+            sortDirection: Number(sortDirection) as 1 | -1 | Expression.Meta,
             searchType,
             search,
             isAll,

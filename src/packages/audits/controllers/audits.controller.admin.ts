@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuditsService } from '../audits.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -7,28 +7,26 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Audit } from '../entity/audits.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 
 @Controller('admin/audits')
 @ApiTags('Admin: Audit')
 export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.AUDIT.index)
     async getAll(
-        @Query(new PagingDtoPipe<Audit>())
-        queryParams: ExtendedPagingDto<Audit>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.auditsService.getAll(queryParams);
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.AUDIT.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {

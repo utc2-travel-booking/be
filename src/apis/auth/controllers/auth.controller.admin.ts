@@ -7,6 +7,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
+import { DefaultPost } from 'src/base/controllers/base.controller';
 
 @Controller()
 @ApiTags('Admin: Auth')
@@ -22,7 +23,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 export class AuthControllerAdmin {
     constructor(private readonly authService: AuthService) {}
 
-    @Post('login')
+    @DefaultPost('login')
     @UseGuards(LocalAuthGuard)
     @ApiBody({
         description: 'User credentials',

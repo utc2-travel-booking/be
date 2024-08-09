@@ -6,12 +6,12 @@ import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import _ from 'lodash';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './constants';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
@@ -19,32 +19,22 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         @InjectModel(COLLECTION_NAMES.ROLE)
         private readonly roleModel: Model<RoleDocument>,
         private readonly superCacheService: SuperCacheService,
-        eventEmitter: EventEmitter2,
         private readonly permissionsService: PermissionsService,
+        moduleRef: ModuleRef,
     ) {
-        super(roleModel, Role, COLLECTION_NAMES.ROLE, eventEmitter);
+        super(roleModel, Role, COLLECTION_NAMES.ROLE, moduleRef);
     }
 
     async getRoleByType(type: RoleType) {
         return this.roleModel.findOne({ type });
     }
 
-    async getOne(
-        _id: Types.ObjectId,
-        options?: Record<string, any>,
-        locale?: string,
-    ) {
-        const result = await this.findOne(
-            {
-                _id,
-                ...options,
-                deletedAt: null,
-            },
-            null,
-            null,
-            [],
-            locale,
-        );
+    async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
+        const result = await this.findOne({
+            _id,
+            ...options,
+            deletedAt: null,
+        }).exec();
 
         const { permissions } = result;
 
@@ -80,7 +70,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         createRoleDto: CreateRoleDto,
         user: UserPayload,
         options?: Record<string, any>,
-        locale?: string,
     ) {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = createRoleDto;
@@ -96,7 +85,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             permissions,
             createdBy: userId,
         });
-        await this.create(result, locale);
+        await this.create(result);
 
         return result;
     }
@@ -105,7 +94,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         _id: Types.ObjectId,
         updateRoleDto: UpdateRoleDto,
         user: UserPayload,
-        locale?: string,
     ) {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = updateRoleDto;
@@ -119,7 +107,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             { _id },
             { ...updateRoleDto, permissions, updatedBy: userId },
             { new: true },
-            locale,
         );
 
         if (!result) {

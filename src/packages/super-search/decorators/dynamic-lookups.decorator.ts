@@ -8,17 +8,19 @@ export function DynamicLookup() {
     ) {
         const originalMethod = descriptor.value;
 
-        descriptor.value = async function (...args: any[]) {
-            const [filter, projection, options, filterPipeline, locale] = args;
+        descriptor.value = function (...args: any[]) {
+            const [filter, pipeline] = args;
 
-            const pipeline = Array.isArray(filterPipeline)
-                ? filterPipeline
-                : [];
+            const _pipeline = dynamicLookupAggregates(this.entity);
 
-            dynamicLookupAggregates(pipeline, this.entity);
+            const updatedArgs = [filter, [..._pipeline, ...(pipeline || [])]];
 
-            const updatedArgs = [filter, projection, options, pipeline, locale];
-            return originalMethod.apply(this, updatedArgs);
+            try {
+                const result = originalMethod.apply(this, updatedArgs);
+                return result;
+            } catch (error) {
+                throw error;
+            }
         };
 
         return descriptor;

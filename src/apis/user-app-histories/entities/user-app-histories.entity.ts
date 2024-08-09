@@ -5,14 +5,14 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from 'src/packages/super-search';
-import { AppDocument } from 'src/apis/apps/entities/apps.entity';
+import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.USER_APP_HISTORY,
 })
 export class UserAppHistory extends AggregateRoot {
-    @Prop({ type: Types.ObjectId })
+    @Prop({ type: Types.ObjectId, refClass: App })
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })

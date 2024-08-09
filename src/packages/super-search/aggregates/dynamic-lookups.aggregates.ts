@@ -3,10 +3,8 @@
 import { PipelineStage } from 'mongoose';
 import { AutoPopulateMetadataStorage } from '../storages/auto-populate-metadata.storage';
 
-export const dynamicLookupAggregates = (
-    pipelines: PipelineStage[],
-    target: Function,
-) => {
+export const dynamicLookupAggregates = (target: Function) => {
+    const pipelines: PipelineStage[] = [];
     const autoPopulateOptions =
         AutoPopulateMetadataStorage.getAutoPopulateMetadata(target);
 
@@ -42,4 +40,6 @@ export const dynamicLookupAggregates = (
     });
 
     pipelines.push(...lookupStages.flat());
+
+    return pipelines;
 };

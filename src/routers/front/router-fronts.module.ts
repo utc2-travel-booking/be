@@ -14,10 +14,14 @@ import { PostsController } from 'src/apis/posts/controllers/posts.controller';
 import { UserController } from 'src/apis/users/controllers/user.controller';
 import { AppsController } from 'src/apis/apps/controllers/apps.controller';
 import { AppsModule } from 'src/apis/apps/apps.module';
-import { ReviewsController } from 'src/apis/reviews/controllers/reviews.controller';
-import { ReviewsModule } from 'src/apis/reviews/reviews.module';
+import { ReviewRatingController } from 'src/apis/review-ratings/controllers/review-ratings.controller';
+import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
 import { AdvertisersController } from 'src/apis/advertisers/controllers/advertisers.controller';
+import { TagsModule } from 'src/apis/tags/tags.module';
+import { TagsController } from 'src/apis/tags/controllers/tags.controller';
+import { NotificationsController } from 'src/apis/notifications/controllers/notifications.controller';
+import { NotificationsModule } from 'src/apis/notifications/notifications.module';
 
 @Module({
     imports: [
@@ -29,8 +33,10 @@ import { AdvertisersController } from 'src/apis/advertisers/controllers/advertis
         PostsModule,
         MetadataModule,
         AppsModule,
-        ReviewsModule,
+        ReviewRatingModule,
         AdvertisersModule,
+        TagsModule,
+        NotificationsModule,
     ],
     controllers: [
         UserController,
@@ -40,8 +46,10 @@ import { AdvertisersController } from 'src/apis/advertisers/controllers/advertis
         PostsController,
         MetadataController,
         AppsController,
-        ReviewsController,
+        ReviewRatingController,
         AdvertisersController,
+        TagsController,
+        NotificationsController,
     ],
     providers: [],
 })

@@ -1,19 +1,9 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import {
     PagingDtoPipe,
@@ -23,26 +13,37 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
 import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
-import { Advertiser } from '../entities/advertisers.entity';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
+import _ from 'lodash';
+import { removeDiacritics } from 'src/utils/helper';
+import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
+import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 @Controller('advertisers')
 @ApiTags('Admin: Advertisers')
+@AuditLog({
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.ADVERTISER,
+})
 export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.ADVERTISER.index)
     async getAll(
-        @Query(new PagingDtoPipe<Advertiser>())
-        queryParams: ExtendedPagingDto<Advertiser>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.advertisersService.getAll(queryParams);
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.ADVERTISER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -50,24 +51,24 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.ADVERTISER.create)
     async create(
         @Body() createAdvertiserDto: CreateAdvertiserDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-
         const result = await this.advertisersService.createOne(
-            createAdvertiserDto,
+            {
+                ...createAdvertiserDto,
+                slug: _.kebabCase(removeDiacritics(createAdvertiserDto.name)),
+            },
             user,
         );
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.ADVERTISER.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -86,8 +87,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.ADVERTISER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

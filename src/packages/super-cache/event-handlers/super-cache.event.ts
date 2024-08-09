@@ -11,8 +11,19 @@ export class SuperCacheEvent {
 
     @OnEvent(SUPER_CACHE_EVENT_HANDLER.DELETE)
     async handleDeleteCacheEvent(collectionName: COLLECTION_NAMES) {
-        this.logger.debug(`Deleted cache event ${collectionName}...`);
         await this.superCacheService.deleteForDataCollection(collectionName);
-        this.logger.debug(`Deleted cache event ${collectionName}...done`);
+    }
+
+    @OnEvent(SUPER_CACHE_EVENT_HANDLER.SET)
+    async handleSetCacheEvent(
+        collectionName: COLLECTION_NAMES,
+        key: string,
+        result: any,
+    ) {
+        await this.superCacheService.setDataForCollection(
+            collectionName,
+            key,
+            result,
+        );
     }
 }

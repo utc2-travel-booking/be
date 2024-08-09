@@ -1,24 +1,27 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { REDIS_FOLDER_NAME } from './constants';
 import { CollectionModel } from './models/collections.model';
-import { CollectionKey } from './models/collection-keys.model';
 
 @Injectable()
-export class SuperCacheService {
+export class SuperCacheService implements OnModuleInit {
     private readonly logger = new Logger(SuperCacheService.name);
     constructor(
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
     ) {}
 
+    async onModuleInit() {
+        await this.resetCache();
+    }
+
     async get<T>(key: string) {
         try {
             const data = await this.cacheManager.get<T>(key);
             return data;
         } catch (error) {
-            console.log('error get', error);
+            this.logger.error('error get', JSON.stringify(error));
         }
     }
 
@@ -27,10 +30,10 @@ export class SuperCacheService {
             await this.cacheManager
                 .set(key, data, ttl * 24 * 60 * 60 * 6000)
                 .catch((e) => {
-                    console.log(e);
+                    this.logger.error(e);
                 });
         } catch (error) {
-            this.logger.error('error set', error);
+            this.logger.error('error set', JSON.stringify(error));
         }
     }
 
@@ -53,7 +56,7 @@ export class SuperCacheService {
                 },
             );
         } catch (error) {
-            this.logger.error('error setOneCollection', error);
+            this.logger.error('error setOneCollection', JSON.stringify(error));
         }
     }
 
@@ -64,7 +67,7 @@ export class SuperCacheService {
             );
             return data;
         } catch (error) {
-            this.logger.error('error getOneCollection', error);
+            this.logger.error('error getOneCollection', JSON.stringify(error));
         }
     }
 
@@ -72,43 +75,63 @@ export class SuperCacheService {
         try {
             const collections = await this.getAllCollection();
 
-            if (!collections.length) {
+            if (!collections || !collections?.length) {
                 return;
             }
 
-            const parentCollections = collections.filter((collection) =>
-                collection.relationCollectionNames.includes(mainCollectionName),
-            );
-            const mainCollection = collections.find(
-                (collection) =>
-                    collection.mainCollectionName === mainCollectionName,
+            const keys: string[] = await this.cacheManager.store.keys(
+                `${mainCollectionName}:*`,
             );
 
-            if (!mainCollection) {
+            if (!keys.length) {
                 return;
             }
 
-            const _collections = [...parentCollections, ...[mainCollection]];
+            await Promise.all(keys.map((key) => this.cacheManager.del(key)));
 
-            const data = await Promise.all(
-                _collections.map(async (collection) => {
-                    return {
-                        mainCollectionName: collection.mainCollectionName,
-                        keys: await this.getForDataCollectionKey(
-                            collection.mainCollectionName,
-                        ),
-                    };
-                }),
+            const relationCollectionNames = collections.filter((collection) =>
+                collection?.relationCollectionNames?.includes(
+                    mainCollectionName,
+                ),
             );
 
-            console.log(data);
+            await this.deleteForDataCollectionRelation(relationCollectionNames);
+        } catch (error) {
+            this.logger.error(
+                'error deleteForDataCollection',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
+        }
+    }
 
-            for (const { mainCollectionName, keys } of data) {
-                await this.deleteDataForCollections(mainCollectionName, keys);
-                await this.deleteForDataCollectionKey(mainCollectionName);
+    private async deleteForDataCollectionRelation(
+        collectionRelations: CollectionModel[],
+    ) {
+        try {
+            if (!collectionRelations || !collectionRelations?.length) {
+                return;
+            }
+
+            for (const collection of collectionRelations) {
+                const keys: string[] = await this.cacheManager.store.keys(
+                    `${collection.mainCollectionName}:*`,
+                );
+
+                if (!keys.length) {
+                    return;
+                }
+
+                await Promise.all(
+                    keys.map((key) => this.cacheManager.del(key)),
+                );
             }
         } catch (error) {
-            this.logger.error('error deleteForDataCollection', error);
+            this.logger.error(
+                'error deleteForDataCollectionRelation',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -120,9 +143,10 @@ export class SuperCacheService {
         try {
             await this.set(`${mainCollectionName}:${key}`, data);
         } catch (error) {
-            this.logger.error('error setDataForCollection', error);
-        } finally {
-            await this.setForDataCollectionKey(mainCollectionName, key);
+            this.logger.error(
+                'error setDataForCollection',
+                JSON.stringify(error),
+            );
         }
     }
 
@@ -131,77 +155,15 @@ export class SuperCacheService {
             const data = await this.get(`${mainCollectionName}:${key}`);
             return data;
         } catch (error) {
-            this.logger.error('error getDataForCollection', error);
+            this.logger.error(
+                'error getDataForCollection',
+                JSON.stringify(error),
+            );
         }
     }
 
-    private async deleteDataForCollections(
-        mainCollectionName: string,
-        key: string[],
-    ) {
-        try {
-            await Promise.all(
-                key.map(async (k) => {
-                    await this.cacheManager.del(`${mainCollectionName}:${k}`);
-                }),
-            );
-        } catch (error) {
-            this.logger.error('error deleteDataForCollections', error);
-        }
-    }
-
-    private async setForDataCollectionKey(
-        mainCollectionName: string,
-        key: string,
-    ) {
-        try {
-            const folderKeys = `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`;
-            const cacheKeys = await this.cacheManager.get<CollectionKey>(
-                folderKeys,
-            );
-
-            if (cacheKeys) {
-                cacheKeys.addedKeys.push(key);
-                await this.set(folderKeys, cacheKeys);
-
-                return;
-            }
-
-            const newCacheKeys = new Set<string>();
-            newCacheKeys.add(key);
-
-            await this.set(folderKeys, {
-                addedKeys: Array.from(newCacheKeys),
-            });
-        } catch (error) {
-            this.logger.error('error setForDataCollectionKey', error);
-        }
-    }
-
-    private async getForDataCollectionKey(
-        mainCollectionName: string,
-    ): Promise<string[]> {
-        try {
-            const folderKeys = `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`;
-            const cacheKeys = await this.cacheManager.get<CollectionKey>(
-                folderKeys,
-            );
-
-            const { addedKeys } = cacheKeys || { addedKeys: [] };
-            return addedKeys;
-        } catch (error) {
-            this.logger.error('error', error);
-        }
-    }
-
-    private async deleteForDataCollectionKey(mainCollectionName: string) {
-        try {
-            await this.cacheManager.del(
-                `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`,
-            );
-        } catch (error) {
-            this.logger.error('error getForDataCollectionKey', error);
-        }
+    async resetCache() {
+        await this.cacheManager.reset();
     }
 
     private async getAllCollection(): Promise<CollectionModel[]> {
@@ -220,7 +182,7 @@ export class SuperCacheService {
 
             return data;
         } catch (error) {
-            this.logger.error('error getAllCollection', error);
+            this.logger.error('error getAllCollection', JSON.stringify(error));
         }
     }
 }

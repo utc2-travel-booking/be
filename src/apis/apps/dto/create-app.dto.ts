@@ -30,6 +30,14 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     url: string;
 
     @ApiProperty({
+        default: 'https://example.com',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(500)
+    caption: string;
+
+    @ApiProperty({
         type: [String],
         description: 'Categories of the app',
         default: [],
@@ -39,6 +47,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsExist({
         collectionName: COLLECTION_NAMES.CATEGORIES,
         message: 'Category does not exist',
+        isArray: true,
     })
     @IsArray()
     categories: Types.ObjectId[];
@@ -66,11 +75,11 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,
         message: 'Featured image does not exist',
+        isArray: true,
     })
     previewImages: Types.ObjectId[];
 
     @ApiProperty()
-    @IsNotEmpty()
     @MaxLength(1000)
     @IsString()
     shortDescription: string;

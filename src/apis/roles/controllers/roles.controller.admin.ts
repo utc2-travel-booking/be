@@ -1,15 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { Role } from 'src/apis/roles/entities/roles.entity';
 import { RolesService } from 'src/apis/roles/roles.service';
@@ -24,53 +14,43 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { CreateRoleDto } from '../dto/create-role.dto';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.ROLE,
-    relationCollectionNames: [
-        COLLECTION_NAMES.USER,
-        COLLECTION_NAMES.PERMISSION,
-    ],
-})
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.ROLE,
 })
 export class RolesControllerAdmin {
     constructor(private readonly rolesService: RolesService) {}
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet()
     @Authorize(PERMISSIONS.ROLE.index)
     async getAll(
-        @Query(new PagingDtoPipe<Role>())
-        queryParams: ExtendedPagingDto<Role>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
-        const result = await this.rolesService.getAll(queryParams);
+        const result = await this.rolesService.getAll(queryParams, {});
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.ROLE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.rolesService.getOne(_id);
+        const result = await this.rolesService.getOne(_id, {});
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.ROLE.create)
     async create(
         @Body() createRoleDto: CreateRoleDto,
@@ -78,12 +58,15 @@ export class RolesControllerAdmin {
     ) {
         const { user } = req;
 
-        const result = await this.rolesService.createOne(createRoleDto, user);
+        const result = await this.rolesService.createOne(
+            createRoleDto,
+            user,
+            {},
+        );
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.ROLE.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -102,8 +85,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.ROLE.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

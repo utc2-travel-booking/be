@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class UserAppHistoriesService extends BaseService<
@@ -17,21 +17,23 @@ export class UserAppHistoriesService extends BaseService<
     constructor(
         @InjectModel(COLLECTION_NAMES.USER_APP_HISTORY)
         private readonly userAppHistoryDocument: Model<UserAppHistoryDocument>,
-        eventEmitter: EventEmitter2,
+        moduleRef: ModuleRef,
     ) {
         super(
             userAppHistoryDocument,
             UserAppHistory,
             COLLECTION_NAMES.USER_APP_HISTORY,
-            eventEmitter,
+            moduleRef,
         );
     }
 
     async createUserAppHistory(appId: Types.ObjectId, userId: Types.ObjectId) {
         const userAppHistory = await this.findOne({
-            'app._id': appId,
-            'createdBy._id': userId,
-        });
+            app: new Types.ObjectId(appId.toString()),
+            createdBy: new Types.ObjectId(userId.toString()),
+        })
+            .autoPopulate(false)
+            .exec();
 
         if (userAppHistory) {
             await this.updateOne(
@@ -40,12 +42,11 @@ export class UserAppHistoriesService extends BaseService<
                     updatedAt: new Date(),
                 },
             );
-
             return;
         }
 
         await this.create({
-            app: appId,
+            app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
         });
     }

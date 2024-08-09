@@ -1,15 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -22,33 +12,28 @@ import {
     ExtendedPagingDto,
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
-import { SuperCache } from 'src/packages/super-cache/decorators/super-cache.decorator';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import {
+    DefaultDelete,
+    DefaultGet,
+    DefaultPost,
+    DefaultPut,
+} from 'src/base/controllers/base.controller';
 
 @Controller('users')
 @ApiTags('Admin: User')
-@SuperCache({
-    mainCollectionName: COLLECTION_NAMES.USER,
-    relationCollectionNames: [COLLECTION_NAMES.FILE, COLLECTION_NAMES.ROLE],
-})
 @AuditLog({
-    events: [
-        AUDIT_EVENT.GET,
-        AUDIT_EVENT.POST,
-        AUDIT_EVENT.PUT,
-        AUDIT_EVENT.DELETE,
-    ],
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.USER,
 })
 export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
-    @Put('ban')
-    @ApiBearerAuth()
+    @DefaultPut('ban')
     @Authorize(PERMISSIONS.USER.edit)
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
@@ -61,8 +46,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Put('un-ban')
-    @ApiBearerAuth()
+    @DefaultPut('un-ban')
     @Authorize(PERMISSIONS.USER.edit)
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
@@ -74,8 +58,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Get('me')
-    @ApiBearerAuth()
+    @DefaultGet('me')
     @Authorize(PERMISSIONS.USER.index)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -84,8 +67,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Put('me')
-    @ApiBearerAuth()
+    @DefaultPut('me')
     @Authorize(PERMISSIONS.USER.edit)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
@@ -95,19 +77,17 @@ export class UserControllerAdmin {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @Get()
-    @ApiBearerAuth()
+    @DefaultGet('')
     @Authorize(PERMISSIONS.USER.index)
     async getAll(
-        @Query(new PagingDtoPipe<User>())
-        queryParams: ExtendedPagingDto<User>,
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.userService.getAll(queryParams);
         return result;
     }
 
-    @Get(':id')
-    @ApiBearerAuth()
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.USER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -115,8 +95,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Post()
-    @ApiBearerAuth()
+    @DefaultPost()
     @Authorize(PERMISSIONS.USER.create)
     async create(
         @Body() createRoleDto: CreateUserDto,
@@ -128,8 +107,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Put(':id')
-    @ApiBearerAuth()
+    @DefaultPut(':id')
     @Authorize(PERMISSIONS.USER.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -148,8 +126,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @Delete()
-    @ApiBearerAuth()
+    @DefaultDelete()
     @Authorize(PERMISSIONS.USER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

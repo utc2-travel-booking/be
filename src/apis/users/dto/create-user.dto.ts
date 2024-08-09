@@ -24,13 +24,13 @@ export class CreateUserDto extends PartialType(ExcludeDto) {
     @IsString()
     password: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    @IsEnum(UserStatus, {
-        message: `status must be a valid enum ${UserStatus.ACTIVE} | ${UserStatus.INACTIVE}`,
-    })
-    status: UserStatus;
+    // @ApiProperty()
+    // @IsNotEmpty()
+    // @IsString()
+    // @IsEnum(UserStatus, {
+    //     message: `status must be a valid enum ${UserStatus.ACTIVE} | ${UserStatus.INACTIVE}`,
+    // })
+    // status: UserStatus;
 
     @ApiProperty()
     @Transform(({ value }) => convertStringToObjectId(value))
