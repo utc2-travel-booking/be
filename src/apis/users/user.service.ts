@@ -68,6 +68,48 @@ export class UserService
         }
     }
 
+    async getHistoryReward(user: UserPayload) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        const lastOneMonth = new Date(today);
+        lastOneMonth.setMonth(today.getMonth() - 1);
+
+        const fetchTransactions = async (startDate: Date, endDate: Date) => {
+            return this.userTransactionService
+                .find({
+                    'createdBy._id': user._id,
+                    createdAt: { $gte: startDate, $lt: endDate },
+                })
+                .exec();
+        };
+
+        const [
+            userTransactionToday,
+            userTransactionYesterday,
+            userTransactionLastOneMonth,
+        ] = await Promise.all([
+            fetchTransactions(
+                today,
+                new Date(today.getTime() + 24 * 60 * 60 * 1000),
+            ),
+            fetchTransactions(yesterday, today),
+            fetchTransactions(lastOneMonth, today),
+        ]);
+
+        const calculateTotal = (transactions: any[]) =>
+            transactions.reduce((acc, cur) => acc + cur.amount, 0);
+
+        return {
+            today: calculateTotal(userTransactionToday),
+            yesterday: calculateTotal(userTransactionYesterday),
+            lastOneMonth: calculateTotal(userTransactionLastOneMonth),
+        };
+    }
+
     async addPointForUser(
         addPointForUserDto: AddPointForUserDto,
         appDocument: AppDocument,

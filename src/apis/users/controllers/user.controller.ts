@@ -36,4 +36,11 @@ export class UserController {
         const { user } = req;
         return this.userService.updateMe(user, updateMeDto);
     }
+
+    @DefaultGet('history-reward')
+    @Authorize(PERMISSIONS_FRONT.USER.index)
+    async getHistoryReward(@Req() req: { user: UserPayload }) {
+        const { user } = req;
+        return this.userService.getHistoryReward(user);
+    }
 }
