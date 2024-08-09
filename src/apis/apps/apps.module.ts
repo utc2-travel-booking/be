@@ -8,6 +8,7 @@ import { UserAppHistoriesModule } from '../user-app-histories/user-app-histories
 import { UserModule } from '../users/user.module';
 import { TagAppsModule } from '../tag-apps/tag-apps.module';
 import { TagsModule } from '../tags/tags.module';
+import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { TagsModule } from '../tags/tags.module';
         UserModule,
         TagAppsModule,
         TagsModule,
+        UserTransactionModule,
     ],
     controllers: [],
     providers: [AppsService, AppEvent],

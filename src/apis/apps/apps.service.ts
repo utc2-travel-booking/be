@@ -21,6 +21,7 @@ import { AddPointForUserDto } from './models/add-point-for-user.model';
 import { UserTransactionType } from '../user-transaction/constants';
 import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
+import { UserTransactionService } from '../user-transaction/user-transaction.service';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -32,6 +33,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         private readonly userServices: UserService,
         private readonly tagAppsService: TagAppsService,
         private readonly tagService: TagsService,
+        private readonly userTransactionService: UserTransactionService,
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
@@ -140,7 +142,14 @@ export class AppsService extends BaseService<AppDocument, App> {
             userId,
         );
 
-        return result;
+        return {
+            ...result,
+            isReceivedReward:
+                await this.userTransactionService.checkReceivedReward(
+                    userId,
+                    result._id,
+                ),
+        };
     }
 
     async getUserAppHistories(

@@ -6,7 +6,7 @@ import {
 } from './entities/user-transaction.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
 
@@ -26,5 +26,14 @@ export class UserTransactionService extends BaseService<
             COLLECTION_NAMES.USER_TRANSACTION,
             moduleRef,
         );
+    }
+
+    async checkReceivedReward(userId: Types.ObjectId, appId: Types.ObjectId) {
+        const userTransactions = await this.findOne({
+            'createdBy._id': userId,
+            'app._id': appId,
+        }).exec();
+
+        return !_.isEmpty(userTransactions);
     }
 }
