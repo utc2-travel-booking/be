@@ -10,7 +10,7 @@ export const populateGroupBannerImageAggregate = [
     {
         $lookup: {
             from: COLLECTION_NAMES.FILE,
-            localField: 'bannerImages.file',
+            localField: 'bannerImages.featuredImage',
             foreignField: '_id',
             as: 'fileDetails',
         },
