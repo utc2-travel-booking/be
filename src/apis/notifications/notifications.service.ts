@@ -36,6 +36,15 @@ export class NotificationsService extends BaseService<
         );
     }
 
+    async countNotificationUnreadOfUser(userPayload: UserPayload) {
+        const { _id } = userPayload;
+
+        return this.countDocuments({
+            'user._id': _id,
+            status: UserNotificationStatus.UNREAD,
+        }).exec();
+    }
+
     async getNotificationsOfUser(
         queryParams: ExtendedPagingDto,
         user: UserPayload,
