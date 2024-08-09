@@ -29,7 +29,7 @@ export const populateGroupBannerImageAggregate = [
             bannerImages: {
                 $push: {
                     urlRedirect: '$bannerImages.urlRedirect',
-                    file: '$fileDetails',
+                    featuredImage: '$fileDetails',
                 },
             },
             createdAt: { $first: '$createdAt' },
