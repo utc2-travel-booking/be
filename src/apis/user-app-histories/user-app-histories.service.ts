@@ -29,13 +29,11 @@ export class UserAppHistoriesService extends BaseService<
 
     async createUserAppHistory(appId: Types.ObjectId, userId: Types.ObjectId) {
         const userAppHistory = await this.findOne({
-            app: appId,
-            createdBy: userId,
+            app: new Types.ObjectId(appId.toString()),
+            createdBy: new Types.ObjectId(userId.toString()),
         })
             .autoPopulate(false)
             .exec();
-
-        console.log('userAppHistory', userAppHistory);
 
         if (userAppHistory) {
             await this.updateOne(
