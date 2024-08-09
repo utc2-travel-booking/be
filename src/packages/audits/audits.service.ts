@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
-import { Audit, AuditDocument } from './entity/audits.entity';
+import { Audit, AuditDocument } from './entities/audits.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';

@@ -1,5 +1,4 @@
 import { COLLECTION_NAMES } from 'src/constants';
-import { SUPER_CACHE_EVENT_HANDLER } from '../constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ModuleRef } from '@nestjs/core';
 import { createRedisFolderCollection } from '../common/create-redis-folder-collection.utils';

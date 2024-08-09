@@ -3,7 +3,6 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { REDIS_FOLDER_NAME } from './constants';
 import { CollectionModel } from './models/collections.model';
-import { CollectionKey } from './models/collection-keys.model';
 
 @Injectable()
 export class SuperCacheService implements OnModuleInit {
@@ -80,41 +79,56 @@ export class SuperCacheService implements OnModuleInit {
                 return;
             }
 
-            const parentCollections = collections.filter((collection) =>
+            const keys: string[] = await this.cacheManager.store.keys(
+                `${mainCollectionName}:*`,
+            );
+
+            if (!keys.length) {
+                return;
+            }
+
+            await Promise.all(keys.map((key) => this.cacheManager.del(key)));
+
+            const relationCollectionNames = collections.filter((collection) =>
                 collection?.relationCollectionNames?.includes(
                     mainCollectionName,
                 ),
             );
 
-            const mainCollection = collections.find(
-                (collection) =>
-                    collection?.mainCollectionName === mainCollectionName,
-            );
-
-            if (!mainCollection) {
-                return;
-            }
-
-            const _collections = [...parentCollections, ...[mainCollection]];
-
-            const data = await Promise.all(
-                _collections.map(async (collection) => {
-                    return {
-                        mainCollectionName: collection.mainCollectionName,
-                        keys: await this.getForDataCollectionKey(
-                            collection.mainCollectionName,
-                        ),
-                    };
-                }),
-            );
-
-            for (const { mainCollectionName, keys } of data) {
-                await this.deleteDataForCollections(mainCollectionName, keys);
-                await this.deleteForDataCollectionKey(mainCollectionName);
-            }
+            await this.deleteForDataCollectionRelation(relationCollectionNames);
         } catch (error) {
             this.logger.error(
                 'error deleteForDataCollection',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
+        }
+    }
+
+    private async deleteForDataCollectionRelation(
+        collectionRelations: CollectionModel[],
+    ) {
+        try {
+            if (!collectionRelations || !collectionRelations?.length) {
+                return;
+            }
+
+            for (const collection of collectionRelations) {
+                const keys: string[] = await this.cacheManager.store.keys(
+                    `${collection.mainCollectionName}:*`,
+                );
+
+                if (!keys.length) {
+                    return;
+                }
+
+                await Promise.all(
+                    keys.map((key) => this.cacheManager.del(key)),
+                );
+            }
+        } catch (error) {
+            this.logger.error(
+                'error deleteForDataCollectionRelation',
                 JSON.stringify(error),
             );
             await this.resetCache();
@@ -133,8 +147,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error setDataForCollection',
                 JSON.stringify(error),
             );
-        } finally {
-            await this.setForDataCollectionKey(mainCollectionName, key);
         }
     }
 
@@ -152,87 +164,6 @@ export class SuperCacheService implements OnModuleInit {
 
     async resetCache() {
         await this.cacheManager.reset();
-    }
-
-    private async deleteDataForCollections(
-        mainCollectionName: string,
-        key: string[],
-    ) {
-        try {
-            await Promise.all(
-                key.map(async (k) => {
-                    await this.cacheManager.del(`${mainCollectionName}:${k}`);
-                }),
-            );
-        } catch (error) {
-            this.logger.error(
-                'error deleteDataForCollections',
-                JSON.stringify(error),
-            );
-        }
-    }
-
-    private async setForDataCollectionKey(
-        mainCollectionName: string,
-        key: string,
-    ) {
-        try {
-            const folderKeys = `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`;
-            const cacheKeys = await this.cacheManager.get<CollectionKey>(
-                folderKeys,
-            );
-
-            if (cacheKeys) {
-                cacheKeys.addedKeys.push(key);
-                await this.set(folderKeys, cacheKeys);
-
-                return;
-            }
-
-            const newCacheKeys = new Set<string>();
-            newCacheKeys.add(key);
-
-            await this.set(folderKeys, {
-                addedKeys: Array.from(newCacheKeys),
-            });
-        } catch (error) {
-            this.logger.error(
-                'error setForDataCollectionKey',
-                JSON.stringify(error),
-            );
-        }
-    }
-
-    private async getForDataCollectionKey(
-        mainCollectionName: string,
-    ): Promise<string[]> {
-        try {
-            const folderKeys = `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`;
-            const cacheKeys = await this.cacheManager.get<CollectionKey>(
-                folderKeys,
-            );
-
-            const { addedKeys } = cacheKeys || { addedKeys: [] };
-            return addedKeys;
-        } catch (error) {
-            this.logger.error(
-                'error getForDataCollectionKey',
-                JSON.stringify(error),
-            );
-        }
-    }
-
-    private async deleteForDataCollectionKey(mainCollectionName: string) {
-        try {
-            await this.cacheManager.del(
-                `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`,
-            );
-        } catch (error) {
-            this.logger.error(
-                'error deleteForDataCollectionKey',
-                JSON.stringify(error),
-            );
-        }
     }
 
     private async getAllCollection(): Promise<CollectionModel[]> {

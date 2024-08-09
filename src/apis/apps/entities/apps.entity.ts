@@ -36,20 +36,28 @@ export class App extends AggregateRoot {
     @Prop({ type: String, required: true })
     url: string;
 
-    @Prop({ type: [Types.ObjectId], refClass: Category })
+    @Prop({
+        type: [Types.ObjectId],
+        ref: COLLECTION_NAMES.CATEGORIES,
+        refClass: Category,
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
         isArray: true,
     })
     categories: CategoryDocument[];
 
-    @Prop({ type: Types.ObjectId, refClass: File })
+    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, refClass: File })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
     featuredImage: FileDocument;
 
-    @Prop({ type: [Types.ObjectId], refClass: File })
+    @Prop({
+        type: [Types.ObjectId],
+        ref: COLLECTION_NAMES.FILE,
+        refClass: File,
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
         isArray: true,

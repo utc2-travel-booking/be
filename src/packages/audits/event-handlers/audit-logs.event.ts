@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AUDIT_LOG } from '../constants';
 import { AuditsService } from '../audits.service';
-import { Audit } from '../entity/audits.entity';
+import { Audit } from '../entities/audits.entity';
 
 @Injectable()
 export class AuditLogEvent {

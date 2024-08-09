@@ -1,6 +1,5 @@
 export const REDIS_FOLDER_NAME = {
     COLLECTION: 'collections',
-    COLLECTION_KEYS: 'collectionKeys',
 };
 
 export const HTTP_METHODS = {

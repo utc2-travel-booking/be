@@ -14,7 +14,6 @@ export async function readFileFromUrl(url: string) {
         const response = await axios.get(url);
         return response.data;
     } catch (error) {
-        console.log('error:', error.response.data);
         return 'Can not read content file.';
     }
 }
