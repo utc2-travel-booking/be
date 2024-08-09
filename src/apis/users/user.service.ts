@@ -165,7 +165,7 @@ export class UserService
         });
 
         if (userTransaction) {
-            await this.userModel.updateOne(
+            await this.updateOne(
                 { _id },
                 {
                     currentPoint: after,
