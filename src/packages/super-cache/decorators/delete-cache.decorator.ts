@@ -16,6 +16,10 @@ export function DeleteCache() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
+            if (this.collectionName === COLLECTION_NAMES.AUDIT) {
+                return originalMethod.apply(this, args);
+            }
+
             if (!superCacheService || !eventEmitter) {
                 const moduleRef = (this.constructor as any)
                     .moduleRef as ModuleRef;

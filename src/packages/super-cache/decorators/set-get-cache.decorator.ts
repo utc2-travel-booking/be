@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { RequestContext } from 'src/packages/super-request-context';
 import { appSettings } from 'src/configs/appsettings';
 import { createRedisFolderCollection } from '../common/create-redis-folder-collection.utils';
+import { COLLECTION_NAMES } from 'src/constants';
 
 export function SGetCache() {
     let superCacheService: SuperCacheService;
@@ -20,6 +21,10 @@ export function SGetCache() {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
+            if (this.collectionName === COLLECTION_NAMES.AUDIT) {
+                return originalMethod.apply(this, args);
+            }
+
             if (!superCacheService || !eventEmitter) {
                 const moduleRef = (this.constructor as any)
                     .moduleRef as ModuleRef;
