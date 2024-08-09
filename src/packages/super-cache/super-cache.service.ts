@@ -22,7 +22,8 @@ export class SuperCacheService implements OnModuleInit {
             const data = await this.cacheManager.get<T>(key);
             return data;
         } catch (error) {
-            this.logger.error('error get', error);
+            this.logger.error('error get', JSON.stringify(error));
+            await this.resetCache();
         }
     }
 
@@ -34,7 +35,8 @@ export class SuperCacheService implements OnModuleInit {
                     this.logger.error(e);
                 });
         } catch (error) {
-            this.logger.error('error set', error);
+            this.logger.error('error set', JSON.stringify(error));
+            await this.resetCache();
         }
     }
 
@@ -57,7 +59,8 @@ export class SuperCacheService implements OnModuleInit {
                 },
             );
         } catch (error) {
-            this.logger.error('error setOneCollection', error);
+            this.logger.error('error setOneCollection', JSON.stringify(error));
+            await this.resetCache();
         }
     }
 
@@ -68,7 +71,8 @@ export class SuperCacheService implements OnModuleInit {
             );
             return data;
         } catch (error) {
-            this.logger.error('error getOneCollection', error);
+            this.logger.error('error getOneCollection', JSON.stringify(error));
+            await this.resetCache();
         }
     }
 
@@ -113,7 +117,11 @@ export class SuperCacheService implements OnModuleInit {
                 await this.deleteForDataCollectionKey(mainCollectionName);
             }
         } catch (error) {
-            this.logger.error('error deleteForDataCollection', error);
+            this.logger.error(
+                'error deleteForDataCollection',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -125,9 +133,13 @@ export class SuperCacheService implements OnModuleInit {
         try {
             await this.set(`${mainCollectionName}:${key}`, data);
         } catch (error) {
-            this.logger.error('error setDataForCollection', error);
+            this.logger.error(
+                'error setDataForCollection',
+                JSON.stringify(error),
+            );
         } finally {
             await this.setForDataCollectionKey(mainCollectionName, key);
+            await this.resetCache();
         }
     }
 
@@ -136,7 +148,11 @@ export class SuperCacheService implements OnModuleInit {
             const data = await this.get(`${mainCollectionName}:${key}`);
             return data;
         } catch (error) {
-            this.logger.error('error getDataForCollection', error);
+            this.logger.error(
+                'error getDataForCollection',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -155,7 +171,11 @@ export class SuperCacheService implements OnModuleInit {
                 }),
             );
         } catch (error) {
-            this.logger.error('error deleteDataForCollections', error);
+            this.logger.error(
+                'error deleteDataForCollections',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -183,7 +203,11 @@ export class SuperCacheService implements OnModuleInit {
                 addedKeys: Array.from(newCacheKeys),
             });
         } catch (error) {
-            this.logger.error('error setForDataCollectionKey', error);
+            this.logger.error(
+                'error setForDataCollectionKey',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -199,7 +223,11 @@ export class SuperCacheService implements OnModuleInit {
             const { addedKeys } = cacheKeys || { addedKeys: [] };
             return addedKeys;
         } catch (error) {
-            this.logger.error('error', error);
+            this.logger.error(
+                'error getForDataCollectionKey',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -209,7 +237,11 @@ export class SuperCacheService implements OnModuleInit {
                 `${REDIS_FOLDER_NAME.COLLECTION_KEYS}:${mainCollectionName}`,
             );
         } catch (error) {
-            this.logger.error('error getForDataCollectionKey', error);
+            this.logger.error(
+                'error deleteForDataCollectionKey',
+                JSON.stringify(error),
+            );
+            await this.resetCache();
         }
     }
 
@@ -229,7 +261,8 @@ export class SuperCacheService implements OnModuleInit {
 
             return data;
         } catch (error) {
-            this.logger.error('error getAllCollection', error);
+            this.logger.error('error getAllCollection', JSON.stringify(error));
+            await this.resetCache();
         }
     }
 }
