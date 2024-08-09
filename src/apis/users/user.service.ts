@@ -147,8 +147,9 @@ export class UserService
         let avatar = null;
         if (photoUrl) {
             avatar = await this.mediaService.create({
-                filename: `avatar-${id}`,
+                name: `avatar-${id}`,
                 filePath: photoUrl,
+                filename: `avatar-${id}`,
             });
         }
 

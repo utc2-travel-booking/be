@@ -174,7 +174,23 @@ export class AppsService extends BaseService<AppDocument, App> {
                     deletedAt: null,
                     'createdBy._id': userId,
                 },
-                filterPipeline,
+                [
+                    ...filterPipeline,
+                    {
+                        $lookup: {
+                            from: 'files',
+                            localField: 'app.featuredImage',
+                            foreignField: '_id',
+                            as: 'app.featuredImage',
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$app.featuredImage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ],
             )
             .limit(limit)
             .skip(skip)
