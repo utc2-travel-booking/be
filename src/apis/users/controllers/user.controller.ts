@@ -9,6 +9,7 @@ import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
 import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
 import { TYPE_ADD_POINT_FOR_USER } from 'src/apis/apps/constants';
+import { ParseEnumPipe } from 'src/pipes/parse-enum.pipe';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -41,7 +42,7 @@ export class UserController {
     @DefaultGet('history-reward/:type')
     @Authorize(PERMISSIONS_FRONT.USER.index)
     async getHistoryReward(
-        @Param('type') type: TYPE_ADD_POINT_FOR_USER,
+        @Param('type', ParseEnumPipe) type: TYPE_ADD_POINT_FOR_USER,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
