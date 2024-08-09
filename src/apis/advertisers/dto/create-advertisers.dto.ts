@@ -36,7 +36,7 @@ export class BannerImageDto extends BannerImage {
         collectionName: COLLECTION_NAMES.FILE,
         message: 'File  does not exist',
     })
-    file: Types.ObjectId;
+    featuredImage: Types.ObjectId;
 }
 
 export class CreateAdvertiserDto extends PartialType(ExcludeDto) {

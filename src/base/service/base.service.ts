@@ -33,7 +33,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const result = this.find(
             {
                 ...options,
-                deletedAt: null,
             },
             filterPipeline,
         )
@@ -63,7 +62,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const result = await this.findOne({
             _id,
             ...options,
-            deletedAt: null,
         }).exec();
 
         return result;
