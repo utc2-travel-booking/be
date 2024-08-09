@@ -96,7 +96,7 @@ pipeline {
                         sshagent([env.SERVER_CREDENTIALS]) {
                             def commands = """
                             cd ${env.SERVER_PATH}
-                            make stop
+                            sudo make stop
                             git pull
                             sudo make setup-env
                             sudo make pull
