@@ -61,7 +61,7 @@ export function SGetCache() {
 
             await createRedisFolderCollection(
                 this.collectionName,
-                this.entity,
+                this._entity,
                 superCacheService,
             );
 

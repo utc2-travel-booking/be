@@ -15,6 +15,7 @@ export class CustomQueryCountDocumentsService<T extends Document>
     private _conditions: Record<string, any> = {};
     private _pipeline: PipelineStage[] = [];
     public static moduleRef: ModuleRef;
+    private _entity: new () => any;
 
     constructor(
         model: Model<T>,
@@ -30,6 +31,7 @@ export class CustomQueryCountDocumentsService<T extends Document>
         this._conditions = conditions;
         this._pipeline = pipeline;
         this.collectionName = collectionName;
+        this._entity = entity;
     }
 
     select(fields: Record<string, number>): this {

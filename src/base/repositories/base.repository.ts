@@ -32,8 +32,8 @@ export class BaseRepositories<T extends Document, E> {
 
     constructor(
         public readonly model: Model<T>,
-        private readonly entity: new () => E,
-        private readonly collectionName: COLLECTION_NAMES,
+        public readonly entity: new () => E,
+        public readonly collectionName: COLLECTION_NAMES,
         public moduleRef: ModuleRef,
     ) {
         BaseRepositories.moduleRef = moduleRef;
