@@ -9,7 +9,7 @@ export class BannerImage {
     urlRedirect: string;
 
     @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, required: true })
-    file: Types.ObjectId;
+    featuredImage: Types.ObjectId;
 }
 
 @Schema({
