@@ -23,7 +23,6 @@ export class SuperCacheService implements OnModuleInit {
             return data;
         } catch (error) {
             this.logger.error('error get', JSON.stringify(error));
-            await this.resetCache();
         }
     }
 
@@ -36,7 +35,6 @@ export class SuperCacheService implements OnModuleInit {
                 });
         } catch (error) {
             this.logger.error('error set', JSON.stringify(error));
-            await this.resetCache();
         }
     }
 
@@ -60,7 +58,6 @@ export class SuperCacheService implements OnModuleInit {
             );
         } catch (error) {
             this.logger.error('error setOneCollection', JSON.stringify(error));
-            await this.resetCache();
         }
     }
 
@@ -72,7 +69,6 @@ export class SuperCacheService implements OnModuleInit {
             return data;
         } catch (error) {
             this.logger.error('error getOneCollection', JSON.stringify(error));
-            await this.resetCache();
         }
     }
 
@@ -80,7 +76,7 @@ export class SuperCacheService implements OnModuleInit {
         try {
             const collections = await this.getAllCollection();
 
-            if (!collections.length) {
+            if (!collections || !collections?.length) {
                 return;
             }
 
@@ -139,7 +135,6 @@ export class SuperCacheService implements OnModuleInit {
             );
         } finally {
             await this.setForDataCollectionKey(mainCollectionName, key);
-            await this.resetCache();
         }
     }
 
@@ -152,7 +147,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error getDataForCollection',
                 JSON.stringify(error),
             );
-            await this.resetCache();
         }
     }
 
@@ -175,7 +169,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error deleteDataForCollections',
                 JSON.stringify(error),
             );
-            await this.resetCache();
         }
     }
 
@@ -207,7 +200,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error setForDataCollectionKey',
                 JSON.stringify(error),
             );
-            await this.resetCache();
         }
     }
 
@@ -227,7 +219,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error getForDataCollectionKey',
                 JSON.stringify(error),
             );
-            await this.resetCache();
         }
     }
 
@@ -241,7 +232,6 @@ export class SuperCacheService implements OnModuleInit {
                 'error deleteForDataCollectionKey',
                 JSON.stringify(error),
             );
-            await this.resetCache();
         }
     }
 
@@ -262,7 +252,6 @@ export class SuperCacheService implements OnModuleInit {
             return data;
         } catch (error) {
             this.logger.error('error getAllCollection', JSON.stringify(error));
-            await this.resetCache();
         }
     }
 }
