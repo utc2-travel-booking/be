@@ -69,45 +69,60 @@ export class UserService
     }
 
     async getHistoryReward(user: UserPayload) {
+        const result = {
+            today: 0,
+            yesterday: 0,
+            lastOneMonth: 0,
+        };
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setHours(0, 0, 0, 0);
 
-        const lastOneMonth = new Date(today);
-        lastOneMonth.setMonth(today.getMonth() - 1);
+        const lastOneMonth = new Date();
+        lastOneMonth.setMonth(lastOneMonth.getMonth() - 1);
+        lastOneMonth.setHours(0, 0, 0, 0);
 
-        const fetchTransactions = async (startDate: Date, endDate: Date) => {
-            return this.userTransactionService
-                .find({
-                    'createdBy._id': user._id,
-                    createdAt: { $gte: startDate, $lt: endDate },
-                })
-                .exec();
-        };
+        const userTransactionToday = await this.userTransactionService
+            .find({
+                'createdBy._id': user._id,
+                createdAt: { $gte: today },
+            })
+            .exec();
 
-        const [
-            userTransactionToday,
-            userTransactionYesterday,
-            userTransactionLastOneMonth,
-        ] = await Promise.all([
-            fetchTransactions(
-                today,
-                new Date(today.getTime() + 24 * 60 * 60 * 1000),
-            ),
-            fetchTransactions(yesterday, today),
-            fetchTransactions(lastOneMonth, today),
-        ]);
+        const userTransactionYesterday = await this.userTransactionService
+            .find({
+                'createdBy._id': user._id,
+                createdAt: { $gte: yesterday, $lt: today },
+            })
+            .exec();
 
-        const calculateTotal = (transactions: any[]) =>
-            transactions.reduce((acc, cur) => acc + cur.amount, 0);
+        const userTransactionLastOneMonth = await this.userTransactionService
+            .find({
+                'createdBy._id': user._id,
+                createdAt: { $gte: lastOneMonth },
+            })
+            .exec();
 
-        return {
-            today: calculateTotal(userTransactionToday),
-            yesterday: calculateTotal(userTransactionYesterday),
-            lastOneMonth: calculateTotal(userTransactionLastOneMonth),
-        };
+        result.today = userTransactionToday.reduce(
+            (acc, cur) => acc + cur.amount,
+            0,
+        );
+
+        result.yesterday = userTransactionYesterday.reduce(
+            (acc, cur) => acc + cur.amount,
+            0,
+        );
+
+        result.lastOneMonth = userTransactionLastOneMonth.reduce(
+            (acc, cur) => acc + cur.amount,
+            0,
+        );
+
+        return result;
     }
 
     async addPointForUser(
