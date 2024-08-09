@@ -35,6 +35,8 @@ export class UserAppHistoriesService extends BaseService<
             .autoPopulate(false)
             .exec();
 
+        console.log('userAppHistory', userAppHistory);
+
         if (userAppHistory) {
             await this.updateOne(
                 { _id: userAppHistory._id },
