@@ -129,6 +129,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         userPayload: UserPayload,
     ) {
         const app = await this.findOne({ _id: appId }).exec();
+        const { _id: userId } = userPayload;
 
         const addPointForUserDto: AddPointForUserDto = {
             point: 10,
@@ -136,6 +137,13 @@ export class AppsService extends BaseService<AppDocument, App> {
             app: appId,
             description: type,
         };
+
+        if (type === TYPE_ADD_POINT_FOR_USER.open) {
+            await this.userAppHistoriesService.createUserAppHistory(
+                appId,
+                userId,
+            );
+        }
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,
@@ -188,11 +196,6 @@ export class AppsService extends BaseService<AppDocument, App> {
                 'App not found',
             );
         }
-
-        await this.userAppHistoriesService.createUserAppHistory(
-            result._id,
-            userId,
-        );
 
         return {
             ...result,
