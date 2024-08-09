@@ -1,4 +1,4 @@
-import { Controller, Param, Query, Req } from '@nestjs/common';
+import { Controller, Param, Query, Req, Headers } from '@nestjs/common';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -70,8 +70,12 @@ export class AppsController {
     async getAllForFront(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
+        @Headers('authorization') authorization: string,
     ) {
-        const result = await this.appsService.getAllForFront(queryParams);
+        const result = await this.appsService.getAllAppPublish(
+            queryParams,
+            authorization,
+        );
         return result;
     }
 
