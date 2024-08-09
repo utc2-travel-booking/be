@@ -22,6 +22,7 @@ import { UserTransactionType } from '../user-transaction/constants';
 import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
+import { TYPE_ADD_POINT_FOR_USER } from './constants';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -75,14 +76,18 @@ export class AppsService extends BaseService<AppDocument, App> {
         });
     }
 
-    async openApp(appId: Types.ObjectId, userPayload: UserPayload) {
+    async addPointForUser(
+        appId: Types.ObjectId,
+        type: TYPE_ADD_POINT_FOR_USER,
+        userPayload: UserPayload,
+    ) {
         const app = await this.findOne({ _id: appId }).exec();
 
         const addPointForUserDto: AddPointForUserDto = {
             point: 10,
             type: UserTransactionType.SUM,
-            description: 'Open app',
             app: appId,
+            description: type,
         };
 
         return await this.userServices.addPointForUser(

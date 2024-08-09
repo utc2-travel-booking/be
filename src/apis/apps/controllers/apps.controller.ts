@@ -13,6 +13,7 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
+import { TYPE_ADD_POINT_FOR_USER } from '../constants';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -36,15 +37,16 @@ export class AppsController {
         return result;
     }
 
-    @DefaultPost(':id/open')
+    @DefaultPost('add-point/:id/:type')
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
-    async openApp(
+    async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('type') type: TYPE_ADD_POINT_FOR_USER,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.appsService.openApp(_id, user);
+        const result = await this.appsService.addPointForUser(_id, type, user);
         return result;
     }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Req } from '@nestjs/common';
+import { Body, Controller, Param, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -8,6 +8,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
 import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
+import { TYPE_ADD_POINT_FOR_USER } from 'src/apis/apps/constants';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -37,10 +38,13 @@ export class UserController {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @DefaultGet('history-reward')
+    @DefaultGet('history-reward/:type')
     @Authorize(PERMISSIONS_FRONT.USER.index)
-    async getHistoryReward(@Req() req: { user: UserPayload }) {
+    async getHistoryReward(
+        @Param('type') type: TYPE_ADD_POINT_FOR_USER,
+        @Req() req: { user: UserPayload },
+    ) {
         const { user } = req;
-        return this.userService.getHistoryReward(user);
+        return this.userService.getHistoryReward(user, type);
     }
 }

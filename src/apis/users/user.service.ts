@@ -27,6 +27,7 @@ import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
+import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
 
 @Injectable()
 export class UserService
@@ -68,7 +69,10 @@ export class UserService
         }
     }
 
-    async getHistoryReward(user: UserPayload) {
+    async getHistoryReward(
+        user: UserPayload,
+        description: TYPE_ADD_POINT_FOR_USER,
+    ) {
         const result = {
             today: 0,
             yesterday: 0,
@@ -90,6 +94,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: today },
+                description,
             })
             .exec();
 
@@ -97,6 +102,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: yesterday, $lt: today },
+                description,
             })
             .exec();
 
@@ -104,6 +110,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: lastOneMonth },
+                description,
             })
             .exec();
 
@@ -138,6 +145,7 @@ export class UserService
             .findOne({
                 'createdBy._id': userId,
                 'app._id': app,
+                description,
             })
             .exec();
 
@@ -175,7 +183,7 @@ export class UserService
 
         await this.notificationService.create({
             name: `+${point}`,
-            shortDescription: `You open ${appName}`,
+            shortDescription: `You ${description} ${appName}`,
             user: userId,
             refId: app,
             refSource: COLLECTION_NAMES.APP,
