@@ -142,7 +142,9 @@ export class ReviewRatingService extends BaseService<
             starRatingDistribution[review.star] += 1;
         });
 
-        const avgRating = reviews.reduce((acc, review) => acc + review.star, 0);
+        const avgRating =
+            reviews.reduce((acc, review) => acc + review.star, 0) /
+            totalReviews;
 
         return {
             totalReviews,

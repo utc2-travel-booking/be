@@ -209,7 +209,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { _id: userId } = user;
         const { page, limit, skip, filterPipeline } = queryParams;
 
-        const total = this.userAppHistoriesService
+        const total = await this.userAppHistoriesService
             .countDocuments(
                 {
                     'createdBy._id': userId,
@@ -218,7 +218,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             )
             .exec();
 
-        const userAppHistories = this.userAppHistoriesService
+        const userAppHistories = await this.userAppHistoriesService
             .find(
                 {
                     'createdBy._id': userId,
@@ -246,12 +246,23 @@ export class AppsService extends BaseService<AppDocument, App> {
             .sort({ updatedAt: -1 })
             .exec();
 
-        return Promise.all([userAppHistories, total]).then(
-            ([result, total]) => {
-                const meta = pagination(result, page, limit, total);
-                const items = result.map((item) => item.app);
-                return { items, meta };
-            },
-        );
+        const result = userAppHistories.map((item) => item.app);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward: userId
+                    ? await this.userTransactionService.checkReceivedReward(
+                          userId,
+                          item._id,
+                      )
+                    : false,
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            const meta = pagination(result, page, limit, total);
+            return { items, meta };
+        });
     }
 }
