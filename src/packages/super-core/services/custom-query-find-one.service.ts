@@ -2,7 +2,7 @@ import { Expression, Document, Model, PipelineStage } from 'mongoose';
 import { ICustomQueryFindOne } from './interfaces/custom-query-find-one.interface';
 import { ModuleRef } from '@nestjs/core';
 import { COLLECTION_NAMES } from 'src/constants';
-import { sortPipelines } from 'src/packages/super-search';
+import { deleteAllLookup, sortPipelines } from 'src/packages/super-search';
 import { SGetCache } from 'src/packages/super-cache';
 
 export class CustomQueryFindOneService<T extends Document>
@@ -38,6 +38,13 @@ export class CustomQueryFindOneService<T extends Document>
 
     sort(sort: Record<string, 1 | -1 | Expression.Meta>): this {
         this._pipeline.push({ $sort: sort });
+        return this;
+    }
+
+    autoPopulate(autoPopulate: boolean): this {
+        if (!autoPopulate) {
+            this._pipeline = deleteAllLookup(this._pipeline);
+        }
         return this;
     }
 

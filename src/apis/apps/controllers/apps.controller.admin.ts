@@ -12,7 +12,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAppDto } from 'src/apis/apps/dto/create-app.dto';
 import { UpdateAppDto } from 'src/apis/apps/dto/update-app.dto';
-import { App } from 'src/apis/apps/entities/apps.entity';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';

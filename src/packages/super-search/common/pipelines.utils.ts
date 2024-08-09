@@ -60,3 +60,12 @@ export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
         ...count,
     ];
 };
+
+export const deleteAllLookup = (pipeline: PipelineStage[]): PipelineStage[] => {
+    return pipeline.filter(
+        (stage) =>
+            !_.has(stage, '$lookup') &&
+            !_.has(stage, '$unwind') &&
+            !_.has(stage, '$addFields'),
+    );
+};

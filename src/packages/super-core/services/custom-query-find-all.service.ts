@@ -2,7 +2,7 @@ import { ModuleRef } from '@nestjs/core';
 import { Model, PipelineStage, Document, Expression } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
-import { sortPipelines } from '../../super-search';
+import { deleteAllLookup, sortPipelines } from '../../super-search';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
 
 export class CustomQueryFindAllService<T extends Document>
@@ -48,6 +48,13 @@ export class CustomQueryFindAllService<T extends Document>
 
     sort(sort: Record<string, 1 | -1 | Expression.Meta>): this {
         this._pipeline.push({ $sort: sort });
+        return this;
+    }
+
+    autoPopulate(autoPopulate: boolean): this {
+        if (!autoPopulate) {
+            this._pipeline = deleteAllLookup(this._pipeline);
+        }
         return this;
     }
 
