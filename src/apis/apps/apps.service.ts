@@ -52,7 +52,9 @@ export class AppsService extends BaseService<AppDocument, App> {
             const [, token] = authorization.split(' ');
             const payload = jsonwebtoken.decode(token);
             const { _id } = (payload as UserPayload) || {};
-            userId = new Types.ObjectId(_id);
+            if (_id) {
+                userId = new Types.ObjectId(_id);
+            }
         }
 
         activePublications(queryParams.filterPipeline);
