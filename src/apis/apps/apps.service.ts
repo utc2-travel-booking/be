@@ -23,6 +23,7 @@ import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { TYPE_ADD_POINT_FOR_USER } from './constants';
+import jsonwebtoken from 'jsonwebtoken';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -37,6 +38,52 @@ export class AppsService extends BaseService<AppDocument, App> {
         private readonly userTransactionService: UserTransactionService,
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
+    }
+
+    async getAllAppPublish(
+        queryParams: ExtendedPagingDto,
+        authorization: string,
+    ) {
+        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
+            queryParams;
+
+        let userId: Types.ObjectId;
+        if (authorization) {
+            const [, token] = authorization.split(' ');
+            const payload = jsonwebtoken.decode(token);
+            const { _id } = (payload as UserPayload) || {};
+            if (_id) {
+                userId = new Types.ObjectId(_id);
+            }
+        }
+
+        activePublications(queryParams.filterPipeline);
+
+        const result = await this.find({}, filterPipeline)
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .select({ longDescription: 0 })
+            .exec();
+
+        const total = await this.countDocuments({}, filterPipeline).exec();
+        const meta = pagination(result, page, limit, total);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward: userId
+                    ? await this.userTransactionService.checkReceivedReward(
+                          userId,
+                          item._id,
+                      )
+                    : false,
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            return { items, meta };
+        });
     }
 
     async getAppsByTag(tagSlug: string, queryParams: ExtendedPagingDto) {
@@ -164,19 +211,18 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { _id: userId } = user;
         const { page, limit, skip, filterPipeline } = queryParams;
 
-        const total = this.userAppHistoriesService
+        const total = await this.userAppHistoriesService
             .countDocuments(
                 {
-                    deletedAt: null,
+                    'createdBy._id': userId,
                 },
                 filterPipeline,
             )
             .exec();
 
-        const userAppHistories = this.userAppHistoriesService
+        const userAppHistories = await this.userAppHistoriesService
             .find(
                 {
-                    deletedAt: null,
                     'createdBy._id': userId,
                 },
                 [
@@ -202,12 +248,23 @@ export class AppsService extends BaseService<AppDocument, App> {
             .sort({ updatedAt: -1 })
             .exec();
 
-        return Promise.all([userAppHistories, total]).then(
-            ([result, total]) => {
-                const meta = pagination(result, page, limit, total);
-                const items = result.map((item) => item.app);
-                return { items, meta };
-            },
-        );
+        const result = userAppHistories.map((item) => item.app);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward: userId
+                    ? await this.userTransactionService.checkReceivedReward(
+                          userId,
+                          item._id,
+                      )
+                    : false,
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            const meta = pagination(result, page, limit, total);
+            return { items, meta };
+        });
     }
 }
