@@ -139,7 +139,6 @@ export class AppsService extends BaseService<AppDocument, App> {
         };
 
         if (type === TYPE_ADD_POINT_FOR_USER.open) {
-            addPointForUserDto.point = 5;
             await this.userAppHistoriesService.createUserAppHistory(
                 appId,
                 userId,
