@@ -103,12 +103,14 @@ export class AppsService extends BaseService<AppDocument, App> {
             )
             .exec();
 
+        const appIds = tagApps.map(
+            (item) => new Types.ObjectId(item.app.toString()),
+        );
+
         const apps = this.find(
             {
                 _id: {
-                    $in: tagApps.map(
-                        (item) => new Types.ObjectId(item.app.toString()),
-                    ),
+                    $in: appIds,
                 },
             },
             filterPipeline,
