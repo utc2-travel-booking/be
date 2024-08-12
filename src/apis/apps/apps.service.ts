@@ -78,23 +78,20 @@ export class AppsService extends BaseService<AppDocument, App> {
 
     async getAppsByTag(tagSlug: string, queryParams: ExtendedPagingDto) {
         const tag = await this.tagService.findOne({ slug: tagSlug }).exec();
-
         if (!tag) {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
         }
 
         const { page, limit, skip, filterPipeline } = queryParams;
 
-        const tagApps = this.tagAppsService
-            .find(
-                {
-                    'tag._id': tag._id,
-                },
-                filterPipeline,
-            )
+        const tagApps = await this.tagAppsService
+            .find({
+                tag: tag._id,
+            })
             .limit(limit)
             .skip(skip)
             .sort({ position: 1 })
+            .autoPopulate(false)
             .exec();
 
         const total = this.tagAppsService
@@ -106,9 +103,15 @@ export class AppsService extends BaseService<AppDocument, App> {
             )
             .exec();
 
-        return Promise.all([tagApps, total]).then(([result, total]) => {
-            const meta = pagination(result, page, limit, total);
-            const items = result.map((item) => item.app);
+        const apps = this.find(
+            {
+                _id: { $in: tagApps.map((item) => item.app) },
+            },
+            filterPipeline,
+        ).exec();
+
+        return Promise.all([apps, total]).then(([items, total]) => {
+            const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
     }
