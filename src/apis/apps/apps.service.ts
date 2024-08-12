@@ -76,7 +76,12 @@ export class AppsService extends BaseService<AppDocument, App> {
         });
     }
 
-    async getAppsByTag(tagSlug: string, queryParams: ExtendedPagingDto) {
+    async getAppsByTag(
+        tagSlug: string,
+        queryParams: ExtendedPagingDto,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
         const tag = await this.tagService.findOne({ slug: tagSlug }).exec();
         if (!tag) {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
@@ -94,7 +99,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             .autoPopulate(false)
             .exec();
 
-        const total = this.tagAppsService
+        const total = await this.tagAppsService
             .countDocuments(
                 {
                     'tag._id': tag._id,
@@ -107,7 +112,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             (item) => new Types.ObjectId(item.app.toString()),
         );
 
-        const apps = this.find(
+        const apps = await this.find(
             {
                 _id: {
                     $in: appIds,
@@ -116,8 +121,19 @@ export class AppsService extends BaseService<AppDocument, App> {
             filterPipeline,
         ).exec();
 
-        return Promise.all([apps, total]).then(([items, total]) => {
-            const meta = pagination(items, page, limit, total);
+        const items = apps.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                    ),
+            };
+        });
+
+        const meta = pagination(items, page, limit, total);
+        return Promise.all(items).then((items) => {
             return { items, meta };
         });
     }

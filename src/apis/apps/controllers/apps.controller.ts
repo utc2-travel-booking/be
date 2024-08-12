@@ -27,14 +27,18 @@ export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
     @DefaultGet('tags/:tagSlug')
+    @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
     ) {
+        const { user } = req;
         const result = await this.appsService.getAppsByTag(
             tagSlug,
             queryParams,
+            user,
         );
         return result;
     }
