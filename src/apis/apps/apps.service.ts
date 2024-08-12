@@ -86,7 +86,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         const tagApps = await this.tagAppsService
             .find({
-                tag: tag._id,
+                tag: new Types.ObjectId(tag?._id),
             })
             .limit(limit)
             .skip(skip)
