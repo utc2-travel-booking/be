@@ -6,7 +6,6 @@ import { validate, parse } from '@tma.js/init-data-node';
 import _ from 'lodash';
 import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
 import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 

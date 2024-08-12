@@ -42,20 +42,11 @@ export class AppsService extends BaseService<AppDocument, App> {
 
     async getAllAppPublish(
         queryParams: ExtendedPagingDto,
-        authorization: string,
+        userPayload: UserPayload,
     ) {
+        const { _id: userId } = userPayload;
         const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
             queryParams;
-
-        let userId: Types.ObjectId;
-        if (authorization) {
-            const [, token] = authorization.split(' ');
-            const payload = jsonwebtoken.decode(token);
-            const { _id } = (payload as UserPayload) || {};
-            if (_id) {
-                userId = new Types.ObjectId(_id);
-            }
-        }
 
         activePublications(queryParams.filterPipeline);
 
@@ -72,12 +63,11 @@ export class AppsService extends BaseService<AppDocument, App> {
         const items = result.map(async (item) => {
             return {
                 ...item,
-                isReceivedReward: userId
-                    ? await this.userTransactionService.checkReceivedReward(
-                          userId,
-                          item._id,
-                      )
-                    : false,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                    ),
             };
         });
 
@@ -185,7 +175,6 @@ export class AppsService extends BaseService<AppDocument, App> {
         const result = await this.findOne(
             {
                 _id,
-                deletedAt: null,
             },
             filterPipeline,
         ).exec();
@@ -202,7 +191,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             isReceivedReward:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    result._id,
+                    _id,
                 ),
         };
     }

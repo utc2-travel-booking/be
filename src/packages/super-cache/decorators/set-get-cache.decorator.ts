@@ -82,12 +82,14 @@ export function SGetCache() {
 
             const result = await originalMethod.apply(this, args);
 
-            eventEmitter.emit(
-                SUPER_CACHE_EVENT_HANDLER.SET,
-                this.collectionName,
-                key,
-                result,
-            );
+            if (result) {
+                eventEmitter.emit(
+                    SUPER_CACHE_EVENT_HANDLER.SET,
+                    this.collectionName,
+                    key,
+                    result,
+                );
+            }
 
             return result;
         };
