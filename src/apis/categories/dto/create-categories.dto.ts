@@ -1,6 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+    MaxLength,
+} from 'class-validator';
 import { Types } from 'mongoose';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
@@ -43,4 +49,12 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
         message: 'Featured image does not exist',
     })
     featuredImage: Types.ObjectId;
+
+    @ApiProperty({
+        type: Number,
+        description: 'Position of the tag in the app',
+        default: 0,
+    })
+    @IsNumber()
+    position: number;
 }
