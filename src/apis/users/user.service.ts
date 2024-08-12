@@ -255,25 +255,36 @@ export class UserService
     async updateOneById(
         _id: Types.ObjectId,
         updateUserDto: UpdateUserDto,
-        user: UserPayload,
+        userPayload: UserPayload,
         options?: Record<string, any>,
     ) {
-        const { _id: userId } = user;
+        const { _id: userId } = userPayload;
         const { password } = updateUserDto;
-        const result = await this.findOneAndUpdate(
+
+        const update = {
+            ...updateUserDto,
+            ...options,
+            updatedBy: userId,
+            password: await this.hashPassword(password),
+        };
+
+        const user = await this.findOne({ _id }).exec();
+
+        if (!user) {
+            throw new BadRequestException(`Not found ${_id}`);
+        }
+
+        if (user.password === update.password) {
+            delete update.password;
+        }
+
+        const result = await this.updateOne(
             { _id },
             {
-                ...updateUserDto,
-                ...options,
-                updatedBy: userId,
-                password: await this.hashPassword(password),
+                ...update,
             },
             { new: true },
         );
-
-        if (!result) {
-            throw new BadRequestException(`Not found ${_id}`);
-        }
 
         return result;
     }
