@@ -26,6 +26,7 @@ export class SeedsService implements OnModuleInit {
         await this.seedPermissions();
         await this.seedRoles();
         await this.seedUsers();
+        await this.seedMetadata();
         this.logger.debug('Seeding completed');
     }
 
@@ -98,5 +99,28 @@ export class SeedsService implements OnModuleInit {
                 });
             }
         }
+    }
+
+    async seedMetadata() {
+        const metadata = JSON.parse(
+            fs.readFileSync(
+                process.cwd() + '/public/data/metadata.json',
+                'utf8',
+            ),
+        );
+
+        this.logger.debug('Seeding metadata');
+        await this.metadataService.deleteMany({});
+
+        const result = metadata.map((item) => {
+            delete item.createdAt;
+            delete item.updatedAt;
+            return {
+                ...item,
+                _id: new Types.ObjectId(item._id.$oid),
+            };
+        });
+
+        await this.metadataService.insertMany(result);
     }
 }

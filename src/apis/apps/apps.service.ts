@@ -23,7 +23,8 @@ import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { TYPE_ADD_POINT_FOR_USER } from './constants';
-import jsonwebtoken from 'jsonwebtoken';
+import { MetadataService } from '../metadata/metadata.service';
+import { MetadataType } from '../metadata/constants';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -36,6 +37,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         private readonly tagAppsService: TagAppsService,
         private readonly tagService: TagsService,
         private readonly userTransactionService: UserTransactionService,
+        private readonly metadataService: MetadataService,
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
@@ -159,17 +161,35 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { _id: userId } = userPayload;
 
         const addPointForUserDto: AddPointForUserDto = {
-            point: 10,
+            point: 0,
             type: UserTransactionType.SUM,
             app: appId,
             description: type,
         };
 
         if (type === TYPE_ADD_POINT_FOR_USER.open) {
+            addPointForUserDto.point =
+                await this.metadataService.getAmountRewardUserForApp(
+                    MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                );
             await this.userAppHistoriesService.createUserAppHistory(
                 appId,
                 userId,
             );
+        }
+
+        if (type === TYPE_ADD_POINT_FOR_USER.comment) {
+            addPointForUserDto.point =
+                await this.metadataService.getAmountRewardUserForApp(
+                    MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+                );
+        }
+
+        if (type === TYPE_ADD_POINT_FOR_USER.share) {
+            addPointForUserDto.point =
+                await this.metadataService.getAmountRewardUserForApp(
+                    MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                );
         }
 
         return await this.userServices.addPointForUser(
