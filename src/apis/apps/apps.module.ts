@@ -9,6 +9,7 @@ import { UserModule } from '../users/user.module';
 import { TagAppsModule } from '../tag-apps/tag-apps.module';
 import { TagsModule } from '../tags/tags.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
+import { MetadataModule } from '../metadata/metadata.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { UserTransactionModule } from '../user-transaction/user-transaction.modu
         TagAppsModule,
         TagsModule,
         UserTransactionModule,
+        MetadataModule,
     ],
     controllers: [],
     providers: [AppsService, AppEvent],
