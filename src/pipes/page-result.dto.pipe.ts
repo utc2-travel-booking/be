@@ -32,7 +32,7 @@ export class PagingDtoPipe implements PipeTransform {
             limit: Number(limit),
             skip: (Number(page) - 1) * Number(limit),
             sortBy,
-            sortDirection: Number(sortDirection) as 1 | -1 | Expression.Meta,
+            sortDirection: Number(sortDirection) as 1 | -1,
             searchType,
             search,
             isAll,

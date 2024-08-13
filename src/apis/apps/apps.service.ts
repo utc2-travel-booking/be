@@ -87,7 +87,8 @@ export class AppsService extends BaseService<AppDocument, App> {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
         }
 
-        const { page, limit, skip, filterPipeline } = queryParams;
+        const { page, limit, skip, filterPipeline, sortBy, sortDirection } =
+            queryParams;
 
         const tagApps = await this.tagAppsService
             .find({
@@ -95,17 +96,8 @@ export class AppsService extends BaseService<AppDocument, App> {
             })
             .limit(limit)
             .skip(skip)
-            .sort({ position: 1 })
+            .sort({ [sortBy]: sortDirection })
             .autoPopulate(false)
-            .exec();
-
-        const total = await this.tagAppsService
-            .countDocuments(
-                {
-                    'tag._id': tag._id,
-                },
-                filterPipeline,
-            )
             .exec();
 
         const appIds = tagApps.map(
@@ -113,6 +105,26 @@ export class AppsService extends BaseService<AppDocument, App> {
         );
 
         const apps = await this.find(
+            {
+                _id: {
+                    $in: appIds,
+                },
+            },
+            [
+                ...filterPipeline,
+                {
+                    $addFields: {
+                        [sortBy]: {
+                            $indexOfArray: [appIds, '$_id'],
+                        },
+                    },
+                },
+            ],
+        )
+            .sort({ [sortBy]: sortDirection })
+            .exec();
+
+        const total = await this.countDocuments(
             {
                 _id: {
                     $in: appIds,

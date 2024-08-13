@@ -19,7 +19,7 @@ export class Tag extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
-    @Prop({ type: String, required: true, unique: true })
+    @Prop({ type: String, required: true })
     slug: string;
 
     @Prop({
