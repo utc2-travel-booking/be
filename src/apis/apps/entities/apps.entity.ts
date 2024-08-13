@@ -22,7 +22,7 @@ export class App extends AggregateRoot {
     @Prop({ type: String, required: true })
     name: string;
 
-    @Prop({ type: String, required: true })
+    @Prop({ type: String })
     slug: string;
 
     @Prop({ type: MultipleLanguageType })
