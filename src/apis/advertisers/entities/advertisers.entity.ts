@@ -20,7 +20,7 @@ export class Advertiser extends AggregateRoot {
     @Prop({ type: String, required: true })
     name: string;
 
-    @Prop({ type: String, unique: true })
+    @Prop({ type: String })
     slug: string;
 
     @Prop({
