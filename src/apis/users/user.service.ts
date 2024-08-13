@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     forwardRef,
     Inject,
     Injectable,
@@ -28,6 +29,7 @@ import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService
@@ -246,6 +248,43 @@ export class UserService
             password: await this.hashPassword(password),
         });
         await this.create(result);
+
+        return result;
+    }
+
+    async updateOneById(
+        _id: Types.ObjectId,
+        updateUserDto: UpdateUserDto,
+        userPayload: UserPayload,
+        options?: Record<string, any>,
+    ) {
+        const { _id: userId } = userPayload;
+        const { password } = updateUserDto;
+
+        const update = {
+            ...updateUserDto,
+            ...options,
+            updatedBy: userId,
+            password: await this.hashPassword(password),
+        };
+
+        const user = await this.findOne({ _id }).exec();
+
+        if (!user) {
+            throw new BadRequestException(`Not found ${_id}`);
+        }
+
+        if (user.password === update.password) {
+            delete update.password;
+        }
+
+        const result = await this.updateOne(
+            { _id },
+            {
+                ...update,
+            },
+            { new: true },
+        );
 
         return result;
     }

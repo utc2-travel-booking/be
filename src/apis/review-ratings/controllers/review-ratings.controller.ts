@@ -26,7 +26,6 @@ export class ReviewRatingController {
 
     @DefaultGet('overview/:appId')
     @ApiParam({ name: 'appId', type: String })
-    @Authorize(PERMISSIONS_FRONT.REVIEW.index)
     async reviewRatingOverviewForApp(
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
     ) {

@@ -9,6 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
+import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -29,10 +30,16 @@ export class UserTransactionService extends BaseService<
     }
 
     async checkReceivedReward(userId: Types.ObjectId, appId: Types.ObjectId) {
+        if (!userId || !appId) {
+            return false;
+        }
         const userTransactions = await this.findOne({
-            'createdBy._id': userId,
-            'app._id': appId,
-        }).exec();
+            createdBy: new Types.ObjectId(userId),
+            app: new Types.ObjectId(appId),
+            description: TYPE_ADD_POINT_FOR_USER.open,
+        })
+            .autoPopulate(false)
+            .exec();
 
         return !_.isEmpty(userTransactions);
     }

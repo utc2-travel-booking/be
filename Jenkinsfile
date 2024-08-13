@@ -21,6 +21,11 @@ switch(env.BRANCH_NAME) {
     case "production":
         // Secret
         env.SECRET_FILE_ID = 'c6e7e7d3-585a-48b6-8230-999b595f7f58'
+        // Server
+        env.SERVER_CREDENTIALS = '71d83386-3fdb-45c0-9fd0-5085726840b0'
+        env.SERVER_USERNAME = 'ubuntu'
+        env.SERVER_ADDRESS = '3.1.82.71'
+        env.SERVER_PATH = '/home/ubuntu/tongram-be'
         break
     default:
         // Secret
@@ -81,6 +86,7 @@ pipeline {
                 anyOf {
                     branch 'dev'
                     branch 'staging'
+                    branch 'production'
                 }
             }
             steps {
@@ -90,7 +96,7 @@ pipeline {
                         sshagent([env.SERVER_CREDENTIALS]) {
                             def commands = """
                             cd ${env.SERVER_PATH}
-                            make stop
+                            sudo make stop
                             git pull
                             sudo make setup-env
                             sudo make pull

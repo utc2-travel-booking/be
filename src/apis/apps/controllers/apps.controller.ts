@@ -1,4 +1,4 @@
-import { Controller, Param, Query, Req } from '@nestjs/common';
+import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -15,6 +15,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 import { TYPE_ADD_POINT_FOR_USER } from '../constants';
 import { ParseEnumPipe } from 'src/pipes/parse-enum.pipe';
+import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -26,14 +27,18 @@ export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
     @DefaultGet('tags/:tagSlug')
+    @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
     ) {
+        const { user } = req;
         const result = await this.appsService.getAppsByTag(
             tagSlug,
             queryParams,
+            user,
         );
         return result;
     }
@@ -67,16 +72,22 @@ export class AppsController {
     }
 
     @DefaultGet()
+    @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
     ) {
-        const result = await this.appsService.getAllForFront(queryParams);
+        const { user } = req;
+        const result = await this.appsService.getAllAppPublish(
+            queryParams,
+            user,
+        );
         return result;
     }
 
     @DefaultGet(':id')
-    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @UseGuards(UserPayloadExtractorGuard)
     @ApiParam({ name: 'id', type: String })
     async getOneAppPublish(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

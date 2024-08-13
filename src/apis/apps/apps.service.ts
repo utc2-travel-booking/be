@@ -23,6 +23,7 @@ import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { TYPE_ADD_POINT_FOR_USER } from './constants';
+import jsonwebtoken from 'jsonwebtoken';
 
 @Injectable()
 export class AppsService extends BaseService<AppDocument, App> {
@@ -39,28 +40,66 @@ export class AppsService extends BaseService<AppDocument, App> {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
 
-    async getAppsByTag(tagSlug: string, queryParams: ExtendedPagingDto) {
-        const tag = await this.tagService.findOne({ slug: tagSlug }).exec();
+    async getAllAppPublish(
+        queryParams: ExtendedPagingDto,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
+        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
+            queryParams;
 
+        activePublications(queryParams.filterPipeline);
+
+        const result = await this.find({}, filterPipeline)
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .select({ longDescription: 0 })
+            .exec();
+
+        const total = await this.countDocuments({}, filterPipeline).exec();
+        const meta = pagination(result, page, limit, total);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                    ),
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            return { items, meta };
+        });
+    }
+
+    async getAppsByTag(
+        tagSlug: string,
+        queryParams: ExtendedPagingDto,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
+        const tag = await this.tagService.findOne({ slug: tagSlug }).exec();
         if (!tag) {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
         }
 
         const { page, limit, skip, filterPipeline } = queryParams;
 
-        const tagApps = this.tagAppsService
-            .find(
-                {
-                    'tag._id': tag._id,
-                },
-                filterPipeline,
-            )
+        const tagApps = await this.tagAppsService
+            .find({
+                tag: new Types.ObjectId(tag?._id),
+            })
             .limit(limit)
             .skip(skip)
             .sort({ position: 1 })
+            .autoPopulate(false)
             .exec();
 
-        const total = this.tagAppsService
+        const total = await this.tagAppsService
             .countDocuments(
                 {
                     'tag._id': tag._id,
@@ -69,9 +108,32 @@ export class AppsService extends BaseService<AppDocument, App> {
             )
             .exec();
 
-        return Promise.all([tagApps, total]).then(([result, total]) => {
-            const meta = pagination(result, page, limit, total);
-            const items = result.map((item) => item.app);
+        const appIds = tagApps.map(
+            (item) => new Types.ObjectId(item.app.toString()),
+        );
+
+        const apps = await this.find(
+            {
+                _id: {
+                    $in: appIds,
+                },
+            },
+            filterPipeline,
+        ).exec();
+
+        const items = apps.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                    ),
+            };
+        });
+
+        const meta = pagination(items, page, limit, total);
+        return Promise.all(items).then((items) => {
             return { items, meta };
         });
     }
@@ -82,6 +144,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         userPayload: UserPayload,
     ) {
         const app = await this.findOne({ _id: appId }).exec();
+        const { _id: userId } = userPayload;
 
         const addPointForUserDto: AddPointForUserDto = {
             point: 10,
@@ -89,6 +152,13 @@ export class AppsService extends BaseService<AppDocument, App> {
             app: appId,
             description: type,
         };
+
+        if (type === TYPE_ADD_POINT_FOR_USER.open) {
+            await this.userAppHistoriesService.createUserAppHistory(
+                appId,
+                userId,
+            );
+        }
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,
@@ -130,7 +200,6 @@ export class AppsService extends BaseService<AppDocument, App> {
         const result = await this.findOne(
             {
                 _id,
-                deletedAt: null,
             },
             filterPipeline,
         ).exec();
@@ -142,17 +211,12 @@ export class AppsService extends BaseService<AppDocument, App> {
             );
         }
 
-        await this.userAppHistoriesService.createUserAppHistory(
-            result._id,
-            userId,
-        );
-
         return {
             ...result,
             isReceivedReward:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    result._id,
+                    _id,
                 ),
         };
     }
@@ -164,19 +228,18 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { _id: userId } = user;
         const { page, limit, skip, filterPipeline } = queryParams;
 
-        const total = this.userAppHistoriesService
+        const total = await this.userAppHistoriesService
             .countDocuments(
                 {
-                    deletedAt: null,
+                    'createdBy._id': userId,
                 },
                 filterPipeline,
             )
             .exec();
 
-        const userAppHistories = this.userAppHistoriesService
+        const userAppHistories = await this.userAppHistoriesService
             .find(
                 {
-                    deletedAt: null,
                     'createdBy._id': userId,
                 },
                 [
@@ -202,12 +265,23 @@ export class AppsService extends BaseService<AppDocument, App> {
             .sort({ updatedAt: -1 })
             .exec();
 
-        return Promise.all([userAppHistories, total]).then(
-            ([result, total]) => {
-                const meta = pagination(result, page, limit, total);
-                const items = result.map((item) => item.app);
-                return { items, meta };
-            },
-        );
+        const result = userAppHistories.map((item) => item.app);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward: userId
+                    ? await this.userTransactionService.checkReceivedReward(
+                          userId,
+                          item._id,
+                      )
+                    : false,
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            const meta = pagination(result, page, limit, total);
+            return { items, meta };
+        });
     }
 }

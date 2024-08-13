@@ -12,7 +12,7 @@ import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
     collection: COLLECTION_NAMES.USER_APP_HISTORY,
 })
 export class UserAppHistory extends AggregateRoot {
-    @Prop({ type: Types.ObjectId, refClass: App })
+    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.APP, refClass: App })
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })
