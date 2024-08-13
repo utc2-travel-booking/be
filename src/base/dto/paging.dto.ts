@@ -47,7 +47,7 @@ export class PagingDto {
         required: false,
     })
     @IsOptional()
-    sortDirection: 1 | -1 | Expression.Meta;
+    sortDirection: 1 | -1;
 
     @ApiProperty({
         name: 'search',
