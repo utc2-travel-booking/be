@@ -21,7 +21,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 export class App extends AggregateRoot {
     @Prop({ type: String, required: true })
     name: string;
-
+  
     @Prop({ type: String })
     slug: string;
 
