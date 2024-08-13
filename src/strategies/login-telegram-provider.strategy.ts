@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import _ from 'lodash';
 import { subtle } from 'crypto';
 import { Strategy } from 'passport-custom';
-import { appSettings } from 'src/configs/appsettings';
 import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';

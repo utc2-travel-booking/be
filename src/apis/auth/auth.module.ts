@@ -11,6 +11,7 @@ import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 import { LoginTelegramProviderStrategy } from 'src/strategies/login-telegram-provider.strategy';
 import { LoginTelegramMiniAppStrategy } from 'src/strategies/login-telegram-mini-app.strategy';
 import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
+import { UserPayloadExtractorStrategy } from 'src/strategies/user-payload-extractor.strategy';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
         JwtStrategy,
         LoginTelegramProviderStrategy,
         LoginTelegramMiniAppStrategy,
+        UserPayloadExtractorStrategy,
     ],
     exports: [AuthService],
 })

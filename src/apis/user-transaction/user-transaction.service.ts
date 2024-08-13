@@ -30,11 +30,16 @@ export class UserTransactionService extends BaseService<
     }
 
     async checkReceivedReward(userId: Types.ObjectId, appId: Types.ObjectId) {
+        if (!userId || !appId) {
+            return false;
+        }
         const userTransactions = await this.findOne({
-            'createdBy._id': userId,
-            'app._id': appId,
+            createdBy: new Types.ObjectId(userId),
+            app: new Types.ObjectId(appId),
             description: TYPE_ADD_POINT_FOR_USER.open,
-        }).exec();
+        })
+            .autoPopulate(false)
+            .exec();
 
         return !_.isEmpty(userTransactions);
     }
