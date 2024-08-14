@@ -39,7 +39,7 @@ export class UserTransaction extends AggregateRoot {
     app: AppDocument;
 
     @Prop({ type: String })
-    description: string;
+    action: string;
 }
 
 export type UserTransactionDocument = UserTransaction & Document;

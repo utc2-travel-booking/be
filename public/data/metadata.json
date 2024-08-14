@@ -5,7 +5,11 @@
         },
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_OPEN_APP",
-        "value": 10,
+        "value": {
+            "reward": 10,
+            "limit": 10,
+            "name": "open"
+        },
         "createdAt": {
             "$date": "2024-08-13T06:48:41.265Z"
         },
@@ -20,7 +24,11 @@
         },
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_COMMENT_APP",
-        "value": 10,
+        "value": {
+            "reward": 10,
+            "limit": 10,
+            "name": "comment"
+        },
         "createdAt": {
             "$date": "2024-08-13T06:48:41.265Z"
         },
@@ -35,7 +43,11 @@
         },
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_SHARE_APP",
-        "value": 10,
+        "value": {
+            "reward": 10,
+            "limit": 10,
+            "name": "share"
+        },
         "createdAt": {
             "$date": "2024-08-13T06:48:41.265Z"
         },

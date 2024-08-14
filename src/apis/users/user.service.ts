@@ -28,8 +28,8 @@ import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
-import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MetadataType } from '../metadata/constants';
 
 @Injectable()
 export class UserService
@@ -71,10 +71,7 @@ export class UserService
         }
     }
 
-    async getHistoryReward(
-        user: UserPayload,
-        description: TYPE_ADD_POINT_FOR_USER,
-    ) {
+    async getHistoryReward(user: UserPayload, description: MetadataType) {
         const result = {
             today: 0,
             yesterday: 0,
@@ -140,14 +137,14 @@ export class UserService
         userPayload: UserPayload,
     ) {
         const { _id: userId } = userPayload;
-        const { point, type, description, app } = addPointForUserDto;
+        const { point, type, action, app, name } = addPointForUserDto;
         const { name: appName } = appDocument;
 
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
                 'createdBy._id': userId,
                 'app._id': app,
-                description,
+                action,
             })
             .exec();
 
@@ -171,7 +168,7 @@ export class UserService
             before: currentPoint,
             after,
             app: new Types.ObjectId(app.toString()),
-            description,
+            action,
         });
 
         if (userTransaction) {
@@ -185,7 +182,7 @@ export class UserService
 
         await this.notificationService.create({
             name: `+${point}`,
-            shortDescription: `You ${description} ${appName}`,
+            shortDescription: `You ${name} ${appName}`,
             user: userId,
             refId: app,
             refSource: COLLECTION_NAMES.APP,
