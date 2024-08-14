@@ -46,7 +46,7 @@ export class UserTransactionService extends BaseService<
 
     async checkLimitReceivedReward(
         userId: Types.ObjectId,
-        action: string,
+        action: string[],
         limit: number,
     ) {
         if (!userId) {
@@ -54,7 +54,7 @@ export class UserTransactionService extends BaseService<
         }
         const userTransactions = await this.countDocuments({
             createdBy: new Types.ObjectId(userId),
-            action,
+            action: { $in: action },
             createdAt: {
                 $gte: new Date(new Date().setHours(0, 0, 0, 0)),
                 $lte: new Date(new Date().setHours(23, 59, 59, 999)),

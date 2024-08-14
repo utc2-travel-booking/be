@@ -30,6 +30,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
+import { MetadataService } from '../metadata/metadata.service';
 
 @Injectable()
 export class UserService
@@ -46,6 +47,7 @@ export class UserService
         private readonly userTransactionService: UserTransactionService,
         @Inject(forwardRef(() => NotificationsService))
         private readonly notificationService: NotificationsService,
+        private readonly metadataService: MetadataService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -154,7 +156,7 @@ export class UserService
 
         await this.userTransactionService.checkLimitReceivedReward(
             userId,
-            action,
+            [action],
             limit,
         );
 
@@ -335,6 +337,28 @@ export class UserService
         })
             .select({ password: 0 })
             .exec();
+    }
+
+    async getMeForFront(user: UserPayload) {
+        const { _id } = user;
+        const result = await this.findOne({
+            _id: _id,
+        })
+            .select({ password: 0 })
+            .exec();
+
+        const checkLimitReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(
+                _id,
+                [
+                    MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                    MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                    MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+                ],
+                1,
+            );
+
+        return result;
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {

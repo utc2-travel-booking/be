@@ -24,7 +24,7 @@ export class UserController {
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
-        const result = await this.userService.getMe(user);
+        const result = await this.userService.getMeForFront(user);
         return result;
     }
 
