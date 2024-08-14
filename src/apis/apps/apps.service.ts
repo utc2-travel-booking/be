@@ -185,9 +185,27 @@ export class AppsService extends BaseService<AppDocument, App> {
             );
         }
 
-        addPointForUserDto.point = amountRewardUserForApp.value.reward || 0;
+        const { isGlobal } = amountRewardUserForApp.value;
+
+        if (!isGlobal) {
+            addPointForUserDto.point = amountRewardUserForApp.value.reward || 0;
+            addPointForUserDto.limit =
+                amountRewardUserForApp.value.limit || null;
+        }
+
+        if (isGlobal) {
+            const amountRewardUserForAppGlobal =
+                await this.metadataService.getAmountRewardUserForApp(
+                    MetadataType.AMOUNT_REWARD_USER_GLOBAL,
+                );
+
+            addPointForUserDto.point =
+                amountRewardUserForAppGlobal.value.reward || 0;
+            addPointForUserDto.limit =
+                amountRewardUserForAppGlobal.value.limit || null;
+        }
+
         addPointForUserDto.name = amountRewardUserForApp.value.name;
-        addPointForUserDto.limit = amountRewardUserForApp.value.limit || null;
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,

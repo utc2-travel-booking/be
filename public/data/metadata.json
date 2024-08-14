@@ -6,6 +6,7 @@
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_OPEN_APP",
         "value": {
+            "isGlobal": true,
             "reward": 10,
             "limit": 10,
             "name": "open"
@@ -25,6 +26,7 @@
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_COMMENT_APP",
         "value": {
+            "isGlobal": true,
             "reward": 10,
             "limit": 10,
             "name": "comment"
@@ -44,9 +46,28 @@
         "deletedAt": null,
         "type": "AMOUNT_REWARD_USER_SHARE_APP",
         "value": {
+            "isGlobal": true,
             "reward": 10,
             "limit": 10,
             "name": "share"
+        },
+        "createdAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66bb109cfe713900e234c2b9"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_USER_GLOBAL",
+        "value": {
+            "reward": 10,
+            "limit": 100
         },
         "createdAt": {
             "$date": "2024-08-13T06:48:41.265Z"

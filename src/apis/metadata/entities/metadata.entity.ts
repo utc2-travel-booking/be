@@ -10,7 +10,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.METADATA,
 })
 export class Metadata extends AggregateRoot {
-    @Prop({ required: true, enum: MetadataType })
+    @Prop({ required: true })
     type: MetadataType;
 
     @Prop({ required: false, type: SchemaTypes.Mixed })
