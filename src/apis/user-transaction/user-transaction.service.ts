@@ -63,7 +63,7 @@ export class UserTransactionService extends BaseService<
             .autoPopulate(false)
             .exec();
 
-        if (userTransactions > limit) {
+        if (userTransactions >= limit) {
             throw new BadRequestException(
                 `You have reached the limit of ${limit} times a day`,
             );
