@@ -165,6 +165,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             app: appId,
             action: type,
             name: '',
+            limit: null,
         };
 
         const amountRewardUserForApp =
@@ -186,6 +187,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         addPointForUserDto.point = amountRewardUserForApp.value.reward || 0;
         addPointForUserDto.name = amountRewardUserForApp.value.name;
+        addPointForUserDto.limit = amountRewardUserForApp.value.limit || null;
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,

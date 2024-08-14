@@ -11,4 +11,6 @@ export class AddPointForUserDto {
     app: Types.ObjectId;
 
     name: string;
+
+    limit: number;
 }

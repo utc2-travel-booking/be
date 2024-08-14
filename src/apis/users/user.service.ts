@@ -137,7 +137,7 @@ export class UserService
         userPayload: UserPayload,
     ) {
         const { _id: userId } = userPayload;
-        const { point, type, action, app, name } = addPointForUserDto;
+        const { point, type, action, app, name, limit } = addPointForUserDto;
         const { name: appName } = appDocument;
 
         const userTransactionThisApp = await this.userTransactionService
@@ -151,6 +151,12 @@ export class UserService
         if (userTransactionThisApp) {
             return await this.getMe(userPayload);
         }
+
+        await this.userTransactionService.checkLimitReceivedReward(
+            userId,
+            action,
+            limit,
+        );
 
         const user = await this.findOne({ _id: userId }).exec();
 

@@ -4,7 +4,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
 import _ from 'lodash';
-import { sortPipelines } from 'src/packages/super-search';
+import { deleteAllLookup, sortPipelines } from 'src/packages/super-search';
 
 export class CustomQueryCountDocumentsService<T extends Document>
     implements ICustomQueryCountDocuments<T>
@@ -51,6 +51,13 @@ export class CustomQueryCountDocumentsService<T extends Document>
 
     sort(sort: Record<string, 1 | -1 | Expression.Meta>): this {
         this._pipeline.push({ $sort: sort });
+        return this;
+    }
+
+    autoPopulate(autoPopulate: boolean): this {
+        if (!autoPopulate) {
+            this._pipeline = deleteAllLookup(this._pipeline);
+        }
         return this;
     }
 

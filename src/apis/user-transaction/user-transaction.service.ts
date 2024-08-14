@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import {
     UserTransaction,
@@ -42,5 +42,31 @@ export class UserTransactionService extends BaseService<
             .exec();
 
         return !_.isEmpty(userTransactions);
+    }
+
+    async checkLimitReceivedReward(
+        userId: Types.ObjectId,
+        action: string,
+        limit: number,
+    ) {
+        if (!userId) {
+            return false;
+        }
+        const userTransactions = await this.countDocuments({
+            createdBy: new Types.ObjectId(userId),
+            action,
+            createdAt: {
+                $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
+        })
+            .autoPopulate(false)
+            .exec();
+
+        if (userTransactions > limit) {
+            throw new BadRequestException(
+                `You have reached the limit of ${limit} times a day`,
+            );
+        }
     }
 }
