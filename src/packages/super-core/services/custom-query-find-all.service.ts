@@ -34,6 +34,9 @@ export class CustomQueryFindAllService<T extends Document>
     }
 
     select(fields: Record<string, number>): this {
+        if (!fields) {
+            return this;
+        }
         this._pipeline.push({ $project: fields });
         return this;
     }

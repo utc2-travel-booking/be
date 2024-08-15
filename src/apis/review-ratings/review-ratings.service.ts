@@ -40,8 +40,15 @@ export class ReviewRatingService extends BaseService<
         queryParams: ExtendedPagingDto,
         options?: Record<string, any>,
     ) {
-        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
-            queryParams;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
 
         const result = this.find(
             {
@@ -69,6 +76,7 @@ export class ReviewRatingService extends BaseService<
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
+            .select(select)
             .exec();
 
         const total = this.countDocuments(

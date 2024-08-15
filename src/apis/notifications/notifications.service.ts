@@ -49,8 +49,15 @@ export class NotificationsService extends BaseService<
         queryParams: ExtendedPagingDto,
         user: UserPayload,
     ) {
-        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
-            queryParams;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
         const { _id } = user;
 
         const result = this.find(
@@ -63,6 +70,7 @@ export class NotificationsService extends BaseService<
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit)
+            .select(select)
             .exec();
 
         const total = this.countDocuments(

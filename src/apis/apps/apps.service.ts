@@ -46,8 +46,15 @@ export class AppsService extends BaseService<AppDocument, App> {
         userPayload: UserPayload,
     ) {
         const { _id: userId } = userPayload;
-        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
-            queryParams;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
 
         activePublications(queryParams.filterPipeline);
 
@@ -55,7 +62,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
-            .select({ longDescription: 0 })
+            .select(select)
             .exec();
 
         const total = await this.countDocuments({}, filterPipeline).exec();
@@ -88,8 +95,15 @@ export class AppsService extends BaseService<AppDocument, App> {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
         }
 
-        const { page, limit, skip, filterPipeline, sortBy, sortDirection } =
-            queryParams;
+        const {
+            page,
+            limit,
+            skip,
+            filterPipeline,
+            sortBy,
+            sortDirection,
+            select,
+        } = queryParams;
 
         const tagApps = await this.tagAppsService
             .find({
@@ -122,6 +136,7 @@ export class AppsService extends BaseService<AppDocument, App> {
                 },
             ],
         )
+            .select(select)
             .sort({ [sortBy]: sortDirection })
             .exec();
 
@@ -280,7 +295,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         user: UserPayload,
     ) {
         const { _id: userId } = user;
-        const { page, limit, skip, filterPipeline } = queryParams;
+        const { page, limit, skip, filterPipeline, select } = queryParams;
 
         const total = await this.userAppHistoriesService
             .countDocuments(
@@ -317,6 +332,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             .limit(limit)
             .skip(skip)
             .sort({ updatedAt: -1 })
+            .select(select)
             .exec();
 
         const result = userAppHistories.map((item) => item.app);
