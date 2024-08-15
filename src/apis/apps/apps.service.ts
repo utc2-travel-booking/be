@@ -163,9 +163,9 @@ export class AppsService extends BaseService<AppDocument, App> {
             point: 0,
             type: UserTransactionType.SUM,
             app: appId,
-            action: type,
             name: '',
             limit: null,
+            action: [],
         };
 
         const amountRewardUserForApp =
@@ -191,6 +191,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             addPointForUserDto.point = amountRewardUserForApp.value.reward || 0;
             addPointForUserDto.limit =
                 amountRewardUserForApp.value.limit || null;
+            addPointForUserDto.action = [amountRewardUserForApp.type];
         }
 
         if (isGlobal) {
@@ -203,6 +204,11 @@ export class AppsService extends BaseService<AppDocument, App> {
                 amountRewardUserForAppGlobal.value.reward || 0;
             addPointForUserDto.limit =
                 amountRewardUserForAppGlobal.value.limit || null;
+            addPointForUserDto.action = [
+                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+            ];
         }
 
         addPointForUserDto.name = amountRewardUserForApp.value.name;
@@ -211,6 +217,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             addPointForUserDto,
             app,
             userPayload,
+            type,
         );
     }
 

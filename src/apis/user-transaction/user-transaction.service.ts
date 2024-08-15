@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import {
     UserTransaction,
@@ -63,10 +63,6 @@ export class UserTransactionService extends BaseService<
             .autoPopulate(false)
             .exec();
 
-        if (userTransactions >= limit) {
-            throw new BadRequestException(
-                `You have reached the limit of ${limit} times a day`,
-            );
-        }
+        return userTransactions >= limit;
     }
 }

@@ -6,7 +6,7 @@ export class AddPointForUserDto {
 
     type: UserTransactionType;
 
-    action: string;
+    action: string[];
 
     app: Types.ObjectId;
 

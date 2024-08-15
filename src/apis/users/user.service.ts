@@ -137,6 +137,7 @@ export class UserService
         addPointForUserDto: AddPointForUserDto,
         appDocument: AppDocument,
         userPayload: UserPayload,
+        actionTransaction: string,
     ) {
         const { _id: userId } = userPayload;
         const { point, type, action, app, name, limit } = addPointForUserDto;
@@ -144,21 +145,30 @@ export class UserService
 
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
-                'createdBy._id': userId,
-                'app._id': app,
+                createdBy: new Types.ObjectId(userId),
+                app: new Types.ObjectId(app),
                 action,
             })
+            .autoPopulate(false)
             .exec();
 
         if (userTransactionThisApp) {
             return await this.getMe(userPayload);
         }
 
-        await this.userTransactionService.checkLimitReceivedReward(
-            userId,
-            [action],
-            limit,
-        );
+        const checkLimitReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(
+                userId,
+                action,
+                limit,
+            );
+
+        if (checkLimitReceivedReward) {
+            throw new BadRequestException(
+                'limit_received_reward',
+                'You have reached the limit of receiving rewards',
+            );
+        }
 
         const user = await this.findOne({ _id: userId }).exec();
 
@@ -176,7 +186,7 @@ export class UserService
             before: currentPoint,
             after,
             app: new Types.ObjectId(app.toString()),
-            action,
+            action: actionTransaction,
         });
 
         if (userTransaction) {
@@ -347,6 +357,11 @@ export class UserService
             .select({ password: 0 })
             .exec();
 
+        const amountRewardUserForApp =
+            await this.metadataService.getAmountRewardUserForApp(
+                MetadataType.AMOUNT_REWARD_USER_GLOBAL,
+            );
+
         const checkLimitReceivedReward =
             await this.userTransactionService.checkLimitReceivedReward(
                 _id,
@@ -355,10 +370,10 @@ export class UserService
                     MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
                     MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
                 ],
-                1,
+                amountRewardUserForApp.value.limit || 100,
             );
 
-        return result;
+        return { ...result, limitReceivedReward: checkLimitReceivedReward };
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
