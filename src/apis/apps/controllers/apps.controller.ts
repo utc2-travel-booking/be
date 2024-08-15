@@ -13,9 +13,8 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
-import { TYPE_ADD_POINT_FOR_USER } from '../constants';
-import { ParseEnumPipe } from 'src/pipes/parse-enum.pipe';
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
+import { MetadataType } from 'src/apis/metadata/constants';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -48,7 +47,7 @@ export class AppsController {
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('type', ParseEnumPipe) type: TYPE_ADD_POINT_FOR_USER,
+        @Param('type') type: MetadataType,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;

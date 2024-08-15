@@ -6,7 +6,11 @@ export class AddPointForUserDto {
 
     type: UserTransactionType;
 
-    description: string;
+    action: string[];
 
     app: Types.ObjectId;
+
+    name: string;
+
+    limit: number;
 }

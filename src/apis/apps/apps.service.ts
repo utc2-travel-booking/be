@@ -22,7 +22,6 @@ import { UserTransactionType } from '../user-transaction/constants';
 import { TagAppsService } from '../tag-apps/tag-apps.service';
 import { TagsService } from '../tags/tags.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { TYPE_ADD_POINT_FOR_USER } from './constants';
 import { MetadataService } from '../metadata/metadata.service';
 import { MetadataType } from '../metadata/constants';
 
@@ -47,8 +46,15 @@ export class AppsService extends BaseService<AppDocument, App> {
         userPayload: UserPayload,
     ) {
         const { _id: userId } = userPayload;
-        const { page, limit, sortBy, sortDirection, skip, filterPipeline } =
-            queryParams;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
 
         activePublications(queryParams.filterPipeline);
 
@@ -56,7 +62,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
-            .select({ longDescription: 0 })
+            .select(select)
             .exec();
 
         const total = await this.countDocuments({}, filterPipeline).exec();
@@ -89,8 +95,15 @@ export class AppsService extends BaseService<AppDocument, App> {
             throw new BadRequestException(`Not found tag ${tagSlug}`);
         }
 
-        const { page, limit, skip, filterPipeline, sortBy, sortDirection } =
-            queryParams;
+        const {
+            page,
+            limit,
+            skip,
+            filterPipeline,
+            sortBy,
+            sortDirection,
+            select,
+        } = queryParams;
 
         const tagApps = await this.tagAppsService
             .find({
@@ -123,6 +136,7 @@ export class AppsService extends BaseService<AppDocument, App> {
                 },
             ],
         )
+            .select(select)
             .sort({ [sortBy]: sortDirection })
             .exec();
 
@@ -154,7 +168,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
     async addPointForUser(
         appId: Types.ObjectId,
-        type: TYPE_ADD_POINT_FOR_USER,
+        type: MetadataType,
         userPayload: UserPayload,
     ) {
         const app = await this.findOne({ _id: appId }).exec();
@@ -164,38 +178,61 @@ export class AppsService extends BaseService<AppDocument, App> {
             point: 0,
             type: UserTransactionType.SUM,
             app: appId,
-            description: type,
+            name: '',
+            limit: null,
+            action: [],
         };
 
-        if (type === TYPE_ADD_POINT_FOR_USER.open) {
-            addPointForUserDto.point =
-                await this.metadataService.getAmountRewardUserForApp(
-                    MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                );
+        const amountRewardUserForApp =
+            await this.metadataService.getAmountRewardUserForApp(type);
+
+        if (!amountRewardUserForApp) {
+            throw new UnprocessableEntityException(
+                'amount_reward_user_not_found',
+                'Amount reward user not found',
+            );
+        }
+
+        if (type === MetadataType.AMOUNT_REWARD_USER_OPEN_APP) {
             await this.userAppHistoriesService.createUserAppHistory(
                 appId,
                 userId,
             );
         }
 
-        if (type === TYPE_ADD_POINT_FOR_USER.comment) {
-            addPointForUserDto.point =
-                await this.metadataService.getAmountRewardUserForApp(
-                    MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
-                );
+        const { isGlobal } = amountRewardUserForApp.value;
+
+        if (!isGlobal) {
+            addPointForUserDto.point = amountRewardUserForApp.value.reward || 0;
+            addPointForUserDto.limit =
+                amountRewardUserForApp.value.limit || null;
+            addPointForUserDto.action = [amountRewardUserForApp.type];
         }
 
-        if (type === TYPE_ADD_POINT_FOR_USER.share) {
-            addPointForUserDto.point =
+        if (isGlobal) {
+            const amountRewardUserForAppGlobal =
                 await this.metadataService.getAmountRewardUserForApp(
-                    MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                    MetadataType.AMOUNT_REWARD_USER_GLOBAL,
                 );
+
+            addPointForUserDto.point =
+                amountRewardUserForAppGlobal.value.reward || 0;
+            addPointForUserDto.limit =
+                amountRewardUserForAppGlobal.value.limit || null;
+            addPointForUserDto.action = [
+                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+            ];
         }
+
+        addPointForUserDto.name = amountRewardUserForApp.value.name;
 
         return await this.userServices.addPointForUser(
             addPointForUserDto,
             app,
             userPayload,
+            type,
         );
     }
 
@@ -258,7 +295,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         user: UserPayload,
     ) {
         const { _id: userId } = user;
-        const { page, limit, skip, filterPipeline } = queryParams;
+        const { page, limit, skip, filterPipeline, select } = queryParams;
 
         const total = await this.userAppHistoriesService
             .countDocuments(
@@ -295,6 +332,7 @@ export class AppsService extends BaseService<AppDocument, App> {
             .limit(limit)
             .skip(skip)
             .sort({ updatedAt: -1 })
+            .select(select)
             .exec();
 
         const result = userAppHistories.map((item) => item.app);

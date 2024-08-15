@@ -8,8 +8,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
 import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
-import { TYPE_ADD_POINT_FOR_USER } from 'src/apis/apps/constants';
-import { ParseEnumPipe } from 'src/pipes/parse-enum.pipe';
+import { MetadataType } from 'src/apis/metadata/constants';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -25,7 +24,7 @@ export class UserController {
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
-        const result = await this.userService.getMe(user);
+        const result = await this.userService.getMeForFront(user);
         return result;
     }
 
@@ -42,7 +41,7 @@ export class UserController {
     @DefaultGet('history-reward/:type')
     @Authorize(PERMISSIONS_FRONT.USER.index)
     async getHistoryReward(
-        @Param('type', ParseEnumPipe) type: TYPE_ADD_POINT_FOR_USER,
+        @Param('type') type: MetadataType,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;

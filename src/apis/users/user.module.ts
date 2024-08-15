@@ -8,6 +8,7 @@ import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { MetadataModule } from '../metadata/metadata.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
         MediaModule,
         UserTransactionModule,
         forwardRef(() => NotificationsModule),
+        MetadataModule,
     ],
     controllers: [],
     providers: [UserService],

@@ -90,4 +90,13 @@ export class PagingDto {
     })
     @IsOptional()
     isAll: boolean;
+
+    @ApiProperty({
+        type: String,
+        name: 'select',
+        description: 'Select fields for this query. Example: _id,name',
+        required: false,
+    })
+    @IsOptional()
+    select: Record<string, number>;
 }

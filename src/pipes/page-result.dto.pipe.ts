@@ -3,6 +3,7 @@ import { Expression, FilterQuery, PipelineStage, SortOrder } from 'mongoose';
 import { PagingDto } from 'src/base/dto/paging.dto';
 import { SearchType } from 'src/constants/enums';
 import { createSearchPipeline } from 'src/packages/super-search/common/search.utils';
+import { configSelect } from 'src/utils/select.utils';
 
 export class ExtendedPagingDto extends PagingDto {
     skip: number;
@@ -19,6 +20,7 @@ export class PagingDtoPipe implements PipeTransform {
             sortDirection = -1,
             searchType = SearchType.AND,
             isAll,
+            select,
         } = value;
 
         if (isAll) {
@@ -37,6 +39,7 @@ export class PagingDtoPipe implements PipeTransform {
             search,
             isAll,
             filterPipeline: createSearchPipeline(search, searchType),
+            select: configSelect(select),
         };
 
         return pagingDto;

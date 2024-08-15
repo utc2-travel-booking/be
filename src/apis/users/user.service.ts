@@ -28,8 +28,9 @@ import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
-import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MetadataType } from '../metadata/constants';
+import { MetadataService } from '../metadata/metadata.service';
 
 @Injectable()
 export class UserService
@@ -46,6 +47,7 @@ export class UserService
         private readonly userTransactionService: UserTransactionService,
         @Inject(forwardRef(() => NotificationsService))
         private readonly notificationService: NotificationsService,
+        private readonly metadataService: MetadataService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -71,10 +73,7 @@ export class UserService
         }
     }
 
-    async getHistoryReward(
-        user: UserPayload,
-        description: TYPE_ADD_POINT_FOR_USER,
-    ) {
+    async getHistoryReward(user: UserPayload, description: MetadataType) {
         const result = {
             today: 0,
             yesterday: 0,
@@ -138,21 +137,36 @@ export class UserService
         addPointForUserDto: AddPointForUserDto,
         appDocument: AppDocument,
         userPayload: UserPayload,
+        actionTransaction: string,
     ) {
         const { _id: userId } = userPayload;
-        const { point, type, description, app } = addPointForUserDto;
+        const { point, type, action, app, name, limit } = addPointForUserDto;
         const { name: appName } = appDocument;
 
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
-                'createdBy._id': userId,
-                'app._id': app,
-                description,
+                createdBy: new Types.ObjectId(userId),
+                app: new Types.ObjectId(app),
+                action,
             })
+            .autoPopulate(false)
             .exec();
 
         if (userTransactionThisApp) {
             return await this.getMe(userPayload);
+        }
+
+        const countReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(
+                userId,
+                action,
+            );
+
+        if (countReceivedReward >= limit) {
+            throw new BadRequestException(
+                'limit_received_reward',
+                'You have reached the limit of receiving rewards',
+            );
         }
 
         const user = await this.findOne({ _id: userId }).exec();
@@ -171,7 +185,7 @@ export class UserService
             before: currentPoint,
             after,
             app: new Types.ObjectId(app.toString()),
-            description,
+            action: actionTransaction,
         });
 
         if (userTransaction) {
@@ -185,7 +199,7 @@ export class UserService
 
         await this.notificationService.create({
             name: `+${point}`,
-            shortDescription: `You ${description} ${appName}`,
+            shortDescription: `You ${name} ${appName}`,
             user: userId,
             refId: app,
             refSource: COLLECTION_NAMES.APP,
@@ -332,6 +346,33 @@ export class UserService
         })
             .select({ password: 0 })
             .exec();
+    }
+
+    async getMeForFront(user: UserPayload) {
+        const { _id } = user;
+        const result = await this.findOne({
+            _id: _id,
+        })
+            .select({ password: 0 })
+            .exec();
+
+        const amountRewardUserForApp =
+            await this.metadataService.getAmountRewardUserForApp(
+                MetadataType.AMOUNT_REWARD_USER_GLOBAL,
+            );
+
+        const countReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(_id, [
+                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+            ]);
+
+        return {
+            ...result,
+            countReceivedReward,
+            limitReceivedReward: amountRewardUserForApp.value.limit,
+        };
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {

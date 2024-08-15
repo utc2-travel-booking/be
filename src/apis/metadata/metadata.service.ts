@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
 import { MetadataType } from './constants';
+import { AmountRewardUserModel } from './models/amount-reward-user.model';
 
 @Injectable()
 export class MetadataService extends BaseService<MetadataDocument, Metadata> {
@@ -19,8 +20,10 @@ export class MetadataService extends BaseService<MetadataDocument, Metadata> {
         super(metadataModel, Metadata, COLLECTION_NAMES.METADATA, moduleRef);
     }
 
-    async getAmountRewardUserForApp(type: MetadataType): Promise<number> {
+    async getAmountRewardUserForApp(
+        type: MetadataType,
+    ): Promise<AmountRewardUserModel> {
         const result = await this.findOne({ type }).exec();
-        return result.value || 10;
+        return result;
     }
 }

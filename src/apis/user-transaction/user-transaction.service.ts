@@ -9,7 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
-import { TYPE_ADD_POINT_FOR_USER } from '../apps/constants';
+import { MetadataType } from '../metadata/constants';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -36,11 +36,30 @@ export class UserTransactionService extends BaseService<
         const userTransactions = await this.findOne({
             createdBy: new Types.ObjectId(userId),
             app: new Types.ObjectId(appId),
-            description: TYPE_ADD_POINT_FOR_USER.open,
+            action: MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
         })
             .autoPopulate(false)
             .exec();
 
         return !_.isEmpty(userTransactions);
+    }
+
+    async checkLimitReceivedReward(userId: Types.ObjectId, action: string[]) {
+        if (!userId) {
+            return 0;
+        }
+
+        const userTransactions = await this.countDocuments({
+            createdBy: new Types.ObjectId(userId),
+            action: { $in: action },
+            createdAt: {
+                $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                $lte: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
+        })
+            .autoPopulate(false)
+            .exec();
+
+        return userTransactions;
     }
 }
