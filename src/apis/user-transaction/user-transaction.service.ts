@@ -44,14 +44,11 @@ export class UserTransactionService extends BaseService<
         return !_.isEmpty(userTransactions);
     }
 
-    async checkLimitReceivedReward(
-        userId: Types.ObjectId,
-        action: string[],
-        limit: number,
-    ) {
+    async checkLimitReceivedReward(userId: Types.ObjectId, action: string[]) {
         if (!userId) {
-            return false;
+            return 0;
         }
+
         const userTransactions = await this.countDocuments({
             createdBy: new Types.ObjectId(userId),
             action: { $in: action },
@@ -63,6 +60,6 @@ export class UserTransactionService extends BaseService<
             .autoPopulate(false)
             .exec();
 
-        return userTransactions >= limit;
+        return userTransactions;
     }
 }

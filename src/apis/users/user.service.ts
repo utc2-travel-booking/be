@@ -156,14 +156,13 @@ export class UserService
             return await this.getMe(userPayload);
         }
 
-        const checkLimitReceivedReward =
+        const countReceivedReward =
             await this.userTransactionService.checkLimitReceivedReward(
                 userId,
                 action,
-                limit,
             );
 
-        if (checkLimitReceivedReward) {
+        if (countReceivedReward >= limit) {
             throw new BadRequestException(
                 'limit_received_reward',
                 'You have reached the limit of receiving rewards',
@@ -362,18 +361,18 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_GLOBAL,
             );
 
-        const checkLimitReceivedReward =
-            await this.userTransactionService.checkLimitReceivedReward(
-                _id,
-                [
-                    MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                    MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
-                    MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
-                ],
-                amountRewardUserForApp.value.limit || 100,
-            );
+        const countReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(_id, [
+                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+            ]);
 
-        return { ...result, limitReceivedReward: checkLimitReceivedReward };
+        return {
+            ...result,
+            countReceivedReward,
+            limitReceivedReward: amountRewardUserForApp.value.limit,
+        };
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
