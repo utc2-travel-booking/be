@@ -73,7 +73,7 @@ export class UserService
         }
     }
 
-    async getHistoryReward(user: UserPayload, description: MetadataType) {
+    async getHistoryReward(user: UserPayload, action: MetadataType) {
         const result = {
             today: 0,
             yesterday: 0,
@@ -95,7 +95,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: today },
-                description,
+                action,
             })
             .exec();
 
@@ -103,7 +103,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: yesterday, $lt: today },
-                description,
+                action,
             })
             .exec();
 
@@ -111,7 +111,7 @@ export class UserService
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: lastOneMonth },
-                description,
+                action,
             })
             .exec();
 
