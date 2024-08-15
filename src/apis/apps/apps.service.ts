@@ -75,6 +75,7 @@ export class AppsService extends BaseService<AppDocument, App> {
                     await this.userTransactionService.checkReceivedReward(
                         userId,
                         item?._id,
+                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
                     ),
             };
         });
@@ -156,6 +157,7 @@ export class AppsService extends BaseService<AppDocument, App> {
                     await this.userTransactionService.checkReceivedReward(
                         userId,
                         item?._id,
+                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
                     ),
             };
         });
@@ -286,6 +288,13 @@ export class AppsService extends BaseService<AppDocument, App> {
                 await this.userTransactionService.checkReceivedReward(
                     userId,
                     _id,
+                    MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                ),
+            isReceivedRewardShare:
+                await this.userTransactionService.checkReceivedReward(
+                    userId,
+                    _id,
+                    MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
                 ),
         };
     }
@@ -344,6 +353,7 @@ export class AppsService extends BaseService<AppDocument, App> {
                     ? await this.userTransactionService.checkReceivedReward(
                           userId,
                           item._id,
+                          MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
                       )
                     : false,
             };

@@ -29,14 +29,18 @@ export class UserTransactionService extends BaseService<
         );
     }
 
-    async checkReceivedReward(userId: Types.ObjectId, appId: Types.ObjectId) {
+    async checkReceivedReward(
+        userId: Types.ObjectId,
+        appId: Types.ObjectId,
+        action: MetadataType,
+    ) {
         if (!userId || !appId) {
             return false;
         }
         const userTransactions = await this.findOne({
             createdBy: new Types.ObjectId(userId),
             app: new Types.ObjectId(appId),
-            action: MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+            action,
         })
             .autoPopulate(false)
             .exec();

@@ -5,7 +5,6 @@ import fs from 'fs';
 import { Types } from 'mongoose';
 import { UserService } from 'src/apis/users/user.service';
 import { appSettings } from 'src/configs/appsettings';
-import { MetadataType } from 'src/apis/metadata/constants';
 import { MetadataService } from 'src/apis/metadata/metadata.service';
 
 @Injectable()
@@ -26,7 +25,7 @@ export class SeedsService implements OnModuleInit {
         await this.seedPermissions();
         await this.seedRoles();
         await this.seedUsers();
-        await this.seedMetadata();
+        // await this.seedMetadata();
         this.logger.debug('Seeding completed');
     }
 
