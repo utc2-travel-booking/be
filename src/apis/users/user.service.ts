@@ -147,7 +147,7 @@ export class UserService
             .findOne({
                 createdBy: new Types.ObjectId(userId),
                 app: new Types.ObjectId(app),
-                action,
+                action: actionTransaction,
             })
             .autoPopulate(false)
             .exec();
