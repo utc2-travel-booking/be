@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUploadedMulterFile, S3Service } from 'src/packages/s3/s3.service';
-import { readFileFromUrl } from 'src/packages/s3/utils';
 import { File, FileDocument } from './entities/files.entity';
 import { Model } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
@@ -50,13 +49,6 @@ export class MediaService extends BaseService<FileDocument, File> {
         await this.create(result);
 
         return result;
-    }
-
-    async readFileFromUrl(url: string) {
-        const data = await readFileFromUrl(url);
-        if (!data) throw new BadRequestException('Can not read image');
-
-        return data;
     }
 
     async deleteMedia(fileName: string) {
