@@ -99,9 +99,9 @@ export const PERMISSIONS = {
         edit: 'admin.notifications.edit',
         destroy: 'admin.notifications.destroy',
     },
-    CONTACT_US: {
-        index: 'admin.contact-us.index',
-        destroy: 'admin.contact-us.destroy',
+    FORM_BUILDER: {
+        index: 'admin.form-builder.index',
+        destroy: 'admin.form-builder.destroy',
     },
 };
 
@@ -147,7 +147,7 @@ export const PERMISSIONS_FRONT = {
         edit: 'front.notifications.edit',
         destroy: 'front.notifications.destroy',
     },
-    CONTACT_US: {
-        create: 'front.contact-us.create',
+    FORM_BUILDER: {
+        create: 'front.form-builder.create',
     },
 };

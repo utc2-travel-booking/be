@@ -22,7 +22,7 @@ export class ContactUsController {
     constructor(private readonly contactUsService: FormBuilderService) {}
 
     @DefaultPost()
-    @Authorize(PERMISSIONS_FRONT.CONTACT_US.create)
+    @Authorize(PERMISSIONS_FRONT.FORM_BUILDER.create)
     async create(@Body() createFormBuilderDto: CreateFormBuildersDto) {
         const result = await this.contactUsService.createOne(
             createFormBuilderDto,

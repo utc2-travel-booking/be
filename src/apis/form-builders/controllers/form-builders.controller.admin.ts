@@ -29,7 +29,7 @@ export class ContractUsControllerAdmin {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
     @DefaultGet('')
-    @Authorize(PERMISSIONS.CONTACT_US.index)
+    @Authorize(PERMISSIONS.FORM_BUILDER.index)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -39,7 +39,7 @@ export class ContractUsControllerAdmin {
     }
 
     @DefaultGet(':type/:id')
-    @Authorize(PERMISSIONS.CONTACT_US.index)
+    @Authorize(PERMISSIONS.FORM_BUILDER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -50,7 +50,7 @@ export class ContractUsControllerAdmin {
     }
 
     @DefaultDelete()
-    @Authorize(PERMISSIONS.CONTACT_US.destroy)
+    @Authorize(PERMISSIONS.FORM_BUILDER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

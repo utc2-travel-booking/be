@@ -1293,8 +1293,8 @@
         "_id": {
             "$oid": "66bef728f6db9ae776cce22b"
         },
-        "name": "front.contact-us.create",
-        "collectionName": "Contact Us",
+        "name": "front.form-builder.create",
+        "collectionName": "Form Builder",
         "__v": 0,
         "createdAt": {
             "$date": "2024-08-08T08:36:07.671Z"
@@ -1307,8 +1307,8 @@
         "_id": {
             "$oid": "66bef806f6db9ae776cce22e"
         },
-        "name": "admin.contact-us.index",
-        "collectionName": "Contact Us",
+        "name": "admin.form-builder.index",
+        "collectionName": "Form Builder",
         "__v": 0,
         "createdAt": {
             "$date": "2024-08-08T08:36:07.671Z"
@@ -1321,8 +1321,8 @@
         "_id": {
             "$oid": "66bef833f6db9ae776cce22f"
         },
-        "name": "admin.contact-us.destroy",
-        "collectionName": "Contact Us",
+        "name": "admin.form-builder.destroy",
+        "collectionName": "Form Builder",
         "__v": 0,
         "createdAt": {
             "$date": "2024-08-08T08:36:07.671Z"
