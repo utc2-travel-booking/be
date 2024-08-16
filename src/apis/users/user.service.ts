@@ -202,11 +202,11 @@ export class UserService
         }
 
         this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
-            point,
+            name: `+${point}`,
             userId: new Types.ObjectId(userId),
-            app: new Types.ObjectId(app),
-            name,
-            appName,
+            refId: new Types.ObjectId(app),
+            shortDescription: `You ${name} ${appName}`,
+            refSource: COLLECTION_NAMES.APP,
         } as CreateNotificationModel);
 
         return await this.getMe(userPayload);
@@ -427,8 +427,21 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        if (countReceivedReward >= amountRewardUserForApp.value.limit) {
-            this.websocketGateway.sendLimitAddPointForUser(userId, true);
+        const { limit, reward } = amountRewardUserForApp.value;
+
+        if (countReceivedReward >= limit) {
+            this.websocketGateway.sendLimitAddPointForUser(userId, {
+                overLimitReceivedRewardForDay: true,
+                limitReward: limit * reward,
+            });
+
+            this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
+                name: `You've earned`,
+                userId: new Types.ObjectId(userId),
+                refId: new Types.ObjectId(amountRewardUserForApp['_id']),
+                shortDescription: `You ${limit * reward} today - max reached!`,
+                refSource: COLLECTION_NAMES.APP,
+            } as CreateNotificationModel);
         }
     }
 

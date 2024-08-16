@@ -126,14 +126,15 @@ export class NotificationsService extends BaseService<
     }
 
     async createNotification(createNotificationModel: CreateNotificationModel) {
-        const { point, userId, app, name, appName } = createNotificationModel;
+        const { name, userId, refId, shortDescription, refSource } =
+            createNotificationModel;
 
         const newNotification = await this.create({
-            name: `+${point}`,
-            shortDescription: `You ${name} ${appName}`,
+            name,
+            shortDescription,
             user: userId,
-            refId: app,
-            refSource: COLLECTION_NAMES.APP,
+            refId,
+            refSource,
         });
 
         if (newNotification) {
