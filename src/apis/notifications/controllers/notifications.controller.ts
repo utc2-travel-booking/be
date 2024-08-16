@@ -48,9 +48,10 @@ export class NotificationsController {
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
+        const { _id } = user;
 
         const result =
-            await this.notificationsService.countNotificationUnreadOfUser(user);
+            await this.notificationsService.countNotificationUnreadOfUser(_id);
         return result;
     }
 

@@ -77,4 +77,8 @@ export class WebsocketGateway
                 overLimitReceivedRewardForDay: limit,
             });
     }
+
+    sendToClient(userId: Types.ObjectId, event: string, data: any) {
+        this.server.to(userId.toString()).emit(event, data);
+    }
 }

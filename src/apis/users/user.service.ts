@@ -202,13 +202,13 @@ export class UserService
             await this.checkLimitReceivedRewardForDay(userId);
         }
 
-        await this.notificationService.create({
-            name: `+${point}`,
-            shortDescription: `You ${name} ${appName}`,
-            user: userId,
-            refId: app,
-            refSource: COLLECTION_NAMES.APP,
-        });
+        await this.notificationService.createNotification(
+            point,
+            new Types.ObjectId(userId),
+            new Types.ObjectId(app),
+            name,
+            appName,
+        );
 
         return await this.getMe(userPayload);
     }

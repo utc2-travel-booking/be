@@ -3,14 +3,14 @@ import { NotificationsService } from './notifications.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { NotificationSchema } from './entities/notifications.entity';
-import { RolesModule } from '../roles/roles.module';
+import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: COLLECTION_NAMES.NOTIFICATION, schema: NotificationSchema },
         ]),
-        RolesModule,
+        WebsocketModule,
     ],
     controllers: [],
     providers: [NotificationsService],

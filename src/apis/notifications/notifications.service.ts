@@ -7,14 +7,14 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { RolesService } from '../roles/roles.service';
 import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { pagination } from 'src/packages/super-search';
 import { UpdateStatusNotificationDto } from './dto/update-status-notifications.dto';
 import { UserNotificationStatus } from './constants';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { EVENT_NAME } from 'src/packages/websocket/constants';
 
 @Injectable()
 export class NotificationsService extends BaseService<
@@ -25,8 +25,7 @@ export class NotificationsService extends BaseService<
         @InjectModel(COLLECTION_NAMES.NOTIFICATION)
         private readonly notificationModel: Model<NotificationDocument>,
         moduleRef: ModuleRef,
-        private readonly eventEmitter: EventEmitter2,
-        private readonly roleService: RolesService,
+        private readonly websocketGateway: WebsocketGateway,
     ) {
         super(
             notificationModel,
@@ -36,13 +35,13 @@ export class NotificationsService extends BaseService<
         );
     }
 
-    async countNotificationUnreadOfUser(userPayload: UserPayload) {
-        const { _id } = userPayload;
-
+    async countNotificationUnreadOfUser(userId: Types.ObjectId) {
         return this.countDocuments({
-            'user._id': _id,
+            user: userId,
             status: UserNotificationStatus.UNREAD,
-        }).exec();
+        })
+            .autoPopulate(false)
+            .exec();
     }
 
     async getNotificationsOfUser(
@@ -116,5 +115,42 @@ export class NotificationsService extends BaseService<
             { user: _id },
             { status: UserNotificationStatus.READ },
         );
+    }
+
+    async createNotification(
+        point: number,
+        userId: Types.ObjectId,
+        app: Types.ObjectId,
+        name: string,
+        appName: string,
+    ) {
+        const newNotification = await this.create({
+            name: `+${point}`,
+            shortDescription: `You ${name} ${appName}`,
+            user: userId,
+            refId: app,
+            refSource: COLLECTION_NAMES.APP,
+        });
+
+        if (newNotification) {
+            const countNotificationUnreadOfUser =
+                await this.countNotificationUnreadOfUser(userId);
+
+            this.websocketGateway.sendToClient(
+                userId,
+                EVENT_NAME.COUNT_NOTIFICATION_UNREAD,
+                countNotificationUnreadOfUser,
+            );
+
+            const notification = await this.findOne({
+                _id: newNotification._id,
+            }).exec();
+
+            this.websocketGateway.sendToClient(
+                userId,
+                EVENT_NAME.NEW_NOTIFICATION,
+                notification,
+            );
+        }
     }
 }
