@@ -69,4 +69,12 @@ export class WebsocketGateway
             .to(appId.toString())
             .emit(EVENT_NAME.NEW_REVIEW_RATING, result);
     }
+
+    sendLimitAddPointForUser(userId: Types.ObjectId, limit: boolean) {
+        this.server
+            .to(userId.toString())
+            .emit(EVENT_NAME.GET_LIMIT_ADD_POINT_FOR_USER, {
+                overLimitReceivedRewardForDay: limit,
+            });
+    }
 }

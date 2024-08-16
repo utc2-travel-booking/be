@@ -199,6 +199,7 @@ export class UserService
             );
 
             this.websocketGateway.sendPointsUpdate(userId, after);
+            await this.checkLimitReceivedRewardForDay(userId);
         }
 
         await this.notificationService.create({
@@ -372,6 +373,8 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        await this.checkLimitReceivedRewardForDay(_id);
+
         return {
             ...result,
             countReceivedReward,
@@ -412,6 +415,25 @@ export class UserService
         await this.removeCacheBannedUser(_ids);
 
         return _ids;
+    }
+
+    private async checkLimitReceivedRewardForDay(userId: Types.ObjectId) {
+        const amountRewardUserForApp =
+            await this.metadataService.getAmountRewardUserForApp(
+                MetadataType.AMOUNT_REWARD_USER_GLOBAL,
+            );
+
+        const countReceivedReward =
+            await this.userTransactionService.checkLimitReceivedReward(userId, [
+                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
+                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
+            ]);
+
+        this.websocketGateway.sendLimitAddPointForUser(
+            userId,
+            countReceivedReward >= amountRewardUserForApp.value.limit,
+        );
     }
 
     private async hashPassword(password: string) {

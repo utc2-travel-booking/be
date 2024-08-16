@@ -1,5 +1,5 @@
 import { Controller, Param, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuditsService } from '../audits.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { PERMISSIONS } from 'src/constants';
