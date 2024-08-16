@@ -97,6 +97,8 @@ export class NotificationsService extends BaseService<
             { _id: { $in: notifications }, user: _id },
             { status: UserNotificationStatus.READ },
         );
+
+        await this.sendSocketCountNotificationUnread(_id);
     }
 
     async deleteNotificationOfUser(_id: Types.ObjectId, user: UserPayload) {
@@ -106,6 +108,9 @@ export class NotificationsService extends BaseService<
             { _id, user: userId },
             { status: UserNotificationStatus.DELETED },
         );
+
+        await this.sendSocketCountNotificationUnread(userId);
+
         return result;
     }
 
@@ -116,6 +121,8 @@ export class NotificationsService extends BaseService<
             { user: _id },
             { status: UserNotificationStatus.READ },
         );
+
+        await this.sendSocketCountNotificationUnread(_id);
     }
 
     async createNotification(createNotificationModel: CreateNotificationModel) {
@@ -130,14 +137,7 @@ export class NotificationsService extends BaseService<
         });
 
         if (newNotification) {
-            const countNotificationUnreadOfUser =
-                await this.countNotificationUnreadOfUser(userId);
-
-            this.websocketGateway.sendToClient(
-                userId,
-                EVENT_NAME.COUNT_NOTIFICATION_UNREAD,
-                countNotificationUnreadOfUser,
-            );
+            await this.sendSocketCountNotificationUnread(userId);
 
             const notification = await this.findOne({
                 _id: newNotification._id,
@@ -149,5 +149,16 @@ export class NotificationsService extends BaseService<
                 notification,
             );
         }
+    }
+
+    private async sendSocketCountNotificationUnread(userId: Types.ObjectId) {
+        const countNotificationUnreadOfUser =
+            await this.countNotificationUnreadOfUser(userId);
+
+        this.websocketGateway.sendToClient(
+            userId,
+            EVENT_NAME.COUNT_NOTIFICATION_UNREAD,
+            countNotificationUnreadOfUser,
+        );
     }
 }
