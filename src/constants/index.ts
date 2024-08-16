@@ -17,6 +17,7 @@ export enum COLLECTION_NAMES {
     TAG_APP = 'tagApps',
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
+    CONTACT_US = 'contact-us',
 }
 
 export const PERMISSIONS = {
@@ -98,6 +99,10 @@ export const PERMISSIONS = {
         edit: 'admin.notifications.edit',
         destroy: 'admin.notifications.destroy',
     },
+    CONTACT_US: {
+        index: 'admin.contact-us.index',
+        destroy: 'admin.contact-us.destroy',
+    },
 };
 
 export const PERMISSIONS_FRONT = {
@@ -141,5 +146,8 @@ export const PERMISSIONS_FRONT = {
         index: 'front.notifications.index',
         edit: 'front.notifications.edit',
         destroy: 'front.notifications.destroy',
+    },
+    CONTACT_US: {
+        create: 'front.contact-us.create',
     },
 };

@@ -1,3 +1,4 @@
+import { Contact } from 'aws-sdk/clients/alexaforbusiness';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RolesControllerAdmin } from 'src/apis/roles/controllers/roles.controller.admin';
@@ -33,6 +34,8 @@ import { TagAppsControllerAdmin } from 'src/apis/tag-apps/controllers/tag-apps.c
 import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
 import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/controllers/user-transaction.controller.admin';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
+import { ContactUsModule } from 'src/apis/contact-us/contact-us.module';
+import { ContractUsControllerAdmin } from 'src/apis/contact-us/controllers/contact-us.controller.admin';
 
 @Module({
     imports: [
@@ -55,6 +58,7 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         NotificationsModule,
         TagAppsModule,
         UserTransactionModule,
+        ContactUsModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -72,6 +76,7 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         NotificationsControllerAdmin,
         TagAppsControllerAdmin,
         UserTransactionControllerAdmin,
+        ContractUsControllerAdmin,
     ],
     providers: [],
 })
