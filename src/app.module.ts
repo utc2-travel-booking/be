@@ -18,7 +18,7 @@ import { MultipleLanguageModule } from './packages/super-multiple-language/multi
         }),
         MongooseModule.forRootAsync({
             useFactory: async () => ({
-                uri: 'mongodb://root:example@42.112.59.88:3084/tongram-dev?retryWrites=true&authSource=admin',
+                uri: appSettings.mongoose.uri,
             }),
         }),
         EventEmitterModule.forRoot(),
