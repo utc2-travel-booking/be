@@ -30,5 +30,6 @@ import { MultipleLanguageModule } from './packages/super-multiple-language/multi
         MultipleLanguageModule,
     ],
     controllers: [AppController],
+    providers: [],
 })
 export class AppModule {}
