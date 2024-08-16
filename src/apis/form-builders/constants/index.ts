@@ -1,5 +1,5 @@
 export enum FormBuilderType {
-    Looking_for_Support = 'LOOKING_FOR_SUPPORT',
-    Business_Inquiries = 'BUSINESS_INQUIRIES',
-    Partnership = 'PARTNERSHIP',
+    LOOKING_FOR_SUPPORT = 'LOOKING_FOR_SUPPORT',
+    BUSINESS_INQUIRIES = 'BUSINESS_INQUIRIES',
+    PARTNERSHIP = 'PARTNERSHIP',
 }

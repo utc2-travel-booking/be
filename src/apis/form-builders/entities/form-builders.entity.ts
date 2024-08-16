@@ -24,7 +24,7 @@ export class FormBuilders extends AggregateRoot {
     subject: string;
 
     @Prop({ type: String })
-    message: string;
+    content: string;
 }
 
 export type FormBuilderDocument = FormBuilders & Document;

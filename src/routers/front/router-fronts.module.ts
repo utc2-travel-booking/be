@@ -22,8 +22,8 @@ import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsController } from 'src/apis/tags/controllers/tags.controller';
 import { NotificationsController } from 'src/apis/notifications/controllers/notifications.controller';
 import { NotificationsModule } from 'src/apis/notifications/notifications.module';
-import { ContactUsModule } from 'src/apis/form-builders/form-builders.module';
-import { ContactUsController } from 'src/apis/form-builders/controllers/form-builders.controller';
+import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
+import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
 
 @Module({
     imports: [
@@ -39,7 +39,7 @@ import { ContactUsController } from 'src/apis/form-builders/controllers/form-bui
         AdvertisersModule,
         TagsModule,
         NotificationsModule,
-        ContactUsModule,
+        FormBuilderModule,
     ],
     controllers: [
         UserController,
@@ -53,7 +53,7 @@ import { ContactUsController } from 'src/apis/form-builders/controllers/form-bui
         AdvertisersController,
         TagsController,
         NotificationsController,
-        ContactUsController,
+        FormBuilderController,
     ],
     providers: [],
 })

@@ -54,5 +54,5 @@ export class CreateFormBuildersDto {
     @IsOptional()
     @IsString()
     @MaxLength(1000)
-    message: string;
+    content: string;
 }

@@ -25,7 +25,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FORM_BUILDER,
 })
-export class ContractUsControllerAdmin {
+export class FormBuilderControllerAdmin {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
     @DefaultGet('')
@@ -38,14 +38,11 @@ export class ContractUsControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':type/:id')
+    @DefaultGet(':id')
     @Authorize(PERMISSIONS.FORM_BUILDER.index)
     @ApiParam({ name: 'id', type: String })
-    async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('type') type: FormBuilderType,
-    ) {
-        const result = await this.formBuilderService.getOne(_id, { type });
+    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
+        const result = await this.formBuilderService.getOne(_id);
         return result;
     }
 

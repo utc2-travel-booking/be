@@ -34,8 +34,8 @@ import { TagAppsControllerAdmin } from 'src/apis/tag-apps/controllers/tag-apps.c
 import { TagAppsModule } from 'src/apis/tag-apps/tag-apps.module';
 import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/controllers/user-transaction.controller.admin';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
-import { ContactUsModule } from 'src/apis/form-builders/form-builders.module';
-import { ContractUsControllerAdmin } from 'src/apis/form-builders/controllers/form-builders.controller.admin';
+import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
+import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/form-builders.controller.admin';
 
 @Module({
     imports: [
@@ -58,7 +58,7 @@ import { ContractUsControllerAdmin } from 'src/apis/form-builders/controllers/fo
         NotificationsModule,
         TagAppsModule,
         UserTransactionModule,
-        ContactUsModule,
+        FormBuilderModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -76,7 +76,7 @@ import { ContractUsControllerAdmin } from 'src/apis/form-builders/controllers/fo
         NotificationsControllerAdmin,
         TagAppsControllerAdmin,
         UserTransactionControllerAdmin,
-        ContractUsControllerAdmin,
+        FormBuilderControllerAdmin,
     ],
     providers: [],
 })

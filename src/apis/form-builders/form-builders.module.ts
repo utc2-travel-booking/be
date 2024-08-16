@@ -17,4 +17,4 @@ import { FormBuilderSchema } from './entities/form-builders.entity';
     providers: [FormBuilderService],
     exports: [FormBuilderService],
 })
-export class ContactUsModule {}
+export class FormBuilderModule {}
