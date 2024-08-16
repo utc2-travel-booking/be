@@ -1,7 +1,6 @@
 import { RoutersModule } from './routers/routers.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
@@ -19,7 +18,7 @@ import { MultipleLanguageModule } from './packages/super-multiple-language/multi
         }),
         MongooseModule.forRootAsync({
             useFactory: async () => ({
-                uri: appSettings.mongoose.uri,
+                uri: 'mongodb://root:example@42.112.59.88:3084/tongram-dev?retryWrites=true&authSource=admin',
             }),
         }),
         EventEmitterModule.forRoot(),
@@ -31,6 +30,6 @@ import { MultipleLanguageModule } from './packages/super-multiple-language/multi
         MultipleLanguageModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [],
 })
 export class AppModule {}

@@ -3,6 +3,7 @@ import { ReviewRatingService } from './review-ratings.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { ReviewRatingSchema } from './entities/review-ratings.entity';
+import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { ReviewRatingSchema } from './entities/review-ratings.entity';
                 schema: ReviewRatingSchema,
             },
         ]),
+        WebsocketModule,
     ],
     controllers: [],
     providers: [ReviewRatingService],

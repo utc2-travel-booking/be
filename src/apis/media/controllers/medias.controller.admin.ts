@@ -21,7 +21,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { File } from 'src/apis/media/entities/files.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';

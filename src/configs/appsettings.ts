@@ -39,4 +39,7 @@ export const appSettings = {
             botToken: process.env.TELEGRAM_BOT_TOKEN,
         },
     },
+    webSocket: {
+        port: Number(process.env.WEBSOCKET_PORT),
+    },
 };

@@ -51,13 +51,13 @@ export class ReviewRatingController {
     @DefaultPost()
     @Authorize(PERMISSIONS_FRONT.REVIEW.create)
     async create(
-        @Body() CreateReviewRatingDto: CreateReviewRatingDto,
+        @Body() createReviewRatingDto: CreateReviewRatingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
 
         const result = await this.reviewRatingService.createOne(
-            CreateReviewRatingDto,
+            createReviewRatingDto,
             user,
         );
         return result;

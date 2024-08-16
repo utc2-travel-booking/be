@@ -9,6 +9,7 @@ import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { MetadataModule } from '../metadata/metadata.module';
+import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { MetadataModule } from '../metadata/metadata.module';
         UserTransactionModule,
         forwardRef(() => NotificationsModule),
         MetadataModule,
+        WebsocketModule,
     ],
     controllers: [],
     providers: [UserService],

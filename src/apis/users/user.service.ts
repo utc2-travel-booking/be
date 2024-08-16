@@ -31,6 +31,7 @@ import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
 import { MetadataService } from '../metadata/metadata.service';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 
 @Injectable()
 export class UserService
@@ -48,6 +49,7 @@ export class UserService
         @Inject(forwardRef(() => NotificationsService))
         private readonly notificationService: NotificationsService,
         private readonly metadataService: MetadataService,
+        private readonly websocketGateway: WebsocketGateway,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -195,6 +197,8 @@ export class UserService
                     currentPoint: after,
                 },
             );
+
+            this.websocketGateway.sendPointsUpdate(userId, after);
         }
 
         await this.notificationService.create({

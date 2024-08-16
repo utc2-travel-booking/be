@@ -16,6 +16,7 @@ import { APP_EVENT_HANDLER } from '../apps/constants';
 import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from 'src/packages/super-search';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 
 @Injectable()
 export class ReviewRatingService extends BaseService<
@@ -27,6 +28,7 @@ export class ReviewRatingService extends BaseService<
         private readonly reviewModel: Model<ReviewRatingDocument>,
         moduleRef: ModuleRef,
         private readonly eventEmitter: EventEmitter2,
+        private readonly websocketGateway: WebsocketGateway,
     ) {
         super(
             reviewModel,
@@ -94,17 +96,17 @@ export class ReviewRatingService extends BaseService<
     }
 
     async createOne(
-        CreateReviewRatingDto: CreateReviewRatingDto,
+        createReviewRatingDto: CreateReviewRatingDto,
         user: UserPayload,
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { app } = CreateReviewRatingDto;
+        const { app } = createReviewRatingDto;
 
         await this.userJustOneReviewEachApp(userId, app);
 
         const result = new this.reviewModel({
-            ...CreateReviewRatingDto,
+            ...createReviewRatingDto,
             ...options,
             createdBy: userId,
         });
@@ -119,6 +121,8 @@ export class ReviewRatingService extends BaseService<
                 APP_EVENT_HANDLER.ADD_RATING_FOR_USER,
                 sumRatingAppModel,
             );
+
+            await this.sendReviewRatingToClient(result._id, app);
         }
 
         return result;
@@ -159,5 +163,34 @@ export class ReviewRatingService extends BaseService<
             avgRating,
             starRatingDistribution,
         };
+    }
+
+    private async sendReviewRatingToClient(
+        reviewRatingId: Types.ObjectId,
+        appId: Types.ObjectId,
+    ) {
+        const result = await this.findOne(
+            {
+                _id: new Types.ObjectId(reviewRatingId),
+            },
+            [
+                {
+                    $lookup: {
+                        from: 'files',
+                        localField: 'createdBy.avatar',
+                        foreignField: '_id',
+                        as: 'createdBy.avatar',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$createdBy.avatar',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+            ],
+        ).exec();
+
+        this.websocketGateway.sendNewReviewRating(appId, result);
     }
 }
