@@ -372,8 +372,6 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        await this.checkLimitReceivedRewardForDay(_id);
-
         return {
             ...result,
             countReceivedReward,
@@ -429,10 +427,9 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        this.websocketGateway.sendLimitAddPointForUser(
-            userId,
-            countReceivedReward >= amountRewardUserForApp.value.limit,
-        );
+        if (countReceivedReward >= amountRewardUserForApp.value.limit) {
+            this.websocketGateway.sendLimitAddPointForUser(userId, true);
+        }
     }
 
     private async hashPassword(password: string) {
