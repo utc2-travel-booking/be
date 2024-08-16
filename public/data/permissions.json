@@ -1291,20 +1291,6 @@
     },
     {
         "_id": {
-            "$oid": "66bef728f6db9ae776cce22b"
-        },
-        "name": "front.form-builder.create",
-        "collectionName": "Form Builder",
-        "__v": 0,
-        "createdAt": {
-            "$date": "2024-08-08T08:36:07.671Z"
-        },
-        "updatedAt": {
-            "$date": "2024-08-08T08:36:07.671Z"
-        }
-    },
-    {
-        "_id": {
             "$oid": "66bef806f6db9ae776cce22e"
         },
         "name": "admin.form-builder.index",

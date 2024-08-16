@@ -12,8 +12,8 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 
-@Controller('contact-us')
-@ApiTags('Front: Contact Us')
+@Controller('form-builder')
+@ApiTags('Front: Form Builder')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FORM_BUILDER,
@@ -22,7 +22,6 @@ export class ContactUsController {
     constructor(private readonly contactUsService: FormBuilderService) {}
 
     @DefaultPost()
-    @Authorize(PERMISSIONS_FRONT.FORM_BUILDER.create)
     async create(@Body() createFormBuilderDto: CreateFormBuildersDto) {
         const result = await this.contactUsService.createOne(
             createFormBuilderDto,
