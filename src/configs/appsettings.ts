@@ -36,7 +36,8 @@ export const appSettings = {
     },
     provider: {
         telegram: {
-            botToken: process.env.TELEGRAM_BOT_TOKEN,
+            contractChannelId: process.env.TELEGRAM_CONTACT_CHANNEL_ID,
+            contractBotToken: process.env.TELEGRAM_CONTACT_BOT_TOKEN,
         },
     },
     webSocket: {

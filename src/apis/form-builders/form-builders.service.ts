@@ -9,6 +9,8 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model } from 'mongoose';
 import { CreateFormBuildersDto } from './dto/create-form-builders.dto';
 import { ModuleRef } from '@nestjs/core';
+import TelegramBot from 'node-telegram-bot-api';
+import { appSettings } from 'src/configs/appsettings';
 
 @Injectable()
 export class FormBuilderService extends BaseService<
@@ -28,10 +30,23 @@ export class FormBuilderService extends BaseService<
         );
     }
     async createOne(createFormBuilderDto: CreateFormBuildersDto) {
+        const { type, subject, name, email, content } = createFormBuilderDto;
         const result = new this.model({
             ...createFormBuilderDto,
         });
         await this.create(result);
+
+        const bot = new TelegramBot(
+            appSettings.provider.telegram.contractBotToken,
+        );
+        const markdownMessage = `📩📩📩📩📩\n<strong>${type}</strong>\nSubject: <strong>${subject}</strong>\nName: <strong>${name}</strong>\nEmail: <strong>${email}</strong>\n🗣️\n<code>${content}</code>`;
+        await bot.sendMessage(
+            appSettings.provider.telegram.contractChannelId,
+            markdownMessage,
+            {
+                parse_mode: 'HTML',
+            },
+        );
 
         return result;
     }
