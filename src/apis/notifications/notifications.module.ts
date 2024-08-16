@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { NotificationSchema } from './entities/notifications.entity';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
+import { NotificationEvent } from './event-handlers/notifications.event';
 
 @Module({
     imports: [
@@ -13,7 +14,7 @@ import { WebsocketModule } from 'src/packages/websocket/websocket.module';
         WebsocketModule,
     ],
     controllers: [],
-    providers: [NotificationsService],
+    providers: [NotificationsService, NotificationEvent],
     exports: [NotificationsService],
 })
 export class NotificationsModule {}

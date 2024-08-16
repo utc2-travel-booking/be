@@ -32,6 +32,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
 import { MetadataService } from '../metadata/metadata.service';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CreateNotificationModel } from '../notifications/models/create-notification.model';
+import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
 
 @Injectable()
 export class UserService
@@ -50,6 +53,7 @@ export class UserService
         private readonly notificationService: NotificationsService,
         private readonly metadataService: MetadataService,
         private readonly websocketGateway: WebsocketGateway,
+        private readonly eventEmitter: EventEmitter2,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -202,13 +206,13 @@ export class UserService
             await this.checkLimitReceivedRewardForDay(userId);
         }
 
-        await this.notificationService.createNotification(
+        this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
             point,
-            new Types.ObjectId(userId),
-            new Types.ObjectId(app),
+            userId: new Types.ObjectId(userId),
+            app: new Types.ObjectId(app),
             name,
             appName,
-        );
+        } as CreateNotificationModel);
 
         return await this.getMe(userPayload);
     }

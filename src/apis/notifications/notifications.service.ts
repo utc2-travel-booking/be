@@ -15,6 +15,7 @@ import { UpdateStatusNotificationDto } from './dto/update-status-notifications.d
 import { UserNotificationStatus } from './constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EVENT_NAME } from 'src/packages/websocket/constants';
+import { CreateNotificationModel } from './models/create-notification.model';
 
 @Injectable()
 export class NotificationsService extends BaseService<
@@ -117,13 +118,9 @@ export class NotificationsService extends BaseService<
         );
     }
 
-    async createNotification(
-        point: number,
-        userId: Types.ObjectId,
-        app: Types.ObjectId,
-        name: string,
-        appName: string,
-    ) {
+    async createNotification(createNotificationModel: CreateNotificationModel) {
+        const { point, userId, app, name, appName } = createNotificationModel;
+
         const newNotification = await this.create({
             name: `+${point}`,
             shortDescription: `You ${name} ${appName}`,
