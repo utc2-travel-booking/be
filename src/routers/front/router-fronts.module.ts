@@ -22,8 +22,8 @@ import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsController } from 'src/apis/tags/controllers/tags.controller';
 import { NotificationsController } from 'src/apis/notifications/controllers/notifications.controller';
 import { NotificationsModule } from 'src/apis/notifications/notifications.module';
-import { ContactUsModule } from 'src/apis/contact-us/contact-us.module';
-import { ContactUsController } from 'src/apis/contact-us/controllers/contact-us.controller';
+import { ContactUsModule } from 'src/apis/form-builders/form-builders.module';
+import { ContactUsController } from 'src/apis/form-builders/controllers/form-builders.controller';
 
 @Module({
     imports: [

@@ -7,18 +7,20 @@ import {
     IsString,
     MaxLength,
 } from 'class-validator';
-import { ContactUsType } from '../constants';
+import { FormBuilderType } from '../constants';
 
-export class CreateContactUsDto {
+export class CreateFormBuildersDto {
     @ApiProperty({
-        description: 'Type of user fill in the form',
-        example: ContactUsType.Business_Inquiries,
+        description:
+            ' Type for this form builder. Available values: BUSINESS_INQUIRIES | LOOKING_FOR_SUPPORT | PARTNERSHIP',
+        example: FormBuilderType.Business_Inquiries,
     })
     @IsNotEmpty()
-    @IsEnum(ContactUsType)
-    type: ContactUsType;
+    @IsEnum(FormBuilderType)
+    type: FormBuilderType;
 
     @ApiProperty({
+        type: String,
         description: 'Name of user fill in the form',
         example: 'Alex',
     })
@@ -52,5 +54,5 @@ export class CreateContactUsDto {
     @IsOptional()
     @IsString()
     @MaxLength(1000)
-    question: string;
+    message: string;
 }

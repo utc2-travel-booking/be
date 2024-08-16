@@ -17,7 +17,7 @@ export enum COLLECTION_NAMES {
     TAG_APP = 'tagApps',
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
-    CONTACT_US = 'contact-us',
+    FORM_BUILDER = 'form-builders',
 }
 
 export const PERMISSIONS = {

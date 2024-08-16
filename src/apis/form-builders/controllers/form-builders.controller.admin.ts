@@ -9,8 +9,8 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ContactUsService } from '../contact-us.service';
-import { ContactUsType } from '../constants';
+import { FormBuilderService } from '../form-builders.service';
+import { FormBuilderType } from '../constants';
 import {
     DefaultDelete,
     DefaultGet,
@@ -23,21 +23,18 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 @ApiTags('Admin: Contact Us')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
-    refSource: COLLECTION_NAMES.CONTACT_US,
+    refSource: COLLECTION_NAMES.FORM_BUILDER,
 })
 export class ContractUsControllerAdmin {
-    constructor(private readonly contactUsService: ContactUsService) {}
+    constructor(private readonly formBuilderService: FormBuilderService) {}
 
-    @DefaultGet(':type')
+    @DefaultGet('')
     @Authorize(PERMISSIONS.CONTACT_US.index)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Param('type') type: ContactUsType,
     ) {
-        const result = await this.contactUsService.getAll(queryParams, {
-            type,
-        });
+        const result = await this.formBuilderService.getAll(queryParams);
         return result;
     }
 
@@ -46,9 +43,9 @@ export class ContractUsControllerAdmin {
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('type') type: ContactUsType,
+        @Param('type') type: FormBuilderType,
     ) {
-        const result = await this.contactUsService.getOne(_id, { type });
+        const result = await this.formBuilderService.getOne(_id, { type });
         return result;
     }
 
@@ -61,7 +58,7 @@ export class ContractUsControllerAdmin {
     ) {
         const { user } = req;
 
-        const result = await this.contactUsService.deletes(_ids, user);
+        const result = await this.formBuilderService.deletes(_ids, user);
         return result;
     }
 }

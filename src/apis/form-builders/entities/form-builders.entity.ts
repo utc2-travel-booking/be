@@ -4,15 +4,15 @@ import { Document } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { ContactUsType } from '../constants';
+import { FormBuilderType } from '../constants';
 
 @Schema({
     timestamps: true,
-    collection: COLLECTION_NAMES.CONTACT_US,
+    collection: COLLECTION_NAMES.FORM_BUILDER,
 })
-export class ContactUs extends AggregateRoot {
+export class FormBuilders extends AggregateRoot {
     @Prop({ type: String, required: true })
-    type: ContactUsType;
+    type: FormBuilderType;
 
     @Prop({ type: String, required: true })
     name: string;
@@ -27,7 +27,7 @@ export class ContactUs extends AggregateRoot {
     message: string;
 }
 
-export type ContactUsDocument = ContactUs & Document;
-export const ContactUsSchema = SchemaFactory.createForClass(ContactUs);
+export type FormBuilderDocument = FormBuilders & Document;
+export const FormBuilderSchema = SchemaFactory.createForClass(FormBuilders);
 
-ContactUsSchema.plugin(autopopulateSoftDelete);
+FormBuilderSchema.plugin(autopopulateSoftDelete);

@@ -1,20 +1,20 @@
 import { MongooseModule } from '@nestjs/mongoose';
-import { ContactUsService } from './contact-us.service';
+import { FormBuilderService } from './form-builders.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
-import { ContactUsSchema } from './entities/contact-us.entity';
+import { FormBuilderSchema } from './entities/form-builders.entity';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             {
-                name: COLLECTION_NAMES.CONTACT_US,
-                schema: ContactUsSchema,
+                name: COLLECTION_NAMES.FORM_BUILDER,
+                schema: FormBuilderSchema,
             },
         ]),
     ],
     controllers: [],
-    providers: [ContactUsService],
-    exports: [ContactUsService],
+    providers: [FormBuilderService],
+    exports: [FormBuilderService],
 })
 export class ContactUsModule {}
