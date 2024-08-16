@@ -8,7 +8,7 @@ import { FormBuilderService } from '../form-builders.service';
 import { DefaultPost } from 'src/base/controllers/base.controller';
 import { CreateFormBuildersDto } from '../dto/create-form-builders.dto';
 
-@Controller('form-builder')
+@Controller('form-builders')
 @ApiTags('Front: Form Builder')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

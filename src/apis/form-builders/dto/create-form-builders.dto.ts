@@ -13,7 +13,7 @@ export class CreateFormBuildersDto {
     @ApiProperty({
         description:
             ' Type for this form builder. Available values: BUSINESS_INQUIRIES | LOOKING_FOR_SUPPORT | PARTNERSHIP',
-        example: FormBuilderType.Business_Inquiries,
+        example: FormBuilderType.BUSINESS_INQUIRIES,
     })
     @IsNotEmpty()
     @IsEnum(FormBuilderType)

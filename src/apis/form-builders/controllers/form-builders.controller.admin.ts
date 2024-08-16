@@ -19,7 +19,7 @@ import { Authorize } from 'src/decorators/authorize.decorator';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
 
-@Controller('form-builder')
+@Controller('form-builders')
 @ApiTags('Admin: Form Builder')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

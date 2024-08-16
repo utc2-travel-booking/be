@@ -17,7 +17,7 @@ export enum COLLECTION_NAMES {
     TAG_APP = 'tagApps',
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
-    FORM_BUILDER = 'form-builders',
+    FORM_BUILDER = 'formBuilders',
 }
 
 export const PERMISSIONS = {
@@ -100,8 +100,8 @@ export const PERMISSIONS = {
         destroy: 'admin.notifications.destroy',
     },
     FORM_BUILDER: {
-        index: 'admin.form-builder.index',
-        destroy: 'admin.form-builder.destroy',
+        index: 'admin.form-builders.index',
+        destroy: 'admin.form-builders.destroy',
     },
 };
 

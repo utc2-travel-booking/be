@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import {
     FormBuilderDocument,
-    FormBuilders,
+    FormBuilder,
 } from './entities/form-builders.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -13,7 +13,7 @@ import { ModuleRef } from '@nestjs/core';
 @Injectable()
 export class FormBuilderService extends BaseService<
     FormBuilderDocument,
-    FormBuilders
+    FormBuilder
 > {
     constructor(
         @InjectModel(COLLECTION_NAMES.FORM_BUILDER)
@@ -22,7 +22,7 @@ export class FormBuilderService extends BaseService<
     ) {
         super(
             formBuildersModel,
-            FormBuilders,
+            FormBuilder,
             COLLECTION_NAMES.FORM_BUILDER,
             moduleRef,
         );

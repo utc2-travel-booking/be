@@ -10,8 +10,8 @@ import { FormBuilderType } from '../constants';
     timestamps: true,
     collection: COLLECTION_NAMES.FORM_BUILDER,
 })
-export class FormBuilders extends AggregateRoot {
-    @Prop({ type: String, required: true })
+export class FormBuilder extends AggregateRoot {
+    @Prop({ type: String, required: true, enum: FormBuilderType })
     type: FormBuilderType;
 
     @Prop({ type: String, required: true })
@@ -27,7 +27,7 @@ export class FormBuilders extends AggregateRoot {
     content: string;
 }
 
-export type FormBuilderDocument = FormBuilders & Document;
-export const FormBuilderSchema = SchemaFactory.createForClass(FormBuilders);
+export type FormBuilderDocument = FormBuilder & Document;
+export const FormBuilderSchema = SchemaFactory.createForClass(FormBuilder);
 
 FormBuilderSchema.plugin(autopopulateSoftDelete);

@@ -1293,7 +1293,7 @@
         "_id": {
             "$oid": "66bef806f6db9ae776cce22e"
         },
-        "name": "admin.form-builder.index",
+        "name": "admin.form-builders.index",
         "collectionName": "Form Builder",
         "__v": 0,
         "createdAt": {
@@ -1307,7 +1307,7 @@
         "_id": {
             "$oid": "66bef833f6db9ae776cce22f"
         },
-        "name": "admin.form-builder.destroy",
+        "name": "admin.form-builders.destroy",
         "collectionName": "Form Builder",
         "__v": 0,
         "createdAt": {
