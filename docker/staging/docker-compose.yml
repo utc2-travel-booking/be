@@ -10,6 +10,7 @@ services:
       - redis
     ports:
       - "3083:${PORT}"
+      - "3094:${WEBSOCKET_PORT}"
     volumes:
       - .env:/app/.env
     networks:
