@@ -198,16 +198,17 @@ export class UserService
             );
 
             this.websocketGateway.sendPointsUpdate(userId, after);
+
+            this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
+                name: `+${point}`,
+                userId: new Types.ObjectId(userId),
+                refId: new Types.ObjectId(app),
+                shortDescription: `You ${name} ${appName}`,
+                refSource: COLLECTION_NAMES.APP,
+            } as CreateNotificationModel);
+
             await this.checkLimitReceivedRewardForDay(userId);
         }
-
-        this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
-            name: `+${point}`,
-            userId: new Types.ObjectId(userId),
-            refId: new Types.ObjectId(app),
-            shortDescription: `You ${name} ${appName}`,
-            refSource: COLLECTION_NAMES.APP,
-        } as CreateNotificationModel);
 
         return await this.getMe(userPayload);
     }
