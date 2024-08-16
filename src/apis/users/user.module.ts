@@ -7,7 +7,6 @@ import { RolesModule } from '../roles/roles.module';
 import { SuperCacheModule } from 'src/packages/super-cache/super-cache.module';
 import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
-import { NotificationsModule } from '../notifications/notifications.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 
@@ -20,7 +19,6 @@ import { WebsocketModule } from 'src/packages/websocket/websocket.module';
         SuperCacheModule,
         MediaModule,
         UserTransactionModule,
-        forwardRef(() => NotificationsModule),
         MetadataModule,
         WebsocketModule,
     ],

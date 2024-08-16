@@ -1,7 +1,5 @@
 import {
     BadRequestException,
-    forwardRef,
-    Inject,
     Injectable,
     OnModuleInit,
     UnprocessableEntityException,
@@ -26,7 +24,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
-import { NotificationsService } from '../notifications/notifications.service';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
@@ -49,8 +46,6 @@ export class UserService
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
-        @Inject(forwardRef(() => NotificationsService))
-        private readonly notificationService: NotificationsService,
         private readonly metadataService: MetadataService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
