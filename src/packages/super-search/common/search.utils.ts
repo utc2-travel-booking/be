@@ -105,9 +105,10 @@ export const addSearchConditionToPipeline = (
 
     switch (operator) {
         case OPERATOR.LIKE:
+            const words = _.words(keyword);
+            const regexPattern = words.map(_.escapeRegExp).join('.*');
             matchStage[searchBy] = {
-                $regex: _.escapeRegExp(String(keyword)),
-                $options: 'i',
+                $regex: new RegExp(regexPattern, 'i'),
             };
             break;
         case OPERATOR.NOT_LIKE:
