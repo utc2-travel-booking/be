@@ -306,47 +306,41 @@ export class AppsService extends BaseService<AppDocument, App> {
         const { _id: userId } = user;
         const { page, limit, skip, filterPipeline, select } = queryParams;
 
-        const total = await this.userAppHistoriesService
-            .countDocuments(
-                {
-                    'createdBy._id': userId,
-                },
-                filterPipeline,
-            )
-            .exec();
-
         const userAppHistories = await this.userAppHistoriesService
-            .find(
-                {
-                    'createdBy._id': userId,
-                },
-                [
-                    ...filterPipeline,
-                    {
-                        $lookup: {
-                            from: 'files',
-                            localField: 'app.featuredImage',
-                            foreignField: '_id',
-                            as: 'app.featuredImage',
-                        },
-                    },
-                    {
-                        $unwind: {
-                            path: '$app.featuredImage',
-                            preserveNullAndEmptyArrays: true,
-                        },
-                    },
-                ],
-            )
+            .find({
+                createdBy: userId,
+            })
             .limit(limit)
             .skip(skip)
             .sort({ updatedAt: -1 })
-            .select(select)
+            .autoPopulate(false)
             .exec();
 
-        const result = userAppHistories.map((item) => item.app);
+        const appIds = userAppHistories.map(
+            (item) => new Types.ObjectId(item?.app?.toString()),
+        );
+        const apps = await this.find(
+            {
+                _id: {
+                    $in: appIds,
+                },
+            },
+            [
+                {
+                    $addFields: {
+                        __order: {
+                            $indexOfArray: [appIds, '$_id'],
+                        },
+                    },
+                },
+                ...filterPipeline,
+            ],
+        )
+            .select(select)
+            .sort({ __order: 1 })
+            .exec();
 
-        const items = result.map(async (item) => {
+        const items = apps.map(async (item) => {
             return {
                 ...item,
                 isReceivedReward: userId
@@ -359,8 +353,17 @@ export class AppsService extends BaseService<AppDocument, App> {
             };
         });
 
+        const total = await this.countDocuments(
+            {
+                _id: {
+                    $in: appIds,
+                },
+            },
+            filterPipeline,
+        ).exec();
+
         return Promise.all(items).then((items) => {
-            const meta = pagination(result, page, limit, total);
+            const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
     }

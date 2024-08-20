@@ -4,7 +4,6 @@ import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { AutoPopulate } from 'src/packages/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 
 @Schema({
@@ -13,10 +12,7 @@ import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 })
 export class UserAppHistory extends AggregateRoot {
     @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.APP, refClass: App })
-    @AutoPopulate({
-        ref: COLLECTION_NAMES.APP,
-    })
-    app: AppDocument | Types.ObjectId;
+    app: AppDocument;
 }
 
 export type UserAppHistoryDocument = UserAppHistory & Document;
