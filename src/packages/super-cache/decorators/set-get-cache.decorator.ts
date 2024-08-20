@@ -57,6 +57,7 @@ export function SGetCache() {
                 id: this.id,
                 collectionName: this.collectionName,
                 locale,
+                query,
             });
 
             await createRedisFolderCollection(
