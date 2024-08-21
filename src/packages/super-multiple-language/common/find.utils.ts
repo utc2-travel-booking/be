@@ -2,6 +2,7 @@ import { PipelineStage } from 'mongoose';
 import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
 import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 import { appSettings } from 'src/configs/appsettings';
+import _ from 'lodash';
 
 const getSchemaMetadata = (entity: any) => {
     return TypeMetadataStorage.getSchemaMetadataByTarget(entity);
@@ -21,24 +22,46 @@ const applyMultipleLanguageFields = (
         const { propertyKey } = field;
 
         if (isArray) {
-            addFieldsStage.$addFields[`${prefix}${propertyKey}`] = {
-                $arrayElemAt: [
-                    {
-                        $map: {
-                            input: `$${prefix}${propertyKey}`,
-                            as: 'item',
-                            in: {
-                                $ifNull: [`$$item.${locale}`, 'NO DATA'],
-                            },
+            const mapPath = `${prefix}`;
+            if (!_.has(addFieldsStage, `$addFields.${mapPath}`)) {
+                _.set(addFieldsStage, `$addFields.${mapPath}`, {
+                    $map: {
+                        input: `$${prefix}`,
+                        as: 'item',
+                        in: {
+                            $mergeObjects: [
+                                '$$item',
+                                {
+                                    [`${propertyKey}`]: {
+                                        $ifNull: [
+                                            `$$item.${propertyKey}.${locale}`,
+                                            'NO DATA',
+                                        ],
+                                    },
+                                },
+                            ],
                         },
                     },
-                    0,
-                ],
-            };
+                });
+            } else {
+                const mergeObjectsPath = `$addFields.${mapPath}.$map.in.$mergeObjects`;
+                const currentMergeObjects = _.get(
+                    addFieldsStage,
+                    mergeObjectsPath,
+                    [],
+                );
+                currentMergeObjects.push({
+                    [`${propertyKey}`]: {
+                        $ifNull: [`$$item.${propertyKey}.${locale}`, 'NO DATA'],
+                    },
+                });
+                _.set(addFieldsStage, mergeObjectsPath, currentMergeObjects);
+            }
         } else {
-            addFieldsStage.$addFields[`${prefix}${propertyKey}`] = {
-                $ifNull: [`$${prefix}${propertyKey}.${locale}`, 'NO DATA'],
-            };
+            const fieldPath = `$addFields.${prefix}${propertyKey}`;
+            _.set(addFieldsStage, fieldPath, {
+                $ifNull: [`$${propertyKey}.${locale}`, 'NO DATA'],
+            });
         }
     });
 };
@@ -81,7 +104,7 @@ const traverseEntityMultipleLanguage = (
                 nestedEntity,
                 pipeline,
                 locale,
-                `${prefix}${property.propertyKey}.`,
+                `${prefix}${property.propertyKey}`,
                 isArray,
             );
         }
