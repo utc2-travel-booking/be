@@ -1,1 +1,0 @@
-{"version":3,"file":"multiple-language.decorator.js","sourceRoot":"","sources":["multiple-language.decorator.ts"],"names":[],"mappings":";;;AAAA,6EAAwF;AAExF,SAAgB,gBAAgB;IAC5B,OAAO,CAAC,MAAc,EAAE,WAA4B,EAAE,EAAE;QACpD,2DAAmC,CAAC,2BAA2B,CAAC;YAC5D,MAAM,EAAE,MAAM,CAAC,WAAW;YAC1B,WAAW,EAAE,WAAqB;SACrC,CAAC,CAAC;IACP,CAAC,CAAC;AACN,CAAC;AAPD,4CAOC"}

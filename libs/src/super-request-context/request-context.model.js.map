@@ -1,1 +1,0 @@
-{"version":3,"file":"request-context.model.js","sourceRoot":"","sources":["request-context.model.ts"],"names":[],"mappings":";;;AAAA,6CAAgD;AAEhD,MAAa,cAAc;IAGvB,MAAM,KAAK,cAAc;QACrB,OAAO,IAAI,CAAC,GAAG,CAAC,QAAQ,EAAE,CAAC;IAC/B,CAAC;IAED,YACoB,GAAa,EACb,GAAc;QADd,QAAG,GAAH,GAAG,CAAU;QACb,QAAG,GAAH,GAAG,CAAW;IAC/B,CAAC;;AAVR,wCAWC;AAVU,kBAAG,GAAG,IAAI,+BAAiB,EAAkB,CAAC"}

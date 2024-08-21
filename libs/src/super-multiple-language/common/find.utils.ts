@@ -58,9 +58,10 @@ const applyMultipleLanguageFields = (
                 _.set(addFieldsStage, mergeObjectsPath, currentMergeObjects);
             }
         } else {
-            const fieldPath = `$addFields.${prefix}${propertyKey}`;
+            const _prefix = prefix ? `${prefix}.` : '';
+            const fieldPath = `$addFields.${_prefix}${propertyKey}`;
             _.set(addFieldsStage, fieldPath, {
-                $ifNull: [`$${propertyKey}.${locale}`, 'NO DATA'],
+                $ifNull: [`$${_prefix}${propertyKey}.${locale}`, 'NO DATA'],
             });
         }
     });
@@ -72,7 +73,10 @@ const traverseEntityMultipleLanguage = (
     locale: string,
     prefix = '',
     isArray = false,
+    relationLevel = 0,
 ) => {
+    relationLevel++;
+    if (relationLevel > 2) return;
     const schemaMetadata = getSchemaMetadata(entity);
 
     if (!schemaMetadata) return;
@@ -106,6 +110,7 @@ const traverseEntityMultipleLanguage = (
                 locale,
                 `${prefix}${property.propertyKey}`,
                 isArray,
+                relationLevel,
             );
         }
     });
