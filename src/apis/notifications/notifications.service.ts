@@ -10,7 +10,7 @@ import { Model, Types } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { pagination } from 'src/packages/super-search';
+import { pagination } from 'libs/super-search';
 import { UpdateStatusNotificationDto } from './dto/update-status-notifications.dto';
 import { UserNotificationStatus } from './constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';

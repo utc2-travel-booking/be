@@ -4,7 +4,7 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { UserNotificationStatus } from '../constants';
-import { AutoPopulate } from 'src/packages/super-search';
+import { AutoPopulate } from 'libs/super-search';
 import { FileDocument } from 'src/apis/media/entities/files.entity';
 import { UserDocument } from 'src/apis/users/entities/user.entity';
 

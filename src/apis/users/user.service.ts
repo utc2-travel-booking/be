@@ -15,7 +15,7 @@ import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
-import { SuperCacheService } from 'src/packages/super-cache/super-cache.service';
+import { SuperCacheService } from 'libs/super-cache/super-cache.service';
 import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
 import { MediaService } from '../media/medias.service';
 import { RoleType } from '../roles/constants';

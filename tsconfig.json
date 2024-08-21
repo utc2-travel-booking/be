@@ -20,5 +20,13 @@
       "esModuleInterop": true,
       "resolveJsonModule": true,
       "typeRoots": ["node_modules/yup"],
+      "paths": {
+        "@libs": [
+          "libs/src"
+        ],
+        "@libs/*": [
+          "libs/src/*"
+        ]
+      }
   }
 }

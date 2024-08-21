@@ -10,19 +10,19 @@ import {
     UpdateWithAggregationPipeline,
     HydratedDocument,
 } from 'mongoose';
-import { DynamicLookup } from 'src/packages/super-search';
+import { DynamicLookup } from 'libs/super-search';
 import _ from 'lodash';
 import {
     CreateWithMultipleLanguage,
     FindWithMultipleLanguage,
     UpdateWithMultipleLanguage,
-} from 'src/packages/super-multiple-language';
+} from 'libs/super-multiple-language';
 import { COLLECTION_NAMES } from 'src/constants';
-import { DeleteCache } from 'src/packages/super-cache';
+import { DeleteCache } from 'libs/super-cache';
 import { ModuleRef } from '@nestjs/core';
-import { CustomQueryFindAllService } from 'src/packages/super-core/services/custom-query-find-all.service';
-import { CustomQueryFindOneService } from 'src/packages/super-core/services/custom-query-find-one.service';
-import { CustomQueryCountDocumentsService } from 'src/packages/super-core/services/custom-query-count-documents.service';
+import { CustomQueryFindAllService } from 'libs/super-core/services/custom-query-find-all.service';
+import { CustomQueryFindOneService } from 'libs/super-core/services/custom-query-find-one.service';
+import { CustomQueryCountDocumentsService } from 'libs/super-core/services/custom-query-count-documents.service';
 
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 

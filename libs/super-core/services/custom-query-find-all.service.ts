@@ -2,8 +2,8 @@ import { ModuleRef } from '@nestjs/core';
 import { Model, PipelineStage, Document, Expression } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
-import { deleteAllLookup, sortPipelines } from '../../super-search';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
+import { deleteAllLookup, sortPipelines } from 'libs/super-search';
 
 export class CustomQueryFindAllService<T extends Document>
     implements ICustomQueryFindAll<T>

@@ -1,7 +1,7 @@
 import { updateDocumentMultipleLanguage } from '../common/update.utils';
 import { appSettings } from 'src/configs/appsettings';
 import _ from 'lodash';
-import { RequestContext } from 'src/packages/super-request-context';
+import { RequestContext } from 'libs/super-request-context';
 
 export function UpdateWithMultipleLanguage() {
     return function (

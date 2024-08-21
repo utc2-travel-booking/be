@@ -4,7 +4,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
 import _ from 'lodash';
-import { deleteAllLookup, sortPipelines } from 'src/packages/super-search';
+import { deleteAllLookup, sortPipelines } from 'libs/super-search';
 
 export class CustomQueryCountDocumentsService<T extends Document>
     implements ICustomQueryCountDocuments<T>

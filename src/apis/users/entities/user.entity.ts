@@ -4,7 +4,7 @@ import { Document, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { AutoPopulate } from 'src/packages/super-search';
+import { AutoPopulate } from 'libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';

@@ -4,7 +4,7 @@ import { generateKey } from '../common/genarate-key.utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SUPER_CACHE_EVENT_HANDLER } from '../constants';
 import _ from 'lodash';
-import { RequestContext } from 'src/packages/super-request-context';
+import { RequestContext } from 'libs/super-request-context';
 import { appSettings } from 'src/configs/appsettings';
 import { createRedisFolderCollection } from '../common/create-redis-folder-collection.utils';
 import { COLLECTION_NAMES } from 'src/constants';

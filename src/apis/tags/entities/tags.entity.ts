@@ -6,8 +6,8 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import {
     MultipleLanguage,
     MultipleLanguageType,
-} from 'src/packages/super-multiple-language';
-import { AutoPopulate } from 'src/packages/super-search';
+} from 'libs/super-multiple-language';
+import { AutoPopulate } from 'libs/super-search';
 import { File, FileDocument } from 'src/apis/media/entities/files.entity';
 
 @Schema({
