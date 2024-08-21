@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Document, FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import { pagination } from 'libs/super-search';
+import { pagination } from '@libs/super-search';
 import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
 import _ from 'lodash';

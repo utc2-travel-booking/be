@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
-import { AutoPopulate } from 'libs/super-search';
+import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
 @Schema({

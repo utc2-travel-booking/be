@@ -1,7 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { AutoPopulate } from 'libs/super-search';
+import { AutoPopulate } from '@libs/super-search';
 
 @Schema()
 export abstract class AggregateRoot {

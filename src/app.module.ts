@@ -8,7 +8,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SeedsModule } from './packages/seeds/seeds.module';
 import { appSettings } from './configs/appsettings';
 import { AuditsModule } from './packages/audits/audits.module';
-import { MultipleLanguageModule } from '../libs/super-multiple-language/multiple-language.module';
+import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-language.module';
 
 @Module({
     imports: [

@@ -5,7 +5,7 @@ import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { AutoPopulate } from 'libs/super-search';
+import { AutoPopulate } from '@libs/super-search';
 import {
     Permission,
     PermissionDocument,

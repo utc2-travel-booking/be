@@ -4,7 +4,7 @@ import { Role, RoleDocument } from './entities/roles.entity';
 import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import { SuperCacheService } from 'libs/super-cache/super-cache.service';
+import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import _ from 'lodash';
 import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';

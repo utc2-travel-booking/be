@@ -2,7 +2,7 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { Expression, FilterQuery, PipelineStage, SortOrder } from 'mongoose';
 import { PagingDto } from 'src/base/dto/paging.dto';
 import { SearchType } from 'src/constants/enums';
-import { createSearchPipeline } from 'libs/super-search/common/search.utils';
+import { createSearchPipeline } from '@libs/super-search/common/search.utils';
 import { configSelect } from 'src/utils/select.utils';
 
 export class ExtendedPagingDto extends PagingDto {

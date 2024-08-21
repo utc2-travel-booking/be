@@ -15,7 +15,7 @@ import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
 import { APP_EVENT_HANDLER } from '../apps/constants';
 import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import { pagination } from 'libs/super-search';
+import { pagination } from '@libs/super-search';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 
 @Injectable()

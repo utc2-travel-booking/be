@@ -3,7 +3,7 @@ import { MetadataService } from './metadata.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { MetadataSchema } from './entities/metadata.entity';
-import { SuperCacheModule } from 'libs/super-cache/super-cache.module';
+import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
 
 @Module({
     imports: [

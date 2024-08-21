@@ -14,7 +14,7 @@ import { UserAppHistoriesService } from '../user-app-histories/user-app-historie
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import _ from 'lodash';
-import { pagination } from 'libs/super-search';
+import { pagination } from '@libs/super-search';
 import { ModuleRef } from '@nestjs/core';
 import { UserService } from '../users/user.service';
 import { AddPointForUserDto } from './models/add-point-for-user.model';

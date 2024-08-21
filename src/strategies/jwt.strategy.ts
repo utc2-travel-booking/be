@@ -7,7 +7,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { Types } from 'mongoose';
 import _ from 'lodash';
 import { appSettings } from 'src/configs/appsettings';
-import { SuperCacheService } from 'libs/super-cache/super-cache.service';
+import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { UserCacheKey } from 'src/apis/users/constants';
 
 @Injectable()

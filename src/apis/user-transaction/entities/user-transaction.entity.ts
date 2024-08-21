@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserTransactionType } from '../constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
-import { AutoPopulate } from 'libs/super-search';
+import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 
 @Schema({

@@ -10,8 +10,8 @@ import { COLLECTION_NAMES } from 'src/constants';
 import {
     MultipleLanguage,
     MultipleLanguageType,
-} from 'libs/super-multiple-language';
-import { AutoPopulate } from 'libs/super-search';
+} from '@libs/super-multiple-language';
+import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
 @Schema({
