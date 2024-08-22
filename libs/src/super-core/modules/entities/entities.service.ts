@@ -2,12 +2,12 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { Model } from 'mongoose';
 import _ from 'lodash';
-import { REDIS_FOLDER_NAME } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { COLLECTION_NAMES } from 'src/constants';
 
 @Injectable()
 export class EntitiesService implements OnModuleInit {
+    private entities = new Array<any>();
     constructor(
         private readonly modulesContainer: ModulesContainer,
         private readonly superCacheService: SuperCacheService,
@@ -18,39 +18,11 @@ export class EntitiesService implements OnModuleInit {
     }
 
     async getOne(collectionName: string) {
-        const result = await this.superCacheService.get(
-            `${REDIS_FOLDER_NAME.ENTITY}:${collectionName}`,
-        );
-
-        if (!result) {
-            await this.getMongooseModels();
-            await this.getOne(collectionName);
-        }
-
-        for (const [key, value] of Object.entries(result)) {
-            if (value.ref) {
-                const ref = await this.superCacheService.get(
-                    `${REDIS_FOLDER_NAME.ENTITY}:${value.ref}`,
-                );
-                result[key].schema = ref;
-            }
-        }
-
-        return result;
+        return this.entities.find((entity) => entity.name === collectionName);
     }
 
     async getAll() {
-        const keys = await this.superCacheService.getAllKeyInFolder(
-            REDIS_FOLDER_NAME.ENTITY,
-        );
-
-        const result = [];
-        for (const key of keys) {
-            const schema = await this.superCacheService.get(key);
-            result.push({ name: key.split(':')[1], schema });
-        }
-
-        return result;
+        return this.entities;
     }
 
     private async getMongooseModels() {
@@ -114,10 +86,7 @@ export class EntitiesService implements OnModuleInit {
                 return acc;
             }, {});
 
-            await this.superCacheService.set(
-                `${REDIS_FOLDER_NAME.ENTITY}:${name}`,
-                schemaObject,
-            );
+            this.entities.push({ name, schema: schemaObject });
         }
     }
 }
