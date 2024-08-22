@@ -1,17 +1,18 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserTransactionType } from '../constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.USER_TRANSACTION,
 })
 export class UserTransaction extends AggregateRoot {
-    @Prop({
+    @ExtendedProp({
         type: String,
         cms: {
             label: 'Type',
@@ -21,7 +22,7 @@ export class UserTransaction extends AggregateRoot {
     })
     type: UserTransactionType;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: true,
         cms: {
@@ -32,7 +33,7 @@ export class UserTransaction extends AggregateRoot {
     })
     amount: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: true,
         cms: {
@@ -43,7 +44,7 @@ export class UserTransaction extends AggregateRoot {
     })
     before: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: true,
         cms: {
@@ -54,7 +55,7 @@ export class UserTransaction extends AggregateRoot {
     })
     after: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         refClass: App,
@@ -69,7 +70,7 @@ export class UserTransaction extends AggregateRoot {
     })
     app: AppDocument;
 
-    @Prop({
+    @ExtendedProp({
         type: String,
         cms: {
             label: 'Action',

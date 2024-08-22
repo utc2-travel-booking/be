@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -6,13 +6,14 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import { AutoPopulate } from '@libs/super-search';
 import { Tag, TagDocument } from 'src/apis/tags/entities/tags.entity';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.TAG_APP,
 })
 export class TagApp extends AggregateRoot {
-    @Prop({
+    @ExtendedProp({
         type: Number,
         default: 1,
         cms: {
@@ -24,7 +25,7 @@ export class TagApp extends AggregateRoot {
     })
     position: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.TAG,
         refClass: Tag,
@@ -39,7 +40,7 @@ export class TagApp extends AggregateRoot {
     })
     tag: TagDocument;
 
-    @Prop({
+    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         refClass: App,
