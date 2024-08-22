@@ -16,13 +16,13 @@ import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('advertisers')
 @ApiTags('Admin: Advertisers')
@@ -70,7 +70,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateAdvertiserDto })
     @Authorize(PERMISSIONS.ADVERTISER.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

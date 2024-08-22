@@ -4,7 +4,6 @@ import { TagAppsService } from '../tag-apps.service';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import _ from 'lodash';
@@ -20,6 +19,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateTagAppDto } from '../dto/create-tag-apps.dto';
 import { UpdateTagAppDto } from '../dto/update-tag-apps.dto';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('tag-apps')
 @ApiTags('Admin: Tag Apps')
@@ -61,7 +61,7 @@ export class TagAppsControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateTagAppDto })
     @Authorize(PERMISSIONS.TAG.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

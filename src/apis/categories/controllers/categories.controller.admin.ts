@@ -1,4 +1,5 @@
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import _ from 'lodash';
@@ -9,7 +10,6 @@ import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -71,7 +71,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateCategoryDto })
     @Authorize(PERMISSIONS.CATEGORIES.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

@@ -18,9 +18,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('telegram-bots')
 @ApiTags('Admin: Telegram Bot')
@@ -67,7 +67,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateTelegramBotDto })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

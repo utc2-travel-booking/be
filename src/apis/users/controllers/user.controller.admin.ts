@@ -20,9 +20,9 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -33,7 +33,7 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
-    @DefaultPut('ban')
+    @ExtendedPut({ route: 'ban', dto: CreateUserDto })
     @Authorize(PERMISSIONS.USER.edit)
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
@@ -46,7 +46,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultPut('un-ban')
+    @ExtendedPut({ route: 'un-ban', dto: CreateUserDto })
     @Authorize(PERMISSIONS.USER.edit)
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
@@ -67,7 +67,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultPut('me')
+    @ExtendedPut({ route: 'me', dto: UpdateMeDto })
     @Authorize(PERMISSIONS.USER.edit)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
@@ -109,7 +109,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateUserDto })
     @Authorize(PERMISSIONS.USER.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

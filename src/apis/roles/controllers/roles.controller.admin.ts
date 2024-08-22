@@ -19,9 +19,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -68,7 +68,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateRoleDto })
     @Authorize(PERMISSIONS.ROLE.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

@@ -1,14 +1,14 @@
-import { applyDecorators, Post } from '@nestjs/common';
-import { addDtoProperties } from '../modules/data-transfer-objects/common/add-dto-properties.utils';
+import { applyDecorators, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { appSettings } from 'src/configs/appsettings';
+import { addDtoProperties } from '../modules/data-transfer-objects/common/add-dto-properties.utils';
 
-export interface ExtendedPostOptions {
+export interface ExtendedPutOptions {
     route?: string;
     dto?: new () => any;
 }
 
-export const ExtendedPost = (option?: ExtendedPostOptions) => {
+export const ExtendedPut = (option?: ExtendedPutOptions) => {
     const { route, dto } = option;
 
     if (dto) {
@@ -25,6 +25,6 @@ export const ExtendedPost = (option?: ExtendedPostOptions) => {
             example: appSettings.mainLanguage,
         }),
         ApiBody({ type: dto }),
-        Post(route),
+        Put(route),
     );
 };

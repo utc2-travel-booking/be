@@ -14,10 +14,10 @@ import { UpdateStatusNotificationDto } from '../dto/update-status-notifications.
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('notifications')
 @ApiTags('Front: Notifications')
@@ -55,7 +55,7 @@ export class NotificationsController {
         return result;
     }
 
-    @DefaultPut('read')
+    @ExtendedPut({ route: 'read', dto: UpdateStatusNotificationDto })
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
@@ -71,7 +71,7 @@ export class NotificationsController {
         return result;
     }
 
-    @DefaultPut('read/all')
+    @ExtendedPut({ route: 'read/all' })
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
     async updateAllStatus(@Req() req: { user: UserPayload }) {
         const { user } = req;

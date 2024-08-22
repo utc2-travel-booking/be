@@ -17,20 +17,6 @@ export const DefaultGet = (route?: string) => {
     );
 };
 
-export const DefaultPut = (route?: string) => {
-    return applyDecorators(
-        ApiBearerAuth(),
-        ApiQuery({
-            name: 'locale',
-            type: String,
-            required: false,
-            description: 'Locale of the request',
-            example: appSettings.mainLanguage,
-        }),
-        Put(route),
-    );
-};
-
 export const DefaultDelete = (route?: string) => {
     return applyDecorators(
         ApiBearerAuth(),

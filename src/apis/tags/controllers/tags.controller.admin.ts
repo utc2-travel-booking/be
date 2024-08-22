@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { Types } from 'mongoose';
 import {
     DefaultGet,
-    DefaultPut,
     DefaultDelete,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -23,6 +22,7 @@ import { UpdateTagDto } from '../dto/update-tags.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('tags')
 @ApiTags('Admin: Tags')
@@ -66,7 +66,7 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateTagDto })
     @Authorize(PERMISSIONS.TAG.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

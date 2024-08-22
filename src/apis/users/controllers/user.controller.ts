@@ -7,8 +7,9 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
-import { DefaultGet, DefaultPut } from 'src/base/controllers/base.controller';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 import { MetadataType } from 'src/apis/metadata/constants';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -28,7 +29,7 @@ export class UserController {
         return result;
     }
 
-    @DefaultPut('me')
+    @ExtendedPut({ route: 'me', dto: UpdateMeDto })
     @Authorize(PERMISSIONS_FRONT.USER.edit)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,

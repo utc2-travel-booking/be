@@ -18,11 +18,11 @@ import { AppsService } from '../apps.service';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -68,7 +68,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateAppDto })
     @Authorize(PERMISSIONS.APP.edit)
     @ApiParam({ name: 'id', type: String })
     async update(

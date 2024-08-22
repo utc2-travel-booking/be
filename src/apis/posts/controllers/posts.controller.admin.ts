@@ -1,4 +1,5 @@
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
@@ -9,7 +10,6 @@ import { PostsService } from 'src/apis/posts/posts.service';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -92,15 +92,9 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':type/:id')
+    @ExtendedPut({ route: ':type/:id', dto: UpdatePostDto })
     @Authorize(PERMISSIONS.POST.edit)
     @ApiParam({ name: 'id', type: String })
-    @ApiParam({
-        name: 'locale',
-        required: false,
-        type: String,
-        description: 'The locale of the content',
-    })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updatePostDto: UpdatePostDto,
