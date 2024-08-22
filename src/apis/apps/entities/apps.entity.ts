@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import {
     Category,
@@ -13,33 +13,35 @@ import {
 } from '@libs/super-multiple-language';
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @Prop({ type: String, required: true })
+    @ExtendedProp({ type: String, required: true, cmsLabel: 'Name' })
     name: string;
 
-    @Prop({ type: String })
+    @ExtendedProp({ type: String, cmsLabel: 'Slug' })
     slug: string;
 
-    @Prop({ type: MultipleLanguageType })
+    @ExtendedProp({ type: MultipleLanguageType, cmsLabel: 'Short Description' })
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @Prop({ type: MultipleLanguageType })
+    @ExtendedProp({ type: MultipleLanguageType, cmsLabel: 'Description' })
     @MultipleLanguage()
     caption: MultipleLanguageType;
 
-    @Prop({ type: String, required: true })
+    @ExtendedProp({ type: String, required: true, cmsLabel: 'URL' })
     url: string;
 
-    @Prop({
+    @ExtendedProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
+        cmsLabel: 'Categories',
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
@@ -47,16 +49,22 @@ export class App extends AggregateRoot {
     })
     categories: CategoryDocument[];
 
-    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, refClass: File })
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        refClass: File,
+        cmsLabel: 'Featured Image',
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
     featuredImage: FileDocument;
 
-    @Prop({
+    @ExtendedProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
+        cmsLabel: 'Preview Images',
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
@@ -64,30 +72,33 @@ export class App extends AggregateRoot {
     })
     previewImages: FileDocument[];
 
-    @Prop({ type: Date, default: null })
+    @ExtendedProp({ type: Date, default: null, cmsLabel: 'Published Start' })
     publishedStart: Date;
 
-    @Prop({ type: Date, default: null })
+    @ExtendedProp({ type: Date, default: null, cmsLabel: 'Published End' })
     publishedEnd: Date;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: false,
         default: 0,
+        cmsLabel: 'Total Rating',
     })
     totalRating: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: false,
         default: 0,
+        cmsLabel: 'Total Rating Count',
     })
     totalRatingCount: number;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: false,
         default: 0,
+        cmsLabel: 'Average Rating',
     })
     avgRating: number;
 }
