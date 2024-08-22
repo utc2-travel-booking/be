@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';

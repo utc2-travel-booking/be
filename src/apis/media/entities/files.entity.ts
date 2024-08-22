@@ -1,5 +1,5 @@
 import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
