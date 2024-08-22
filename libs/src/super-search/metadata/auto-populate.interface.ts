@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import { AutoPopulateOptions } from '../decorators/auto-populate.decorator';
 
 export interface AutoPopulateMetadata {
-    target: Function;
+    target: object;
     propertyKey: string;
     autoPopulateOptions: AutoPopulateOptions;
 }

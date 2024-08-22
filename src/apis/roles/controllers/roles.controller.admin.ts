@@ -19,9 +19,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -50,7 +50,9 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateRoleDto,
+    })
     @Authorize(PERMISSIONS.ROLE.create)
     async create(
         @Body() createRoleDto: CreateRoleDto,

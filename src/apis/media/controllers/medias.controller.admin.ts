@@ -33,8 +33,8 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
 } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @ApiTags('Admin: Media')
 @Controller('media')
@@ -63,9 +63,8 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @ApiBody({ type: UploadMediaDto })
     @Authorize(PERMISSIONS.FILE.create)
     @UseInterceptors(
         FileInterceptor('file', {

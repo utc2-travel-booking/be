@@ -1,15 +1,14 @@
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostType } from 'src/apis/posts/constants';
 import { CreatePostDto } from 'src/apis/posts/dto/create-posts.dto';
 import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
-import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { PostsService } from 'src/apis/posts/posts.service';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -68,7 +67,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @DefaultPost(':type')
+    @ExtendedPost({ route: ':type', dto: CreatePostDto })
     @Authorize(PERMISSIONS.POST.create)
     @ApiParam({
         name: 'locale',

@@ -1,5 +1,5 @@
 import { Controller, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
 import { appSettings } from 'src/configs/appsettings';
@@ -10,7 +10,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UploadMediaDto } from '../dto/upload-media.dto';
 import { MediaService } from '../medias.service';
-import { DefaultPost } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @ApiTags('Front: Media')
 @Controller('media')
@@ -21,9 +21,8 @@ import { DefaultPost } from 'src/base/controllers/base.controller';
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 
-    @DefaultPost()
+    @ExtendedPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @ApiBody({ type: UploadMediaDto })
     @Authorize(PERMISSIONS_FRONT.FILE.create)
     @UseInterceptors(
         FileInterceptor('file', {

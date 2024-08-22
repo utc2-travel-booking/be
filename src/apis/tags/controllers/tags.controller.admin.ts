@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { Types } from 'mongoose';
 import {
     DefaultGet,
-    DefaultPost,
     DefaultPut,
     DefaultDelete,
 } from 'src/base/controllers/base.controller';
@@ -23,6 +22,7 @@ import { CreateTagDto } from '../dto/create-tags.dto';
 import { UpdateTagDto } from '../dto/update-tags.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('tags')
 @ApiTags('Admin: Tags')
@@ -51,7 +51,7 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({ dto: CreateTagDto })
     @Authorize(PERMISSIONS.TAG.create)
     async create(
         @Body() createTagDto: CreateTagDto,

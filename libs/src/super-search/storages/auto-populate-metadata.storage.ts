@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { AutoPopulateMetadata } from '../metadata/auto-populate.interface';
 
 export class AutoPopulateMetadataStorageHost {
@@ -8,7 +7,7 @@ export class AutoPopulateMetadataStorageHost {
         this.properties.unshift(metadata);
     }
 
-    getAutoPopulateMetadata(target: Function): AutoPopulateMetadata[] {
+    getAutoPopulateMetadata(target: object): AutoPopulateMetadata[] {
         let metas: AutoPopulateMetadata[] = [];
 
         metas = this.properties.filter((meta) => meta.target === target);

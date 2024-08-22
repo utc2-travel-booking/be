@@ -13,7 +13,8 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
+import { DefaultGet } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('review-ratings')
 @ApiTags('Front: Review Ratings')
@@ -48,7 +49,9 @@ export class ReviewRatingController {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateReviewRatingDto,
+    })
     @Authorize(PERMISSIONS_FRONT.REVIEW.create)
     async create(
         @Body() createReviewRatingDto: CreateReviewRatingDto,

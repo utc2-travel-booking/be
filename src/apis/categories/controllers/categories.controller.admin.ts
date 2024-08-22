@@ -1,3 +1,4 @@
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import _ from 'lodash';
@@ -8,7 +9,6 @@ import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -51,7 +51,9 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateCategoryDto,
+    })
     @Authorize(PERMISSIONS.CATEGORIES.create)
     async create(
         @Body() createCategoryDto: CreateCategoryDto,

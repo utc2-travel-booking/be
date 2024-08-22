@@ -1,7 +1,6 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-import { TelegramBot } from 'src/apis/telegram-bot/entities/telegram-bot.entity';
 import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -19,9 +18,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('telegram-bots')
 @ApiTags('Admin: Telegram Bot')
@@ -33,7 +32,6 @@ export class TelegramBotControllerAdmin {
     constructor(private readonly telegramBotService: TelegramBotService) {}
 
     @DefaultGet()
-    @ApiBearerAuth()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -44,7 +42,6 @@ export class TelegramBotControllerAdmin {
     }
 
     @DefaultGet(':id')
-    @ApiBearerAuth()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -52,8 +49,9 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
-    @ApiBearerAuth()
+    @ExtendedPost({
+        dto: CreateTelegramBotDto,
+    })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.create)
     async create(
         @Body() createTelegramBotDto: CreateTelegramBotDto,
@@ -70,7 +68,6 @@ export class TelegramBotControllerAdmin {
     }
 
     @DefaultPut(':id')
-    @ApiBearerAuth()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -90,7 +87,6 @@ export class TelegramBotControllerAdmin {
     }
 
     @DefaultDelete()
-    @ApiBearerAuth()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

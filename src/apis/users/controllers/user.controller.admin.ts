@@ -20,9 +20,9 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -95,7 +95,9 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateUserDto,
+    })
     @Authorize(PERMISSIONS.USER.create)
     async create(
         @Body() createRoleDto: CreateUserDto,

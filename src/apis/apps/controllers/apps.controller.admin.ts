@@ -18,11 +18,11 @@ import { AppsService } from '../apps.service';
 import {
     DefaultDelete,
     DefaultGet,
-    DefaultPost,
     DefaultPut,
 } from 'src/base/controllers/base.controller';
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -51,7 +51,9 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateAppDto,
+    })
     @Authorize(PERMISSIONS.APP.create)
     async create(
         @Body() createAppDto: CreateAppDto,

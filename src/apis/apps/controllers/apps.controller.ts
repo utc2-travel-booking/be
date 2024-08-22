@@ -12,9 +12,10 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
+import { DefaultGet } from 'src/base/controllers/base.controller';
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { MetadataType } from 'src/apis/metadata/constants';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -42,7 +43,7 @@ export class AppsController {
         return result;
     }
 
-    @DefaultPost('add-point/:id/:type')
+    @ExtendedPost({ route: 'add-point/:id/:type' })
     @Authorize(PERMISSIONS_FRONT.APP.index)
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(

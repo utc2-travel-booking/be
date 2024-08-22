@@ -1,5 +1,6 @@
+import { addDtoProperties } from '@libs/super-core/modules/data-transfer-objects/common/add-dto-properties.utils';
 import { Delete, Get, Post, Put, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { appSettings } from 'src/configs/appsettings';
 
 export const DefaultGet = (route?: string) => {
@@ -13,20 +14,6 @@ export const DefaultGet = (route?: string) => {
             example: appSettings.mainLanguage,
         }),
         Get(route),
-    );
-};
-
-export const DefaultPost = (route?: string) => {
-    return applyDecorators(
-        ApiBearerAuth(),
-        ApiQuery({
-            name: 'locale',
-            type: String,
-            required: false,
-            description: 'Locale of the request',
-            example: appSettings.mainLanguage,
-        }),
-        Post(route),
     );
 };
 
