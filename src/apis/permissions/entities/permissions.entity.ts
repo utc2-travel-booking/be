@@ -3,16 +3,17 @@ import _ from 'lodash';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { Document } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.PERMISSION,
 })
 export class Permission extends AggregateRoot {
-    @Prop({ type: String, required: true, unique: true })
+    @ExtendedProp({ type: String, required: true, unique: true })
     name: string;
 
-    @Prop({ type: String, required: true })
+    @ExtendedProp({ type: String, required: true })
     collectionName: string;
 }
 

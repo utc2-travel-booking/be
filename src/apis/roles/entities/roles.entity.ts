@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
@@ -11,23 +10,38 @@ import {
     PermissionDocument,
 } from 'src/apis/permissions/entities/permissions.entity';
 import { RoleType } from '../constants';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.ROLE,
 })
 export class Role extends AggregateRoot {
-    @Prop({ type: String, required: true })
+    @ExtendedProp({
+        type: String,
+        required: true,
+        cms: {
+            label: 'Name',
+            tableShow: true,
+            index: true,
+            columnPosition: 1,
+        },
+    })
     name: string;
 
-    @Prop({
+    @ExtendedProp({
         type: Number,
         required: true,
         unique: true,
+        cms: {
+            label: 'Type',
+            tableShow: true,
+            columnPosition: 2,
+        },
     })
     type: RoleType;
 
-    @Prop({
+    @ExtendedProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.PERMISSION,
         default: [],

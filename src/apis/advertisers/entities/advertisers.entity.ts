@@ -1,14 +1,19 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
 export class BannerImage {
-    @Prop({ type: String, required: true })
+    @ExtendedProp({ type: String, required: true })
     urlRedirect: string;
 
-    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.FILE, required: true })
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        required: true,
+    })
     featuredImage: Types.ObjectId;
 }
 
@@ -17,13 +22,29 @@ export class BannerImage {
     collection: COLLECTION_NAMES.ADVERTISER,
 })
 export class Advertiser extends AggregateRoot {
-    @Prop({ type: String, required: true })
+    @ExtendedProp({
+        type: String,
+        required: true,
+        cms: {
+            label: 'Name',
+            tableShow: true,
+            index: true,
+            columnPosition: 1,
+        },
+    })
     name: string;
 
-    @Prop({ type: String })
+    @ExtendedProp({
+        type: String,
+        cms: {
+            label: 'Slug',
+            tableShow: true,
+            columnPosition: 2,
+        },
+    })
     slug: string;
 
-    @Prop({
+    @ExtendedProp({
         type: [BannerImage],
     })
     bannerImages: BannerImage[];

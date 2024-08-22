@@ -1,3 +1,4 @@
+import { SuperCoreModule } from 'libs/src/super-core/super-core.module';
 import { RoutersModule } from './routers/routers.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -23,6 +24,7 @@ import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-l
         EventEmitterModule.forRoot(),
         ScheduleModule.forRoot(),
         RoutersModule.forRoot(),
+        SuperCoreModule,
         CommonModule,
         SeedsModule,
         MultipleLanguageModule,

@@ -111,6 +111,15 @@ export class SuperCacheService implements OnModuleInit {
         return data;
     }
 
+    async getAllKeyInFolder(folderName: string) {
+        try {
+            const keys = await this.cacheManager.store.keys(`${folderName}:*`);
+            return keys;
+        } catch (error) {
+            this.logger.error('error getAllKeyInFolder', error);
+        }
+    }
+
     async resetCache() {
         await this.cacheManager.reset();
     }

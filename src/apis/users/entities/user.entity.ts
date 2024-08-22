@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
+import { SchemaFactory, Schema } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Document, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -8,6 +8,7 @@ import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 export type UserDocument = User & Document;
 
@@ -16,70 +17,111 @@ export type UserDocument = User & Document;
     collection: COLLECTION_NAMES.USER,
 })
 export class User extends AggregateRoot {
-    @Prop({
+    @ExtendedProp({
         type: String,
         required: false,
         default: 'No Name',
+        cms: {
+            label: 'Name',
+            tableShow: true,
+            index: true,
+            columnPosition: 1,
+        },
     })
     name: string;
 
-    @Prop({
+    @ExtendedProp({
         type: String,
         required: false,
+        cms: {
+            label: 'Email',
+            tableShow: true,
+            columnPosition: 2,
+        },
     })
     email: string;
 
-    @Prop({
+    @ExtendedProp({
+        type: Number,
+        required: false,
+        cms: {
+            label: 'Telegram User ID',
+            tableShow: true,
+            columnPosition: 3,
+        },
+    })
+    telegramUserId: number;
+
+    @ExtendedProp({
         type: String,
         required: false,
+        cms: {
+            label: 'Telegram Username',
+            tableShow: true,
+            columnPosition: 4,
+        },
     })
-    password: string;
+    telegramUsername: string;
 
-    @Prop({
+    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
+        cms: {
+            label: 'Avatar',
+            tableShow: true,
+            columnPosition: 5,
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
     avatar: File;
 
-    @Prop({
+    @ExtendedProp({
+        type: Number,
+        default: 0,
+        cms: {
+            label: 'Current Point',
+            tableShow: true,
+            columnPosition: 6,
+        },
+    })
+    currentPoint: number;
+
+    @ExtendedProp({
         type: Types.ObjectId,
         required: true,
         ref: COLLECTION_NAMES.ROLE,
         refClass: Role,
+        cms: {
+            label: 'Role',
+            tableShow: true,
+            columnPosition: 7,
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
     })
     role: RoleDocument;
 
-    @Prop({
+    @ExtendedProp({
         type: String,
         enum: UserStatus,
         default: UserStatus.ACTIVE,
+        cms: {
+            label: 'Status',
+            tableShow: true,
+            columnPosition: 8,
+        },
     })
     status: UserStatus;
 
-    @Prop({
-        type: Number,
-        required: false,
-    })
-    telegramUserId: number;
-
-    @Prop({
+    @ExtendedProp({
         type: String,
         required: false,
     })
-    telegramUsername: string;
-
-    @Prop({
-        type: Number,
-        default: 0,
-    })
-    currentPoint: number;
+    password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

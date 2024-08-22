@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -7,35 +7,85 @@ import { UserNotificationStatus } from '../constants';
 import { AutoPopulate } from '@libs/super-search';
 import { FileDocument } from 'src/apis/media/entities/files.entity';
 import { UserDocument } from 'src/apis/users/entities/user.entity';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.NOTIFICATION,
 })
 export class Notification extends AggregateRoot {
-    @Prop({ type: String, required: true })
+    @ExtendedProp({
+        type: String,
+        required: true,
+        cms: {
+            label: 'Name',
+            tableShow: true,
+            columnPosition: 1,
+        },
+    })
     name: string;
 
-    @Prop({ type: String })
+    @ExtendedProp({
+        type: String,
+        cms: {
+            label: 'Short Description',
+            tableShow: true,
+            columnPosition: 2,
+        },
+    })
     shortDescription: string;
 
-    @Prop({ type: Types.ObjectId, ref: COLLECTION_NAMES.USER, required: true })
+    @ExtendedProp({
+        type: String,
+        enum: UserNotificationStatus,
+        default: UserNotificationStatus.UNREAD,
+        cms: {
+            label: 'Status',
+            tableShow: true,
+            columnPosition: 3,
+        },
+    })
+    status: UserNotificationStatus;
+
+    @ExtendedProp({
+        type: Types.ObjectId,
+        cms: {
+            label: 'Ref Id',
+            tableShow: true,
+            columnPosition: 4,
+        },
+    })
+    refId: Types.ObjectId;
+
+    @ExtendedProp({
+        type: String,
+        cms: {
+            label: 'Ref Source',
+            tableShow: true,
+            columnPosition: 5,
+        },
+    })
+    refSource: string;
+
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        required: true,
+        cms: {
+            label: 'User',
+            tableShow: true,
+            columnPosition: 6,
+        },
+    })
     @AutoPopulate({
         ref: COLLECTION_NAMES.USER,
     })
     user: UserDocument;
 
-    @Prop({
-        type: String,
-        enum: UserNotificationStatus,
-        default: UserNotificationStatus.UNREAD,
-    })
-    status: UserNotificationStatus;
-
-    @Prop({ type: String })
+    @ExtendedProp({ type: String })
     urlRedirect: string;
 
-    @Prop({
+    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
     })
@@ -44,11 +94,17 @@ export class Notification extends AggregateRoot {
     })
     featuredImage: FileDocument;
 
-    @Prop({ type: Types.ObjectId })
-    refId: Types.ObjectId;
-
-    @Prop({ type: String })
-    refSource: string;
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        cms: {
+            label: 'Created By',
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type NotificationDocument = Notification & Document;
