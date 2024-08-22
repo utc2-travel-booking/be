@@ -20,28 +20,85 @@ import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorato
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @ExtendedProp({ type: String, required: true, cmsLabel: 'Name' })
+    @ExtendedProp({
+        type: String,
+        required: true,
+        cms: {
+            label: 'Name',
+            tableShow: true,
+            index: true,
+            columnPosition: 1,
+        },
+    })
     name: string;
 
-    @ExtendedProp({ type: String, cmsLabel: 'Slug' })
+    @ExtendedProp({
+        type: String,
+        cms: {
+            label: 'Slug',
+            tableShow: true,
+            columnPosition: 2,
+        },
+    })
     slug: string;
 
-    @ExtendedProp({ type: MultipleLanguageType, cmsLabel: 'Short Description' })
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        refClass: File,
+        cms: {
+            label: 'Featured Image',
+            tableShow: true,
+            columnPosition: 3,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.FILE,
+    })
+    featuredImage: FileDocument;
+
+    @ExtendedProp({
+        type: String,
+        required: true,
+        cms: {
+            label: 'Url',
+            tableShow: true,
+            columnPosition: 4,
+        },
+    })
+    url: string;
+
+    @ExtendedProp({
+        type: MultipleLanguageType,
+        cms: {
+            label: 'Short Description',
+            tableShow: true,
+            columnPosition: 5,
+        },
+    })
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @ExtendedProp({ type: MultipleLanguageType, cmsLabel: 'Description' })
+    @ExtendedProp({
+        type: MultipleLanguageType,
+        cms: {
+            label: 'Description',
+            tableShow: true,
+            columnPosition: 6,
+        },
+    })
     @MultipleLanguage()
     caption: MultipleLanguageType;
-
-    @ExtendedProp({ type: String, required: true, cmsLabel: 'URL' })
-    url: string;
 
     @ExtendedProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
-        cmsLabel: 'Categories',
+        cms: {
+            label: 'Categories',
+            tableShow: true,
+            columnPosition: 7,
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
@@ -50,21 +107,12 @@ export class App extends AggregateRoot {
     categories: CategoryDocument[];
 
     @ExtendedProp({
-        type: Types.ObjectId,
-        ref: COLLECTION_NAMES.FILE,
-        refClass: File,
-        cmsLabel: 'Featured Image',
-    })
-    @AutoPopulate({
-        ref: COLLECTION_NAMES.FILE,
-    })
-    featuredImage: FileDocument;
-
-    @ExtendedProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
-        cmsLabel: 'Preview Images',
+        cms: {
+            label: 'Preview Images',
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
@@ -72,25 +120,31 @@ export class App extends AggregateRoot {
     })
     previewImages: FileDocument[];
 
-    @ExtendedProp({ type: Date, default: null, cmsLabel: 'Published Start' })
+    @ExtendedProp({
+        type: Date,
+        default: null,
+        cms: {
+            label: 'Published Start',
+        },
+    })
     publishedStart: Date;
 
-    @ExtendedProp({ type: Date, default: null, cmsLabel: 'Published End' })
+    @ExtendedProp({
+        type: Date,
+        default: null,
+        cms: { label: 'Published End' },
+    })
     publishedEnd: Date;
 
     @ExtendedProp({
         type: Number,
         required: false,
         default: 0,
-        cmsLabel: 'Total Rating',
-    })
-    totalRating: number;
-
-    @ExtendedProp({
-        type: Number,
-        required: false,
-        default: 0,
-        cmsLabel: 'Total Rating Count',
+        cms: {
+            label: 'Total Rating Count',
+            tableShow: true,
+            columnPosition: 8,
+        },
     })
     totalRatingCount: number;
 
@@ -98,9 +152,25 @@ export class App extends AggregateRoot {
         type: Number,
         required: false,
         default: 0,
-        cmsLabel: 'Average Rating',
+        cms: {
+            label: 'Average Rating',
+            tableShow: true,
+            columnPosition: 9,
+        },
     })
     avgRating: number;
+
+    @ExtendedProp({
+        type: Number,
+        required: false,
+        default: 0,
+        cms: {
+            label: 'Total Rating',
+            tableShow: true,
+            columnPosition: 10,
+        },
+    })
+    totalRating: number;
 }
 
 export type AppDocument = App & Document;

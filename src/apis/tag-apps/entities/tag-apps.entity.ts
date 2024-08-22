@@ -13,9 +13,26 @@ import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 })
 export class TagApp extends AggregateRoot {
     @Prop({
+        type: Number,
+        default: 1,
+        cms: {
+            label: 'Position',
+            tableShow: true,
+            index: true,
+            columnPosition: 1,
+        },
+    })
+    position: number;
+
+    @Prop({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.TAG,
         refClass: Tag,
+        cms: {
+            label: 'Tag',
+            tableShow: true,
+            columnPosition: 2,
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.TAG,
@@ -26,14 +43,16 @@ export class TagApp extends AggregateRoot {
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         refClass: App,
+        cms: {
+            label: 'App',
+            tableShow: true,
+            columnPosition: 3,
+        },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })
     app: AppDocument;
-
-    @Prop({ type: Number, default: 1 })
-    position: number;
 }
 
 export type TagAppDocument = TagApp & Document;
