@@ -1,7 +1,7 @@
 import { Controller, Query } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiTags } from '@nestjs/swagger';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('notifications')
 @ApiTags('Admin: Notifications')
@@ -20,7 +21,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 export class NotificationsControllerAdmin {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.NOTIFICATION.index)
     async getAll(
         @Query(new PagingDtoPipe())

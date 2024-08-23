@@ -15,14 +15,13 @@ import { UpdateAppDto } from 'src/apis/apps/dto/update-app.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import {
-    DefaultDelete,
-    DefaultGet,
-    DefaultPost,
-    DefaultPut,
-} from 'src/base/controllers/base.controller';
+
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('apps')
 @ApiTags('Admin: Apps')
@@ -33,7 +32,7 @@ import { removeDiacritics } from 'src/utils/helper';
 export class AppsControllerAdmin {
     constructor(private readonly appsService: AppsService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.APP.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -43,7 +42,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.APP.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -51,7 +50,9 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateAppDto,
+    })
     @Authorize(PERMISSIONS.APP.create)
     async create(
         @Body() createAppDto: CreateAppDto,
@@ -66,7 +67,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateAppDto })
     @Authorize(PERMISSIONS.APP.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -85,7 +86,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.APP.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

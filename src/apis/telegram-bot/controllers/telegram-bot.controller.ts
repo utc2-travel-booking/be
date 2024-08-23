@@ -1,7 +1,6 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-import { TelegramBot } from 'src/apis/telegram-bot/entities/telegram-bot.entity';
 import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -16,12 +15,11 @@ import { CreateTelegramBotDto } from '../dto/create-telegram-bot.dto';
 import { UpdateTelegramBotDto } from '../dto/update-telegram-bot.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-    DefaultPost,
-    DefaultPut,
-} from 'src/base/controllers/base.controller';
+
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('telegram-bots')
 @ApiTags('Admin: Telegram Bot')
@@ -32,8 +30,7 @@ import {
 export class TelegramBotControllerAdmin {
     constructor(private readonly telegramBotService: TelegramBotService) {}
 
-    @DefaultGet()
-    @ApiBearerAuth()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -43,8 +40,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
-    @ApiBearerAuth()
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -52,8 +48,9 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
-    @ApiBearerAuth()
+    @ExtendedPost({
+        dto: CreateTelegramBotDto,
+    })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.create)
     async create(
         @Body() createTelegramBotDto: CreateTelegramBotDto,
@@ -69,8 +66,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
-    @ApiBearerAuth()
+    @ExtendedPut({ route: ':id', dto: UpdateTelegramBotDto })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -89,8 +85,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
-    @ApiBearerAuth()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

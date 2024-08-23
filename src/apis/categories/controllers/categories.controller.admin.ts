@@ -1,3 +1,7 @@
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import _ from 'lodash';
@@ -5,12 +9,7 @@ import { Types } from 'mongoose';
 import { CategoriesService } from 'src/apis/categories/categories.service';
 import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto';
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
-import {
-    DefaultDelete,
-    DefaultGet,
-    DefaultPost,
-    DefaultPut,
-} from 'src/base/controllers/base.controller';
+
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -33,7 +32,7 @@ import { removeDiacritics } from 'src/utils/helper';
 export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.CATEGORIES.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -41,7 +40,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.CATEGORIES.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -51,7 +50,9 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateCategoryDto,
+    })
     @Authorize(PERMISSIONS.CATEGORIES.create)
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
@@ -69,7 +70,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultPut(':id')
+    @ExtendedPut({ route: ':id', dto: UpdateCategoryDto })
     @Authorize(PERMISSIONS.CATEGORIES.edit)
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -87,7 +88,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.CATEGORIES.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

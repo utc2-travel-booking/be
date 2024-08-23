@@ -30,11 +30,10 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-    DefaultPost,
-} from 'src/base/controllers/base.controller';
+
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @ApiTags('Admin: Media')
 @Controller('media')
@@ -45,7 +44,7 @@ import {
 export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
-    @DefaultGet('')
+    @ExtendedGet()
     @Authorize(PERMISSIONS.FILE.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -55,7 +54,7 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.FILE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -63,9 +62,8 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @ApiBody({ type: UploadMediaDto })
     @Authorize(PERMISSIONS.FILE.create)
     @UseInterceptors(
         FileInterceptor('file', {
@@ -83,7 +81,7 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.FILE.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

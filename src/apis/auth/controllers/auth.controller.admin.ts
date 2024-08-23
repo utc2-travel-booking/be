@@ -7,7 +7,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
-import { DefaultPost } from 'src/base/controllers/base.controller';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller()
 @ApiTags('Admin: Auth')
@@ -23,12 +23,8 @@ import { DefaultPost } from 'src/base/controllers/base.controller';
 export class AuthControllerAdmin {
     constructor(private readonly authService: AuthService) {}
 
-    @DefaultPost('login')
+    @ExtendedPost({ route: 'login', dto: UserLoginDto })
     @UseGuards(LocalAuthGuard)
-    @ApiBody({
-        description: 'User credentials',
-        type: UserLoginDto,
-    })
     async login(@Req() req: { user: UserPayload }) {
         const { user } = req;
 

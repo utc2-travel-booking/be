@@ -13,7 +13,9 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
+
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('review-ratings')
 @ApiTags('Front: Review Ratings')
@@ -24,7 +26,7 @@ import { DefaultGet, DefaultPost } from 'src/base/controllers/base.controller';
 export class ReviewRatingController {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
-    @DefaultGet('overview/:appId')
+    @ExtendedGet({ route: 'overview/:appId' })
     @ApiParam({ name: 'appId', type: String })
     async reviewRatingOverviewForApp(
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
@@ -32,7 +34,7 @@ export class ReviewRatingController {
         return await this.reviewRatingService.reviewRatingOverviewForApp(appId);
     }
 
-    @DefaultGet(':appId')
+    @ExtendedGet({ route: ':appId' })
     @ApiParam({ name: 'appId', type: String })
     async getAll(
         @Query(new PagingDtoPipe())
@@ -48,7 +50,9 @@ export class ReviewRatingController {
         return result;
     }
 
-    @DefaultPost()
+    @ExtendedPost({
+        dto: CreateReviewRatingDto,
+    })
     @Authorize(PERMISSIONS_FRONT.REVIEW.create)
     async create(
         @Body() createReviewRatingDto: CreateReviewRatingDto,
