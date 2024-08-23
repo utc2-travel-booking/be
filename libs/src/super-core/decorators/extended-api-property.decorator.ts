@@ -7,6 +7,6 @@ export interface ExtendedApiPropertyOptions extends ApiPropertyOptions {
     };
 }
 
-export const ExtendedApiDecorator = (options?: ExtendedApiPropertyOptions) => {
+export const ExtendedApiProperty = (options?: ExtendedApiPropertyOptions) => {
     return applyDecorators(ApiProperty(options));
 };

@@ -1,4 +1,5 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
     IsNotEmpty,
@@ -14,20 +15,26 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateCategoryDto extends PartialType(ExcludeDto) {
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Name of the category',
         default: 'Category',
+        title: 'Name Of Category',
+        required: true,
     })
     @MaxLength(50)
     @IsString()
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Parent of the category',
         default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Parent Of Category',
+        cms: {
+            ref: COLLECTION_NAMES.CATEGORIES,
+        },
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value))
@@ -37,10 +44,14 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     })
     parent: Types.ObjectId;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Featured image id of the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Featured Image Of Category',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value))
@@ -50,11 +61,13 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: Number,
         description: 'Position of the tag in the app',
         default: 0,
+        title: 'Position Of Category',
     })
     @IsNumber()
+    @IsOptional()
     position: number;
 }

@@ -21,7 +21,8 @@ export const addDtoProperties = (dto: new () => any) => {
         );
 
         form[propertyKey] = {
-            type: _.get(propertyData, 'type.name', 'String'),
+            title: _.get(propertyData, 'title', propertyKey),
+            type: _.lowerCase(_.get(propertyData, 'type.name', 'String')),
             isArray: _.get(propertyData, 'isArray', false),
             ref: _.get(propertyData, 'cms.ref', null),
             required: _.get(propertyData, 'required', false),

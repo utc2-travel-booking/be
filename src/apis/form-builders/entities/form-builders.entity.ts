@@ -75,6 +75,7 @@ export class FormBuilder extends AggregateRoot {
             tableShow: true,
             columnPosition: 6,
         },
+        default: new Date(),
     })
     createdAt: Date;
 

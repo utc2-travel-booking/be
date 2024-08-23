@@ -1,4 +1,4 @@
-import { ExtendedApiDecorator } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -16,7 +16,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateAppDto extends PartialType(ExcludeDto) {
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: String,
         required: true,
     })
@@ -25,7 +25,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsString()
     name: string;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: String,
         default: 'https://example.com',
         required: true,
@@ -35,7 +35,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @MaxLength(100)
     url: string;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: String,
         default: 'https://example.com',
         required: true,
@@ -45,7 +45,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @MaxLength(500)
     caption: string;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: [String],
         description: 'Categories of the app',
         default: [],
@@ -63,7 +63,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsArray()
     categories: Types.ObjectId[];
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: String,
         description: 'Featured image id of the app',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -79,7 +79,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: [String],
         description: 'Preview images id of the app',
         default: ['60f3b3b3b3b3b3b3b3b3b3'],
@@ -96,14 +96,14 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     })
     previewImages: Types.ObjectId[];
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: String,
     })
     @MaxLength(1000)
     @IsString()
     shortDescription: string;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: Date,
         description: 'Published date of the app',
         default: new Date(),
@@ -113,7 +113,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedStart: Date;
 
-    @ExtendedApiDecorator({
+    @ExtendedApiProperty({
         type: Date,
         default: new Date(),
         description: 'Published end date of the app',
