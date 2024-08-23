@@ -56,7 +56,7 @@ export class ReviewRating extends AggregateRoot {
             tableShow: true,
             columnPosition: 4,
         },
-        default: new Date(),
+        default: () => new Date().toISOString(),
     })
     createdAt: Date;
 }
