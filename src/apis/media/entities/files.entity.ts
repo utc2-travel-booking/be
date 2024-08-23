@@ -18,6 +18,7 @@ export class File extends AggregateRoot {
             tableShow: true,
             columnPosition: 1,
         },
+        default: () => new Types.ObjectId(),
     })
     _id: Types.ObjectId;
 
