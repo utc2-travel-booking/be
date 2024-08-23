@@ -12,18 +12,6 @@ import { MediaController } from 'src/apis/media/controllers/medias.controller';
 import { MetadataController } from 'src/apis/metadata/controllers/metadata.controller';
 import { PostsController } from 'src/apis/posts/controllers/posts.controller';
 import { UserController } from 'src/apis/users/controllers/user.controller';
-import { AppsController } from 'src/apis/apps/controllers/apps.controller';
-import { AppsModule } from 'src/apis/apps/apps.module';
-import { ReviewRatingController } from 'src/apis/review-ratings/controllers/review-ratings.controller';
-import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
-import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
-import { AdvertisersController } from 'src/apis/advertisers/controllers/advertisers.controller';
-import { TagsModule } from 'src/apis/tags/tags.module';
-import { TagsController } from 'src/apis/tags/controllers/tags.controller';
-import { NotificationsController } from 'src/apis/notifications/controllers/notifications.controller';
-import { NotificationsModule } from 'src/apis/notifications/notifications.module';
-import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
-import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
 
 @Module({
     imports: [
@@ -34,12 +22,6 @@ import { FormBuilderController } from 'src/apis/form-builders/controllers/form-b
         CategoriesModule,
         PostsModule,
         MetadataModule,
-        AppsModule,
-        ReviewRatingModule,
-        AdvertisersModule,
-        TagsModule,
-        NotificationsModule,
-        FormBuilderModule,
     ],
     controllers: [
         UserController,
@@ -48,12 +30,6 @@ import { FormBuilderController } from 'src/apis/form-builders/controllers/form-b
         CategoriesController,
         PostsController,
         MetadataController,
-        AppsController,
-        ReviewRatingController,
-        AdvertisersController,
-        TagsController,
-        NotificationsController,
-        FormBuilderController,
     ],
     providers: [],
 })

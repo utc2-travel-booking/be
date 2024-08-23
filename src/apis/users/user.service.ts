@@ -21,17 +21,10 @@ import { MediaService } from '../media/medias.service';
 import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { UserTransactionType } from '../user-transaction/constants';
-import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
-import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
 import { MetadataService } from '../metadata/metadata.service';
-import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateNotificationModel } from '../notifications/models/create-notification.model';
-import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
 
 @Injectable()
 export class UserService
@@ -45,9 +38,7 @@ export class UserService
         private readonly superCacheService: SuperCacheService,
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
-        private readonly userTransactionService: UserTransactionService,
         private readonly metadataService: MetadataService,
-        private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
@@ -72,184 +63,6 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
-    }
-
-    async getHistoryReward(user: UserPayload, action: MetadataType) {
-        const result = {
-            today: 0,
-            yesterday: 0,
-            lastOneMonth: 0,
-        };
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        yesterday.setHours(0, 0, 0, 0);
-
-        const lastOneMonth = new Date();
-        lastOneMonth.setMonth(lastOneMonth.getMonth() - 1);
-        lastOneMonth.setHours(0, 0, 0, 0);
-
-        const userTransactionToday = await this.userTransactionService
-            .find({
-                'createdBy._id': user._id,
-                createdAt: { $gte: today },
-                action,
-            })
-            .exec();
-
-        const userTransactionYesterday = await this.userTransactionService
-            .find({
-                'createdBy._id': user._id,
-                createdAt: { $gte: yesterday, $lt: today },
-                action,
-            })
-            .exec();
-
-        const userTransactionLastOneMonth = await this.userTransactionService
-            .find({
-                'createdBy._id': user._id,
-                createdAt: { $gte: lastOneMonth },
-                action,
-            })
-            .exec();
-
-        result.today = userTransactionToday.reduce(
-            (acc, cur) => acc + cur.amount,
-            0,
-        );
-
-        result.yesterday = userTransactionYesterday.reduce(
-            (acc, cur) => acc + cur.amount,
-            0,
-        );
-
-        result.lastOneMonth = userTransactionLastOneMonth.reduce(
-            (acc, cur) => acc + cur.amount,
-            0,
-        );
-
-        return result;
-    }
-
-    async addPointForUser(
-        addPointForUserDto: AddPointForUserDto,
-        appDocument: AppDocument,
-        userPayload: UserPayload,
-        actionTransaction: string,
-    ) {
-        const { _id: userId } = userPayload;
-        const { point, type, action, app, name, limit } = addPointForUserDto;
-        const { name: appName } = appDocument;
-
-        const userTransactionThisApp = await this.userTransactionService
-            .findOne({
-                createdBy: new Types.ObjectId(userId),
-                app: new Types.ObjectId(app),
-                action: actionTransaction,
-            })
-            .autoPopulate(false)
-            .exec();
-
-        if (userTransactionThisApp) {
-            return await this.getMe(userPayload);
-        }
-
-        const countReceivedReward =
-            await this.userTransactionService.checkLimitReceivedReward(
-                userId,
-                action,
-            );
-
-        if (countReceivedReward >= limit) {
-            throw new BadRequestException(
-                'limit_received_reward',
-                'You have reached the limit of receiving rewards',
-            );
-        }
-
-        const user = await this.findOne({ _id: userId }).exec();
-
-        const { currentPoint = 0, _id } = user;
-
-        const after =
-            type === UserTransactionType.SUM
-                ? parseFloat(currentPoint.toString()) + point
-                : parseFloat(currentPoint.toString()) - point;
-
-        const userTransaction = await this.userTransactionService.create({
-            createdBy: _id,
-            type,
-            amount: point,
-            before: currentPoint,
-            after,
-            app: new Types.ObjectId(app.toString()),
-            action: actionTransaction,
-        });
-
-        if (userTransaction) {
-            await this.updateOne(
-                { _id },
-                {
-                    currentPoint: after,
-                },
-            );
-
-            this.websocketGateway.sendPointsUpdate(userId, after);
-
-            this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
-                name: `+${point}`,
-                userId: new Types.ObjectId(userId),
-                refId: new Types.ObjectId(app),
-                shortDescription: `You ${name} ${appName}`,
-                refSource: COLLECTION_NAMES.APP,
-            } as CreateNotificationModel);
-
-            await this.checkLimitReceivedRewardForDay(userId);
-        }
-
-        return await this.getMe(userPayload);
-    }
-
-    async createUserTelegram(
-        userLoginTelegramDto: Partial<UserLoginTelegramDto>,
-    ) {
-        const {
-            id,
-            first_name: firstName = '',
-            last_name: lastName = '',
-            photo_url: photoUrl,
-            username,
-        } = userLoginTelegramDto;
-
-        const user = await this.findOne({ telegramUserId: id }).exec();
-
-        if (user) {
-            return user;
-        }
-
-        let avatar = null;
-        if (photoUrl) {
-            avatar = await this.mediaService.create({
-                name: `avatar-${id}`,
-                filePath: photoUrl,
-                filename: `avatar-${id}`,
-            });
-        }
-
-        const role = await this.roleService.getRoleByType(RoleType.USER);
-
-        const newUser = await this.create({
-            name: `${firstName} ${lastName}`,
-            telegramUserId: id,
-            telegramUsername: username,
-            avatar: _.get(avatar, '_id', null),
-            role: role._id,
-        });
-
-        return newUser;
     }
 
     async createOne(
@@ -353,33 +166,6 @@ export class UserService
             .exec();
     }
 
-    async getMeForFront(user: UserPayload) {
-        const { _id } = user;
-        const result = await this.findOne({
-            _id: _id,
-        })
-            .select({ password: 0 })
-            .exec();
-
-        const amountRewardUserForApp =
-            await this.metadataService.getAmountRewardUserForApp(
-                MetadataType.AMOUNT_REWARD_USER_GLOBAL,
-            );
-
-        const countReceivedReward =
-            await this.userTransactionService.checkLimitReceivedReward(_id, [
-                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
-                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
-            ]);
-
-        return {
-            ...result,
-            countReceivedReward,
-            limitReceivedReward: amountRewardUserForApp.value.limit,
-        };
-    }
-
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
         const { _id: userId } = user;
         const data = await this.find({ _id: { $in: _ids } }).exec();
@@ -413,37 +199,6 @@ export class UserService
         await this.removeCacheBannedUser(_ids);
 
         return _ids;
-    }
-
-    private async checkLimitReceivedRewardForDay(userId: Types.ObjectId) {
-        const amountRewardUserForApp =
-            await this.metadataService.getAmountRewardUserForApp(
-                MetadataType.AMOUNT_REWARD_USER_GLOBAL,
-            );
-
-        const countReceivedReward =
-            await this.userTransactionService.checkLimitReceivedReward(userId, [
-                MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
-                MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
-            ]);
-
-        const { limit, reward } = amountRewardUserForApp.value;
-
-        if (countReceivedReward >= limit) {
-            this.websocketGateway.sendLimitAddPointForUser(userId, {
-                overLimitReceivedRewardForDay: true,
-                limitReward: limit * reward,
-            });
-
-            this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
-                name: `You've earned`,
-                userId: new Types.ObjectId(userId),
-                refId: new Types.ObjectId(amountRewardUserForApp['_id']),
-                shortDescription: `You ${limit * reward} today - max reached!`,
-                refSource: COLLECTION_NAMES.APP,
-            } as CreateNotificationModel);
-        }
     }
 
     private async hashPassword(password: string) {

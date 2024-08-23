@@ -42,28 +42,6 @@ export class User extends AggregateRoot {
     email: string;
 
     @ExtendedProp({
-        type: Number,
-        required: false,
-        cms: {
-            label: 'Telegram User ID',
-            tableShow: true,
-            columnPosition: 3,
-        },
-    })
-    telegramUserId: number;
-
-    @ExtendedProp({
-        type: String,
-        required: false,
-        cms: {
-            label: 'Telegram Username',
-            tableShow: true,
-            columnPosition: 4,
-        },
-    })
-    telegramUsername: string;
-
-    @ExtendedProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -77,17 +55,6 @@ export class User extends AggregateRoot {
         ref: COLLECTION_NAMES.FILE,
     })
     avatar: File;
-
-    @ExtendedProp({
-        type: Number,
-        default: 0,
-        cms: {
-            label: 'Current Point',
-            tableShow: true,
-            columnPosition: 6,
-        },
-    })
-    currentPoint: number;
 
     @ExtendedProp({
         type: Types.ObjectId,

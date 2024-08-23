@@ -34,13 +34,4 @@ export const appSettings = {
         username: process.env.REDIS_USERNAME,
         password: process.env.REDIS_PASSWORD,
     },
-    provider: {
-        telegram: {
-            contractChannelId: process.env.TELEGRAM_CONTACT_CHANNEL_ID,
-            contractBotToken: process.env.TELEGRAM_CONTACT_BOT_TOKEN,
-        },
-    },
-    webSocket: {
-        port: Number(process.env.WEBSOCKET_PORT),
-    },
 };

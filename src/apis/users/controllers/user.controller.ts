@@ -7,8 +7,6 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
-
-import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
@@ -26,7 +24,7 @@ export class UserController {
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
-        const result = await this.userService.getMeForFront(user);
+        const result = await this.userService.getMe(user);
         return result;
     }
 
@@ -38,15 +36,5 @@ export class UserController {
     ) {
         const { user } = req;
         return this.userService.updateMe(user, updateMeDto);
-    }
-
-    @ExtendedGet({ route: 'history-reward/:type' })
-    @Authorize(PERMISSIONS_FRONT.USER.index)
-    async getHistoryReward(
-        @Param('type') type: MetadataType,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
-        return this.userService.getHistoryReward(user, type);
     }
 }

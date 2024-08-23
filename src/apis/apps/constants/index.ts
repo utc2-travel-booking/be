@@ -1,3 +1,0 @@
-export enum APP_EVENT_HANDLER {
-    ADD_RATING_FOR_USER = 'ADD_RATING_FOR_USER',
-}
