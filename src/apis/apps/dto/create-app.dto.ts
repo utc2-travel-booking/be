@@ -19,6 +19,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @ExtendedApiProperty({
         type: String,
         required: true,
+        title: 'Name Of App',
     })
     @IsNotEmpty()
     @MaxLength(50)
@@ -29,6 +30,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: String,
         default: 'https://example.com',
         required: true,
+        title: 'Url Of App',
     })
     @IsNotEmpty()
     @IsString()
@@ -37,8 +39,9 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
 
     @ExtendedApiProperty({
         type: String,
-        default: 'https://example.com',
+        default: 'Caption',
         required: true,
+        title: 'Caption Of App',
     })
     @IsNotEmpty()
     @IsString()
@@ -48,7 +51,8 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @ExtendedApiProperty({
         type: [String],
         description: 'Categories of the app',
-        default: [],
+        default: ['60f3b3b3b3b3b3b3b3b3b3'],
+        title: 'Categories Of App',
         cms: {
             ref: COLLECTION_NAMES.CATEGORIES,
         },
@@ -67,6 +71,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: String,
         description: 'Featured image id of the app',
         default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Featured Image Of App',
         cms: {
             ref: COLLECTION_NAMES.FILE,
         },
@@ -83,6 +88,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: [String],
         description: 'Preview images id of the app',
         default: ['60f3b3b3b3b3b3b3b3b3b3'],
+        title: 'Preview Images Of App',
         cms: {
             ref: COLLECTION_NAMES.FILE,
         },
@@ -98,6 +104,12 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
 
     @ExtendedApiProperty({
         type: String,
+        description: 'Short description of the app',
+        default: 'Short description',
+        title: 'Short Description Of App',
+        cms: {
+            widget: 'textarea',
+        },
     })
     @MaxLength(1000)
     @IsString()
@@ -107,6 +119,10 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: Date,
         description: 'Published date of the app',
         default: new Date(),
+        title: 'Published Date Of App',
+        cms: {
+            isShow: false,
+        },
     })
     @IsOptional()
     @IsDate()
@@ -117,6 +133,10 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: Date,
         default: new Date(),
         description: 'Published end date of the app',
+        title: 'Published End Date Of App',
+        cms: {
+            isShow: false,
+        },
     })
     @IsOptional()
     @IsDate()

@@ -5,6 +5,9 @@ export interface DTOMetadataForm {
         isArray: boolean;
         ref: string | null;
         required: boolean;
+        isShow: boolean;
+        widget: 'textarea' | null;
+        form: DTOMetadata;
     };
 }
 

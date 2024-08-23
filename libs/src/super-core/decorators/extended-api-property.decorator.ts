@@ -4,6 +4,8 @@ import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 export interface ExtendedApiPropertyOptions extends ApiPropertyOptions {
     cms?: {
         ref?: string;
+        isShow?: boolean;
+        widget?: 'textarea' | 'password';
     };
 }
 

@@ -1,7 +1,11 @@
 import { DECORATORS } from '@nestjs/swagger/dist/constants';
 import { DTOMetadataStorage } from '../storages/data-transfer-objects.storage';
-import { DTOMetadataForm } from '../metadata/data-transfer-objects.interface';
+import {
+    DTOMetadata,
+    DTOMetadataForm,
+} from '../metadata/data-transfer-objects.interface';
 import _ from 'lodash';
+import { isClass } from '@libs/super-core/common/isClass.utils';
 
 export const addDtoProperties = (dto: new () => any) => {
     const properties =
@@ -26,11 +30,24 @@ export const addDtoProperties = (dto: new () => any) => {
             isArray: _.get(propertyData, 'isArray', false),
             ref: _.get(propertyData, 'cms.ref', null),
             required: _.get(propertyData, 'required', false),
+            form: null,
+            isShow: _.get(propertyData, 'cms.isShow', true),
+            widget: _.get(propertyData, 'cms.widget', null),
         };
+
+        const type = _.get(propertyData, 'type');
+        if (isClass(type)) {
+            form[propertyKey].form = addDtoProperties(type);
+            form[propertyKey].type = 'object';
+        }
     }
 
-    DTOMetadataStorage.addDTOMetadata({
+    const dtoMetadata: DTOMetadata = {
         name: dto.name,
         form,
-    });
+    };
+
+    DTOMetadataStorage.addDTOMetadata(dtoMetadata);
+
+    return dtoMetadata;
 };

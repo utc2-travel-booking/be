@@ -1,10 +1,9 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
     IsNotEmpty,
     IsOptional,
     IsString,
-    IsUrl,
     MaxLength,
     ValidateNested,
 } from 'class-validator';
@@ -14,20 +13,25 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 import { BannerImage } from '../entities/advertisers.entity';
-import { File } from 'src/apis/media/entities/files.entity';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 
 export class BannerImageDto extends BannerImage {
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Url redirect of the post',
         default: 'https://www.google.com',
+        title: 'Url Redirect Of Banner Image',
     })
     urlRedirect: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'File id of the post',
         default: '66ac363aca5ae70c449940f0',
+        title: 'File Of Banner Image',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value))
@@ -39,17 +43,18 @@ export class BannerImageDto extends BannerImage {
 }
 
 export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Name of the advertiser',
         default: 'Advertiser',
+        title: 'Name Of Advertiser',
     })
     @MaxLength(255)
     @IsString()
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: [BannerImageDto],
         description: 'bannerImages image of the post',
         default: [
@@ -58,6 +63,7 @@ export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
                 file: '66ac363aca5ae70c449940f0',
             },
         ],
+        title: 'Banner Images Of Advertiser',
     })
     @IsOptional()
     @ValidateNested({ each: true })
