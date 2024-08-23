@@ -8,6 +8,7 @@ services:
       - tongram-be-production-redis
     ports:
       - "3000:${PORT}"
+      - "${WEBSOCKET_PORT}:${WEBSOCKET_PORT}"
     volumes:
       - .env:/app/.env
     networks:
