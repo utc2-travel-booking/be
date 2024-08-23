@@ -1,11 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { Expression, SortOrder } from 'mongoose';
 import { SearchType } from 'src/constants/enums';
 
 export class PagingDto {
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'limit',
         description: 'Limit of this query',
         required: false,
@@ -17,7 +16,7 @@ export class PagingDto {
     @IsOptional()
     limit: number;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'page',
         description: 'Page for this query',
         default: 1,
@@ -28,7 +27,7 @@ export class PagingDto {
     @IsOptional()
     page: number;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'sortBy',
         description:
             'Fields wants to sort for this query, if many fields write it with command Example: name,email',
@@ -39,7 +38,7 @@ export class PagingDto {
     @IsString()
     sortBy: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'sortDirection',
         description:
             'What direction you want to sort contains 1 or -1 with 1 is ascending, -1 is descending Example: -1,1',
@@ -49,7 +48,7 @@ export class PagingDto {
     @IsOptional()
     sortDirection: 1 | -1;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'search',
         description:
             'Search for this query. Example: [name:like]=test. Name is field, like is operator, test is value',
@@ -63,7 +62,7 @@ export class PagingDto {
     @IsOptional()
     search: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'searchType',
         description: 'Search type for this query. Available values: AND & OR',
         default: 'and',
@@ -75,7 +74,7 @@ export class PagingDto {
     @IsOptional()
     searchType: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'isAll',
         description:
             'Get all data without pagination. Available values: false & true',
@@ -91,7 +90,7 @@ export class PagingDto {
     @IsOptional()
     isAll: boolean;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         name: 'select',
         description: 'Select fields for this query. Example: _id,name',

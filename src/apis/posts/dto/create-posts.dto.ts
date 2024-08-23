@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
     IsDate,
@@ -14,9 +14,10 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { PostStatus } from '../constants';
 import { convertStringToObjectId } from 'src/utils/helper';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 
 export class CreatePostDto extends PartialType(ExcludeDto) {
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Name of the post',
         default: 'Post',
@@ -26,7 +27,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Short description of the post',
         default: 'Short description',
@@ -36,7 +37,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @IsOptional()
     shortDescription: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Long description of the post',
         default: 'Long description',
@@ -45,7 +46,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @IsOptional()
     longDescription: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         name: 'status',
         description:
             'Status for this post. Available values: PUBLISHED & DRAFT',
@@ -59,7 +60,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     status: PostStatus;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Featured image id of the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -72,7 +73,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Category of id the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -85,7 +86,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     })
     category: Types.ObjectId;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: Date,
         description: 'Published date of the post',
         default: new Date(),
@@ -95,7 +96,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedStart: Date;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: Date,
         default: new Date(),
         description: 'Published end date of the post',

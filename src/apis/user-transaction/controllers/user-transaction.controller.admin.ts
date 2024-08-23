@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserTransactionService } from 'src/apis/user-transaction/user-transaction.service';
@@ -11,6 +11,7 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('user-transactions')
 @ApiTags('Admin: User Transactions')
@@ -23,7 +24,7 @@ export class UserTransactionControllerAdmin {
         private readonly userTransactionService: UserTransactionService,
     ) {}
 
-    @Get()
+    @ExtendedGet()
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.USER_TRANSACTION.index)
     async getAll(
@@ -34,7 +35,7 @@ export class UserTransactionControllerAdmin {
         return result;
     }
 
-    @Get(':id')
+    @ExtendedGet({ route: ':id' })
     @ApiBearerAuth()
     @Authorize(PERMISSIONS.USER_TRANSACTION.index)
     @ApiParam({ name: 'id', type: String })

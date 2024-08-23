@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
     IsEmail,
     IsEnum,
@@ -8,9 +7,10 @@ import {
     MaxLength,
 } from 'class-validator';
 import { FormBuilderType } from '../constants';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 
 export class CreateFormBuildersDto {
-    @ApiProperty({
+    @ExtendedApiProperty({
         description:
             ' Type for this form builder. Available values: BUSINESS_INQUIRIES | LOOKING_FOR_SUPPORT | PARTNERSHIP',
         example: FormBuilderType.BUSINESS_INQUIRIES,
@@ -19,7 +19,7 @@ export class CreateFormBuildersDto {
     @IsEnum(FormBuilderType)
     type: FormBuilderType;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: String,
         description: 'Name of user fill in the form',
         example: 'Alex',
@@ -29,7 +29,7 @@ export class CreateFormBuildersDto {
     @MaxLength(50)
     name: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         description: 'Email of user fill in the form',
         example: 'alex@gmail.com',
     })
@@ -38,7 +38,7 @@ export class CreateFormBuildersDto {
     @IsEmail()
     email: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         description: 'Subject of user fill in the form',
         example: 'Feedback',
     })
@@ -47,7 +47,7 @@ export class CreateFormBuildersDto {
     @MaxLength(100)
     subject: string;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         description: 'Message of user fill in the form',
         example: 'I really like your website.',
     })
