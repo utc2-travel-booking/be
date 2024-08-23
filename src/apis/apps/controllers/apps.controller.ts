@@ -12,10 +12,11 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -26,7 +27,7 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
-    @DefaultGet('tags/:tagSlug')
+    @ExtendedGet({ route: 'tags/:tagSlug' })
     @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
@@ -56,7 +57,7 @@ export class AppsController {
         return result;
     }
 
-    @DefaultGet('user-history')
+    @ExtendedGet({ route: 'user-history' })
     @Authorize(PERMISSIONS_FRONT.APP.index)
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
@@ -71,7 +72,7 @@ export class AppsController {
         return result;
     }
 
-    @DefaultGet()
+    @ExtendedGet()
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
         @Query(new PagingDtoPipe())
@@ -86,7 +87,7 @@ export class AppsController {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @UseGuards(UserPayloadExtractorGuard)
     @ApiParam({ name: 'id', type: String })
     async getOneAppPublish(

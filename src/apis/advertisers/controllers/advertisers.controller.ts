@@ -6,11 +6,12 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
 import { populateGroupBannerImageAggregate } from '../common/populate-group-banner-image.aggregate';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('advertisers')
 @ApiTags('Front: Advertisers')
@@ -21,7 +22,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 export class AdvertisersController {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -30,7 +31,7 @@ export class AdvertisersController {
         return result;
     }
 
-    @DefaultGet(':slug')
+    @ExtendedGet({ route: ':slug' })
     async getOneBySlug(@Param('slug') slug: string) {
         const result = await this.advertisersService
             .findOne({ slug }, populateGroupBannerImageAggregate)

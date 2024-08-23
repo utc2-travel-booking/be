@@ -5,7 +5,6 @@ import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { UpdateMeDto } from 'src/apis/users/dto/update-me.dto';
 import { UserService } from 'src/apis/users/user.service';
-import { User } from 'aws-sdk/clients/appstream';
 import { Types } from 'mongoose';
 import {
     PagingDtoPipe,
@@ -17,12 +16,11 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('users')
 @ApiTags('Admin: User')
@@ -58,7 +56,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultGet('me')
+    @ExtendedGet({ route: 'me' })
     @Authorize(PERMISSIONS.USER.index)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -77,7 +75,7 @@ export class UserControllerAdmin {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @DefaultGet('')
+    @ExtendedGet()
     @Authorize(PERMISSIONS.USER.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -87,7 +85,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.USER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -128,7 +126,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.USER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

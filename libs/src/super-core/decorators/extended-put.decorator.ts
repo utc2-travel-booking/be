@@ -9,7 +9,7 @@ export interface ExtendedPutOptions {
 }
 
 export const ExtendedPut = (option?: ExtendedPutOptions) => {
-    const { route, dto } = option;
+    const { route, dto } = option || {};
 
     if (dto) {
         addDtoProperties(dto);

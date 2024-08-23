@@ -11,7 +11,8 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
 import { CategoryType } from '../constants';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('categories')
 @ApiTags('Front: Categories')
@@ -22,7 +23,7 @@ import { DefaultGet } from 'src/base/controllers/base.controller';
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @DefaultGet(':type')
+    @ExtendedGet({ route: ':type' })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -34,7 +35,7 @@ export class CategoriesController {
         return result;
     }
 
-    @DefaultGet(':type/:id')
+    @ExtendedGet({ route: ':type/:id' })
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

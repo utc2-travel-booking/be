@@ -9,14 +9,15 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('admin/audits')
 @ApiTags('Admin: Audit')
 export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.AUDIT.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -26,7 +27,7 @@ export class AuditsControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.AUDIT.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {

@@ -11,13 +11,12 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { Types } from 'mongoose';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateStatusNotificationDto } from '../dto/update-status-notifications.dto';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('notifications')
 @ApiTags('Front: Notifications')
@@ -28,7 +27,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -44,7 +43,7 @@ export class NotificationsController {
         return result;
     }
 
-    @DefaultGet('count')
+    @ExtendedGet({ route: 'count' })
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -80,7 +79,7 @@ export class NotificationsController {
         return result;
     }
 
-    @DefaultDelete(':id')
+    @ExtendedDelete({ route: ':id' })
     @Authorize(PERMISSIONS_FRONT.NOTIFICATION.destroy)
     @ApiParam({ name: 'id', type: String })
     async deleteOne(

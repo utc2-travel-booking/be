@@ -9,7 +9,7 @@ export interface ExtendedPostOptions {
 }
 
 export const ExtendedPost = (option?: ExtendedPostOptions) => {
-    const { route, dto } = option;
+    const { route, dto } = option || {};
 
     if (dto) {
         addDtoProperties(dto);

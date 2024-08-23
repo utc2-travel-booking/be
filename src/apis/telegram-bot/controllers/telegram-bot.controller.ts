@@ -15,12 +15,11 @@ import { CreateTelegramBotDto } from '../dto/create-telegram-bot.dto';
 import { UpdateTelegramBotDto } from '../dto/update-telegram-bot.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('telegram-bots')
 @ApiTags('Admin: Telegram Bot')
@@ -31,7 +30,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 export class TelegramBotControllerAdmin {
     constructor(private readonly telegramBotService: TelegramBotService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -41,7 +40,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -86,7 +85,7 @@ export class TelegramBotControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.TELEGRAM_BOT.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

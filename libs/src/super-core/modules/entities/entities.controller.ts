@@ -1,19 +1,20 @@
 import { Controller, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { EntitiesService } from './entities.service';
-import { DefaultGet } from 'src/base/controllers/base.controller';
+
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('admin/entities')
 @ApiTags('Admin: Entities')
 export class EntitiesController {
     constructor(private readonly entitiesService: EntitiesService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     async getAll() {
         return await this.entitiesService.getAll();
     }
 
-    @DefaultGet(':collectionName')
+    @ExtendedGet({ route: ':collectionName' })
     async getOne(@Param('collectionName') collectionName: string) {
         return await this.entitiesService.getOne(collectionName);
     }

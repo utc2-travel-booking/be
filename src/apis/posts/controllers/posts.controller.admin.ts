@@ -1,3 +1,5 @@
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
@@ -7,10 +9,7 @@ import { PostType } from 'src/apis/posts/constants';
 import { CreatePostDto } from 'src/apis/posts/dto/create-posts.dto';
 import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
 import { PostsService } from 'src/apis/posts/posts.service';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -32,7 +31,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 export class PostsControllerAdmin {
     constructor(private readonly postsService: PostsService) {}
 
-    @DefaultGet(':type')
+    @ExtendedGet({ route: ':type' })
     @Authorize(PERMISSIONS.POST.index)
     @ApiParam({
         name: 'locale',
@@ -50,7 +49,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':type/:id')
+    @ExtendedGet({ route: ':type/:id' })
     @Authorize(PERMISSIONS.POST.index)
     @ApiParam({ name: 'id', type: String })
     @ApiParam({
@@ -113,7 +112,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @DefaultDelete(':type')
+    @ExtendedDelete({ route: ':type' })
     @Authorize(PERMISSIONS.POST.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

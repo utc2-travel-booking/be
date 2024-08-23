@@ -16,12 +16,11 @@ import { UpdateRoleDto } from '../dto/update-role.dto';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('roles')
 @ApiTags('Admin: Roles')
@@ -32,7 +31,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 export class RolesControllerAdmin {
     constructor(private readonly rolesService: RolesService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.ROLE.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -42,7 +41,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.ROLE.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -87,7 +86,7 @@ export class RolesControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.ROLE.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

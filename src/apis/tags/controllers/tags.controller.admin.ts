@@ -3,10 +3,6 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TagsService } from '../tags.service';
 import _ from 'lodash';
 import { Types } from 'mongoose';
-import {
-    DefaultGet,
-    DefaultDelete,
-} from 'src/base/controllers/base.controller';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -23,6 +19,8 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 
 @Controller('tags')
 @ApiTags('Admin: Tags')
@@ -33,7 +31,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 export class TagsControllerAdmin {
     constructor(private readonly tagsService: TagsService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.TAG.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -43,7 +41,7 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.TAG.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -89,7 +87,7 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.TAG.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

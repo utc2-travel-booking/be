@@ -10,14 +10,12 @@ import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { FormBuilderService } from '../form-builders.service';
-import { FormBuilderType } from '../constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('form-builders')
 @ApiTags('Admin: Form Builder')
@@ -28,7 +26,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 export class FormBuilderControllerAdmin {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
-    @DefaultGet('')
+    @ExtendedGet()
     @Authorize(PERMISSIONS.FORM_BUILDER.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -38,7 +36,7 @@ export class FormBuilderControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.FORM_BUILDER.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -46,7 +44,7 @@ export class FormBuilderControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.FORM_BUILDER.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

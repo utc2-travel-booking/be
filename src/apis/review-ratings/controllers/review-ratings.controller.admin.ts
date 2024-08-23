@@ -14,10 +14,9 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import {
-    DefaultDelete,
-    DefaultGet,
-} from 'src/base/controllers/base.controller';
+
+import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 
 @Controller('review-ratings')
 @ApiTags('Admin: Review Ratings')
@@ -28,7 +27,7 @@ import {
 export class ReviewRatingControllerAdmin {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
-    @DefaultGet()
+    @ExtendedGet()
     @Authorize(PERMISSIONS.REVIEW.index)
     async getAll(
         @Query(new PagingDtoPipe())
@@ -38,7 +37,7 @@ export class ReviewRatingControllerAdmin {
         return result;
     }
 
-    @DefaultGet(':id')
+    @ExtendedGet({ route: ':id' })
     @Authorize(PERMISSIONS.REVIEW.index)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -46,7 +45,7 @@ export class ReviewRatingControllerAdmin {
         return result;
     }
 
-    @DefaultDelete()
+    @ExtendedDelete()
     @Authorize(PERMISSIONS.REVIEW.destroy)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
