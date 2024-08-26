@@ -1,15 +1,15 @@
+import { SuperController } from '@libs/super-core';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostType } from 'src/apis/posts/constants';
 import { CreatePostDto } from 'src/apis/posts/dto/create-posts.dto';
 import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
 import { PostsService } from 'src/apis/posts/posts.service';
-
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -22,7 +22,7 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
-@Controller('posts')
+@SuperController('posts')
 @ApiTags('Admin: Posts')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

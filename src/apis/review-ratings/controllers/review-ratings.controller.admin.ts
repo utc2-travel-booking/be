@@ -1,4 +1,4 @@
-import { Controller, Param, Query, Req } from '@nestjs/common';
+import { Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReviewRatingService } from '../review-ratings.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -7,7 +7,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { ReviewRating } from '../entities/review-ratings.entity';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
@@ -17,8 +16,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('review-ratings')
+@SuperController('review-ratings')
 @ApiTags('Admin: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,

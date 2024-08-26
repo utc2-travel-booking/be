@@ -1,4 +1,4 @@
-import { Controller, Param, Query } from '@nestjs/common';
+import { Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserTransactionService } from 'src/apis/user-transaction/user-transaction.service';
@@ -12,8 +12,9 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('user-transactions')
+@SuperController('user-transactions')
 @ApiTags('Admin: User Transactions')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

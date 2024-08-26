@@ -1,10 +1,11 @@
-import { Controller, Param } from '@nestjs/common';
+import { Param } from '@nestjs/common';
 import { DataTransferObjectsService } from './data-transfer-objects.service';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core/decorators';
 
-@Controller('admin/data-transfer-objects')
+@SuperController('admin/data-transfer-objects')
 @ApiTags('Admin: Data Transfer Objects')
 export class DataTransferObjectsController {
     constructor(

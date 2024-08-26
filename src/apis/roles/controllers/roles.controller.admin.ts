@@ -1,7 +1,6 @@
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-import { Role } from 'src/apis/roles/entities/roles.entity';
 import { RolesService } from 'src/apis/roles/roles.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
@@ -21,8 +20,9 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('roles')
+@SuperController('roles')
 @ApiTags('Admin: Roles')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

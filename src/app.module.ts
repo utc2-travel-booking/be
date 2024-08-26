@@ -1,3 +1,4 @@
+import { SuperAuthorizeModule } from './../libs/src/super-authorize/super-authorize.module';
 import { SuperCoreModule } from 'libs/src/super-core/super-core.module';
 import { RoutersModule } from './routers/routers.module';
 import { Module } from '@nestjs/common';
@@ -29,6 +30,7 @@ import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-l
         SeedsModule,
         MultipleLanguageModule,
         AuditsModule,
+        SuperAuthorizeModule.forRoot({ prefixes: ['admin', 'front'] }),
     ],
     controllers: [],
     providers: [],

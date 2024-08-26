@@ -1,10 +1,11 @@
-import { Controller, Param } from '@nestjs/common';
+import { Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { EntitiesService } from './entities.service';
 
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core/decorators';
 
-@Controller('admin/entities')
+@SuperController('admin/entities')
 @ApiTags('Admin: Entities')
 export class EntitiesController {
     constructor(private readonly entitiesService: EntitiesService) {}

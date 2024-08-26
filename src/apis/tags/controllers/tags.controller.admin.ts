@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TagsService } from '../tags.service';
 import _ from 'lodash';
@@ -21,8 +21,9 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('tags')
+@SuperController('tags')
 @ApiTags('Admin: Tags')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

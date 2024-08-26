@@ -1,4 +1,4 @@
-import { Controller, Param, Query } from '@nestjs/common';
+import { Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
 import {
@@ -13,8 +13,9 @@ import { CategoriesService } from '../categories.service';
 import { CategoryType } from '../constants';
 
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('categories')
+@SuperController('categories')
 @ApiTags('Front: Categories')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

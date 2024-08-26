@@ -1,10 +1,9 @@
-import { Controller, Param, Query } from '@nestjs/common';
+import { Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -13,8 +12,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { PostsService } from '../posts.service';
 import { PostStatus, PostType } from '../constants';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('posts')
+@SuperController('posts')
 @ApiTags('Front: Posts')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

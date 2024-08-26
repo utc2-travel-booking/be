@@ -1,7 +1,6 @@
-import { Controller, Param, Query } from '@nestjs/common';
+import { Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
-import { Advertiser } from '../entities/advertisers.entity';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -12,8 +11,9 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('advertisers')
+@SuperController('advertisers')
 @ApiTags('Front: Advertisers')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

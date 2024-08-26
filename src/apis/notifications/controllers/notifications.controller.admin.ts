@@ -1,7 +1,6 @@
-import { Controller, Query } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiTags } from '@nestjs/swagger';
-
 import { Authorize } from 'src/decorators/authorize.decorator';
 import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
 import {
@@ -11,8 +10,9 @@ import {
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('notifications')
+@SuperController('notifications')
 @ApiTags('Admin: Notifications')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -16,13 +16,13 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('users')
+@SuperController('users')
 @ApiTags('Admin: User')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

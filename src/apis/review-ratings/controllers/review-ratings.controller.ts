@@ -1,4 +1,4 @@
-import { Body, Controller, Req, Query, Param } from '@nestjs/common';
+import { Body, Req, Query, Param } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ReviewRatingService } from '../review-ratings.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -16,8 +16,9 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('review-ratings')
+@SuperController('review-ratings')
 @ApiTags('Front: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,

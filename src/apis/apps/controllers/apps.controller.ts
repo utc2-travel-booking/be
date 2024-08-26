@@ -1,4 +1,4 @@
-import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Param, Query, Req, UseGuards } from '@nestjs/common';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -12,13 +12,13 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('apps')
+@SuperController('apps')
 @ApiTags('Front: Apps')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

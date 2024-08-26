@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TagAppsService } from '../tag-apps.service';
 
@@ -19,8 +19,9 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('tag-apps')
+@SuperController('tag-apps')
 @ApiTags('Admin: Tag Apps')
 export class TagAppsControllerAdmin {
     constructor(private readonly tagAppsService: TagAppsService) {}

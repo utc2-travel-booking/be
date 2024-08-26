@@ -1,18 +1,11 @@
 import {
-    Controller,
     Param,
     Query,
     Req,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
-import {
-    ApiBody,
-    ApiConsumes,
-    ApiParam,
-    ApiQuery,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { MediaService } from 'src/apis/media/medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadMediaDto } from 'src/apis/media/dto/upload-media.dto';
@@ -34,9 +27,10 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
 @ApiTags('Admin: Media')
-@Controller('media')
+@SuperController('media')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,

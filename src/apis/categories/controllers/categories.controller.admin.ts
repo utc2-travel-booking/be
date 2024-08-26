@@ -1,8 +1,9 @@
+import { SuperController } from '@libs/super-core';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import _ from 'lodash';
 import { Types } from 'mongoose';
@@ -23,7 +24,7 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { removeDiacritics } from 'src/utils/helper';
 
-@Controller('categories')
+@SuperController('categories')
 @ApiTags('Admin: Categories')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

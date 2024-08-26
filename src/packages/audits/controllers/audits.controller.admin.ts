@@ -1,4 +1,4 @@
-import { Controller, Param, Query } from '@nestjs/common';
+import { Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuditsService } from '../audits.service';
 import { Authorize } from 'src/decorators/authorize.decorator';
@@ -9,10 +9,10 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('admin/audits')
+@SuperController('admin/audits')
 @ApiTags('Admin: Audit')
 export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Query, Req } from '@nestjs/common';
+import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
@@ -13,7 +13,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
 import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
-
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -22,8 +21,9 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperController } from '@libs/super-core';
 
-@Controller('advertisers')
+@SuperController('advertisers')
 @ApiTags('Admin: Advertisers')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
