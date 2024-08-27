@@ -7,7 +7,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -16,7 +16,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -26,7 +26,7 @@ export class AuditsControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {

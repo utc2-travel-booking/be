@@ -10,7 +10,7 @@ import { populateGroupBannerImageAggregate } from '../common/populate-group-bann
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController('advertisers')
@@ -22,7 +22,7 @@ import { SuperController } from '@libs/super-core';
 export class AdvertisersController {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -31,7 +31,7 @@ export class AdvertisersController {
         return result;
     }
 
-    @ExtendedGet({ route: ':slug' })
+    @SuperGet({ route: ':slug' })
     async getOneBySlug(@Param('slug') slug: string) {
         const result = await this.advertisersService
             .findOne({ slug }, populateGroupBannerImageAggregate)

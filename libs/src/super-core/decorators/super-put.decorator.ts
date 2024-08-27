@@ -3,12 +3,12 @@ import { ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { appSettings } from 'src/configs/appsettings';
 import { addDtoProperties } from '../modules/data-transfer-objects/common/add-dto-properties.utils';
 
-export interface ExtendedPutOptions {
+export interface SuperPutOptions {
     route?: string;
     dto?: new () => any;
 }
 
-export const ExtendedPut = (option?: ExtendedPutOptions) => {
+export const SuperPut = (option?: SuperPutOptions) => {
     const { route, dto } = option || {};
 
     if (dto) {

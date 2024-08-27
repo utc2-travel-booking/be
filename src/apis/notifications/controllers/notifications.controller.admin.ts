@@ -8,7 +8,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -21,7 +21,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class NotificationsControllerAdmin {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())

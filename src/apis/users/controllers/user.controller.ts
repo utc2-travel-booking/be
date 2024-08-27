@@ -7,8 +7,8 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
 import { MetadataType } from 'src/apis/metadata/constants';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -21,7 +21,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @ExtendedGet({ route: 'me' })
+    @SuperGet({ route: 'me' })
     @SuperAuthorize()
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -30,7 +30,7 @@ export class UserController {
         return result;
     }
 
-    @ExtendedPut({ route: 'me', dto: UpdateMeDto })
+    @SuperPut({ route: 'me', dto: UpdateMeDto })
     @SuperAuthorize()
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
@@ -40,7 +40,7 @@ export class UserController {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @ExtendedGet({ route: 'history-reward/:type' })
+    @SuperGet({ route: 'history-reward/:type' })
     @SuperAuthorize()
     async getHistoryReward(
         @Param('type') type: MetadataType,

@@ -1,10 +1,10 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 
 export class CreateTelegramBotDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Token Of Bot',
@@ -13,7 +13,7 @@ export class CreateTelegramBotDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     token: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Bot Id Of Bot',
@@ -22,7 +22,7 @@ export class CreateTelegramBotDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     botId: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Name Of Bot',
@@ -31,7 +31,7 @@ export class CreateTelegramBotDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Domain Of Bot',

@@ -1,4 +1,4 @@
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Document, Types } from 'mongoose';
@@ -11,7 +11,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.FILE,
 })
 export class File extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         cms: {
             label: 'Index',
@@ -22,7 +22,7 @@ export class File extends AggregateRoot {
     })
     _id: Types.ObjectId;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         ref: COLLECTION_NAMES.FILE,
         cms: {
@@ -33,7 +33,7 @@ export class File extends AggregateRoot {
     })
     filePath: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Name',
@@ -43,24 +43,24 @@ export class File extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
     })
     filename: string;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     folder: string;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     note: string;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     mime: string;
 
-    @ExtendedProp({ type: Number })
+    @SuperProp({ type: Number })
     size: number;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     alt: string;
 }
 

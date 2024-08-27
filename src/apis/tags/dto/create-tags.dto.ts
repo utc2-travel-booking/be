@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
@@ -9,7 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateTagDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Name of the tag',
         default: 'Tag',
@@ -21,7 +21,7 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Short description of the tag',
         default: 'Short description',
@@ -35,7 +35,7 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
     @IsOptional()
     shortDescription: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Featured image id of the tag',
         default: '60f3b3b3b3b3b3b3b3b3b3',

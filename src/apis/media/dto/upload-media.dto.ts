@@ -1,6 +1,6 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 
 export class UploadMediaDto {
-    @ExtendedApiProperty({ type: 'string', format: 'binary' })
+    @SuperApiProperty({ type: 'string', format: 'binary' })
     file: any;
 }

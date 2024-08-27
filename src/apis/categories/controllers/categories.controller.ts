@@ -12,7 +12,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
 import { CategoryType } from '../constants';
 
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController('categories')
@@ -24,7 +24,7 @@ import { SuperController } from '@libs/super-core';
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @ExtendedGet({ route: ':type' })
+    @SuperGet({ route: ':type' })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -36,7 +36,7 @@ export class CategoriesController {
         return result;
     }
 
-    @ExtendedGet({ route: ':type/:id' })
+    @SuperGet({ route: ':type/:id' })
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

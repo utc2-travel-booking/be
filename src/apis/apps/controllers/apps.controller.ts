@@ -13,8 +13,8 @@ import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { MetadataType } from 'src/apis/metadata/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -27,7 +27,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
-    @ExtendedGet({ route: 'tags/:tagSlug' })
+    @SuperGet({ route: 'tags/:tagSlug' })
     @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
@@ -44,7 +44,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedPost({ route: 'add-point/:id/:type' })
+    @SuperPost({ route: 'add-point/:id/:type' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(
@@ -57,7 +57,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet({ route: 'user-history' })
+    @SuperGet({ route: 'user-history' })
     @SuperAuthorize()
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
@@ -72,7 +72,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet()
+    @SuperGet()
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
         @Query(new PagingDtoPipe())
@@ -87,7 +87,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @UseGuards(UserPayloadExtractorGuard)
     @ApiParam({ name: 'id', type: String })
     async getOneAppPublish(

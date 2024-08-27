@@ -3,12 +3,12 @@ import { addDtoProperties } from '../modules/data-transfer-objects/common/add-dt
 import { ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { appSettings } from 'src/configs/appsettings';
 
-export interface ExtendedPostOptions {
+export interface SuperPostOptions {
     route?: string;
     dto?: new () => any;
 }
 
-export const ExtendedPost = (option?: ExtendedPostOptions) => {
+export const SuperPost = (option?: SuperPostOptions) => {
     const { route, dto } = option || {};
 
     if (dto) {

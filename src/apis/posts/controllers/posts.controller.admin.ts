@@ -1,9 +1,9 @@
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { SuperController } from '@libs/super-core';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
@@ -32,7 +32,7 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 export class PostsControllerAdmin {
     constructor(private readonly postsService: PostsService) {}
 
-    @ExtendedGet({ route: ':type' })
+    @SuperGet({ route: ':type' })
     @SuperAuthorize()
     @ApiParam({
         name: 'locale',
@@ -50,7 +50,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':type/:id' })
+    @SuperGet({ route: ':type/:id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     @ApiParam({
@@ -67,7 +67,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({ route: ':type', dto: CreatePostDto })
+    @SuperPost({ route: ':type', dto: CreatePostDto })
     @SuperAuthorize()
     @ApiParam({
         name: 'locale',
@@ -92,7 +92,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':type/:id', dto: UpdatePostDto })
+    @SuperPut({ route: ':type/:id', dto: UpdatePostDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -113,7 +113,7 @@ export class PostsControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete({ route: ':type' })
+    @SuperDelete({ route: ':type' })
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

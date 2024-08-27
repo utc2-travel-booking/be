@@ -11,7 +11,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { PostsService } from '../posts.service';
 import { PostStatus, PostType } from '../constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController('posts')
@@ -23,7 +23,7 @@ import { SuperController } from '@libs/super-core';
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
-    @ExtendedGet({ route: ':type' })
+    @SuperGet({ route: ':type' })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -36,7 +36,7 @@ export class PostsController {
         return result;
     }
 
-    @ExtendedGet({ route: ':type/:id' })
+    @SuperGet({ route: ':type/:id' })
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

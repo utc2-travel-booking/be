@@ -13,9 +13,9 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateStatusNotificationDto } from '../dto/update-status-notifications.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -28,7 +28,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -44,7 +44,7 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedGet({ route: 'count' })
+    @SuperGet({ route: 'count' })
     @SuperAuthorize()
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -55,7 +55,7 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedPut({ route: 'read', dto: UpdateStatusNotificationDto })
+    @SuperPut({ route: 'read', dto: UpdateStatusNotificationDto })
     @SuperAuthorize()
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
@@ -71,7 +71,7 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedPut({ route: 'read/all' })
+    @SuperPut({ route: 'read/all' })
     @SuperAuthorize()
     async updateAllStatus(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -80,7 +80,7 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedDelete({ route: ':id' })
+    @SuperDelete({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async deleteOne(

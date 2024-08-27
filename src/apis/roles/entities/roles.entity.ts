@@ -6,7 +6,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from '@libs/super-search';
 import { RoleType } from '../constants';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import {
     Permission,
     PermissionDocument,
@@ -17,7 +17,7 @@ import {
     collection: COLLECTION_NAMES.ROLE,
 })
 export class Role extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -29,7 +29,7 @@ export class Role extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: true,
         unique: true,
@@ -41,7 +41,7 @@ export class Role extends AggregateRoot {
     })
     type: RoleType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.PERMISSION,
         default: [],

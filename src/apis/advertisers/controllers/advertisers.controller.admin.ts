@@ -16,10 +16,10 @@ import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -32,7 +32,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -42,7 +42,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -50,7 +50,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateAdvertiserDto,
     })
     @SuperAuthorize()
@@ -69,7 +69,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateAdvertiserDto })
+    @SuperPut({ route: ':id', dto: UpdateAdvertiserDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -88,7 +88,7 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

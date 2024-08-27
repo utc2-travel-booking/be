@@ -12,8 +12,8 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { FormBuilderService } from '../form-builders.service';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -26,7 +26,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class FormBuilderControllerAdmin {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -36,7 +36,7 @@ export class FormBuilderControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -44,7 +44,7 @@ export class FormBuilderControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

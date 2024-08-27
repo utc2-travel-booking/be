@@ -7,7 +7,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController()
@@ -24,7 +24,7 @@ import { SuperController } from '@libs/super-core';
 export class AuthControllerAdmin {
     constructor(private readonly authService: AuthService) {}
 
-    @ExtendedPost({ route: 'login', dto: UserLoginDto })
+    @SuperPost({ route: 'login', dto: UserLoginDto })
     @UseGuards(LocalAuthGuard)
     async login(@Req() req: { user: UserPayload }) {
         const { user } = req;

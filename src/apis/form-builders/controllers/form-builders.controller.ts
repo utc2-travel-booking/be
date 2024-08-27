@@ -6,7 +6,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { FormBuilderService } from '../form-builders.service';
 import { CreateFormBuildersDto } from '../dto/create-form-builders.dto';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController('form-builders')
@@ -18,7 +18,7 @@ import { SuperController } from '@libs/super-core';
 export class FormBuilderController {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
-    @ExtendedPost({ dto: CreateFormBuildersDto })
+    @SuperPost({ dto: CreateFormBuildersDto })
     async create(@Body() createFormBuilderDto: CreateFormBuildersDto) {
         const result = await this.formBuilderService.createOne(
             createFormBuilderDto,

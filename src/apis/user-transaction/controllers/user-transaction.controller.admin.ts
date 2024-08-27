@@ -10,7 +10,7 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -25,7 +25,7 @@ export class UserTransactionControllerAdmin {
         private readonly userTransactionService: UserTransactionService,
     ) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @ApiBearerAuth()
     @SuperAuthorize()
     async getAll(
@@ -36,7 +36,7 @@ export class UserTransactionControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @ApiBearerAuth()
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })

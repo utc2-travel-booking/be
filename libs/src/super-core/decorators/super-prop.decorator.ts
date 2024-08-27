@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { Prop } from '@nestjs/mongoose';
 import { SchemaTypeOptions } from 'mongoose';
 
-export class ExtendedPropOptions extends SchemaTypeOptions<any> {
+export class SuperPropOptions extends SchemaTypeOptions<any> {
     cms?: {
         label?: string;
         tableShow?: boolean;
@@ -11,6 +11,6 @@ export class ExtendedPropOptions extends SchemaTypeOptions<any> {
     };
 }
 
-export const ExtendedProp = (options?: ExtendedPropOptions) => {
+export const SuperProp = (options?: SuperPropOptions) => {
     return applyDecorators(Prop(options));
 };

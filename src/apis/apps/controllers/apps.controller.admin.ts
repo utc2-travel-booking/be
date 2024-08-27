@@ -16,10 +16,10 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -32,7 +32,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class AppsControllerAdmin {
     constructor(private readonly appsService: AppsService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -42,7 +42,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -50,7 +50,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateAppDto,
     })
     @SuperAuthorize()
@@ -67,7 +67,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateAppDto })
+    @SuperPut({ route: ':id', dto: UpdateAppDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -86,7 +86,7 @@ export class AppsControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

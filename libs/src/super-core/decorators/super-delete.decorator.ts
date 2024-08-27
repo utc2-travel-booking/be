@@ -2,11 +2,11 @@ import { applyDecorators, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { appSettings } from 'src/configs/appsettings';
 
-export interface ExtendedDeleteOptions {
+export interface SuperDeleteOptions {
     route?: string;
 }
 
-export const ExtendedDelete = (options?: ExtendedDeleteOptions) => {
+export const SuperDelete = (options?: SuperDeleteOptions) => {
     const { route } = options || {};
 
     return applyDecorators(

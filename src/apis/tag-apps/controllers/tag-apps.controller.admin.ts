@@ -12,10 +12,10 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateTagAppDto } from '../dto/create-tag-apps.dto';
 import { UpdateTagAppDto } from '../dto/update-tag-apps.dto';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -24,7 +24,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class TagAppsControllerAdmin {
     constructor(private readonly tagAppsService: TagAppsService) {}
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -34,7 +34,7 @@ export class TagAppsControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -42,7 +42,7 @@ export class TagAppsControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateTagAppDto,
     })
     @SuperAuthorize()
@@ -59,7 +59,7 @@ export class TagAppsControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateTagAppDto })
+    @SuperPut({ route: ':id', dto: UpdateTagAppDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -78,7 +78,7 @@ export class TagAppsControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
-export interface ExtendedApiPropertyOptions extends ApiPropertyOptions {
+export interface SuperApiPropertyOptions extends ApiPropertyOptions {
     cms?: {
         ref?: string;
         isShow?: boolean;
@@ -9,6 +9,6 @@ export interface ExtendedApiPropertyOptions extends ApiPropertyOptions {
     };
 }
 
-export const ExtendedApiProperty = (options?: ExtendedApiPropertyOptions) => {
+export const SuperApiProperty = (options?: SuperApiPropertyOptions) => {
     return applyDecorators(ApiProperty(options));
 };

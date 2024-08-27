@@ -15,10 +15,10 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -31,7 +31,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
-    @ExtendedPut({ route: 'ban', dto: CreateUserDto })
+    @SuperPut({ route: 'ban', dto: CreateUserDto })
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
@@ -44,7 +44,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: 'un-ban', dto: CreateUserDto })
+    @SuperPut({ route: 'un-ban', dto: CreateUserDto })
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
@@ -56,7 +56,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: 'me' })
+    @SuperGet({ route: 'me' })
     @SuperAuthorize()
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
@@ -65,7 +65,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: 'me', dto: UpdateMeDto })
+    @SuperPut({ route: 'me', dto: UpdateMeDto })
     @SuperAuthorize()
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
@@ -75,7 +75,7 @@ export class UserControllerAdmin {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -85,7 +85,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -93,7 +93,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateUserDto,
     })
     @SuperAuthorize()
@@ -107,7 +107,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateUserDto })
+    @SuperPut({ route: ':id', dto: UpdateUserDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -126,7 +126,7 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

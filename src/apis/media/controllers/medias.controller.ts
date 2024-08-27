@@ -9,7 +9,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UploadMediaDto } from '../dto/upload-media.dto';
 import { MediaService } from '../medias.service';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
@@ -22,7 +22,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 
-    @ExtendedPost({ dto: UploadMediaDto })
+    @SuperPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
     @SuperAuthorize()
     @UseInterceptors(

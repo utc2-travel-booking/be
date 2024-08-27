@@ -8,7 +8,7 @@ import { LoginTelegramProviderGuard } from 'src/guards/login-telegram-provider.g
 import { UserLoginTelegramDto } from '../dto/user-login-telegram.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { LoginTelegramMiniAppGuard } from 'src/guards/login-telegram-mini-app.guard';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperController } from '@libs/super-core';
 
 @SuperController()
@@ -25,7 +25,7 @@ import { SuperController } from '@libs/super-core';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @ExtendedPost({
+    @SuperPost({
         route: 'login-telegram-provider',
         dto: UserLoginTelegramDto,
     })
@@ -38,7 +38,7 @@ export class AuthController {
         return this.authService.login(user);
     }
 
-    @ExtendedPost({ route: 'login-telegram-mini-app' })
+    @SuperPost({ route: 'login-telegram-mini-app' })
     @UseGuards(LoginTelegramMiniAppGuard)
     @ApiHeader({
         name: 'authorization',

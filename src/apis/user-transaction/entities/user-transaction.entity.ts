@@ -5,14 +5,14 @@ import { UserTransactionType } from '../constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.USER_TRANSACTION,
 })
 export class UserTransaction extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Type',
@@ -22,7 +22,7 @@ export class UserTransaction extends AggregateRoot {
     })
     type: UserTransactionType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: true,
         cms: {
@@ -33,7 +33,7 @@ export class UserTransaction extends AggregateRoot {
     })
     amount: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: true,
         cms: {
@@ -44,7 +44,7 @@ export class UserTransaction extends AggregateRoot {
     })
     before: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: true,
         cms: {
@@ -55,7 +55,7 @@ export class UserTransaction extends AggregateRoot {
     })
     after: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         refClass: App,
@@ -70,7 +70,7 @@ export class UserTransaction extends AggregateRoot {
     })
     app: AppDocument;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Action',

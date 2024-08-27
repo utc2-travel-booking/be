@@ -1,9 +1,9 @@
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { SuperController } from '@libs/super-core';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import _ from 'lodash';
@@ -32,7 +32,7 @@ import { removeDiacritics } from 'src/utils/helper';
 export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
@@ -40,7 +40,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @ExtendedGet()
+    @SuperGet()
     @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
@@ -50,7 +50,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateCategoryDto,
     })
     @SuperAuthorize()
@@ -70,7 +70,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateCategoryDto })
+    @SuperPut({ route: ':id', dto: UpdateCategoryDto })
     @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
@@ -88,7 +88,7 @@ export class CategoriesControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
+    @SuperDelete()
     @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(

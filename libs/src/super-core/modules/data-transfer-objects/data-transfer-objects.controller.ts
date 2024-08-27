@@ -2,7 +2,7 @@ import { Param } from '@nestjs/common';
 import { DataTransferObjectsService } from './data-transfer-objects.service';
 import { ApiTags } from '@nestjs/swagger';
 
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperController } from '@libs/super-core/decorators';
 
 @SuperController('admin/data-transfer-objects')
@@ -12,7 +12,7 @@ export class DataTransferObjectsController {
         private readonly dataTransferObjectsService: DataTransferObjectsService,
     ) {}
 
-    @ExtendedGet({ route: ':name' })
+    @SuperGet({ route: ':name' })
     async getOne(@Param('name') name: string) {
         const result = await this.dataTransferObjectsService.getOne(name);
         return result;
