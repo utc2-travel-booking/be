@@ -17,8 +17,7 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -28,6 +27,7 @@ import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorato
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @ApiTags('Admin: Media')
 @SuperController('media')
@@ -39,7 +39,7 @@ export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.FILE.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -49,7 +49,7 @@ export class MediaControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.FILE.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.mediaService.getOne(_id);
@@ -58,7 +58,7 @@ export class MediaControllerAdmin {
 
     @ExtendedPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @Authorize(PERMISSIONS.FILE.create)
+    @SuperAuthorize()
     @UseInterceptors(
         FileInterceptor('file', {
             limits: {
@@ -76,7 +76,7 @@ export class MediaControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.FILE.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

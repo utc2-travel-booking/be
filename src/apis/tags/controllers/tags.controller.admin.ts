@@ -4,8 +4,7 @@ import { TagsService } from '../tags.service';
 import _ from 'lodash';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -22,6 +21,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('tags')
 @ApiTags('Admin: Tags')
@@ -33,7 +33,7 @@ export class TagsControllerAdmin {
     constructor(private readonly tagsService: TagsService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.TAG.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -43,7 +43,7 @@ export class TagsControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.TAG.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.tagsService.getOne(_id);
@@ -51,7 +51,7 @@ export class TagsControllerAdmin {
     }
 
     @ExtendedPost({ dto: CreateTagDto })
-    @Authorize(PERMISSIONS.TAG.create)
+    @SuperAuthorize()
     async create(
         @Body() createTagDto: CreateTagDto,
         @Req() req: { user: UserPayload },
@@ -66,7 +66,7 @@ export class TagsControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateTagDto })
-    @Authorize(PERMISSIONS.TAG.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -89,7 +89,7 @@ export class TagsControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.TAG.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

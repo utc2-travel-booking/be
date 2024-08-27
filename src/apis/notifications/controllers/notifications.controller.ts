@@ -1,8 +1,8 @@
 import { Body, Param, Query, Req } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -17,6 +17,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('notifications')
 @ApiTags('Front: Notifications')
@@ -28,7 +29,7 @@ export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -44,7 +45,7 @@ export class NotificationsController {
     }
 
     @ExtendedGet({ route: 'count' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperAuthorize()
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
         const { _id } = user;
@@ -55,7 +56,7 @@ export class NotificationsController {
     }
 
     @ExtendedPut({ route: 'read', dto: UpdateStatusNotificationDto })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperAuthorize()
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
         @Req() req: { user: UserPayload },
@@ -71,7 +72,7 @@ export class NotificationsController {
     }
 
     @ExtendedPut({ route: 'read/all' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperAuthorize()
     async updateAllStatus(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -80,7 +81,7 @@ export class NotificationsController {
     }
 
     @ExtendedDelete({ route: ':id' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.destroy)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async deleteOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

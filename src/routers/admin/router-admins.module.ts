@@ -11,7 +11,6 @@ import { MediaControllerAdmin } from 'src/apis/media/controllers/medias.controll
 import { MediaModule } from 'src/apis/media/medias.module';
 import { MetadataControllerAdmin } from 'src/apis/metadata/controllers/metadata.controller.admin';
 import { MetadataModule } from 'src/apis/metadata/metadata.module';
-import { PermissionsModule } from 'src/apis/permissions/permissions.module';
 import { PostsControllerAdmin } from 'src/apis/posts/controllers/posts.controller.admin';
 import { PostsModule } from 'src/apis/posts/posts.module';
 import { RolesModule } from 'src/apis/roles/roles.module';
@@ -44,7 +43,6 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         UserModule,
         MediaModule,
         RolesModule,
-        PermissionsModule,
         AuthModule,
         CategoriesModule,
         PostsModule,

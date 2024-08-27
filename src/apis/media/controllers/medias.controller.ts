@@ -1,7 +1,6 @@
 import { Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { appSettings } from 'src/configs/appsettings';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IUploadedMulterFile } from 'src/packages/s3/s3.service';
@@ -12,6 +11,7 @@ import { UploadMediaDto } from '../dto/upload-media.dto';
 import { MediaService } from '../medias.service';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('media')
 @ApiTags('Front: Media')
@@ -24,7 +24,7 @@ export class MediaController {
 
     @ExtendedPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @Authorize(PERMISSIONS_FRONT.FILE.create)
+    @SuperAuthorize()
     @UseInterceptors(
         FileInterceptor('file', {
             limits: {

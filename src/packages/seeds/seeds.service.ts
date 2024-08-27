@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { PermissionsService } from 'src/apis/permissions/permissions.service';
 import { RolesService } from 'src/apis/roles/roles.service';
 import fs from 'fs';
 import { Types } from 'mongoose';
@@ -11,7 +10,6 @@ import { MetadataService } from 'src/apis/metadata/metadata.service';
 export class SeedsService implements OnModuleInit {
     public readonly logger = new Logger(SeedsService.name);
     constructor(
-        private readonly permissionService: PermissionsService,
         private readonly roleService: RolesService,
         private readonly userService: UserService,
         private readonly metadataService: MetadataService,
@@ -22,34 +20,10 @@ export class SeedsService implements OnModuleInit {
             return;
         }
 
-        await this.seedPermissions();
         await this.seedRoles();
         await this.seedUsers();
         // await this.seedMetadata();
         this.logger.debug('Seeding completed');
-    }
-
-    async seedPermissions() {
-        const permissions = JSON.parse(
-            fs.readFileSync(
-                process.cwd() + '/public/data/permissions.json',
-                'utf8',
-            ),
-        );
-
-        this.logger.debug('Seeding permissions');
-        await this.permissionService.deleteMany({});
-
-        const result = permissions.map((permission) => {
-            delete permission.createdAt;
-            delete permission.updatedAt;
-            return {
-                ...permission,
-                _id: new Types.ObjectId(permission._id.$oid),
-            };
-        });
-
-        await this.permissionService.insertMany(result);
     }
 
     async seedRoles() {

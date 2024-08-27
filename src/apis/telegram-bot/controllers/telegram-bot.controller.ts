@@ -3,8 +3,8 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
+
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -20,6 +20,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('telegram-bots')
 @ApiTags('Admin: Telegram Bot')
@@ -31,7 +32,7 @@ export class TelegramBotControllerAdmin {
     constructor(private readonly telegramBotService: TelegramBotService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -41,7 +42,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.TELEGRAM_BOT.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.telegramBotService.getOne(_id);
@@ -51,7 +52,7 @@ export class TelegramBotControllerAdmin {
     @ExtendedPost({
         dto: CreateTelegramBotDto,
     })
-    @Authorize(PERMISSIONS.TELEGRAM_BOT.create)
+    @SuperAuthorize()
     async create(
         @Body() createTelegramBotDto: CreateTelegramBotDto,
         @Req() req: { user: UserPayload },
@@ -67,7 +68,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateTelegramBotDto })
-    @Authorize(PERMISSIONS.TELEGRAM_BOT.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -86,7 +87,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.TELEGRAM_BOT.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

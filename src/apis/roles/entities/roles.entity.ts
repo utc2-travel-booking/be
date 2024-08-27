@@ -5,12 +5,12 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from '@libs/super-search';
+import { RoleType } from '../constants';
+import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 import {
     Permission,
     PermissionDocument,
-} from 'src/apis/permissions/entities/permissions.entity';
-import { RoleType } from '../constants';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+} from '@libs/super-authorize/modules/permissions/entities/permissions.entity';
 
 @Schema({
     timestamps: true,

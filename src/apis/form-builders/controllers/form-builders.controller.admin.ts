@@ -1,6 +1,6 @@
 import { Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -10,12 +10,12 @@ import { Types } from 'mongoose';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { FormBuilderService } from '../form-builders.service';
-import { Authorize } from 'src/decorators/authorize.decorator';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('form-builders')
 @ApiTags('Admin: Form Builder')
@@ -27,7 +27,7 @@ export class FormBuilderControllerAdmin {
     constructor(private readonly formBuilderService: FormBuilderService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.FORM_BUILDER.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -37,7 +37,7 @@ export class FormBuilderControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.FORM_BUILDER.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.formBuilderService.getOne(_id);
@@ -45,7 +45,7 @@ export class FormBuilderControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.FORM_BUILDER.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

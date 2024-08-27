@@ -1,8 +1,7 @@
 import { Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReviewRatingService } from '../review-ratings.service';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -13,10 +12,10 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('review-ratings')
 @ApiTags('Admin: Review Ratings')
@@ -28,7 +27,7 @@ export class ReviewRatingControllerAdmin {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.REVIEW.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -38,7 +37,7 @@ export class ReviewRatingControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.REVIEW.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.reviewRatingService.getOne(_id);
@@ -46,7 +45,7 @@ export class ReviewRatingControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.REVIEW.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

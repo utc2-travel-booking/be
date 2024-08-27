@@ -2,8 +2,7 @@ import { Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserTransactionService } from 'src/apis/user-transaction/user-transaction.service';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -13,6 +12,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('user-transactions')
 @ApiTags('Admin: User Transactions')
@@ -27,7 +27,7 @@ export class UserTransactionControllerAdmin {
 
     @ExtendedGet()
     @ApiBearerAuth()
-    @Authorize(PERMISSIONS.USER_TRANSACTION.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -38,7 +38,7 @@ export class UserTransactionControllerAdmin {
 
     @ExtendedGet({ route: ':id' })
     @ApiBearerAuth()
-    @Authorize(PERMISSIONS.USER_TRANSACTION.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.userTransactionService.getOne(_id);

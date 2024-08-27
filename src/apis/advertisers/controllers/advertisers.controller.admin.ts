@@ -3,8 +3,7 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -22,6 +21,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('advertisers')
 @ApiTags('Admin: Advertisers')
@@ -33,7 +33,7 @@ export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -43,7 +43,7 @@ export class AdvertisersControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.advertisersService.getOne(_id);
@@ -53,7 +53,7 @@ export class AdvertisersControllerAdmin {
     @ExtendedPost({
         dto: CreateAdvertiserDto,
     })
-    @Authorize(PERMISSIONS.ADVERTISER.create)
+    @SuperAuthorize()
     async create(
         @Body() createAdvertiserDto: CreateAdvertiserDto,
         @Req() req: { user: UserPayload },
@@ -70,7 +70,7 @@ export class AdvertisersControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateAdvertiserDto })
-    @Authorize(PERMISSIONS.ADVERTISER.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -89,7 +89,7 @@ export class AdvertisersControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.ADVERTISER.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

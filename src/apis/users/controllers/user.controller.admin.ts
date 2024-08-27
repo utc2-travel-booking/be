@@ -1,8 +1,7 @@
 import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UpdateMeDto } from 'src/apis/users/dto/update-me.dto';
 import { UserService } from 'src/apis/users/user.service';
 import { Types } from 'mongoose';
@@ -21,6 +20,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('users')
 @ApiTags('Admin: User')
@@ -32,7 +32,7 @@ export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
     @ExtendedPut({ route: 'ban', dto: CreateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
@@ -45,7 +45,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedPut({ route: 'un-ban', dto: CreateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
@@ -57,7 +57,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedGet({ route: 'me' })
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperAuthorize()
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -66,7 +66,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedPut({ route: 'me', dto: UpdateMeDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperAuthorize()
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
         @Req() req: { user: UserPayload },
@@ -76,7 +76,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -86,7 +86,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.userService.getOne(_id);
@@ -96,7 +96,7 @@ export class UserControllerAdmin {
     @ExtendedPost({
         dto: CreateUserDto,
     })
-    @Authorize(PERMISSIONS.USER.create)
+    @SuperAuthorize()
     async create(
         @Body() createRoleDto: CreateUserDto,
         @Req() req: { user: UserPayload },
@@ -108,7 +108,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -127,7 +127,7 @@ export class UserControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.USER.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

@@ -1,25 +1,37 @@
+import { RolesModule } from 'src/apis/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { SuperAuthorizeService } from './super-authorize.service';
 import { Module, DynamicModule } from '@nestjs/common';
+import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
+
+export interface SuperAuthorizeOptions {
+    paths: string[];
+    jwt: {
+        secret: string;
+        issuer: string;
+        expiresIn: string;
+    };
+}
 
 @Module({
-    imports: [PermissionsModule],
+    imports: [PermissionsModule, RolesModule, SuperCacheModule],
     controllers: [],
-    providers: [SuperAuthorizeService],
+    providers: [SuperAuthorizeService, JwtStrategy],
     exports: [SuperAuthorizeService],
 })
 export class SuperAuthorizeModule {
-    static forRoot(opstions: { prefixes: string[] }): DynamicModule {
+    static forRoot(options: SuperAuthorizeOptions): DynamicModule {
         return {
             module: SuperAuthorizeModule,
             providers: [
                 SuperAuthorizeService,
                 {
-                    provide: 'PREFIXES',
-                    useValue: opstions.prefixes,
+                    provide: 'SUPER_AUTHORIZE_OPTIONS',
+                    useValue: options,
                 },
             ],
-            exports: ['PREFIXES'],
+            exports: ['SUPER_AUTHORIZE_OPTIONS'],
         };
     }
 }

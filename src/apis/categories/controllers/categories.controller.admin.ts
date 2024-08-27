@@ -1,3 +1,4 @@
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { SuperController } from '@libs/super-core';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
@@ -10,10 +11,8 @@ import { Types } from 'mongoose';
 import { CategoriesService } from 'src/apis/categories/categories.service';
 import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto';
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
-
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import {
@@ -34,7 +33,7 @@ export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.CATEGORIES.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.categoriesService.getOne(_id);
@@ -42,7 +41,7 @@ export class CategoriesControllerAdmin {
     }
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.CATEGORIES.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -54,7 +53,7 @@ export class CategoriesControllerAdmin {
     @ExtendedPost({
         dto: CreateCategoryDto,
     })
-    @Authorize(PERMISSIONS.CATEGORIES.create)
+    @SuperAuthorize()
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
         @Req() req: { user: UserPayload },
@@ -72,7 +71,7 @@ export class CategoriesControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateCategoryDto })
-    @Authorize(PERMISSIONS.CATEGORIES.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -90,7 +89,7 @@ export class CategoriesControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.CATEGORIES.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

@@ -3,8 +3,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -17,6 +16,7 @@ import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('apps')
 @ApiTags('Front: Apps')
@@ -45,7 +45,7 @@ export class AppsController {
     }
 
     @ExtendedPost({ route: 'add-point/:id/:type' })
-    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -58,7 +58,7 @@ export class AppsController {
     }
 
     @ExtendedGet({ route: 'user-history' })
-    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @SuperAuthorize()
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,

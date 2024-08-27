@@ -2,8 +2,7 @@ import { Body, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -22,6 +21,7 @@ import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator'
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('apps')
 @ApiTags('Admin: Apps')
@@ -33,7 +33,7 @@ export class AppsControllerAdmin {
     constructor(private readonly appsService: AppsService) {}
 
     @ExtendedGet()
-    @Authorize(PERMISSIONS.APP.index)
+    @SuperAuthorize()
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -43,7 +43,7 @@ export class AppsControllerAdmin {
     }
 
     @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.APP.index)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.appsService.getOne(_id);
@@ -53,7 +53,7 @@ export class AppsControllerAdmin {
     @ExtendedPost({
         dto: CreateAppDto,
     })
-    @Authorize(PERMISSIONS.APP.create)
+    @SuperAuthorize()
     async create(
         @Body() createAppDto: CreateAppDto,
         @Req() req: { user: UserPayload },
@@ -68,7 +68,7 @@ export class AppsControllerAdmin {
     }
 
     @ExtendedPut({ route: ':id', dto: UpdateAppDto })
-    @Authorize(PERMISSIONS.APP.edit)
+    @SuperAuthorize()
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -87,7 +87,7 @@ export class AppsControllerAdmin {
     }
 
     @ExtendedDelete()
-    @Authorize(PERMISSIONS.APP.destroy)
+    @SuperAuthorize()
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

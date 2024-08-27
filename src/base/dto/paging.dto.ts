@@ -1,7 +1,7 @@
 import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SearchType } from '@libs/super-search/constants';
 import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { SearchType } from 'src/constants/enums';
 
 export class PagingDto {
     @ExtendedApiProperty({

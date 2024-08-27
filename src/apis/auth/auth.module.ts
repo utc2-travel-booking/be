@@ -32,7 +32,7 @@ import { UserPayloadExtractorStrategy } from 'src/strategies/user-payload-extrac
     providers: [
         AuthService,
         LocalStrategy,
-        JwtStrategy,
+        // JwtStrategy,
         LoginTelegramProviderStrategy,
         LoginTelegramMiniAppStrategy,
         UserPayloadExtractorStrategy,

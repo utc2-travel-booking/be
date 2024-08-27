@@ -1,8 +1,7 @@
 import { Body, Req, Query, Param } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ReviewRatingService } from '../review-ratings.service';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateReviewRatingDto } from '../dto/create-review-rating.dto';
 import {
@@ -17,6 +16,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
 import { SuperController } from '@libs/super-core';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 
 @SuperController('review-ratings')
 @ApiTags('Front: Review Ratings')
@@ -54,7 +54,7 @@ export class ReviewRatingController {
     @ExtendedPost({
         dto: CreateReviewRatingDto,
     })
-    @Authorize(PERMISSIONS_FRONT.REVIEW.create)
+    @SuperAuthorize()
     async create(
         @Body() createReviewRatingDto: CreateReviewRatingDto,
         @Req() req: { user: UserPayload },

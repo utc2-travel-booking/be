@@ -6,12 +6,12 @@ import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import _ from 'lodash';
-import { PermissionsService } from '../permissions/permissions.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './constants';
 import { ModuleRef } from '@nestjs/core';
+import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';
 
 @Injectable()
 export class RolesService extends BaseService<RoleDocument, Role> {
@@ -38,10 +38,10 @@ export class RolesService extends BaseService<RoleDocument, Role> {
 
         const { permissions } = result;
 
-        const getAllPermissions =
-            await this.permissionsService.getAllPermissions(permissions);
+        // const getAllPermissions =
+        //     await this.permissionsService.getAllPermissions(permissions);
 
-        return { ...result, permissions: getAllPermissions };
+        // return { ...result, permissions: getAllPermissions };
     }
 
     async findPermissionsByRole(roleId: Types.ObjectId) {
@@ -57,13 +57,9 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             .findById(roleId)
             .populate('permissions');
 
-        const permissions = role?.permissions.map((permission) => {
-            return _.get(permission, 'name');
-        });
+        await this.superCacheService.set(`role:${roleId}`, role?.permissions);
 
-        await this.superCacheService.set(`role:${roleId}`, permissions);
-
-        return permissions;
+        return role?.permissions;
     }
 
     async createOne(
@@ -74,18 +70,18 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = createRoleDto;
 
-        const permissions =
-            await this.permissionsService.getPermissionIdFromPayload(
-                permissionsDto,
-            );
+        // const permissions =
+        //     await this.permissionsService.getPermissionIdFromPayload(
+        //         permissionsDto,
+        //     );
 
         const result = new this.roleModel({
             ...createRoleDto,
             ...options,
-            permissions,
+            // permissions,
             createdBy: userId,
         });
-        await this.create(result);
+        // await this.create(result);
 
         return result;
     }
@@ -98,14 +94,18 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         const { _id: userId } = user;
         const { permissions: permissionsDto } = updateRoleDto;
 
-        const permissions =
-            await this.permissionsService.getPermissionIdFromPayload(
-                permissionsDto,
-            );
+        // const permissions =
+        //     await this.permissionsService.getPermissionIdFromPayload(
+        //         permissionsDto,
+        //     );
 
         const result = await this.findOneAndUpdate(
             { _id },
-            { ...updateRoleDto, permissions, updatedBy: userId },
+            {
+                ...updateRoleDto,
+                // permissions,
+                updatedBy: userId,
+            },
             { new: true },
         );
 
