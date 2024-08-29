@@ -60,60 +60,6 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         return role?.permissions;
     }
 
-    async createOne(
-        createRoleDto: CreateRoleDto,
-        user: UserPayload,
-        options?: Record<string, any>,
-    ) {
-        const { _id: userId } = user;
-        const { permissions: permissionsDto } = createRoleDto;
-
-        // const permissions =
-        //     await this.permissionsService.getPermissionIdFromPayload(
-        //         permissionsDto,
-        //     );
-
-        const result = new this.roleModel({
-            ...createRoleDto,
-            ...options,
-            // permissions,
-            createdBy: userId,
-        });
-        // await this.create(result);
-
-        return result;
-    }
-
-    async updateOneById(
-        _id: Types.ObjectId,
-        updateRoleDto: UpdateRoleDto,
-        user: UserPayload,
-    ) {
-        const { _id: userId } = user;
-        const { permissions: permissionsDto } = updateRoleDto;
-
-        // const permissions =
-        //     await this.permissionsService.getPermissionIdFromPayload(
-        //         permissionsDto,
-        //     );
-
-        const result = await this.findOneAndUpdate(
-            { _id },
-            {
-                ...updateRoleDto,
-                // permissions,
-                updatedBy: userId,
-            },
-            { new: true },
-        );
-
-        if (!result) {
-            throw new BadRequestException(`Not found ${_id}`);
-        }
-
-        return result;
-    }
-
     async findRoleByType(type: number) {
         return this.roleModel.findOne({ type });
     }
