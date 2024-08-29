@@ -72,6 +72,21 @@ export class AppsController {
         return result;
     }
 
+    @ExtendedGet({ route: 'category' })
+    @Authorize(PERMISSIONS_FRONT.APP.index)
+    async getUserAppCatagories(
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getUserAppCategories(
+            queryParams,
+            user,
+        );
+        return result;
+    }
+
     @ExtendedGet()
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
