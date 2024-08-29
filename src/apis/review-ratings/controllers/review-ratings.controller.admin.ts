@@ -15,7 +15,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('review-ratings')
 @Resource('review-ratings')
@@ -28,7 +28,7 @@ export class ReviewRatingControllerAdmin {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -38,7 +38,7 @@ export class ReviewRatingControllerAdmin {
     }
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.reviewRatingService.getOne(_id);
@@ -46,7 +46,7 @@ export class ReviewRatingControllerAdmin {
     }
 
     @SuperDelete()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

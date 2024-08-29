@@ -28,7 +28,7 @@ import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('media')
 @Resource('media')
@@ -41,7 +41,7 @@ export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -51,7 +51,7 @@ export class MediaControllerAdmin {
     }
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.mediaService.getOne(_id);
@@ -60,7 +60,7 @@ export class MediaControllerAdmin {
 
     @SuperPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     @UseInterceptors(
         FileInterceptor('file', {
             limits: {
@@ -78,7 +78,7 @@ export class MediaControllerAdmin {
     }
 
     @SuperDelete()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

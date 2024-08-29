@@ -9,7 +9,7 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('admin/audits')
 @Resource('admin/audits')
@@ -18,7 +18,7 @@ export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -28,7 +28,7 @@ export class AuditsControllerAdmin {
     }
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.auditsService.getOne(_id);

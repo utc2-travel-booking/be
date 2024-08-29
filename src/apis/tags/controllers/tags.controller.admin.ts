@@ -21,7 +21,7 @@ import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('tags')
 @Resource('tags')
@@ -34,7 +34,7 @@ export class TagsControllerAdmin {
     constructor(private readonly tagsService: TagsService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -44,7 +44,7 @@ export class TagsControllerAdmin {
     }
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.tagsService.getOne(_id);
@@ -52,7 +52,7 @@ export class TagsControllerAdmin {
     }
 
     @SuperPost({ dto: CreateTagDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createTagDto: CreateTagDto,
         @Req() req: { user: UserPayload },
@@ -67,7 +67,7 @@ export class TagsControllerAdmin {
     }
 
     @SuperPut({ route: ':id', dto: UpdateTagDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -90,7 +90,7 @@ export class TagsControllerAdmin {
     }
 
     @SuperDelete()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

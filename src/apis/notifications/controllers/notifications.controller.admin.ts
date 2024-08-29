@@ -10,7 +10,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('notifications')
 @Resource('notifications')
@@ -23,7 +23,7 @@ export class NotificationsControllerAdmin {
     constructor(private readonly notificationsService: NotificationsService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,

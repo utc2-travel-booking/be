@@ -1,4 +1,4 @@
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
@@ -34,7 +34,7 @@ export class CategoriesControllerAdmin {
     constructor(private readonly categoriesService: CategoriesService) {}
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.categoriesService.getOne(_id);
@@ -42,7 +42,7 @@ export class CategoriesControllerAdmin {
     }
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -54,7 +54,7 @@ export class CategoriesControllerAdmin {
     @SuperPost({
         dto: CreateCategoryDto,
     })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
         @Req() req: { user: UserPayload },
@@ -72,7 +72,7 @@ export class CategoriesControllerAdmin {
     }
 
     @SuperPut({ route: ':id', dto: UpdateCategoryDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -90,7 +90,7 @@ export class CategoriesControllerAdmin {
     }
 
     @SuperDelete()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

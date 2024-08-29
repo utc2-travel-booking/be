@@ -3,7 +3,7 @@ import { SuperCacheService } from './super-cache.service';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { Controller } from '@nestjs/common';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('admin/super-cache')
 @Resource('admin/super-cache')
@@ -12,7 +12,7 @@ export class SuperCacheController {
     constructor(private readonly superCacheService: SuperCacheService) {}
 
     @SuperDelete({ route: 'reset' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     async reset() {
         return this.superCacheService.resetCache();
     }

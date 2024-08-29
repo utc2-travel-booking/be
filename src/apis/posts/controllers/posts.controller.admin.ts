@@ -1,4 +1,4 @@
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
@@ -33,7 +33,7 @@ export class PostsControllerAdmin {
     constructor(private readonly postsService: PostsService) {}
 
     @SuperGet({ route: ':type' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({
         name: 'locale',
         required: false,
@@ -51,7 +51,7 @@ export class PostsControllerAdmin {
     }
 
     @SuperGet({ route: ':type/:id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     @ApiParam({
         name: 'locale',
@@ -68,7 +68,7 @@ export class PostsControllerAdmin {
     }
 
     @SuperPost({ route: ':type', dto: CreatePostDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     @ApiParam({
         name: 'locale',
         required: false,
@@ -93,7 +93,7 @@ export class PostsControllerAdmin {
     }
 
     @SuperPut({ route: ':type/:id', dto: UpdatePostDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -114,7 +114,7 @@ export class PostsControllerAdmin {
     }
 
     @SuperDelete({ route: ':type' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

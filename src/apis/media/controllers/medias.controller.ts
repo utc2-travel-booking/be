@@ -11,7 +11,7 @@ import { UploadMediaDto } from '../dto/upload-media.dto';
 import { MediaService } from '../medias.service';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('media')
 @Resource('media')
@@ -25,7 +25,7 @@ export class MediaController {
 
     @SuperPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     @UseInterceptors(
         FileInterceptor('file', {
             limits: {

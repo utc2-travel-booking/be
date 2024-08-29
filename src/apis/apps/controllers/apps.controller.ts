@@ -16,7 +16,7 @@ import { MetadataType } from 'src/apis/metadata/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('apps')
 @Resource('apps')
@@ -46,7 +46,7 @@ export class AppsController {
     }
 
     @SuperPost({ route: 'add-point/:id/:type' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -59,7 +59,7 @@ export class AppsController {
     }
 
     @SuperGet({ route: 'user-history' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,

@@ -8,6 +8,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { Controller, Query } from '@nestjs/common';
 import { Resource } from '@libs/super-authorize/decorators';
+import { PERMISSION } from '@libs/super-authorize';
 
 @Controller('admin/permissions')
 @Resource('admin/permissions')
@@ -16,7 +17,7 @@ export class PermissionsController {
     constructor(private readonly permissionsService: PermissionsService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,

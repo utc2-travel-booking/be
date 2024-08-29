@@ -16,7 +16,7 @@ import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('notifications')
 @Resource('notifications')
@@ -29,7 +29,7 @@ export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -45,7 +45,7 @@ export class NotificationsController {
     }
 
     @SuperGet({ route: 'count' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
         const { _id } = user;
@@ -56,7 +56,7 @@ export class NotificationsController {
     }
 
     @SuperPut({ route: 'read', dto: UpdateStatusNotificationDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
         @Req() req: { user: UserPayload },
@@ -72,7 +72,7 @@ export class NotificationsController {
     }
 
     @SuperPut({ route: 'read/all' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     async updateAllStatus(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -81,7 +81,7 @@ export class NotificationsController {
     }
 
     @SuperDelete({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiParam({ name: 'id', type: String })
     async deleteOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

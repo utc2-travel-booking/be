@@ -3,11 +3,9 @@ import { Permissions } from './permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
-interface AuthorizeOptions {}
-
-export const SuperAuthorize = () => {
+export const SuperAuthorize = (...args: string[]) => {
     return applyDecorators(
-        Permissions(),
+        Permissions(...args),
         UseGuards(JwtAuthGuard, PermissionsGuard),
     );
 };

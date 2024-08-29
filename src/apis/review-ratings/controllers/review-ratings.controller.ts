@@ -16,7 +16,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('review-ratings')
 @Resource('review-ratings')
@@ -55,7 +55,7 @@ export class ReviewRatingController {
     @SuperPost({
         dto: CreateReviewRatingDto,
     })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createReviewRatingDto: CreateReviewRatingDto,
         @Req() req: { user: UserPayload },

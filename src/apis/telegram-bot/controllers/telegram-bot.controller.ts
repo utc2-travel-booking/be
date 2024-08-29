@@ -19,7 +19,7 @@ import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('telegram-bots')
 @Resource('telegram-bots')
@@ -32,7 +32,7 @@ export class TelegramBotControllerAdmin {
     constructor(private readonly telegramBotService: TelegramBotService) {}
 
     @SuperGet()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -42,7 +42,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @SuperGet({ route: ':id' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.telegramBotService.getOne(_id);
@@ -52,7 +52,7 @@ export class TelegramBotControllerAdmin {
     @SuperPost({
         dto: CreateTelegramBotDto,
     })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createTelegramBotDto: CreateTelegramBotDto,
         @Req() req: { user: UserPayload },
@@ -68,7 +68,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @SuperPut({ route: ':id', dto: UpdateTelegramBotDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -87,7 +87,7 @@ export class TelegramBotControllerAdmin {
     }
 
     @SuperDelete()
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

@@ -1,5 +1,6 @@
 import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
     IsArray,
     IsNotEmpty,
@@ -10,6 +11,9 @@ import {
     Min,
 } from 'class-validator';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
+import { IsExist } from 'src/common/services/is-exist-constraint.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { convertStringToObjectId } from 'src/utils/helper';
 
 export class PermissionDto {
     name: string;
@@ -41,6 +45,12 @@ export class CreateRoleDto extends PartialType(ExcludeDto) {
 
     @SuperApiProperty({
         type: [PermissionDto],
+    })
+    @Transform(({ value }) => convertStringToObjectId(value, true))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.PERMISSION,
+        message: 'permissions must be an array of valid permission ids',
+        isArray: true,
     })
     @IsNotEmpty()
     @IsArray()

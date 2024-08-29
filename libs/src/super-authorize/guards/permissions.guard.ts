@@ -20,9 +20,7 @@ export class PermissionsGuard implements CanActivate {
             return true;
         }
 
-        const { user, _parsedUrl, method } = context
-            .switchToHttp()
-            .getRequest();
+        const { user, _parsedUrl } = context.switchToHttp().getRequest();
 
         const { pathname } = _parsedUrl;
         const pathnames = pathname.split('/');
@@ -36,7 +34,7 @@ export class PermissionsGuard implements CanActivate {
             (permission) =>
                 permission?.path === path &&
                 permission?.prefix === prefix &&
-                permission?.requestMethod === method,
+                requiredPermissions.includes(permission?.requestMethod),
         );
     }
 }

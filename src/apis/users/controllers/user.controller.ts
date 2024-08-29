@@ -10,7 +10,7 @@ import { MetadataType } from 'src/apis/metadata/constants';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { Resource } from '@libs/super-authorize';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('users')
 @Resource('users')
@@ -23,7 +23,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @SuperGet({ route: 'me' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -32,7 +32,7 @@ export class UserController {
     }
 
     @SuperPut({ route: 'me', dto: UpdateMeDto })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.PUT)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
         @Req() req: { user: UserPayload },
@@ -42,7 +42,7 @@ export class UserController {
     }
 
     @SuperGet({ route: 'history-reward/:type' })
-    @SuperAuthorize()
+    @SuperAuthorize(PERMISSION.GET)
     async getHistoryReward(
         @Param('type') type: MetadataType,
         @Req() req: { user: UserPayload },
