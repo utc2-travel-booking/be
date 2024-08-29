@@ -20,11 +20,11 @@ export class CreateTagAppDto extends PartialType(ExcludeDto) {
         },
     })
     @IsNotEmpty()
-    @Transform(({ value }) => convertStringToObjectId(value))
-    @IsExist({
-        collectionName: COLLECTION_NAMES.TAG,
-        message: 'Tag does not exist',
-    })
+    // @Transform(({ value }) => convertStringToObjectId(value))
+    // @IsExist({
+    //     collectionName: COLLECTION_NAMES.TAG,
+    //     message: 'Tag does not exist',
+    // })
     tag: Types.ObjectId;
 
     @ExtendedApiProperty({
@@ -38,11 +38,11 @@ export class CreateTagAppDto extends PartialType(ExcludeDto) {
         },
     })
     @IsNotEmpty()
-    @Transform(({ value }) => convertStringToObjectId(value))
-    @IsExist({
-        collectionName: COLLECTION_NAMES.APP,
-        message: 'App does not exist',
-    })
+    // @Transform(({ value }) => convertStringToObjectId(value))
+    // @IsExist({
+    //     collectionName: COLLECTION_NAMES.APP,
+    //     message: 'App does not exist',
+    // })
     app: Types.ObjectId;
 
     @ExtendedApiProperty({
