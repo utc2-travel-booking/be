@@ -15,6 +15,19 @@ export class BannerImage {
         required: true,
     })
     featuredImage: Types.ObjectId;
+
+    @ExtendedProp({ type: String, required: true })
+    title: string;
+
+    @ExtendedProp({ type: String, required: true })
+    shortDescription: string;
+
+    @ExtendedProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        required: true,
+    })
+    iconImage: Types.ObjectId;
 }
 
 @Schema({

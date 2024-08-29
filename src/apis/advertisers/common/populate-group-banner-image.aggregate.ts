@@ -22,6 +22,20 @@ export const populateGroupBannerImageAggregate = [
         },
     },
     {
+        $lookup: {
+            from: COLLECTION_NAMES.FILE,
+            localField: 'bannerImages.iconImage',
+            foreignField: '_id',
+            as: 'iconImage',
+        },
+    },
+    {
+        $unwind: {
+            path: '$iconImage',
+            preserveNullAndEmptyArrays: true,
+        },
+    },
+    {
         $group: {
             _id: '$_id',
             name: { $first: '$name' },
@@ -30,6 +44,9 @@ export const populateGroupBannerImageAggregate = [
                 $push: {
                     urlRedirect: '$bannerImages.urlRedirect',
                     featuredImage: '$fileDetails',
+                    iconImage: '$iconImage',
+                    title: '$bannerImages.title',
+                    shortDescription: '$bannerImages.shortDescription',
                 },
             },
             createdAt: { $first: '$createdAt' },
