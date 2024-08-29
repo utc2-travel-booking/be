@@ -1,4 +1,4 @@
-import { Body } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Types } from 'mongoose';
@@ -7,9 +7,10 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { FormBuilderService } from '../form-builders.service';
 import { CreateFormBuildersDto } from '../dto/create-form-builders.dto';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
-import { SuperController } from '@libs/super-core';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('form-builders')
+@Controller('form-builders')
+@Resource('form-builders')
 @ApiTags('Front: Form Builder')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

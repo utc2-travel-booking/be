@@ -1,7 +1,6 @@
-import { Body, Param, Query, Req } from '@nestjs/common';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-
 import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
@@ -16,10 +15,11 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('notifications')
+@Controller('notifications')
+@Resource('notifications')
 @ApiTags('Front: Notifications')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

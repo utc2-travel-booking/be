@@ -69,7 +69,9 @@ export class PagingDto {
         required: false,
     })
     @IsEnum(SearchType, {
-        message: `status must be a valid enum ${SearchType.AND} | ${SearchType.OR}`,
+        message: `SearchType must be a valid enum ${SearchType.AND} | ${
+            SearchType.OR
+        }  | ${SearchType.AND.toLocaleLowerCase()} | ${SearchType.OR.toLocaleLowerCase()}`,
     })
     @IsOptional()
     searchType: string;

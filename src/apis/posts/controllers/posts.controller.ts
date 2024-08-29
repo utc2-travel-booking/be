@@ -1,4 +1,4 @@
-import { Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import {
     ExtendedPagingDto,
@@ -12,9 +12,10 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { PostsService } from '../posts.service';
 import { PostStatus, PostType } from '../constants';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
-import { SuperController } from '@libs/super-core';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('posts')
+@Controller('posts')
+@Resource('posts')
 @ApiTags('Front: Posts')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

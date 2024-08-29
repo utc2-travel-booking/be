@@ -1,4 +1,4 @@
-import { Body, Param, Req } from '@nestjs/common';
+import { Body, Controller, Param, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -9,10 +9,11 @@ import { UserService } from '../user.service';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('users')
+@Controller('users')
+@Resource('users')
 @ApiTags('Front: User')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

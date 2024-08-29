@@ -5,6 +5,7 @@ import { RoleSchema } from './entities/roles.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
 import { PermissionsModule } from '@libs/super-authorize/modules/permissions/permissions.module';
+import { RolesController } from './roles.controller';
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import { PermissionsModule } from '@libs/super-authorize/modules/permissions/per
         ]),
         PermissionsModule,
     ],
-    controllers: [],
+    controllers: [RolesController],
     providers: [RolesService],
     exports: [RolesService],
 })

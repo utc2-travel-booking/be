@@ -33,15 +33,13 @@ export class RolesService extends BaseService<RoleDocument, Role> {
         const result = await this.findOne({
             _id,
             ...options,
-            deletedAt: null,
         }).exec();
 
-        const { permissions } = result;
+        if (!result) {
+            throw new BadRequestException(`Not found ${_id}`);
+        }
 
-        // const getAllPermissions =
-        //     await this.permissionsService.getAllPermissions(permissions);
-
-        // return { ...result, permissions: getAllPermissions };
+        return result;
     }
 
     async findPermissionsByRole(roleId: Types.ObjectId) {

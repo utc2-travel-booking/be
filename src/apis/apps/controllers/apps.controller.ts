@@ -1,4 +1,4 @@
-import { Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
@@ -15,10 +15,11 @@ import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.gua
 import { MetadataType } from 'src/apis/metadata/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('apps')
+@Controller('apps')
+@Resource('apps')
 @ApiTags('Front: Apps')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

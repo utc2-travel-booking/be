@@ -1,4 +1,4 @@
-import { Body, Param, Query, Req } from '@nestjs/common';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -20,10 +20,11 @@ import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('apps')
+@Controller('apps')
+@Resource('apps')
 @ApiTags('Admin: Apps')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { PermissionMetadata } from '../metadata/permission.interface';
 
 export class PermissionStorageHost {
@@ -14,7 +15,8 @@ export class PermissionStorageHost {
     }
 
     addPrefix(prefix: string | string[]) {
-        this.prefixes.push(...(Array.isArray(prefix) ? prefix : [prefix]));
+        const newPrefixes = Array.isArray(prefix) ? prefix : [prefix];
+        this.prefixes = _.union(this.prefixes, newPrefixes);
     }
 
     getPermissionMetadata(): PermissionMetadata[] {

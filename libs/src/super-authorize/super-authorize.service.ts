@@ -1,8 +1,8 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { PermissionsService } from './modules/permissions/permissions.service';
 import { PermissionStorage } from './storages/permission.storage';
-import { Permission } from './modules/permissions/entities/permissions.entity';
 import { SuperAuthorizeOptions } from './super-authorize.module';
+import _ from 'lodash';
 
 @Injectable()
 export class SuperAuthorizeService implements OnModuleInit {
@@ -18,22 +18,33 @@ export class SuperAuthorizeService implements OnModuleInit {
         const permissionMetadata = PermissionStorage.getPermissionMetadata();
         const permissions = await this.permissionsService.find({}).exec();
 
-        const newPermissions: Permission[] = [];
-        for (const item of permissionMetadata) {
-            const permission = permissions.find(
-                (p) =>
-                    item.path === p.path &&
-                    item.prefix === p.prefix &&
-                    item.requestMethod === p.requestMethod,
-            );
+        const newPermissions = _.differenceWith(
+            permissionMetadata,
+            permissions,
+            (item, p) =>
+                item.path === p.path &&
+                item.prefix === p.prefix &&
+                item.requestMethod === p.requestMethod,
+        );
 
-            if (!permission) {
-                newPermissions.push(item);
-            }
+        if (!_.isEmpty(newPermissions)) {
+            await this.permissionsService.insertMany(newPermissions);
         }
 
-        if (newPermissions.length > 0) {
-            await this.permissionsService.insertMany(newPermissions);
+        const permissionsToDelete = _.differenceWith(
+            permissions,
+            permissionMetadata,
+            (p, item) =>
+                p.path === item.path &&
+                p.prefix === item.prefix &&
+                p.requestMethod === item.requestMethod,
+        );
+
+        if (!_.isEmpty(permissionsToDelete)) {
+            const deletePromises = _.map(permissionsToDelete, (item) =>
+                this.permissionsService.deleteOne({ _id: item._id }),
+            );
+            await Promise.all(deletePromises);
         }
     }
 }

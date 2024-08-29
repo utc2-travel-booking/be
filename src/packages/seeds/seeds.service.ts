@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { RolesService } from 'src/apis/roles/roles.service';
 import fs from 'fs';
 import { Types } from 'mongoose';
 import { UserService } from 'src/apis/users/user.service';
 import { appSettings } from 'src/configs/appsettings';
 import { MetadataService } from 'src/apis/metadata/metadata.service';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 
 @Injectable()
 export class SeedsService implements OnModuleInit {

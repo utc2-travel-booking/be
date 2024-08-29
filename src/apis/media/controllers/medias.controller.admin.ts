@@ -1,4 +1,5 @@
 import {
+    Controller,
     Param,
     Query,
     Req,
@@ -26,11 +27,12 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
+@Controller('media')
+@Resource('media')
 @ApiTags('Admin: Media')
-@SuperController('media')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,

@@ -1,4 +1,4 @@
-import { Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
 import { appSettings } from 'src/configs/appsettings';
@@ -10,10 +10,11 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UploadMediaDto } from '../dto/upload-media.dto';
 import { MediaService } from '../medias.service';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('media')
+@Controller('media')
+@Resource('media')
 @ApiTags('Front: Media')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

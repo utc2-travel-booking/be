@@ -1,10 +1,10 @@
+import { Resource } from '@libs/super-authorize';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
-import { Body, Param, Query, Req } from '@nestjs/common';
+import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostType } from 'src/apis/posts/constants';
@@ -13,7 +13,6 @@ import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
 import { PostsService } from 'src/apis/posts/posts.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES } from 'src/constants';
-
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import {
@@ -23,7 +22,8 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 
-@SuperController('posts')
+@Controller('posts')
+@Resource('posts')
 @ApiTags('Admin: Posts')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

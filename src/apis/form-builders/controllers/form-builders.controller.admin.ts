@@ -1,4 +1,4 @@
-import { Param, Query, Req } from '@nestjs/common';
+import { Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
 import {
@@ -14,10 +14,11 @@ import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
-import { SuperController } from '@libs/super-core';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController('form-builders')
+@Controller('form-builders')
+@Resource('form-builders')
 @ApiTags('Admin: Form Builder')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

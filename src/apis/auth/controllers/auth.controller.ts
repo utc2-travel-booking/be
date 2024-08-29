@@ -1,4 +1,4 @@
-import { Body, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -9,9 +9,10 @@ import { UserLoginTelegramDto } from '../dto/user-login-telegram.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { LoginTelegramMiniAppGuard } from 'src/guards/login-telegram-mini-app.guard';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
-import { SuperController } from '@libs/super-core';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController()
+@Controller()
+@Resource()
 @ApiTags('Front: Auth')
 @AuditLog({
     events: [

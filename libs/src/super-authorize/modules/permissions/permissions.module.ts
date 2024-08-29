@@ -3,6 +3,7 @@ import { PermissionsService } from './permissions.service';
 import { Module } from '@nestjs/common';
 import { PermissionSchema } from './entities/permissions.entity';
 import { COLLECTION_NAMES } from 'src/constants';
+import { PermissionsController } from './permissions.controller';
 
 @Module({
     imports: [
@@ -10,7 +11,7 @@ import { COLLECTION_NAMES } from 'src/constants';
             { name: COLLECTION_NAMES.PERMISSION, schema: PermissionSchema },
         ]),
     ],
-    controllers: [],
+    controllers: [PermissionsController],
     providers: [PermissionsService],
     exports: [PermissionsService],
 })

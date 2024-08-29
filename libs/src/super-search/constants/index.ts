@@ -1,6 +1,8 @@
 export enum SearchType {
     AND = 'AND',
     OR = 'OR',
+    and = 'and',
+    or = 'or',
 }
 
 export enum OPERATOR {

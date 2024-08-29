@@ -2,13 +2,13 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
-import { RolesService } from 'src/apis/roles/roles.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { Types } from 'mongoose';
 import _ from 'lodash';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { UserCacheKey } from 'src/apis/users/constants';
 import { SuperAuthorizeOptions } from '../super-authorize.module';
+import { RolesService } from '../modules/roles/roles.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -32,8 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const permissions = await this.rolesService.findPermissionsByRole(
             roleId,
         );
-
-        console.log('permissions', permissions);
 
         const usersBannedInCache = await this.superCacheService.get<{
             items: any[];

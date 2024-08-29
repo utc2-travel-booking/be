@@ -1,9 +1,9 @@
-import { RolesModule } from 'src/apis/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { SuperAuthorizeService } from './super-authorize.service';
 import { Module, DynamicModule } from '@nestjs/common';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 export interface SuperAuthorizeOptions {
     paths: string[];

@@ -6,9 +6,12 @@ import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
-import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import {
+    Role,
+    RoleDocument,
+} from '@libs/super-authorize/modules/roles/entities/roles.entity';
 
 export type UserDocument = User & Document;
 

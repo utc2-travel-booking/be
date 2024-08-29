@@ -1,4 +1,4 @@
-import { Req, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth.service';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
@@ -8,9 +8,10 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
-import { SuperController } from '@libs/super-core';
+import { Resource } from '@libs/super-authorize';
 
-@SuperController()
+@Controller()
+@Resource()
 @ApiTags('Admin: Auth')
 @AuditLog({
     events: [
