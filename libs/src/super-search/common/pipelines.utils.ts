@@ -85,6 +85,9 @@ export const matchLevel = (stage: PipelineStage): number => {
     if (_.has(stage, '$match')) {
         const matchObj = stage.$match;
         const keys = Object.keys(matchObj);
+        if (['$and', '$or'].includes(keys[0])) {
+            return 2;
+        }
 
         return keys.some((key) => key.includes('.')) ? 2 : 1;
     }
