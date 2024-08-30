@@ -9,6 +9,7 @@ import { File } from 'src/apis/media/entities/files.entity';
 import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { generateRandomString } from '../common/generate-random-string.util';
 
 export type UserDocument = User & Document;
 
@@ -122,7 +123,36 @@ export class User extends AggregateRoot {
         required: false,
     })
     password: string;
+
+    @ExtendedProp({
+        type: String,
+        cms: {
+            label: 'Invite Code',
+            tableShow: true,
+            columnPosition: 9,
+        },
+    })
+    @Column({ type: 'varchar', length: 16 })
+    inviteCode: string;
+
+    @BeforeInsert()
+    generateInviteCode() {
+        this.inviteCode = generateRandomString(16);
+    }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(autopopulateSoftDelete);
+function BeforeInsert(): (
+    target: User,
+    propertyKey: 'generateInviteCode',
+    descriptor: TypedPropertyDescriptor<() => void>,
+) => void | TypedPropertyDescriptor<() => void> {
+    throw new Error('Function not implemented.');
+}
+function Column(arg0: {
+    type: string;
+    length: number;
+}): (target: User, propertyKey: 'inviteCode') => void {
+    throw new Error('Function not implemented.');
+}

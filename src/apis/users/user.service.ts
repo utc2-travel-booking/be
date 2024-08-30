@@ -32,12 +32,14 @@ import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
+import { generateRandomString } from './common/generate-random-string.util';
 
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
     implements OnModuleInit
 {
+    userReferralsService: any;
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
@@ -72,6 +74,8 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+
+        await this.addInviteCodeForUser();
     }
 
     async getHistoryReward(user: UserPayload, action: MetadataType) {
@@ -491,5 +495,88 @@ export class UserService
                 items: usersBannedInCache.items,
             });
         }
+    }
+
+    private async addInviteCodeForUser() {
+        const users = await this.find({
+            inviteCode: { $exists: false },
+        }).exec();
+
+        users.forEach(async (user) => {
+            await this.updateOne(
+                { _id: user._id },
+                {
+                    inviteCode: generateRandomString(16),
+                },
+            );
+        });
+    }
+
+    private async checkUserReferral(
+        userId: Types.ObjectId,
+        referrer: UserDocument,
+    ) {
+        if (!referrer) {
+            throw new BadRequestException('Not found user');
+        }
+
+        const isExistUserReferral = await this.userReferralsService
+            .findOne({
+                createdBy: userId,
+            })
+            .autoPopulate(false)
+            .exec();
+
+        if (isExistUserReferral) {
+            return true;
+        }
+
+        const userReferral = await this.userReferralsService
+            .findOne({
+                $or: [
+                    {
+                        createdBy: userId,
+                        referrer: new Types.ObjectId(referrer._id),
+                    },
+                    {
+                        createdBy: new Types.ObjectId(referrer._id),
+                        referrer: userId,
+                    },
+                ],
+            })
+            .autoPopulate(false)
+            .exec();
+
+        if (userReferral) {
+            return true;
+        }
+
+        return false;
+    }
+
+    async createReferral(inviteCode: string, userPayload: UserPayload) {
+        const { _id: userId } = userPayload;
+
+        const referrer = await this.findOne({
+            inviteCode,
+            _id: { $ne: userId },
+        }).exec();
+
+        const checkUserReferral = await this.checkUserReferral(
+            userId,
+            referrer,
+        );
+
+        if (checkUserReferral) {
+            return;
+        }
+
+        await this.userReferralsService.create({
+            createdBy: userId,
+            referrer: new Types.ObjectId(referrer._id),
+        });
+
+        // await this.addPointForUserReferral(referrer, telegramBot);
+        // await this.addPointForUserReferred(userId, telegramBot);
     }
 }
