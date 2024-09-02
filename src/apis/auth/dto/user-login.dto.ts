@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 import {
     IsEmail,
     IsNotEmpty,
@@ -8,13 +8,13 @@ import {
 } from 'class-validator';
 
 export class UserLoginDto {
-    @ApiProperty({ default: 'admin@gmail.com' })
+    @ExtendedApiProperty({ default: 'admin@gmail.com' })
     @IsString()
     @IsNotEmpty()
     @IsEmail()
     readonly email: string;
 
-    @ApiProperty({ default: '0934551744' })
+    @ExtendedApiProperty({ default: '0934551744' })
     @IsString()
     @IsNotEmpty()
     @MinLength(6)

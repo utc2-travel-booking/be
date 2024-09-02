@@ -24,7 +24,8 @@ export const projectionConfig = (
 export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
     if (pipeline.length === 0) return pipeline;
 
-    const matches: PipelineStage[] = [];
+    const topLevelMatches: PipelineStage[] = [];
+    const deeperLevelMatches: PipelineStage[] = [];
     const project: PipelineStage[] = [];
     const others: PipelineStage[] = [];
     const addFields: PipelineStage[] = [];
@@ -35,7 +36,12 @@ export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
 
     for (const stage of pipeline) {
         if (_.has(stage, '$match')) {
-            matches.push(stage);
+            const level = matchLevel(stage);
+            if (level === 1) {
+                topLevelMatches.push(stage);
+            } else {
+                deeperLevelMatches.push(stage);
+            }
         } else if (_.has(stage, '$project')) {
             project.push(stage);
         } else if (_.has(stage, '$addFields')) {
@@ -54,8 +60,9 @@ export const sortPipelines = (pipeline: PipelineStage[]): PipelineStage[] => {
     }
 
     return [
+        ...topLevelMatches,
         ...others,
-        ...matches,
+        ...deeperLevelMatches,
         ...project,
         ...addFields,
         ...sort,
@@ -72,4 +79,17 @@ export const deleteAllLookup = (pipeline: PipelineStage[]): PipelineStage[] => {
             !_.has(stage, '$unwind') &&
             !_.has(stage, '$addFields'),
     );
+};
+
+export const matchLevel = (stage: PipelineStage): number => {
+    if (_.has(stage, '$match')) {
+        const matchObj = stage.$match;
+        const keys = Object.keys(matchObj);
+        if (['$and', '$or'].includes(keys[0])) {
+            return 2;
+        }
+
+        return keys.some((key) => key.includes('.')) ? 2 : 1;
+    }
+    return 0;
 };

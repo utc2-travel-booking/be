@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
 
 export class UploadMediaDto {
-    @ApiProperty({ type: 'string', format: 'binary' })
+    @ExtendedApiProperty({ type: 'string', format: 'binary' })
     file: any;
 }

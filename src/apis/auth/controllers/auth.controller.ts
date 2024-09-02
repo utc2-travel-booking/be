@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -37,7 +37,7 @@ export class AuthController {
         return this.authService.login(user);
     }
 
-    @Post('login-telegram-mini-app')
+    @ExtendedPost({ route: 'login-telegram-mini-app' })
     @UseGuards(LoginTelegramMiniAppGuard)
     @ApiHeader({
         name: 'authorization',

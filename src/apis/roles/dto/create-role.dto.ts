@@ -1,4 +1,5 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { PartialType } from '@nestjs/swagger';
 import {
     IsArray,
     IsNotEmpty,
@@ -25,20 +26,20 @@ interface RolePermissionsDto {
 }
 
 export class CreateRoleDto extends PartialType(ExcludeDto) {
-    @ApiProperty()
+    @ExtendedApiProperty()
     @IsNotEmpty()
     @IsString()
     @MaxLength(50)
     name: string;
 
-    @ApiProperty()
+    @ExtendedApiProperty()
     @IsNotEmpty()
     @IsNumber()
     @Min(1)
     @Max(100)
     type: number;
 
-    @ApiProperty({
+    @ExtendedApiProperty({
         type: [PermissionDto],
     })
     @IsNotEmpty()
