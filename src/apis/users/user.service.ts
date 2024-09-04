@@ -11,20 +11,13 @@ import { User, UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
-import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
-import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
-import { MediaService } from '../media/medias.service';
-import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { MetadataType } from '../metadata/constants';
-import { MetadataService } from '../metadata/metadata.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService
@@ -34,12 +27,8 @@ export class UserService
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
-        private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
-        private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
-        private readonly metadataService: MetadataService,
-        private readonly eventEmitter: EventEmitter2,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
