@@ -16,13 +16,13 @@ export class BannerImage {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedProp({ type: String, required: true })
+    @SuperProp({ type: String, required: true })
     title: string;
 
-    @ExtendedProp({ type: String, required: true })
+    @SuperProp({ type: String, required: true })
     shortDescription: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         required: true,

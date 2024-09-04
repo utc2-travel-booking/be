@@ -41,7 +41,7 @@ export class BannerImageDto extends BannerImage {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Title of image',
         default: 'Millionaire',
@@ -49,7 +49,7 @@ export class BannerImageDto extends BannerImage {
     })
     title: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Sub description of the post',
         default: 'Lorem ipsum dolor sit',
@@ -57,7 +57,7 @@ export class BannerImageDto extends BannerImage {
     })
     shortDescription: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'File id of the post',
         default: '66ac363aca5ae70c449940f0',
