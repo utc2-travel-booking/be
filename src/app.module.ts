@@ -27,7 +27,7 @@ import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-l
         RoutersModule.forRoot(),
         SuperCoreModule,
         CommonModule,
-        // SeedsModule,
+        SeedsModule,
         MultipleLanguageModule,
         AuditsModule,
         SuperAuthorizeModule.forRoot({

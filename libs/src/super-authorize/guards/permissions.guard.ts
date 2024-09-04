@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { PermissionStorage } from '../storages/permission.storage';
 import { PERMISSION_KEY } from '../decorators/permissions.decorator';
+import { RESOURCE_KEY } from '../decorators';
 
 const paths = PermissionStorage.getPaths();
 @Injectable()
@@ -20,20 +21,21 @@ export class PermissionsGuard implements CanActivate {
             return true;
         }
 
+        const resource = this.reflector.getAllAndOverride<any>(RESOURCE_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]) as string[];
+
         const { user, _parsedUrl } = context.switchToHttp().getRequest();
 
         const { pathname } = _parsedUrl;
-        const pathnames = pathname.split('/');
 
         const path = paths.find((p) => pathname.includes(p));
-        const pathIndex = pathnames.indexOf(path);
-
-        const prefix = pathnames[pathIndex + 1];
 
         return user.permissions.some(
             (permission) =>
                 permission?.path === path &&
-                permission?.prefix === prefix &&
+                permission?.prefix === resource &&
                 requiredPermissions.includes(permission?.requestMethod),
         );
     }
