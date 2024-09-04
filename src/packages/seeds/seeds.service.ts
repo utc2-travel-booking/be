@@ -1,19 +1,20 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { PermissionsService } from 'src/apis/permissions/permissions.service';
-import { RolesService } from 'src/apis/roles/roles.service';
 import fs from 'fs';
 import { Types } from 'mongoose';
 import { UserService } from 'src/apis/users/user.service';
 import { appSettings } from 'src/configs/appsettings';
 import { MetadataService } from 'src/apis/metadata/metadata.service';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
+import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';
+import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 
 @Injectable()
 export class SeedsService implements OnModuleInit {
     public readonly logger = new Logger(SeedsService.name);
     constructor(
-        private readonly permissionService: PermissionsService,
         private readonly roleService: RolesService,
         private readonly userService: UserService,
+        private readonly permissionService: PermissionsService,
         private readonly metadataService: MetadataService,
     ) {}
 
@@ -22,34 +23,15 @@ export class SeedsService implements OnModuleInit {
             return;
         }
 
-        await this.seedPermissions();
+        // await this.seedPermissions();
         await this.seedRoles();
         await this.seedUsers();
-        // await this.seedMetadata();
         this.logger.debug('Seeding completed');
     }
 
     async seedPermissions() {
-        const permissions = JSON.parse(
-            fs.readFileSync(
-                process.cwd() + '/public/data/permissions.json',
-                'utf8',
-            ),
-        );
-
-        this.logger.debug('Seeding permissions');
-        await this.permissionService.deleteMany({});
-
-        const result = permissions.map((permission) => {
-            delete permission.createdAt;
-            delete permission.updatedAt;
-            return {
-                ...permission,
-                _id: new Types.ObjectId(permission._id.$oid),
-            };
-        });
-
-        await this.permissionService.insertMany(result);
+        await this.permissionService.model.db.dropCollection('permissions');
+        this.logger.debug('Dropped permissions collection');
     }
 
     async seedRoles() {
@@ -58,18 +40,37 @@ export class SeedsService implements OnModuleInit {
         );
 
         this.logger.debug('Seeding roles');
-        await this.roleService.deleteMany({});
 
         for (const role of roles) {
             delete role.createdAt;
             delete role.updatedAt;
-            await this.roleService.create({
-                ...role,
-                _id: new Types.ObjectId(role._id.$oid),
-                permissions: role.permissions.map(
-                    (p) => new Types.ObjectId(p.$oid),
-                ),
-            });
+            const { type } = role;
+            if (type === RoleType.SUPER_ADMIN) {
+                const permissions = await this.permissionService
+                    .find({
+                        path: 'admin',
+                    })
+                    .exec();
+                await this.roleService.updateMany(
+                    { type: RoleType.SUPER_ADMIN },
+                    {
+                        permissions: permissions.map((p) => p._id),
+                    },
+                );
+            }
+
+            if (type === RoleType.USER) {
+                const permissions = await this.permissionService
+                    .find({ path: 'front' })
+                    .exec();
+
+                await this.roleService.updateMany(
+                    { type: RoleType.USER },
+                    {
+                        permissions: permissions.map((p) => p._id),
+                    },
+                );
+            }
         }
     }
 

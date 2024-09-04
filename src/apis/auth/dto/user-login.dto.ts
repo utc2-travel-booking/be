@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import {
     IsEmail,
     IsNotEmpty,
@@ -8,13 +8,13 @@ import {
 } from 'class-validator';
 
 export class UserLoginDto {
-    @ExtendedApiProperty({ default: 'admin@gmail.com' })
+    @SuperApiProperty({ default: 'admin@gmail.com' })
     @IsString()
     @IsNotEmpty()
     @IsEmail()
     readonly email: string;
 
-    @ExtendedApiProperty({ default: '0934551744' })
+    @SuperApiProperty({ default: '0934551744' })
     @IsString()
     @IsNotEmpty()
     @MinLength(6)

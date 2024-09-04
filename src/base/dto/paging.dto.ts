@@ -1,10 +1,10 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
+import { SearchType } from '@libs/super-search/constants';
 import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { SearchType } from 'src/constants/enums';
 
 export class PagingDto {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'limit',
         description: 'Limit of this query',
         required: false,
@@ -16,7 +16,7 @@ export class PagingDto {
     @IsOptional()
     limit: number;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'page',
         description: 'Page for this query',
         default: 1,
@@ -27,7 +27,7 @@ export class PagingDto {
     @IsOptional()
     page: number;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'sortBy',
         description:
             'Fields wants to sort for this query, if many fields write it with command Example: name,email',
@@ -38,7 +38,7 @@ export class PagingDto {
     @IsString()
     sortBy: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'sortDirection',
         description:
             'What direction you want to sort contains 1 or -1 with 1 is ascending, -1 is descending Example: -1,1',
@@ -48,7 +48,7 @@ export class PagingDto {
     @IsOptional()
     sortDirection: 1 | -1;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'search',
         description:
             'Search for this query. Example: [name:like]=test. Name is field, like is operator, test is value',
@@ -62,19 +62,21 @@ export class PagingDto {
     @IsOptional()
     search: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'searchType',
         description: 'Search type for this query. Available values: AND & OR',
         default: 'and',
         required: false,
     })
     @IsEnum(SearchType, {
-        message: `status must be a valid enum ${SearchType.AND} | ${SearchType.OR}`,
+        message: `SearchType must be a valid enum ${SearchType.AND} | ${
+            SearchType.OR
+        }  | ${SearchType.AND.toLocaleLowerCase()} | ${SearchType.OR.toLocaleLowerCase()}`,
     })
     @IsOptional()
     searchType: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'isAll',
         description:
             'Get all data without pagination. Available values: false & true',
@@ -90,7 +92,7 @@ export class PagingDto {
     @IsOptional()
     isAll: boolean;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         name: 'select',
         description: 'Select fields for this query. Example: _id,name',

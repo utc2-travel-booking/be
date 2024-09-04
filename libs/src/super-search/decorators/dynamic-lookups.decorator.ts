@@ -12,6 +12,9 @@ export function DynamicLookup() {
             const [filter, pipeline] = args;
 
             const _pipeline = dynamicLookupAggregates(this.entity);
+            if (!_pipeline) {
+                return originalMethod.apply(this, args);
+            }
 
             const updatedArgs = [filter, [..._pipeline, ...(pipeline || [])]];
 

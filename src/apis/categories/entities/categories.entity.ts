@@ -10,14 +10,14 @@ import {
 } from '@libs/super-multiple-language';
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.CATEGORIES,
 })
 export class Category extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         required: true,
         cms: {
@@ -30,7 +30,7 @@ export class Category extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -41,7 +41,7 @@ export class Category extends AggregateRoot {
     })
     slug: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         default: 0,
         cms: {
@@ -52,7 +52,7 @@ export class Category extends AggregateRoot {
     })
     position: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -67,7 +67,7 @@ export class Category extends AggregateRoot {
     })
     featuredImage: File;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         enum: CategoryType,
         cms: {
@@ -78,7 +78,7 @@ export class Category extends AggregateRoot {
     })
     type: CategoryType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         cms: {
             label: 'Short Description',
@@ -87,7 +87,7 @@ export class Category extends AggregateRoot {
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.CATEGORIES,
         cms: {

@@ -2,12 +2,11 @@ import { LocalStrategy } from 'src/strategies/local.strategy';
 import { UserModule } from '../users/user.module';
 import { AuthService } from './auth.service';
 import { Module } from '@nestjs/common';
-import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { RolesModule } from '../roles/roles.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { appSettings } from 'src/configs/appsettings';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
+import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
 
 @Module({
     imports: [
@@ -24,7 +23,7 @@ import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
         MetadataModule,
     ],
     controllers: [],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, LocalStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}
