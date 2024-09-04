@@ -83,7 +83,12 @@ export class UserControllerAdmin {
         queryParams: ExtendedPagingDto,
     ) {
         const result = await this.userService.getAll(queryParams);
-        return result;
+        const countReferral = await this.userService.getReferral(result.items);
+
+        return {
+            items: countReferral,
+            meta: result.meta,
+        };
     }
 
     @SuperGet({ route: ':id' })

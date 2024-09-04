@@ -378,8 +378,21 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        const countReferral = await this.userReferralsService
+            .countDocuments({
+                referrer: user._id,
+            })
+            .exec();
+        const introducer = await this.userReferralsService
+            .findOne({
+                createdBy: user._id,
+            })
+            .exec();
+
         return {
             ...result,
+            introducer: introducer?.createdBy?._id,
+            countReferral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
@@ -518,26 +531,14 @@ export class UserService
         referrer: UserDocument,
     ) {
         if (!referrer) {
-            throw new BadRequestException('Not found user');
+            throw new BadRequestException('Not valid');
         }
 
-        const isExistUserReferral = await this.userReferralsService
-            .findOne({
-                createdBy: userId,
-            })
-            .autoPopulate(false)
-            .exec();
-
-        if (isExistUserReferral) {
-            return true;
-        }
-
-        const userReferral = await this.userReferralsService
+        const isExistReferral = await this.userReferralsService
             .findOne({
                 $or: [
                     {
                         createdBy: userId,
-                        referrer: new Types.ObjectId(referrer._id),
                     },
                     {
                         createdBy: new Types.ObjectId(referrer._id),
@@ -548,8 +549,8 @@ export class UserService
             .autoPopulate(false)
             .exec();
 
-        if (userReferral) {
-            return true;
+        if (isExistReferral) {
+            throw new BadRequestException('Not valid');
         }
 
         return false;
@@ -579,5 +580,31 @@ export class UserService
 
         // await this.addPointForUserReferral(referrer, telegramBot);
         // await this.addPointForUserReferred(userId, telegramBot);
+    }
+
+    async getReferral(users: UserDocument[]) {
+        const result = await Promise.all(
+            users.map(async (user) => {
+                const userId = new Types.ObjectId(user._id);
+                const count = await this.userReferralsService
+                    .countDocuments({
+                        referrer: userId,
+                    })
+                    .exec();
+                const introducer = await this.userReferralsService
+                    .findOne({
+                        createdBy: userId,
+                    })
+                    .exec();
+
+                return {
+                    ...user,
+                    referralCount: count,
+                    introducer: introducer?.createdBy?._id,
+                };
+            }),
+        );
+
+        return result;
     }
 }

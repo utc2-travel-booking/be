@@ -53,7 +53,7 @@ export class UserController {
     }
 
     @SuperPost({ route: 'referral/:inviteCode' })
-    @SuperAuthorize(PERMISSION.GET)
+    @SuperAuthorize(PERMISSION.POST)
     async createReferral(
         @Param('inviteCode') inviteCode: string,
         @Req() req: { user: UserPayload },
