@@ -6,13 +6,7 @@ import {
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
-import {
-    ApiBody,
-    ApiConsumes,
-    ApiParam,
-    ApiQuery,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { MediaService } from 'src/apis/media/medias.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadMediaDto } from 'src/apis/media/dto/upload-media.dto';
@@ -24,19 +18,21 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
-@ApiTags('Admin: Media')
 @Controller('media')
+@Resource('media')
+@ApiTags('Admin: Media')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
     refSource: COLLECTION_NAMES.FILE,
@@ -44,8 +40,8 @@ import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.deco
 export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.FILE.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -54,17 +50,17 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.FILE.index)
+    @SuperGet({ route: ':id' })
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.mediaService.getOne(_id);
         return result;
     }
 
-    @ExtendedPost({ dto: UploadMediaDto })
+    @SuperPost({ dto: UploadMediaDto })
     @ApiConsumes('multipart/form-data')
-    @Authorize(PERMISSIONS.FILE.create)
+    @SuperAuthorize(PERMISSION.POST)
     @UseInterceptors(
         FileInterceptor('file', {
             limits: {
@@ -81,8 +77,8 @@ export class MediaControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
-    @Authorize(PERMISSIONS.FILE.destroy)
+    @SuperDelete()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

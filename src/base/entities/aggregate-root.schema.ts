@@ -2,11 +2,11 @@ import { Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from '@libs/super-search';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema()
 export abstract class AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         default: null,
         cms: {
             label: 'Deleted At',
@@ -14,7 +14,7 @@ export abstract class AggregateRoot {
     })
     deletedAt: Date;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         cms: {
@@ -28,7 +28,7 @@ export abstract class AggregateRoot {
     })
     createdBy: Types.ObjectId;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         cms: {
@@ -37,7 +37,7 @@ export abstract class AggregateRoot {
     })
     updatedBy: Types.ObjectId;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         cms: {

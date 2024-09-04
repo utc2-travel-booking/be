@@ -5,7 +5,7 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { FormBuilderType } from '../constants';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { AutoPopulate } from '@libs/super-search';
 
 @Schema({
@@ -13,7 +13,7 @@ import { AutoPopulate } from '@libs/super-search';
     collection: COLLECTION_NAMES.FORM_BUILDER,
 })
 export class FormBuilder extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         enum: FormBuilderType,
@@ -25,7 +25,7 @@ export class FormBuilder extends AggregateRoot {
     })
     type: FormBuilderType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -36,7 +36,7 @@ export class FormBuilder extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -47,7 +47,7 @@ export class FormBuilder extends AggregateRoot {
     })
     email: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -58,7 +58,7 @@ export class FormBuilder extends AggregateRoot {
     })
     subject: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Content',
@@ -68,7 +68,7 @@ export class FormBuilder extends AggregateRoot {
     })
     content: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         cms: {
             label: 'Created At',
@@ -79,7 +79,7 @@ export class FormBuilder extends AggregateRoot {
     })
     createdAt: Date;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         cms: {

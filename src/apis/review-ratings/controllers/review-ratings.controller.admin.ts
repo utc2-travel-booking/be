@@ -1,24 +1,24 @@
 import { Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReviewRatingService } from '../review-ratings.service';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { ReviewRating } from '../entities/review-ratings.entity';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('review-ratings')
+@Resource('review-ratings')
 @ApiTags('Admin: Review Ratings')
 @AuditLog({
     refSource: COLLECTION_NAMES.REVIEW_RATING,
@@ -27,8 +27,8 @@ import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.deco
 export class ReviewRatingControllerAdmin {
     constructor(private readonly reviewRatingService: ReviewRatingService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.REVIEW.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -37,16 +37,16 @@ export class ReviewRatingControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.REVIEW.index)
+    @SuperGet({ route: ':id' })
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.reviewRatingService.getOne(_id);
         return result;
     }
 
-    @ExtendedDelete()
-    @Authorize(PERMISSIONS.REVIEW.destroy)
+    @SuperDelete()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

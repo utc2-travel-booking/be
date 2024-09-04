@@ -11,14 +11,12 @@ import { User, UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
-import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
 import { MediaService } from '../media/medias.service';
-import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
@@ -32,6 +30,8 @@ import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
+import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 
 @Injectable()
 export class UserService

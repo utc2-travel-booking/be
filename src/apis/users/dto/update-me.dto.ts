@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -15,35 +15,35 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class UpdateMeDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsString()
     @MaxLength(50)
     name: string;
 
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsString()
     @IsEmail()
     email: string;
 
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsString()
     @IsPhoneNumber('VN')
     phone: string;
 
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsString()
     phoneCode: string;
 
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsString()
     country: string;
 
-    @ExtendedApiProperty()
+    @SuperApiProperty()
     @IsOptional()
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,

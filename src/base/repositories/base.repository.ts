@@ -92,7 +92,7 @@ export class BaseRepositories<T extends Document, E> {
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async insertMany<DocContents = T>(docs: Array<T>) {
+    async insertMany(docs: Array<Partial<T>>) {
         return await this.model.insertMany(docs);
     }
 

@@ -11,10 +11,11 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CategoriesService } from '../categories.service';
 import { CategoryType } from '../constants';
-
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { Resource } from '@libs/super-authorize';
 
 @Controller('categories')
+@Resource('categories')
 @ApiTags('Front: Categories')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -23,7 +24,7 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
-    @ExtendedGet({ route: ':type' })
+    @SuperGet({ route: ':type' })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -35,7 +36,7 @@ export class CategoriesController {
         return result;
     }
 
-    @ExtendedGet({ route: ':type/:id' })
+    @SuperGet({ route: ':type/:id' })
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

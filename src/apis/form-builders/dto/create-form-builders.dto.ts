@@ -7,10 +7,10 @@ import {
     MaxLength,
 } from 'class-validator';
 import { FormBuilderType } from '../constants';
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 
 export class CreateFormBuildersDto {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description:
             ' Type for this form builder. Available values: BUSINESS_INQUIRIES | LOOKING_FOR_SUPPORT | PARTNERSHIP',
         example: FormBuilderType.BUSINESS_INQUIRIES,
@@ -19,7 +19,7 @@ export class CreateFormBuildersDto {
     @IsEnum(FormBuilderType)
     type: FormBuilderType;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Name of user fill in the form',
         example: 'Alex',
@@ -29,7 +29,7 @@ export class CreateFormBuildersDto {
     @MaxLength(50)
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Email of user fill in the form',
         example: 'alex@gmail.com',
     })
@@ -38,7 +38,7 @@ export class CreateFormBuildersDto {
     @IsEmail()
     email: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Subject of user fill in the form',
         example: 'Feedback',
     })
@@ -47,7 +47,7 @@ export class CreateFormBuildersDto {
     @MaxLength(100)
     subject: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Message of user fill in the form',
         example: 'I really like your website.',
     })
