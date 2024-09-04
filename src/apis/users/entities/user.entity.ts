@@ -132,27 +132,14 @@ export class User extends AggregateRoot {
             columnPosition: 9,
         },
     })
-    @Column({ type: 'varchar', length: 16 })
     inviteCode: string;
-
-    @BeforeInsert()
-    generateInviteCode() {
-        this.inviteCode = generateRandomString(16);
-    }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(autopopulateSoftDelete);
-function BeforeInsert(): (
-    target: User,
-    propertyKey: 'generateInviteCode',
-    descriptor: TypedPropertyDescriptor<() => void>,
-) => void | TypedPropertyDescriptor<() => void> {
-    throw new Error('Function not implemented.');
-}
-function Column(arg0: {
-    type: string;
-    length: number;
-}): (target: User, propertyKey: 'inviteCode') => void {
-    throw new Error('Function not implemented.');
-}
+UserSchema.pre<UserDocument>('save', function (next) {
+    if (!this.inviteCode) {
+        this.inviteCode = generateRandomString(16);
+    }
+    next();
+});

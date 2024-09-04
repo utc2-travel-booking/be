@@ -9,6 +9,7 @@ import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
+import { UserReferralsModule } from '../user-referrals/referrals.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { WebsocketModule } from 'src/packages/websocket/websocket.module';
         UserTransactionModule,
         MetadataModule,
         WebsocketModule,
+        UserReferralsModule,
     ],
     controllers: [],
     providers: [UserService],

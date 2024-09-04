@@ -33,13 +33,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
 import { generateRandomString } from './common/generate-random-string.util';
+import { UserReferralsService } from '../user-referrals/user-referrals.service';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
     implements OnModuleInit
 {
-    userReferralsService: any;
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
@@ -51,6 +52,7 @@ export class UserService
         private readonly metadataService: MetadataService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
+        private readonly userReferralsService: UserReferralsService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }

@@ -11,6 +11,7 @@ import { UserService } from '../user.service';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 
 @Controller('users')
 @ApiTags('Front: User')
@@ -48,5 +49,15 @@ export class UserController {
     ) {
         const { user } = req;
         return this.userService.getHistoryReward(user, type);
+    }
+
+    @ExtendedPost({ route: 'referral/:inviteCode' })
+    @Authorize(PERMISSIONS_FRONT.USER_REFERRAL.create)
+    async createReferral(
+        @Param('inviteCode') inviteCode: string,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        return this.userService.createReferral(inviteCode, user);
     }
 }
