@@ -1,8 +1,7 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -11,14 +10,16 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { Types } from 'mongoose';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { UpdateStatusNotificationDto } from '../dto/update-status-notifications.dto';
-
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('notifications')
+@Resource('notifications')
 @ApiTags('Front: Notifications')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -27,8 +28,8 @@ import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.deco
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -43,8 +44,8 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedGet({ route: 'count' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperGet({ route: 'count' })
+    @SuperAuthorize(PERMISSION.GET)
     async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
         const { user } = req;
         const { _id } = user;
@@ -54,8 +55,8 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedPut({ route: 'read', dto: UpdateStatusNotificationDto })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperPut({ route: 'read', dto: UpdateStatusNotificationDto })
+    @SuperAuthorize(PERMISSION.PUT)
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
         @Req() req: { user: UserPayload },
@@ -70,8 +71,8 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedPut({ route: 'read/all' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.edit)
+    @SuperPut({ route: 'read/all' })
+    @SuperAuthorize(PERMISSION.PUT)
     async updateAllStatus(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -79,8 +80,8 @@ export class NotificationsController {
         return result;
     }
 
-    @ExtendedDelete({ route: ':id' })
-    @Authorize(PERMISSIONS_FRONT.NOTIFICATION.destroy)
+    @SuperDelete({ route: ':id' })
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiParam({ name: 'id', type: String })
     async deleteOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

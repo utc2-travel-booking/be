@@ -151,7 +151,4 @@ export const PERMISSIONS_FRONT = {
     FORM_BUILDER: {
         create: 'front.form-builder.create',
     },
-    USER_REFERRAL: {
-        create: 'front.user-referral.create',
-    },
 };

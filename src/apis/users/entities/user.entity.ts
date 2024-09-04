@@ -6,10 +6,13 @@ import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
-import { Role, RoleDocument } from 'src/apis/roles/entities/roles.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
 import { generateRandomString } from '../common/generate-random-string.util';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import {
+    Role,
+    RoleDocument,
+} from '@libs/super-authorize/modules/roles/entities/roles.entity';
 
 export type UserDocument = User & Document;
 
@@ -18,7 +21,7 @@ export type UserDocument = User & Document;
     collection: COLLECTION_NAMES.USER,
 })
 export class User extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: false,
         default: 'No Name',
@@ -31,7 +34,7 @@ export class User extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: false,
         cms: {
@@ -42,7 +45,7 @@ export class User extends AggregateRoot {
     })
     email: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: false,
         cms: {
@@ -53,7 +56,7 @@ export class User extends AggregateRoot {
     })
     telegramUserId: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: false,
         cms: {
@@ -64,7 +67,7 @@ export class User extends AggregateRoot {
     })
     telegramUsername: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -79,7 +82,7 @@ export class User extends AggregateRoot {
     })
     avatar: File;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         default: 0,
         cms: {
@@ -90,7 +93,7 @@ export class User extends AggregateRoot {
     })
     currentPoint: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         required: true,
         ref: COLLECTION_NAMES.ROLE,
@@ -106,7 +109,7 @@ export class User extends AggregateRoot {
     })
     role: RoleDocument;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         enum: UserStatus,
         default: UserStatus.ACTIVE,
@@ -118,13 +121,13 @@ export class User extends AggregateRoot {
     })
     status: UserStatus;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: false,
     })
     password: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Invite Code',

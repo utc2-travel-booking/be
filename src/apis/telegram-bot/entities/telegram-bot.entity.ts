@@ -1,4 +1,4 @@
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
@@ -10,7 +10,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
     collection: COLLECTION_NAMES.TELEGRAM_BOT,
 })
 export class TelegramBot extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Name',
@@ -21,7 +21,7 @@ export class TelegramBot extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         required: true,
         cms: {
             label: 'Token',
@@ -31,7 +31,7 @@ export class TelegramBot extends AggregateRoot {
     })
     token: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Bot ID',
@@ -41,7 +41,7 @@ export class TelegramBot extends AggregateRoot {
     })
     botId: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Domain',

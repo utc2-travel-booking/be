@@ -11,13 +11,13 @@ import {
 import { AutoPopulate } from '@libs/super-search';
 import { Category } from 'src/apis/categories/entities/categories.entity';
 import { File } from 'src/apis/media/entities/files.entity';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.POST,
 })
 export class Post extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         required: true,
         cms: {
@@ -30,7 +30,7 @@ export class Post extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -41,7 +41,7 @@ export class Post extends AggregateRoot {
     })
     slug: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -56,7 +56,7 @@ export class Post extends AggregateRoot {
     })
     featuredImage: File;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         enum: PostStatus,
         default: PostStatus.DRAFT,
@@ -68,7 +68,7 @@ export class Post extends AggregateRoot {
     })
     status: PostStatus;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         enum: PostType,
         cms: {
@@ -79,7 +79,7 @@ export class Post extends AggregateRoot {
     })
     type: PostType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
@@ -94,7 +94,7 @@ export class Post extends AggregateRoot {
     })
     category: Category;
 
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         cms: {
             label: 'Short Description',
@@ -105,7 +105,7 @@ export class Post extends AggregateRoot {
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         default: null,
         cms: {
@@ -116,7 +116,7 @@ export class Post extends AggregateRoot {
     })
     publishedStart: Date;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         default: null,
         cms: {
@@ -127,7 +127,7 @@ export class Post extends AggregateRoot {
     })
     publishedEnd: Date;
 
-    @ExtendedProp({ type: MultipleLanguageType })
+    @SuperProp({ type: MultipleLanguageType })
     @MultipleLanguage()
     longDescription: MultipleLanguageType;
 }

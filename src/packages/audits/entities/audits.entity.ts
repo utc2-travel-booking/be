@@ -4,14 +4,14 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { Document, Types } from 'mongoose';
 import { AuditStatus } from '../constants';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.AUDIT,
 })
 export class Audit extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Event',
@@ -22,7 +22,7 @@ export class Audit extends AggregateRoot {
     })
     event: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'URL',
@@ -32,7 +32,7 @@ export class Audit extends AggregateRoot {
     })
     url: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Ref Source',
@@ -42,7 +42,7 @@ export class Audit extends AggregateRoot {
     })
     refSource: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         cms: {
             label: 'Ref ID',
@@ -52,7 +52,7 @@ export class Audit extends AggregateRoot {
     })
     refId: Types.ObjectId;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         cms: {
             label: 'Status Code',
@@ -62,7 +62,7 @@ export class Audit extends AggregateRoot {
     })
     statusCode: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Status Message',
@@ -72,7 +72,7 @@ export class Audit extends AggregateRoot {
     })
     statusMessage: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'IP Address',
@@ -82,7 +82,7 @@ export class Audit extends AggregateRoot {
     })
     ipAddress: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'User Agent',
@@ -92,7 +92,7 @@ export class Audit extends AggregateRoot {
     })
     userAgent: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         default: AuditStatus.GOOD_REQUEST,
         cms: {
@@ -103,16 +103,16 @@ export class Audit extends AggregateRoot {
     })
     status: string;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     targetType: string;
 
-    @ExtendedProp({ type: Object, default: {} })
+    @SuperProp({ type: Object, default: {} })
     oldValues: any;
 
-    @ExtendedProp({ type: Object, default: {} })
+    @SuperProp({ type: Object, default: {} })
     newValues: any;
 
-    @ExtendedProp({ type: Object, default: {} })
+    @SuperProp({ type: Object, default: {} })
     body: any;
 }
 

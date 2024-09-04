@@ -1,18 +1,19 @@
 import { Controller, Query } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';
 import { ApiTags } from '@nestjs/swagger';
-
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('notifications')
+@Resource('notifications')
 @ApiTags('Admin: Notifications')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -21,8 +22,8 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 export class NotificationsControllerAdmin {
     constructor(private readonly notificationsService: NotificationsService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.NOTIFICATION.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,

@@ -1,4 +1,4 @@
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
@@ -6,15 +6,28 @@ import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 
 export class BannerImage {
-    @ExtendedProp({ type: String, required: true })
+    @SuperProp({ type: String, required: true })
     urlRedirect: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         required: true,
     })
     featuredImage: Types.ObjectId;
+
+    @SuperProp({ type: String, required: true })
+    title: string;
+
+    @SuperProp({ type: String, required: true })
+    shortDescription: string;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.FILE,
+        required: true,
+    })
+    iconImage: Types.ObjectId;
 }
 
 @Schema({
@@ -22,7 +35,7 @@ export class BannerImage {
     collection: COLLECTION_NAMES.ADVERTISER,
 })
 export class Advertiser extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -34,7 +47,7 @@ export class Advertiser extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Slug',
@@ -44,7 +57,7 @@ export class Advertiser extends AggregateRoot {
     })
     slug: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: [BannerImage],
     })
     bannerImages: BannerImage[];

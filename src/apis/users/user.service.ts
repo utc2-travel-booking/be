@@ -11,14 +11,12 @@ import { User, UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
-import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
 import { MediaService } from '../media/medias.service';
-import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
@@ -34,7 +32,8 @@ import { CreateNotificationModel } from '../notifications/models/create-notifica
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
 import { generateRandomString } from './common/generate-random-string.util';
 import { UserReferralsService } from '../user-referrals/user-referrals.service';
-import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
+import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 
 @Injectable()
 export class UserService

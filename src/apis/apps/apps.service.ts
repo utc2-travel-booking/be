@@ -310,8 +310,6 @@ export class AppsService extends BaseService<AppDocument, App> {
             .find({
                 createdBy: userId,
             })
-            .limit(limit)
-            .skip(skip)
             .sort({ updatedAt: -1 })
             .autoPopulate(false)
             .exec();
@@ -319,6 +317,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         const appIds = userAppHistories.map(
             (item) => new Types.ObjectId(item?.app?.toString()),
         );
+
         const apps = await this.find(
             {
                 _id: {
@@ -338,6 +337,8 @@ export class AppsService extends BaseService<AppDocument, App> {
         )
             .select(select)
             .sort({ __order: 1 })
+            .limit(limit)
+            .skip(skip)
             .exec();
 
         const items = apps.map(async (item) => {

@@ -3,8 +3,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -12,13 +11,15 @@ import {
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { MetadataType } from 'src/apis/metadata/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('apps')
+@Resource('apps')
 @ApiTags('Front: Apps')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -27,7 +28,7 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
-    @ExtendedGet({ route: 'tags/:tagSlug' })
+    @SuperGet({ route: 'tags/:tagSlug' })
     @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
@@ -44,8 +45,8 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedPost({ route: 'add-point/:id/:type' })
-    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @SuperPost({ route: 'add-point/:id/:type' })
+    @SuperAuthorize(PERMISSION.POST)
     @ApiParam({ name: 'id', type: String })
     async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -57,8 +58,8 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet({ route: 'user-history' })
-    @Authorize(PERMISSIONS_FRONT.APP.index)
+    @SuperGet({ route: 'user-history' })
+    @SuperAuthorize(PERMISSION.GET)
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -72,7 +73,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet()
+    @SuperGet()
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
         @Query(new PagingDtoPipe())
@@ -87,7 +88,7 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
+    @SuperGet({ route: ':id' })
     @UseGuards(UserPayloadExtractorGuard)
     @ApiParam({ name: 'id', type: String })
     async getOneAppPublish(

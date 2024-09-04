@@ -1,8 +1,8 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UserLoginTelegramDto {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user id',
         example: 653520423,
     })
@@ -10,7 +10,7 @@ export class UserLoginTelegramDto {
     @IsNumber()
     id: number;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user first name',
         example: 'John',
     })
@@ -18,7 +18,7 @@ export class UserLoginTelegramDto {
     @IsString()
     first_name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user last name',
         example: 'Doe',
     })
@@ -26,7 +26,7 @@ export class UserLoginTelegramDto {
     @IsString()
     last_name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user username',
         example: 'johndoe',
     })
@@ -34,7 +34,7 @@ export class UserLoginTelegramDto {
     @IsString()
     username: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user photo url',
         example: 'https://t.me/i/userpic/320/johndoe.jpg',
     })
@@ -42,7 +42,7 @@ export class UserLoginTelegramDto {
     @IsString()
     photo_url: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user auth date',
         example: 1720496880,
     })
@@ -50,7 +50,7 @@ export class UserLoginTelegramDto {
     @IsNumber()
     auth_date: number;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         description: 'Telegram user hash',
         example: 'd41d8cd98f00b204e9800998ecf8427e',
     })
