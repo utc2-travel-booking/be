@@ -60,7 +60,6 @@ export class AdvertisersControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        console.log('createAdvertiserDto', createAdvertiserDto);
         const result = await this.advertisersService.createOne(
             {
                 ...createAdvertiserDto,
@@ -80,7 +79,6 @@ export class AdvertisersControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        console.log('createAdvertiserDto', updateAdvertiserDto);
 
         const result = await this.advertisersService.updateOneById(
             _id,
