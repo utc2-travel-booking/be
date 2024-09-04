@@ -33,6 +33,7 @@ export const addDtoProperties = (dto: new () => any) => {
             form: null,
             isShow: _.get(propertyData, 'cms.isShow', true),
             widget: _.get(propertyData, 'cms.widget', null),
+            enum: _.get(propertyData, 'enum', null),
         };
 
         const type = _.get(propertyData, 'type');

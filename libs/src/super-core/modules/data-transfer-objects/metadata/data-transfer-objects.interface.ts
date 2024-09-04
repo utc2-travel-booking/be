@@ -8,6 +8,7 @@ export interface DTOMetadataForm {
         isShow: boolean;
         widget: 'textarea' | null;
         form: DTOMetadata;
+        enum: string[] | null;
     };
 }
 
