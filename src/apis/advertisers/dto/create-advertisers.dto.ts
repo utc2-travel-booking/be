@@ -40,6 +40,39 @@ export class BannerImageDto extends BannerImage {
         message: 'File  does not exist',
     })
     featuredImage: Types.ObjectId;
+
+    @ExtendedApiProperty({
+        type: String,
+        description: 'Title of image',
+        default: 'Millionaire',
+        title: 'Title',
+    })
+    title: string;
+
+    @ExtendedApiProperty({
+        type: String,
+        description: 'Sub description of the post',
+        default: 'Lorem ipsum dolor sit',
+        title: 'Short Description',
+    })
+    shortDescription: string;
+
+    @ExtendedApiProperty({
+        type: String,
+        description: 'File id of the post',
+        default: '66ac363aca5ae70c449940f0',
+        title: 'Icon Of Banner Image',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'File  does not exist',
+    })
+    iconImage: Types.ObjectId;
 }
 
 export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
