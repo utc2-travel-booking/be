@@ -68,22 +68,22 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     categories: Types.ObjectId[];
 
     @SuperApiProperty({
-        type: String,
-        description: 'Icon image id of the app',
-        default: '60f3b3b3b3b3b3b3b3b3b3',
-        title: 'Icon Image Of App',
+        type: [String],
+        description: 'Preview images id of the app',
+        default: ['60f3b3b3b3b3b3b3b3b3b3'],
+        title: 'Preview Images Of App',
         cms: {
             ref: COLLECTION_NAMES.FILE,
         },
     })
     @IsOptional()
-    @Transform(({ value }) => convertStringToObjectId(value))
+    @Transform(({ value }) => convertStringToObjectId(value, true))
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,
-        message: 'Preview image does not exist',
+        message: 'Featured image does not exist',
         isArray: true,
     })
-    previewImages: Array<Types.ObjectId>;
+    previewImages: Types.ObjectId[];
 
     @SuperApiProperty({
         type: String,
@@ -118,4 +118,17 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     })
     @IsObject()
     socialMedia: Record<string, string>;
+
+    @SuperApiProperty({
+        type: String,
+        description: 'Short description of the app',
+        default: 'Short description',
+        title: 'Short Description Of App',
+        cms: {
+            widget: 'textarea',
+        },
+    })
+    @MaxLength(1000)
+    @IsString()
+    shortDescription: string;
 }
