@@ -6,7 +6,7 @@ import { Controller } from '@nestjs/common';
 import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('admin/super-cache')
-@Resource('admin/super-cache')
+@Resource('super-cache')
 @ApiTags('Admin: Super Cache')
 export class SuperCacheController {
     constructor(private readonly superCacheService: SuperCacheService) {}
