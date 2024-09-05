@@ -57,11 +57,10 @@ export class AppsService extends BaseService<AppDocument, App> {
         } = queryParams;
 
         activePublications(queryParams.filterPipeline);
-
-        const result = await this.find({
-            ...filterPipeline,
-            status: SubmitStatus.Approved,
-        })
+        const result = await this.find(
+            { status: SubmitStatus.Approved },
+            filterPipeline,
+        )
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
@@ -103,10 +102,12 @@ export class AppsService extends BaseService<AppDocument, App> {
             select,
         } = queryParams;
 
-        const result = await this.find({
-            ...filterPipeline,
-            createdBy: new mongoose.Types.ObjectId(userId),
-        })
+        const result = await this.find(
+            {
+                createdBy: new mongoose.Types.ObjectId(userId),
+            },
+            filterPipeline,
+        )
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
