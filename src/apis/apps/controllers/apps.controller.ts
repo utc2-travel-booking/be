@@ -46,7 +46,6 @@ export class AppsController {
         const result = await this.appsService.createOne(
             {
                 ...data,
-                status: SubmitStatus.Pending,
             },
             user,
             {
@@ -110,6 +109,21 @@ export class AppsController {
     ) {
         const { user } = req;
         const result = await this.appsService.getAllAppPublish(
+            queryParams,
+            user,
+        );
+        return result;
+    }
+
+    @SuperGet()
+    @UseGuards(UserPayloadExtractorGuard)
+    async getSubmittedApp(
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getSubmittedApp(
             queryParams,
             user,
         );

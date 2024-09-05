@@ -7,7 +7,7 @@ import { BaseService } from 'src/base/service/base.service';
 import { App, AppDocument } from './entities/apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model, PipelineStage, Types } from 'mongoose';
+import mongoose, { Model, PipelineStage, Types } from 'mongoose';
 import { SumRatingAppModel } from './models/sum-rating-app.model';
 import { activePublications } from 'src/base/aggregates/active-publications.aggregates';
 import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
@@ -58,7 +58,52 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         activePublications(queryParams.filterPipeline);
 
-        const result = await this.find({}, filterPipeline)
+        const result = await this.find(filterPipeline)
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .select(select)
+            .exec();
+
+        const total = await this.countDocuments({}, filterPipeline).exec();
+        const meta = pagination(result, page, limit, total);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                    ),
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            return { items, meta };
+        });
+    }
+
+    async getSubmittedApp(
+        queryParams: ExtendedPagingDto,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
+
+        const result = await this.find({
+            ...filterPipeline,
+            createdBy: new mongoose.Types.ObjectId(userId),
+        })
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
