@@ -20,7 +20,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { removeDiacritics } from 'src/utils/helper';
 import { AppsService } from '../apps.service';
 import { SubmitAppDto } from '../dto/submit-app.dto';
-import { SubmitStatus } from '../entities/apps.entity';
 
 @Controller('apps')
 @Resource('apps')

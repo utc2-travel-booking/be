@@ -58,7 +58,16 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         activePublications(queryParams.filterPipeline);
         const result = await this.find(
-            { status: SubmitStatus.Approved },
+            {
+                $or: [
+                    {
+                        status: SubmitStatus.Approved,
+                    },
+                    {
+                        status: null,
+                    },
+                ],
+            },
             filterPipeline,
         )
             .limit(limit)
