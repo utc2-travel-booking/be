@@ -24,6 +24,8 @@ import { NotificationsController } from 'src/apis/notifications/controllers/noti
 import { NotificationsModule } from 'src/apis/notifications/notifications.module';
 import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
+import { UserTransactionController } from 'src/apis/user-transaction/controllers/user-transaction.controller';
+import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 
 @Module({
     imports: [
@@ -40,6 +42,7 @@ import { FormBuilderController } from 'src/apis/form-builders/controllers/form-b
         TagsModule,
         NotificationsModule,
         FormBuilderModule,
+        UserTransactionModule,
     ],
     controllers: [
         UserController,
@@ -54,7 +57,8 @@ import { FormBuilderController } from 'src/apis/form-builders/controllers/form-b
         TagsController,
         NotificationsController,
         FormBuilderController,
+        UserTransactionController
     ],
     providers: [],
 })
-export class RouterFrontsModule {}
+export class RouterFrontsModule { }

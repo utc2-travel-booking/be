@@ -5,7 +5,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { Resource } from '@libs/super-authorize';
 
 @Controller('admin/data-transfer-objects')
-@Resource('admin/data-transfer-objects')
+@Resource('data-transfer-objects')
 @ApiTags('Admin: Data Transfer Objects')
 export class DataTransferObjectsController {
     constructor(

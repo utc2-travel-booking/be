@@ -5,7 +5,7 @@ export interface SuperApiPropertyOptions extends ApiPropertyOptions {
     cms?: {
         ref?: string;
         isShow?: boolean;
-        widget?: 'textarea' | 'password';
+        widget?: 'textarea' | 'password' | 'textEditor';
     };
 }
 

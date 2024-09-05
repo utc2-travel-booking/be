@@ -15,6 +15,13 @@ import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
+export enum SubmitStatus {
+    Pending = 'Pending',
+    Approved = 'Approved',
+    Rejected = 'Rejected',
+    Draft = 'Draft',
+}
+
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.APP,
@@ -171,6 +178,13 @@ export class App extends AggregateRoot {
         },
     })
     totalRating: number;
+
+    @SuperProp({
+        required: true,
+        default: SubmitStatus.Approved,
+        enum: SubmitStatus,
+    })
+    status: SubmitStatus;
 }
 
 export type AppDocument = App & Document;
