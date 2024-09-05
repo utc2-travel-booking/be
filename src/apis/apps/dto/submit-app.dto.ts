@@ -99,7 +99,6 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     @IsExist({
         collectionName: COLLECTION_NAMES.FILE,
         message: 'Featured image does not exist',
-        isArray: true,
     })
     featuredImage: Types.ObjectId;
 
