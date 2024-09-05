@@ -4,7 +4,7 @@ import {
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
-import { App, AppDocument } from './entities/apps.entity';
+import { App, AppDocument, SubmitStatus } from './entities/apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import mongoose, { Model, PipelineStage, Types } from 'mongoose';
@@ -58,7 +58,10 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         activePublications(queryParams.filterPipeline);
 
-        const result = await this.find(filterPipeline)
+        const result = await this.find({
+            ...filterPipeline,
+            status: SubmitStatus.Approved,
+        })
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
