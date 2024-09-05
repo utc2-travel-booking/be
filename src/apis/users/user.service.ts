@@ -20,7 +20,10 @@ import { MediaService } from '../media/medias.service';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { UserTransactionType } from '../user-transaction/constants';
+import {
+    UserTransactionAction,
+    UserTransactionType,
+} from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -34,6 +37,8 @@ import { generateRandomString } from './common/generate-random-string.util';
 import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
+import { TelegramBotDocument } from '../telegram-bot/entities/telegram-bot.entity';
+import { TelegramBotService } from '../telegram-bot/telegram-bot.service';
 
 @Injectable()
 export class UserService
@@ -52,6 +57,7 @@ export class UserService
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
         private readonly userReferralsService: UserReferralsService,
+        private readonly telegramBotService: TelegramBotService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -555,8 +561,99 @@ export class UserService
 
         return false;
     }
+    async createUserTransaction(
+        userId: Types.ObjectId,
+        type: UserTransactionType,
+        amount: number,
+        before: number,
+        after: number,
+        refSource: string,
+        refId: Types.ObjectId,
+        telegramBot: Types.ObjectId,
+        action: string,
+    ) {
+        if (amount === 0) {
+            return 0;
+        }
 
-    async createReferral(inviteCode: string, userPayload: UserPayload) {
+        const userTransaction = await this.userTransactionService.create({
+            createdBy: new Types.ObjectId(userId),
+            type,
+            amount,
+            before,
+            after,
+            refSource: refSource,
+            refId: new Types.ObjectId(refId?._id),
+            telegramBot: new Types.ObjectId(telegramBot?.toString()),
+            action,
+        });
+
+        if (userTransaction) {
+            await this.updateOne(
+                { _id: new Types.ObjectId(userId.toString()) },
+                {
+                    currentPoint: after,
+                },
+            );
+
+            this.websocketGateway.sendPointsUpdate(userId, after);
+
+            return amount;
+        }
+    }
+
+    private async addPointForUserReferred(
+        userId: Types.ObjectId,
+        telegramBot: TelegramBotDocument,
+    ) {
+        const user = await this.findOne({
+            _id: userId,
+        }).exec();
+
+        const amountRewardReferral =
+            await this.metadataService.getAmountRewardReferral();
+
+        const after = user.currentPoint + amountRewardReferral.value;
+
+        await this.createUserTransaction(
+            user._id,
+            UserTransactionType.SUM,
+            amountRewardReferral.value,
+            user.currentPoint,
+            after,
+            COLLECTION_NAMES.METADATA,
+            amountRewardReferral._id,
+            telegramBot?._id,
+            UserTransactionAction.REFERRAL,
+        );
+    }
+    private async addPointForUserReferral(
+        referrer: UserDocument,
+        telegramBot: TelegramBotDocument,
+    ) {
+        const amountRewardReferral =
+            await this.metadataService.getAmountRewardReferral();
+
+        const after = referrer.currentPoint + amountRewardReferral.value;
+
+        await this.createUserTransaction(
+            referrer._id,
+            UserTransactionType.SUM,
+            amountRewardReferral.value,
+            referrer.currentPoint,
+            after,
+            COLLECTION_NAMES.METADATA,
+            amountRewardReferral._id,
+            telegramBot?._id,
+            UserTransactionAction.REFERRAL,
+        );
+    }
+
+    async createReferral(
+        inviteCode: string,
+        userPayload: UserPayload,
+        origin: string,
+    ) {
         const { _id: userId } = userPayload;
 
         const referrer = await this.findOne({
@@ -577,9 +674,10 @@ export class UserService
             createdBy: userId,
             referrer: new Types.ObjectId(referrer._id),
         });
+        const telegramBot = await this.telegramBotService.findByDomain(origin);
 
-        // await this.addPointForUserReferral(referrer, telegramBot);
-        // await this.addPointForUserReferred(userId, telegramBot);
+        await this.addPointForUserReferral(referrer, telegramBot);
+        await this.addPointForUserReferred(userId, telegramBot);
     }
 
     async getReferral(users: UserDocument[]) {

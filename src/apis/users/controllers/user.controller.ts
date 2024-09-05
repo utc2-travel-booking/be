@@ -56,9 +56,10 @@ export class UserController {
     @SuperAuthorize(PERMISSION.POST)
     async createReferral(
         @Param('inviteCode') inviteCode: string,
-        @Req() req: { user: UserPayload },
+        @Req() req: { user: UserPayload; headers: Record<string, string> },
     ) {
         const { user } = req;
-        return this.userService.createReferral(inviteCode, user);
+        const origin = req.headers['origin'];
+        return this.userService.createReferral(inviteCode, user, origin);
     }
 }

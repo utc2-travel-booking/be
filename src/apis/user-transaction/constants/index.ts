@@ -11,3 +11,6 @@ export enum UserTransactionType {
 export enum UserCacheKey {
     USER_BANNED = 'USER_BANNED',
 }
+export enum UserTransactionAction {
+    REFERRAL = 'REFERRAL',
+}
