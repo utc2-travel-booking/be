@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { Types } from 'mongoose';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -35,7 +35,7 @@ export class AppsController {
     @SuperPost({
         dto: SubmitAppDto,
     })
-    @SuperAuthorize(PERMISSIONS_FRONT.APP.submit)
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() data: SubmitAppDto,
         @Req() req: { user: UserPayload },
