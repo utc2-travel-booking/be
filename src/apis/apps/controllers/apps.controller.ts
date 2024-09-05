@@ -1,7 +1,5 @@
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { Body, Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
@@ -11,7 +9,6 @@ import { Types } from 'mongoose';
 import { MetadataType } from 'src/apis/metadata/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
 import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.guard';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -35,10 +32,10 @@ import { SubmitStatus } from '../entities/apps.entity';
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
 
-    @ExtendedPost({
+    @SuperPost({
         dto: SubmitAppDto,
     })
-    @Authorize(PERMISSIONS_FRONT.APP.submit)
+    @SuperAuthorize(PERMISSIONS_FRONT.APP.submit)
     async create(
         @Body() data: SubmitAppDto,
         @Req() req: { user: UserPayload },
@@ -59,7 +56,6 @@ export class AppsController {
         return result;
     }
 
-    @ExtendedGet({ route: 'tags/:tagSlug' })
     @SuperGet({ route: 'tags/:tagSlug' })
     @UseGuards(UserPayloadExtractorGuard)
     async getAppsByTag(

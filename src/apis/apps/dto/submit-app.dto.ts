@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -16,7 +16,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class SubmitAppDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Name Of App',
@@ -26,7 +26,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     @IsString()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         default: 'https://example.com',
         required: true,
@@ -37,7 +37,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     @MaxLength(100)
     url: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         default: 'Caption',
         required: true,
@@ -48,7 +48,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     @MaxLength(500)
     caption: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: [String],
         description: 'Categories of the app',
         default: ['60f3b3b3b3b3b3b3b3b3b3'],
@@ -67,7 +67,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     @IsArray()
     categories: Types.ObjectId[];
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Icon image id of the app',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -85,7 +85,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     })
     previewImages: Array<Types.ObjectId>;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Screenshots image id of the app',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -103,7 +103,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: 'object',
         required: true,
         title: 'Scocial media of app',

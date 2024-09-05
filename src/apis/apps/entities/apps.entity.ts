@@ -178,7 +178,7 @@ export class App extends AggregateRoot {
     })
     totalRating: number;
 
-    @ExtendedProp({
+    @SuperProp({
         required: true,
         default: SubmitStatus.Approved,
         enum: SubmitStatus,
