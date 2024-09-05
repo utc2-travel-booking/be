@@ -13,7 +13,8 @@ export enum UserCacheKey {
 }
 
 export enum ParamTimeType {
-    TODAY = "Today",
-    YESTERDAY = "Yesterday",
-    EARLIER = "Earlier"
+    TODAY = 'Today',
+    YESTERDAY = 'Yesterday',
+    EARLIER = 'Earlier',
 }
+
