@@ -3,6 +3,7 @@ import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
     IsArray,
+    IsEnum,
     IsNotEmpty,
     IsObject,
     IsOptional,
@@ -14,6 +15,7 @@ import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
+import { SubmitStatus } from '../entities/apps.entity';
 
 export class SubmitAppDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
@@ -83,7 +85,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
         message: 'Featured image does not exist',
         isArray: true,
     })
-    previewImages: Types.ObjectId[];
+    previewImages?: Types.ObjectId[];
 
     @SuperApiProperty({
         type: String,
@@ -103,6 +105,23 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
     featuredImage: Types.ObjectId;
 
     @SuperApiProperty({
+        type: String,
+        description: 'Video id of the app',
+        default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Video Of App',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'Video does not exist',
+    })
+    video?: Types.ObjectId;
+
+    @SuperApiProperty({
         type: 'object',
         required: true,
         title: 'Scocial media of app',
@@ -116,7 +135,8 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
         },
     })
     @IsObject()
-    socialMedia: Record<string, string>;
+    @IsOptional()
+    socialMedia?: Record<string, string>;
 
     @SuperApiProperty({
         type: String,
@@ -128,6 +148,13 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
         },
     })
     @MaxLength(1000)
-    @IsString()
-    shortDescription: string;
+    shortDescription?: string;
+
+    @SuperApiProperty({
+        description: 'Draft or Pending',
+        title: 'Status for App',
+    })
+    @IsEnum(SubmitStatus)
+    @IsOptional()
+    status: SubmitStatus.Draft | SubmitStatus.Pending = SubmitStatus.Draft;
 }

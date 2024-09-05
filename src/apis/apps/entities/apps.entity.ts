@@ -19,6 +19,7 @@ export enum SubmitStatus {
     Pending = 'Pending',
     Approved = 'Approved',
     Rejected = 'Rejected',
+    Draft = 'Draft',
 }
 
 @Schema({
