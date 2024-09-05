@@ -12,7 +12,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('admin/audits')
-@Resource('admin/audits')
+@Resource('audits')
 @ApiTags('Admin: Audit')
 export class AuditsControllerAdmin {
     constructor(private readonly auditsService: AuditsService) {}

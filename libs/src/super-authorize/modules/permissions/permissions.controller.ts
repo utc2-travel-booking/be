@@ -11,7 +11,7 @@ import { Resource } from '@libs/super-authorize/decorators';
 import { PERMISSION } from '@libs/super-authorize';
 
 @Controller('admin/permissions')
-@Resource('admin/permissions')
+@Resource('permissions')
 @ApiTags('Admin: Permissions')
 export class PermissionsController {
     constructor(private readonly permissionsService: PermissionsService) {}
