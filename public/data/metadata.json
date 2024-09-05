@@ -76,5 +76,25 @@
             "$date": "2024-08-13T06:48:41.265Z"
         },
         "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66d92f118cef9487b78f9499"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REFERRAL_REWARD",
+        "value": {
+            "isGlobal": true,
+            "reward": 100,
+            "limit": "",
+            "name": "referral"
+        },
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-09-05T03:10:45.691Z"
+        },
+        "updatedAt": {
+            "$date": "2024-09-05T03:10:45.691Z"
+        }
     }
 ]

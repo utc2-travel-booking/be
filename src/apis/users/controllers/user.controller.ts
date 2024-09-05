@@ -12,6 +12,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { SuperPost } from '@libs/super-core';
+import { CreateUserReferralDto } from '../dto/create-referral.dto';
 
 @Controller('users')
 @Resource('users')
@@ -52,14 +53,10 @@ export class UserController {
         return this.userService.getHistoryReward(user, type);
     }
 
-    @SuperPost({ route: 'referral/:inviteCode' })
-    @SuperAuthorize(PERMISSION.POST)
-    async createReferral(
-        @Param('inviteCode') inviteCode: string,
-        @Req() req: { user: UserPayload; headers: Record<string, string> },
-    ) {
-        const { user } = req;
-        const origin = req.headers['origin'];
-        return this.userService.createReferral(inviteCode, user, origin);
+    @SuperPost({ route: 'referral' })
+    async createReferral(@Body() Referral: CreateUserReferralDto) {
+        const { telegramUserId, inviteCode } = Referral;
+
+        return this.userService.createReferral(inviteCode, telegramUserId);
     }
 }

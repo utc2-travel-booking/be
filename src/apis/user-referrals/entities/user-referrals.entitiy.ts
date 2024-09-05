@@ -1,25 +1,34 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { User, UserDocument } from 'src/apis/users/entities/user.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
-import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { ReferralStatus } from '../constants';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.USER_REFERRAL,
 })
 export class UserReferral extends AggregateRoot {
-    @Prop({
-        type: Types.ObjectId,
-        ref: COLLECTION_NAMES.USER,
-        refClass: User,
+    @SuperProp({
+        type: Number,
+        required: true,
     })
-    @AutoPopulate({
-        ref: COLLECTION_NAMES.USER,
+    telegramUserId: number;
+
+    @SuperProp({
+        type: String,
+        required: true,
     })
-    referrer: UserDocument;
+    code: string;
+
+    @SuperProp({
+        type: String,
+        enum: ReferralStatus,
+        default: ReferralStatus.PENDING,
+    })
+    status: ReferralStatus;
 }
 
 export type UserReferralDocument = UserReferral & Document;

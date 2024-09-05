@@ -39,6 +39,7 @@ import { RolesService } from '@libs/super-authorize/modules/roles/roles.service'
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 import { TelegramBotDocument } from '../telegram-bot/entities/telegram-bot.entity';
 import { TelegramBotService } from '../telegram-bot/telegram-bot.service';
+import { ReferralStatus } from '../user-referrals/constants';
 
 @Injectable()
 export class UserService
@@ -386,18 +387,22 @@ export class UserService
 
         const countReferral = await this.userReferralsService
             .countDocuments({
-                referrer: user._id,
+                code: result.inviteCode,
+                status: ReferralStatus.COMPLETED,
             })
             .exec();
         const introducer = await this.userReferralsService
             .findOne({
-                createdBy: user._id,
+                telegramUserId: result.telegramUserId,
+                status: ReferralStatus.COMPLETED,
             })
             .exec();
 
+        console.log('introducer', introducer);
+
         return {
             ...result,
-            introducer: introducer?.createdBy?._id,
+            introducer: introducer?.code,
             countReferral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
@@ -532,32 +537,28 @@ export class UserService
         });
     }
 
-    private async checkUserReferral(
-        userId: Types.ObjectId,
-        referrer: UserDocument,
-    ) {
+    private async checkUserReferral(telegramId: number, inviteCode: string) {
+        // Check user is exist
+        // Check if the user is the referrer
+        const referrer = await this.findOne({
+            inviteCode,
+            telegramUserId: { $ne: telegramId },
+        }).exec();
+
         if (!referrer) {
-            throw new BadRequestException('Not valid');
+            throw new BadRequestException('No valid user found');
         }
 
-        const isExistReferral = await this.userReferralsService
-            .findOne({
-                $or: [
-                    {
-                        createdBy: userId,
-                    },
-                    {
-                        createdBy: new Types.ObjectId(referrer._id),
-                        referrer: userId,
-                    },
-                ],
-            })
-            .autoPopulate(false)
-            .exec();
+        // const isExistReferral = await this.userReferralsService
+        //     .findOne({
+        //         telegramUserId: telegramId,
+        //     })
+        //     .autoPopulate(false)
+        //     .exec();
 
-        if (isExistReferral) {
-            throw new BadRequestException('Not valid');
-        }
+        // if (isExistReferral) {
+        //     throw new BadRequestException('Not valid');
+        // }
 
         return false;
     }
@@ -569,7 +570,6 @@ export class UserService
         after: number,
         refSource: string,
         refId: Types.ObjectId,
-        telegramBot: Types.ObjectId,
         action: string,
     ) {
         if (amount === 0) {
@@ -584,7 +584,6 @@ export class UserService
             after,
             refSource: refSource,
             refId: new Types.ObjectId(refId?._id),
-            telegramBot: new Types.ObjectId(telegramBot?.toString()),
             action,
         });
 
@@ -602,10 +601,7 @@ export class UserService
         }
     }
 
-    private async addPointForUserReferred(
-        userId: Types.ObjectId,
-        telegramBot: TelegramBotDocument,
-    ) {
+    private async addPointForUserReferred(userId: Types.ObjectId) {
         const user = await this.findOne({
             _id: userId,
         }).exec();
@@ -623,14 +619,10 @@ export class UserService
             after,
             COLLECTION_NAMES.METADATA,
             amountRewardReferral._id,
-            telegramBot?._id,
             UserTransactionAction.REFERRAL,
         );
     }
-    private async addPointForUserReferral(
-        referrer: UserDocument,
-        telegramBot: TelegramBotDocument,
-    ) {
+    private async addPointForUserReferral(referrer: UserDocument) {
         const amountRewardReferral =
             await this.metadataService.getAmountRewardReferral();
 
@@ -644,61 +636,45 @@ export class UserService
             after,
             COLLECTION_NAMES.METADATA,
             amountRewardReferral._id,
-            telegramBot?._id,
             UserTransactionAction.REFERRAL,
         );
     }
 
-    async createReferral(
-        inviteCode: string,
-        userPayload: UserPayload,
-        origin: string,
-    ) {
-        const { _id: userId } = userPayload;
-
-        const referrer = await this.findOne({
-            inviteCode,
-            _id: { $ne: userId },
-        }).exec();
-
+    async createReferral(inviteCode: string, telegramId: number) {
         const checkUserReferral = await this.checkUserReferral(
-            userId,
-            referrer,
+            telegramId,
+            inviteCode,
         );
 
         if (checkUserReferral) {
             return;
         }
-
         await this.userReferralsService.create({
-            createdBy: userId,
-            referrer: new Types.ObjectId(referrer._id),
+            telegramUserId: telegramId,
+            code: inviteCode,
         });
-        const telegramBot = await this.telegramBotService.findByDomain(origin);
-
-        await this.addPointForUserReferral(referrer, telegramBot);
-        await this.addPointForUserReferred(userId, telegramBot);
     }
 
     async getReferral(users: UserDocument[]) {
         const result = await Promise.all(
             users.map(async (user) => {
-                const userId = new Types.ObjectId(user._id);
-                const count = await this.userReferralsService
+                const countReferral = await this.userReferralsService
                     .countDocuments({
-                        referrer: userId,
+                        code: user.inviteCode,
+                        status: ReferralStatus.COMPLETED,
                     })
                     .exec();
                 const introducer = await this.userReferralsService
                     .findOne({
-                        createdBy: userId,
+                        telegramUserId: user.telegramUserId,
+                        status: ReferralStatus.COMPLETED,
                     })
                     .exec();
 
                 return {
                     ...user,
-                    referralCount: count,
-                    introducer: introducer?.createdBy?._id,
+                    referralCount: countReferral,
+                    introducer: introducer?.code,
                 };
             }),
         );

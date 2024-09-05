@@ -18,7 +18,7 @@ export enum COLLECTION_NAMES {
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
     FORM_BUILDER = 'formBuilders',
-    USER_REFERRAL = 'user-referrals',
+    USER_REFERRAL = 'userReferrals',
 }
 
 export enum CountryCode {
