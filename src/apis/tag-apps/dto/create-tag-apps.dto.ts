@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber } from 'class-validator';
@@ -9,7 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateTagAppDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         title: 'Tag Id Of Tag In App',
         description: 'Tag id of the tag',
@@ -27,7 +27,7 @@ export class CreateTagAppDto extends PartialType(ExcludeDto) {
     })
     tag: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         title: 'App Id Of Tag In App',
         description: 'App id of the tag',
@@ -45,7 +45,7 @@ export class CreateTagAppDto extends PartialType(ExcludeDto) {
     })
     app: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: Number,
         title: 'Position Of Tag In App',
         description: 'Position of the tag in the app',

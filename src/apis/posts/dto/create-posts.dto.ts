@@ -14,44 +14,28 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { PostStatus } from '../constants';
 import { convertStringToObjectId } from 'src/utils/helper';
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 
 export class CreatePostDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Name of the post',
         default: 'Post',
+        title: 'Name',
     })
     @MaxLength(255)
     @IsString()
     @IsNotEmpty()
     name: string;
 
-    @ExtendedApiProperty({
-        type: String,
-        description: 'Short description of the post',
-        default: 'Short description',
-    })
-    @MaxLength(1000)
-    @IsString()
-    @IsOptional()
-    shortDescription: string;
-
-    @ExtendedApiProperty({
-        type: String,
-        description: 'Long description of the post',
-        default: 'Long description',
-    })
-    @IsString()
-    @IsOptional()
-    longDescription: string;
-
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         name: 'status',
         description:
             'Status for this post. Available values: PUBLISHED & DRAFT',
         default: PostStatus.PUBLISHED,
         required: true,
+        title: 'Status',
+        enum: PostStatus,
     })
     @IsString()
     @IsEnum(PostStatus, {
@@ -60,10 +44,14 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     status: PostStatus;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Featured image id of the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Featured Image',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value))
@@ -73,10 +61,14 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Category of id the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Category',
+        cms: {
+            ref: COLLECTION_NAMES.CATEGORIES,
+        },
     })
     @IsOptional()
     @Transform(({ value }) => convertStringToObjectId(value))
@@ -86,20 +78,55 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     })
     category: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
+        type: String,
+        description: 'Short description of the post',
+        default: 'Short description',
+        title: 'Short Description',
+        cms: {
+            widget: 'textarea',
+        },
+    })
+    @MaxLength(1000)
+    @IsString()
+    @IsOptional()
+    shortDescription: string;
+
+    @SuperApiProperty({
+        type: String,
+        description: 'Long description of the post',
+        default: 'Long description',
+        title: 'Long Description',
+        cms: {
+            widget: 'textEditor',
+        },
+    })
+    @IsString()
+    @IsOptional()
+    longDescription: string;
+
+    @SuperApiProperty({
         type: Date,
         description: 'Published date of the post',
         default: new Date(),
+        title: 'Published Date',
+        cms: {
+            isShow: false,
+        },
     })
     @IsOptional()
     @IsDate()
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedStart: Date;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: Date,
         default: new Date(),
         description: 'Published end date of the post',
+        title: 'Published End Date',
+        cms: {
+            isShow: false,
+        },
     })
     @IsOptional()
     @IsDate()

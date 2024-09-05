@@ -2,9 +2,7 @@ import { LocalStrategy } from 'src/strategies/local.strategy';
 import { UserModule } from '../users/user.module';
 import { AuthService } from './auth.service';
 import { Module } from '@nestjs/common';
-import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { RolesModule } from '../roles/roles.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { appSettings } from 'src/configs/appsettings';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
@@ -12,6 +10,7 @@ import { LoginTelegramProviderStrategy } from 'src/strategies/login-telegram-pro
 import { LoginTelegramMiniAppStrategy } from 'src/strategies/login-telegram-mini-app.strategy';
 import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
 import { UserPayloadExtractorStrategy } from 'src/strategies/user-payload-extractor.strategy';
+import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
 
 @Module({
     imports: [
@@ -32,7 +31,6 @@ import { UserPayloadExtractorStrategy } from 'src/strategies/user-payload-extrac
     providers: [
         AuthService,
         LocalStrategy,
-        JwtStrategy,
         LoginTelegramProviderStrategy,
         LoginTelegramMiniAppStrategy,
         UserPayloadExtractorStrategy,

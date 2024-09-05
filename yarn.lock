@@ -1272,7 +1272,11 @@
   resolved "https://registry.yarnpkg.com/@redis/bloom/-/bloom-1.2.0.tgz#d3fd6d3c0af3ef92f26767b56414a370c7b63b71"
   integrity sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==
 
+<<<<<<< HEAD
 "@redis/client@1.6.0", "@redis/client@^1.5.17":
+=======
+"@redis/client@1.6.0", "@redis/client@^1.6.0":
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@redis/client/-/client-1.6.0.tgz#dcf4ae1319763db6fdddd6de7f0af68a352c30ea"
   integrity sha512-aR0uffYI700OEEH4gYnitAnv3vzVGXCFvYfdpu/CJKvk4pHfLPEy/JSZyrpQ+15WhXe1yJRXLtfQ84s4mEXnPg==
@@ -1286,17 +1290,29 @@
   resolved "https://registry.yarnpkg.com/@redis/graph/-/graph-1.1.1.tgz#8c10df2df7f7d02741866751764031a957a170ea"
   integrity sha512-FEMTcTHZozZciLRl6GiiIB4zGm5z5F3F6a6FZCyrfxdKOhFlGkiAqlexWMBzCi4DcRoyiOsuLfW+cjlGWyExOw==
 
+<<<<<<< HEAD
 "@redis/json@1.0.7", "@redis/json@^1.0.6":
+=======
+"@redis/json@1.0.7", "@redis/json@^1.0.7":
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@redis/json/-/json-1.0.7.tgz#016257fcd933c4cbcb9c49cde8a0961375c6893b"
   integrity sha512-6UyXfjVaTBTJtKNG4/9Z8PSpKE6XgSyEb8iwaqDcy+uKrd/DGYHTWkUdnQDyzm727V7p21WUMhsqz5oy65kPcQ==
 
+<<<<<<< HEAD
 "@redis/search@1.2.0", "@redis/search@^1.1.6":
+=======
+"@redis/search@1.2.0", "@redis/search@^1.2.0":
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@redis/search/-/search-1.2.0.tgz#50976fd3f31168f585666f7922dde111c74567b8"
   integrity sha512-tYoDBbtqOVigEDMAcTGsRlMycIIjwMCgD8eR2t0NANeQmgK/lvxNAvYyb6bZDD4frHRhIHkJu2TBRvB0ERkOmw==
 
+<<<<<<< HEAD
 "@redis/time-series@1.1.0", "@redis/time-series@^1.0.5":
+=======
+"@redis/time-series@1.1.0", "@redis/time-series@^1.1.0":
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@redis/time-series/-/time-series-1.1.0.tgz#cba454c05ec201bd5547aaf55286d44682ac8eb5"
   integrity sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==
@@ -1607,11 +1623,16 @@
   dependencies:
     "@types/express" "*"
 
+<<<<<<< HEAD
 "@types/node@*", "@types/node@18.15.11", "@types/node@^18.11.9":
+=======
+"@types/node@*", "@types/node@18.15.11", "@types/node@>=10.0.0", "@types/node@^18.11.9":
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "18.15.11"
   resolved "https://registry.npmjs.org/@types/node/-/node-18.15.11.tgz"
   integrity sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==
 
+<<<<<<< HEAD
 "@types/node@>=10.0.0":
   version "22.5.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.1.tgz#de01dce265f6b99ed32b295962045d10b5b99560"
@@ -1619,6 +1640,8 @@
   dependencies:
     undici-types "~6.19.2"
 
+=======
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
 "@types/normalize-package-data@^2.4.0":
   version "2.4.4"
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.4.tgz"
@@ -2570,6 +2593,7 @@ cacache@^18.0.0, cacache@^18.0.1, cacache@^18.0.3:
     unique-filename "^3.0.0"
 
 cache-manager-redis-yet@^5.1.3:
+<<<<<<< HEAD
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/cache-manager-redis-yet/-/cache-manager-redis-yet-5.1.3.tgz#2fea067641c01bfc281b216554fe3c8ebf2f6c00"
   integrity sha512-V/IcEBqNQkwlPz/p4AsJLCBFmv3KVasQPSuQZx4ykPCbBm3ybIDoqf6dXuOKaBwIk7CQwoNxTR8HJ5Bssv1iYg==
@@ -2582,6 +2606,20 @@ cache-manager-redis-yet@^5.1.3:
     "@redis/time-series" "^1.0.5"
     cache-manager "^5.7.2"
     redis "^4.6.15"
+=======
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/cache-manager-redis-yet/-/cache-manager-redis-yet-5.1.4.tgz#66f74ac961eae2a892a569406e2a9c076125e6d8"
+  integrity sha512-2mXZjo+txfH2m+mSTHTITNq8c5SssU2nP7NutzrocO3Mw/SbjHcDo+mriI3ZuR63ov/oUUIaF9iF+MzDqVzMoQ==
+  dependencies:
+    "@redis/bloom" "^1.2.0"
+    "@redis/client" "^1.6.0"
+    "@redis/graph" "^1.1.1"
+    "@redis/json" "^1.0.7"
+    "@redis/search" "^1.2.0"
+    "@redis/time-series" "^1.1.0"
+    cache-manager "^5.7.6"
+    redis "^4.7.0"
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
 
 cache-manager@^5.6.1:
   version "5.6.1"
@@ -2593,7 +2631,11 @@ cache-manager@^5.6.1:
     lru-cache "^10.2.2"
     promise-coalesce "^1.1.2"
 
+<<<<<<< HEAD
 cache-manager@^5.7.2:
+=======
+cache-manager@^5.7.6:
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "5.7.6"
   resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-5.7.6.tgz#bdd8a154c73e5233824aa09ceb359ed225d37b7e"
   integrity sha512-wBxnBHjDxF1RXpHCBD6HGvKER003Ts7IIm0CHpggliHzN1RZditb7rXoduE1rplc2DEFYKxhLKgFuchXMJje9w==
@@ -3039,7 +3081,11 @@ cookie@0.6.0:
 
 cookie@~0.4.1:
   version "0.4.2"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.2.tgz#0e41f24de5ecf317947c82fc789e06a884824432"
+=======
+  resolved "https://registry.npmjs.org/cookie/-/cookie-0.4.2.tgz"
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   integrity sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==
 
 cookiejar@^2.1.4:
@@ -3184,7 +3230,11 @@ debug@2.6.9:
   dependencies:
     ms "2.0.0"
 
+<<<<<<< HEAD
 debug@4, debug@4.x, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
+=======
+debug@4, debug@4.x, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@~4.3.1, debug@~4.3.2, debug@~4.3.4:
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "4.3.4"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz"
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
@@ -3198,6 +3248,7 @@ debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
+<<<<<<< HEAD
 debug@~4.3.1, debug@~4.3.2, debug@~4.3.4:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.6.tgz#2ab2c38fbaffebf8aa95fdfe6d88438c7a13c52b"
@@ -3205,6 +3256,8 @@ debug@~4.3.1, debug@~4.3.2, debug@~4.3.4:
   dependencies:
     ms "2.1.2"
 
+=======
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
 decamelize-keys@^1.1.0:
   version "1.1.1"
   resolved "https://registry.npmjs.org/decamelize-keys/-/decamelize-keys-1.1.1.tgz"
@@ -6894,9 +6947,15 @@ possible-typed-array-names@^1.0.0:
   integrity sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==
 
 postcss-selector-parser@^6.0.10:
+<<<<<<< HEAD
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.1.1.tgz#5be94b277b8955904476a2400260002ce6c56e38"
   integrity sha512-b4dlw/9V8A71rLIDsSwVmak9z2DuBUB7CA1/wSdelNEzqsjoSPeADTWNO09lpH49Diy3/JIZ2bSPB1dI3LJCHg==
+=======
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.1.2.tgz#27ecb41fb0e3b6ba7a1ec84fff347f734c7929de"
+  integrity sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   dependencies:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
@@ -7222,7 +7281,11 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
+<<<<<<< HEAD
 redis@^4.6.15:
+=======
+redis@^4.7.0:
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/redis/-/redis-4.7.0.tgz#b401787514d25dd0cfc22406d767937ba3be55d6"
   integrity sha512-zvmkHEAdGMn+hMRXuMBtu4Vo5P6rHQjLoHftu+lBqq8ZTA3RCVC/WzD790bkKKiNFp7d5/9PcSD19fJyyRvOdQ==
@@ -8316,11 +8379,14 @@ unbox-primitive@^1.0.2:
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
 
+<<<<<<< HEAD
 undici-types@~6.19.2:
   version "6.19.8"
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
+=======
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
 unique-filename@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/unique-filename/-/unique-filename-3.0.0.tgz#48ba7a5a16849f5080d26c760c86cf5cf05770ea"
@@ -8419,7 +8485,11 @@ uuid@9.0.1:
 
 uuid@^8.3.2:
   version "8.3.2"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+=======
+  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
+>>>>>>> 4f749309b0704cfa1e2c1caf7af277bb6327104a
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache-lib@^3.0.1:

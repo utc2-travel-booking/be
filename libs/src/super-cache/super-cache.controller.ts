@@ -1,17 +1,18 @@
-import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { PERMISSIONS } from 'src/constants';
 import { SuperCacheService } from './super-cache.service';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { Controller } from '@nestjs/common';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('admin/super-cache')
+@Resource('super-cache')
 @ApiTags('Admin: Super Cache')
 export class SuperCacheController {
     constructor(private readonly superCacheService: SuperCacheService) {}
 
-    @ExtendedDelete({ route: 'reset' })
-    @Authorize(PERMISSIONS.CATEGORIES.destroy)
+    @SuperDelete({ route: 'reset' })
+    @SuperAuthorize(PERMISSION.DELETE)
     async reset() {
         return this.superCacheService.resetCache();
     }

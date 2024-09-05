@@ -1,6 +1,5 @@
 export enum PostType {
-    BLOG = 'blog',
-    NEWS = 'news',
+    BLOG = 'blogs',
 }
 
 export enum PostStatus {

@@ -4,29 +4,29 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { MetadataType } from '../constants';
 import { Document, Types, SchemaTypes } from 'mongoose';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.METADATA,
 })
 export class Metadata extends AggregateRoot {
-    @ExtendedProp({ required: true })
+    @SuperProp({ required: true })
     type: MetadataType;
 
-    @ExtendedProp({ required: false, type: SchemaTypes.Mixed })
+    @SuperProp({ required: false, type: SchemaTypes.Mixed })
     key: any;
 
-    @ExtendedProp({ required: false, type: SchemaTypes.Mixed })
+    @SuperProp({ required: false, type: SchemaTypes.Mixed })
     value: any;
 
-    @ExtendedProp({ required: false })
+    @SuperProp({ required: false })
     values: string;
 
-    @ExtendedProp({ required: false })
+    @SuperProp({ required: false })
     description: string;
 
-    @ExtendedProp({
+    @SuperProp({
         required: false,
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,

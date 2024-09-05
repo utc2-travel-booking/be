@@ -9,14 +9,14 @@ import {
 } from '@libs/super-multiple-language';
 import { AutoPopulate } from '@libs/super-search';
 import { File, FileDocument } from 'src/apis/media/entities/files.entity';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.TAG,
 })
 export class Tag extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         required: true,
         cms: {
@@ -29,7 +29,7 @@ export class Tag extends AggregateRoot {
     @MultipleLanguage()
     name: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -40,7 +40,7 @@ export class Tag extends AggregateRoot {
     })
     slug: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,

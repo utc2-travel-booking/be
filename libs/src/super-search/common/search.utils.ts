@@ -1,7 +1,7 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 import _ from 'lodash';
 import { PipelineStage, Types } from 'mongoose';
-import { OPERATOR, SearchType } from 'src/constants/enums';
+import { OPERATOR, SearchType } from '../constants';
 
 export const createSearchPipeline = (search: any, searchType: string) => {
     if (!_.isObjectLike(search)) {
@@ -172,13 +172,13 @@ export const addSearchConditionToPipeline = (
             break;
     }
 
-    if (searchType === SearchType.AND) {
+    if (searchType.toLocaleUpperCase() === SearchType.AND) {
         if (_.get(pipeline, '[0].$match.$and')) {
             pipeline[0].$match.$and.push(matchStage);
         } else {
             pipeline.push({ $match: { $and: [matchStage] } });
         }
-    } else if (searchType === SearchType.OR) {
+    } else if (searchType.toLocaleUpperCase() === SearchType.OR) {
         if (_.get(pipeline, '[0].$match.$or')) {
             pipeline[0].$match.$or.push(matchStage);
         } else {

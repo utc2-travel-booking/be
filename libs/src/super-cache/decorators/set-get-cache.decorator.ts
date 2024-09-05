@@ -8,6 +8,7 @@ import { RequestContext } from '@libs/super-request-context';
 import { appSettings } from 'src/configs/appsettings';
 import { createRedisFolderCollection } from '../common/create-redis-folder-collection.utils';
 import { COLLECTION_NAMES } from 'src/constants';
+import { Types } from 'mongoose';
 
 export function SGetCache() {
     let superCacheService: SuperCacheService;
@@ -72,12 +73,16 @@ export function SGetCache() {
             );
 
             if (cacheData) {
-                if (Array.isArray(cacheData)) {
-                    return cacheData.map((item) => _.set(item, 'cached', true));
-                } else if (cacheData && typeof cacheData === 'object') {
-                    return _.set(cacheData, 'cached', true);
+                const convertedData = convertStringToObjectId(cacheData);
+
+                if (Array.isArray(convertedData)) {
+                    return convertedData.map((item) =>
+                        _.set(item, 'cached', true),
+                    );
+                } else if (convertedData && typeof convertedData === 'object') {
+                    return _.set(convertedData, 'cached', true);
                 } else {
-                    return cacheData;
+                    return convertedData;
                 }
             }
 
@@ -98,3 +103,23 @@ export function SGetCache() {
         return descriptor;
     };
 }
+
+const convertStringToObjectId = (data: any): any => {
+    if (Array.isArray(data)) {
+        return data.map(convertStringToObjectId);
+    } else if (data && typeof data === 'object') {
+        for (const key in data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                if (
+                    typeof data[key] === 'string' &&
+                    /^[a-fA-F0-9]{24}$/.test(data[key])
+                ) {
+                    data[key] = new Types.ObjectId(data[key]);
+                } else {
+                    data[key] = convertStringToObjectId(data[key]);
+                }
+            }
+        }
+    }
+    return data;
+};
