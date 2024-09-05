@@ -385,6 +385,19 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        const referral = await this.userReferralsService
+            .findOne({
+                telegramUserId: result.telegramUserId,
+                status: ReferralStatus.PENDING,
+            })
+            .exec();
+        if (referral) {
+            await this.addPointForUserReferralAndUserReferred(
+                referral.code,
+                result,
+            );
+        }
+
         const countReferral = await this.userReferralsService
             .countDocuments({
                 code: result.inviteCode,
@@ -397,8 +410,6 @@ export class UserService
                 status: ReferralStatus.COMPLETED,
             })
             .exec();
-
-        console.log('introducer', introducer);
 
         return {
             ...result,
@@ -537,30 +548,34 @@ export class UserService
         });
     }
 
-    private async checkUserReferral(telegramId: number, inviteCode: string) {
-        // Check user is exist
-        // Check if the user is the referrer
-        const referrer = await this.findOne({
+    private async validateUserAndReferral(
+        telegramId: number,
+        inviteCode: string,
+    ) {
+        const user = await this.findOne({
+            telegramUserId: telegramId,
+        }).exec();
+        if (user) {
+            throw new BadRequestException('Invalid user');
+        }
+        console.log('user', user);
+
+        const referralCode = await this.findOne({
             inviteCode,
-            telegramUserId: { $ne: telegramId },
         }).exec();
 
-        if (!referrer) {
-            throw new BadRequestException('No valid user found');
+        if (!referralCode) {
+            throw new BadRequestException('Invalid referral code');
         }
 
-        // const isExistReferral = await this.userReferralsService
-        //     .findOne({
-        //         telegramUserId: telegramId,
-        //     })
-        //     .autoPopulate(false)
-        //     .exec();
-
-        // if (isExistReferral) {
-        //     throw new BadRequestException('Not valid');
-        // }
-
-        return false;
+        const referral = await this.userReferralsService
+            .findOne({
+                telegramUserId: telegramId,
+            })
+            .exec();
+        if (referral) {
+            throw new BadRequestException('User entered referral code');
+        }
     }
     async createUserTransaction(
         userId: Types.ObjectId,
@@ -601,11 +616,7 @@ export class UserService
         }
     }
 
-    private async addPointForUserReferred(userId: Types.ObjectId) {
-        const user = await this.findOne({
-            _id: userId,
-        }).exec();
-
+    private async addPointForUserReferred(user: UserDocument) {
         const amountRewardReferral =
             await this.metadataService.getAmountRewardReferral();
 
@@ -622,7 +633,11 @@ export class UserService
             UserTransactionAction.REFERRAL,
         );
     }
-    private async addPointForUserReferral(referrer: UserDocument) {
+    private async addPointForUserReferral(inviteCode: string) {
+        const referrer = await this.findOne({
+            inviteCode,
+        }).exec();
+
         const amountRewardReferral =
             await this.metadataService.getAmountRewardReferral();
 
@@ -641,18 +656,20 @@ export class UserService
     }
 
     async createReferral(inviteCode: string, telegramId: number) {
-        const checkUserReferral = await this.checkUserReferral(
-            telegramId,
-            inviteCode,
-        );
+        await this.validateUserAndReferral(telegramId, inviteCode);
 
-        if (checkUserReferral) {
-            return;
-        }
         await this.userReferralsService.create({
             telegramUserId: telegramId,
             code: inviteCode,
         });
+    }
+
+    private async addPointForUserReferralAndUserReferred(
+        inviteCode: string,
+        user: UserDocument,
+    ) {
+        await this.addPointForUserReferral(inviteCode);
+        await this.addPointForUserReferred(user);
     }
 
     async getReferral(users: UserDocument[]) {
