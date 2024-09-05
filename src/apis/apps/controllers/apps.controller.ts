@@ -115,8 +115,11 @@ export class AppsController {
         return result;
     }
 
-    @SuperGet()
+    @SuperGet({
+        route: 'submitted',
+    })
     @UseGuards(UserPayloadExtractorGuard)
+    @SuperAuthorize(PERMISSION.GET)
     async getSubmittedApp(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
