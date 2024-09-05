@@ -1,10 +1,14 @@
-import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS_FRONT } from 'src/constants';
+import {
+    COLLECTION_NAMES,
+    PERMISSIONS,
+    PERMISSIONS_FRONT,
+} from 'src/constants';
 import {
     ExtendedPagingDto,
     PagingDtoPipe,
@@ -17,6 +21,10 @@ import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.gua
 import { MetadataType } from 'src/apis/metadata/constants';
 import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
 import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SubmitAppDto } from '../dto/submit-app.dto';
+import { removeDiacritics } from 'src/utils/helper';
+import _ from 'lodash';
+import { SubmitStatus } from '../entities/apps.entity';
 
 @Controller('apps')
 @ApiTags('Front: Apps')
@@ -26,6 +34,30 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 })
 export class AppsController {
     constructor(private readonly appsService: AppsService) {}
+
+    @ExtendedPost({
+        dto: SubmitAppDto,
+    })
+    @Authorize(PERMISSIONS_FRONT.APP.submit)
+    async create(
+        @Body() data: SubmitAppDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const { name } = data;
+
+        const result = await this.appsService.createOne(
+            {
+                ...data,
+                status: SubmitStatus.Pending,
+            },
+            user,
+            {
+                slug: _.kebabCase(removeDiacritics(name)),
+            },
+        );
+        return result;
+    }
 
     @ExtendedGet({ route: 'tags/:tagSlug' })
     @UseGuards(UserPayloadExtractorGuard)

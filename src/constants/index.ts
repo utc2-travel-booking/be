@@ -135,6 +135,7 @@ export const PERMISSIONS_FRONT = {
         create: 'front.apps.create',
         edit: 'front.apps.edit',
         destroy: 'front.apps.destroy',
+        submit: 'front.apps.submit',
     },
     REVIEW: {
         index: 'front.reviews.index',

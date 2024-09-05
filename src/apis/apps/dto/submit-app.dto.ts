@@ -1,0 +1,121 @@
+import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import {
+    IsArray,
+    IsNotEmpty,
+    IsObject,
+    IsOptional,
+    IsString,
+    MaxLength,
+} from 'class-validator';
+import { Types } from 'mongoose';
+import { ExcludeDto } from 'src/base/dto/exclude.dto';
+import { IsExist } from 'src/common/services/is-exist-constraint.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { convertStringToObjectId } from 'src/utils/helper';
+
+export class SubmitAppDto extends PartialType(ExcludeDto) {
+    @ExtendedApiProperty({
+        type: String,
+        required: true,
+        title: 'Name Of App',
+    })
+    @IsNotEmpty()
+    @MaxLength(50)
+    @IsString()
+    name: string;
+
+    @ExtendedApiProperty({
+        type: String,
+        default: 'https://example.com',
+        required: true,
+        title: 'Url Of App',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(100)
+    url: string;
+
+    @ExtendedApiProperty({
+        type: String,
+        default: 'Caption',
+        required: true,
+        title: 'Caption Of App',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(500)
+    caption: string;
+
+    @ExtendedApiProperty({
+        type: [String],
+        description: 'Categories of the app',
+        default: ['60f3b3b3b3b3b3b3b3b3b3'],
+        title: 'Categories Of App',
+        cms: {
+            ref: COLLECTION_NAMES.CATEGORIES,
+        },
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value, true))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.CATEGORIES,
+        message: 'Category does not exist',
+        isArray: true,
+    })
+    @IsArray()
+    categories: Types.ObjectId[];
+
+    @ExtendedApiProperty({
+        type: String,
+        description: 'Icon image id of the app',
+        default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Icon Image Of App',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'Preview image does not exist',
+        isArray: true,
+    })
+    previewImages: Array<Types.ObjectId>;
+
+    @ExtendedApiProperty({
+        type: String,
+        description: 'Screenshots image id of the app',
+        default: '60f3b3b3b3b3b3b3b3b3b3',
+        title: 'Screenshots Image Of App',
+        cms: {
+            ref: COLLECTION_NAMES.FILE,
+        },
+    })
+    @IsOptional()
+    @Transform(({ value }) => convertStringToObjectId(value))
+    @IsExist({
+        collectionName: COLLECTION_NAMES.FILE,
+        message: 'Featured image does not exist',
+        isArray: true,
+    })
+    featuredImage: Types.ObjectId;
+
+    @ExtendedApiProperty({
+        type: 'object',
+        required: true,
+        title: 'Scocial media of app',
+        default: {
+            telegramChannel: 'https://t.me/channel',
+            telegramBot: 'https://t.me/bot',
+            telegramChat: 'https://t.me/chat',
+            facebook: 'facebook.com',
+            twitter: 'twitter.com',
+            youtube: 'youtube.com',
+        },
+    })
+    @IsObject()
+    socialMedia: Record<string, string>;
+}
