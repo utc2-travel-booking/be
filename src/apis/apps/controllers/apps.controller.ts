@@ -14,8 +14,8 @@ import { UserPayloadExtractorGuard } from 'src/guards/user-payload-extractor.gua
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import {
-  ExtendedPagingDto,
-  PagingDtoPipe,
+    ExtendedPagingDto,
+    PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { removeDiacritics } from 'src/utils/helper';
@@ -26,135 +26,134 @@ import { SubmitAppDto } from '../dto/submit-app.dto';
 @Resource('apps')
 @ApiTags('Front: Apps')
 @AuditLog({
-  events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
-  refSource: COLLECTION_NAMES.APP,
+    events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
+    refSource: COLLECTION_NAMES.APP,
 })
 export class AppsController {
-  constructor(private readonly appsService: AppsService) { }
+    constructor(private readonly appsService: AppsService) {}
 
-  @SuperPost({
-    dto: SubmitAppDto,
-  })
-  @SuperAuthorize(PERMISSION.POST)
-  async create(
-    @Body() data: SubmitAppDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const { name } = data;
+    @SuperPost({
+        dto: SubmitAppDto,
+    })
+    @SuperAuthorize(PERMISSION.POST)
+    async create(
+        @Body() data: SubmitAppDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const { name } = data;
 
-    const result = await this.appsService.createOne(
-      {
-        ...data,
-      },
-      user,
-      {
-        slug: _.kebabCase(removeDiacritics(name)),
-      },
-    );
-    return result;
-  }
+        const result = await this.appsService.createOne(
+            {
+                ...data,
+            },
+            user,
+            {
+                slug: _.kebabCase(removeDiacritics(name)),
+            },
+        );
+        return result;
+    }
 
-  @SuperGet({ route: 'tags/:tagSlug' })
-  @UseGuards(UserPayloadExtractorGuard)
-  async getAppsByTag(
-    @Param('tagSlug') tagSlug: string,
-    @Query(new PagingDtoPipe())
-    queryParams: ExtendedPagingDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.getAppsByTag(
-      tagSlug,
-      queryParams,
-      user,
-    );
-    return result;
-  }
+    @SuperGet({ route: 'tags/:tagSlug' })
+    @UseGuards(UserPayloadExtractorGuard)
+    async getAppsByTag(
+        @Param('tagSlug') tagSlug: string,
+        @Query(new PagingDtoPipe())
+            queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getAppsByTag(
+            tagSlug,
+            queryParams,
+            user,
+        );
+        return result;
+    }
 
-  @SuperPost({ route: 'add-point/:id/:type' })
-  @SuperAuthorize(PERMISSION.POST)
-  @ApiParam({ name: 'id', type: String })
-  async addPointForUser(
-    @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-    @Param('type') type: MetadataType,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.addPointForUser(_id, type, user);
-    return result;
-  }
+    @SuperPost({ route: 'add-point/:id/:type' })
+    @SuperAuthorize(PERMISSION.POST)
+    @ApiParam({ name: 'id', type: String })
+    async addPointForUser(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('type') type: MetadataType,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.addPointForUser(_id, type, user);
+        return result;
+    }
 
-  @SuperGet({ route: 'user-history' })
-  @SuperAuthorize(PERMISSION.GET)
-  async getUserAppHistories(
-    @Query(new PagingDtoPipe())
-    queryParams: ExtendedPagingDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.getUserAppHistories(
-      queryParams,
-      user,
-    );
-    return result;
-  }
+    @SuperGet({ route: 'user-history' })
+    @SuperAuthorize(PERMISSION.GET)
+    async getUserAppHistories(
+        @Query(new PagingDtoPipe())
+            queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getUserAppHistories(
+            queryParams,
+            user,
+        );
+        return result;
+    }
 
-  @SuperGet()
-  @UseGuards(UserPayloadExtractorGuard)
-  async getAllForFront(
-    @Query(new PagingDtoPipe())
-    queryParams: ExtendedPagingDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.getAllAppPublish(
-      queryParams,
-      user,
-    );
-    return result;
-  }
+    @SuperGet()
+    @UseGuards(UserPayloadExtractorGuard)
+    async getAllForFront(
+        @Query(new PagingDtoPipe()) queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getAllAppPublish(
+            queryParams,
+            user,
+        );
+        return result;
+    }
 
-  @SuperGet({
-    route: 'submitted',
-  })
-  @UseGuards(UserPayloadExtractorGuard)
-  @SuperAuthorize(PERMISSION.GET)
-  async getSubmittedApp(
-    @Query(new PagingDtoPipe())
-    queryParams: ExtendedPagingDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.getSubmittedApp(
-      queryParams,
-      user,
-    );
-    return result;
-  }
+    @SuperGet({
+        route: 'submitted',
+    })
+    @UseGuards(UserPayloadExtractorGuard)
+    @SuperAuthorize(PERMISSION.GET)
+    async getSubmittedApp(
+        @Query(new PagingDtoPipe())
+            queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getSubmittedApp(
+            queryParams,
+            user,
+        );
+        return result;
+    }
 
-  @SuperPut({ route: ':id', dto: SubmitAppDto })
-  @SuperAuthorize(PERMISSION.PUT)
-  @ApiParam({ name: 'id', type: String })
-  async update(
-    @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-    @Body() data: SubmitAppDto,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.updateOneById(_id, data, user);
-    return result;
-  }
+    @SuperPut({ route: ':id', dto: SubmitAppDto })
+    @SuperAuthorize(PERMISSION.PUT)
+    @ApiParam({ name: 'id', type: String })
+    async update(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Body() data: SubmitAppDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.updateOneById(_id, data, user);
+        return result;
+    }
 
-  @SuperGet({ route: ':id' })
-  @UseGuards(UserPayloadExtractorGuard)
-  @ApiParam({ name: 'id', type: String })
-  async getOneAppPublish(
-    @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-    @Req() req: { user: UserPayload },
-  ) {
-    const { user } = req;
-    const result = await this.appsService.getOneAppPublish(_id, user);
-    return result;
-  }
+    @SuperGet({ route: ':id' })
+    @UseGuards(UserPayloadExtractorGuard)
+    @ApiParam({ name: 'id', type: String })
+    async getOneAppPublish(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getOneAppPublish(_id, user);
+        return result;
+    }
 }
