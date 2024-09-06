@@ -20,10 +20,7 @@ import { MediaService } from '../media/medias.service';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import {
-    UserTransactionAction,
-    UserTransactionType,
-} from '../user-transaction/constants';
+import { UserTransactionType } from '../user-transaction/constants';
 import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -271,19 +268,9 @@ export class UserService
             role: role._id,
         });
 
-        const referral = await this.userReferralsService
-            .findOne({
-                telegramUserId: newUser.telegramUserId,
-                status: ReferralStatus.PENDING,
-            })
-            .exec();
-
-        if (referral) {
-            await this.addPointForUserReferralAndUserReferred(
-                referral.code,
-                newUser,
-            );
-        }
+        await this.userReferralService.addPointForUserReferralAndUserReferred(
+            newUser,
+        );
 
         return newUser;
     }
@@ -557,114 +544,5 @@ export class UserService
                 },
             );
         });
-    }
-
-    async validateUserAndReferral(telegramId: number, inviteCode: string) {
-        const user = await this.findOne({
-            telegramUserId: telegramId,
-        }).exec();
-        if (user) {
-            throw new BadRequestException('Invalid user');
-        }
-
-        const referralCode = await this.findOne({
-            inviteCode,
-        }).exec();
-
-        if (!referralCode) {
-            throw new BadRequestException('Invalid referral code');
-        }
-
-        await this.userReferralService.validateReferral(telegramId);
-    }
-    async createUserTransaction(
-        userId: Types.ObjectId,
-        type: UserTransactionType,
-        amount: number,
-        before: number,
-        after: number,
-        refSource: string,
-        refId: Types.ObjectId,
-        action: string,
-    ) {
-        if (amount === 0) {
-            return 0;
-        }
-
-        const userTransaction = await this.userTransactionService.create({
-            createdBy: new Types.ObjectId(userId),
-            type,
-            amount,
-            before,
-            after,
-            refSource: refSource,
-            refId: new Types.ObjectId(refId?._id),
-            action,
-        });
-
-        if (userTransaction) {
-            await this.updateOne(
-                { _id: new Types.ObjectId(userId.toString()) },
-                {
-                    currentPoint: after,
-                },
-            );
-
-            this.websocketGateway.sendPointsUpdate(userId, after);
-
-            return amount;
-        }
-    }
-
-    private async addPointForReferral(
-        user: UserDocument,
-        type: UserTransactionAction,
-    ) {
-        const amountRewardReferral =
-            await this.metadataService.getAmountRewardReferral();
-
-        const after = user.currentPoint + amountRewardReferral.value['reward'];
-
-        await this.createUserTransaction(
-            user._id,
-            UserTransactionType.SUM,
-            amountRewardReferral.value['reward'],
-            user.currentPoint,
-            after,
-            COLLECTION_NAMES.METADATA,
-            amountRewardReferral._id,
-            type,
-        );
-    }
-
-    async createReferral(inviteCode: string, telegramId: number) {
-        await this.validateUserAndReferral(telegramId, inviteCode);
-
-        await this.userReferralsService.create({
-            telegramUserId: telegramId,
-            code: inviteCode,
-        });
-    }
-
-    private async addPointForUserReferralAndUserReferred(
-        inviteCode: string,
-        user: UserDocument,
-    ) {
-        const referrer = await this.findOne({
-            inviteCode,
-        }).exec();
-        await this.addPointForReferral(
-            referrer,
-            UserTransactionAction.REFERRAL,
-        );
-        await this.addPointForReferral(user, UserTransactionAction.REFERRED);
-        await this.userReferralsService.updateOne(
-            {
-                code: inviteCode,
-            },
-            {
-                status: ReferralStatus.COMPLETED,
-            },
-        );
     }
 }
