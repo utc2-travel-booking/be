@@ -1,5 +1,6 @@
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { SuperPut } from '@libs/super-core';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { Body, Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
@@ -59,7 +60,7 @@ export class AppsController {
     async getAppsByTag(
         @Param('tagSlug') tagSlug: string,
         @Query(new PagingDtoPipe())
-        queryParams: ExtendedPagingDto,
+            queryParams: ExtendedPagingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
@@ -88,7 +89,7 @@ export class AppsController {
     @SuperAuthorize(PERMISSION.GET)
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
-        queryParams: ExtendedPagingDto,
+            queryParams: ExtendedPagingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
@@ -102,8 +103,7 @@ export class AppsController {
     @SuperGet()
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
-        @Query(new PagingDtoPipe())
-        queryParams: ExtendedPagingDto,
+        @Query(new PagingDtoPipe()) queryParams: ExtendedPagingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
@@ -121,7 +121,7 @@ export class AppsController {
     @SuperAuthorize(PERMISSION.GET)
     async getSubmittedApp(
         @Query(new PagingDtoPipe())
-        queryParams: ExtendedPagingDto,
+            queryParams: ExtendedPagingDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
@@ -129,6 +129,19 @@ export class AppsController {
             queryParams,
             user,
         );
+        return result;
+    }
+
+    @SuperPut({ route: ':id', dto: SubmitAppDto })
+    @SuperAuthorize(PERMISSION.PUT)
+    @ApiParam({ name: 'id', type: String })
+    async update(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Body() data: SubmitAppDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.updateOneById(_id, data, user);
         return result;
     }
 
