@@ -26,6 +26,8 @@ import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
 import { UserTransactionController } from 'src/apis/user-transaction/controllers/user-transaction.controller';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
+import { PagesModule } from 'src/apis/pages/pages.module';
+import { PagesController } from 'src/apis/pages/controllers/pages.controller';
 
 @Module({
     imports: [
@@ -43,6 +45,7 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         NotificationsModule,
         FormBuilderModule,
         UserTransactionModule,
+        PagesModule,
     ],
     controllers: [
         UserController,
@@ -57,8 +60,9 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         TagsController,
         NotificationsController,
         FormBuilderController,
-        UserTransactionController
+        UserTransactionController,
+        PagesController,
     ],
     providers: [],
 })
-export class RouterFrontsModule { }
+export class RouterFrontsModule {}
