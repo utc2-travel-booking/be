@@ -142,9 +142,7 @@ export class AppsController {
     @Req() req: { user: UserPayload },
   ) {
     const { user } = req;
-
     const result = await this.appsService.updateOneById(_id, data, user);
-
     return result;
   }
 
