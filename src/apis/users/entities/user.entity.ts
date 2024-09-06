@@ -7,6 +7,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { generateRandomString } from '../common/generate-random-string.util';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import {
     Role,
@@ -125,7 +126,23 @@ export class User extends AggregateRoot {
         required: false,
     })
     password: string;
+
+    @SuperProp({
+        type: String,
+        cms: {
+            label: 'Invite Code',
+            tableShow: true,
+            columnPosition: 9,
+        },
+    })
+    inviteCode: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(autopopulateSoftDelete);
+UserSchema.pre<UserDocument>('save', function (next) {
+    if (!this.inviteCode) {
+        this.inviteCode = generateRandomString(16);
+    }
+    next();
+});

@@ -30,8 +30,11 @@ import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
+import { generateRandomString } from './common/generate-random-string.util';
+import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
+import { ReferralStatus } from '../user-referrals/constants';
 
 @Injectable()
 export class UserService
@@ -46,9 +49,11 @@ export class UserService
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
+        private readonly userReferralService: UserReferralsService,
         private readonly metadataService: MetadataService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
+        private readonly userReferralsService: UserReferralsService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -72,6 +77,20 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+
+        await this.addInviteCodeForUser();
+    }
+
+    async getAllAdmin(queryParams) {
+        const result = await this.getAll(queryParams);
+        const countReferral = await this.userReferralService.getReferral(
+            result.items,
+        );
+
+        return {
+            items: countReferral,
+            meta: result.meta,
+        };
     }
 
     async getHistoryReward(user: UserPayload, action: MetadataType) {
@@ -249,6 +268,10 @@ export class UserService
             role: role._id,
         });
 
+        await this.userReferralService.addPointForUserReferralAndUserReferred(
+            newUser,
+        );
+
         return newUser;
     }
 
@@ -373,8 +396,26 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        await this.userReferralService.addPointForUserReferralAndUserReferred(
+            result,
+        );
+        const countReferral = await this.userReferralsService
+            .countDocuments({
+                code: result.inviteCode,
+                status: ReferralStatus.COMPLETED,
+            })
+            .exec();
+        const introducer = await this.userReferralsService
+            .findOne({
+                telegramUserId: result.telegramUserId,
+                status: ReferralStatus.COMPLETED,
+            })
+            .exec();
+
         return {
             ...result,
+            introducer: introducer?.code,
+            countReferral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
@@ -491,5 +532,20 @@ export class UserService
                 items: usersBannedInCache.items,
             });
         }
+    }
+
+    private async addInviteCodeForUser() {
+        const users = await this.find({
+            inviteCode: { $exists: false },
+        }).exec();
+
+        users.forEach(async (user) => {
+            await this.updateOne(
+                { _id: user._id },
+                {
+                    inviteCode: generateRandomString(16),
+                },
+            );
+        });
     }
 }

@@ -21,6 +21,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { UserReferralsService } from 'src/apis/user-referrals/user-referrals.service';
 
 @Controller('users')
 @Resource('users')
@@ -82,7 +83,8 @@ export class UserControllerAdmin {
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
     ) {
-        const result = await this.userService.getAll(queryParams);
+        const result = await this.userService.getAllAdmin(queryParams);
+
         return result;
     }
 

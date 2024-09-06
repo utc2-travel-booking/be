@@ -18,6 +18,7 @@ export enum COLLECTION_NAMES {
     USER_TRANSACTION = 'userTransactions',
     NOTIFICATION = 'notifications',
     FORM_BUILDER = 'formBuilders',
+    USER_REFERRAL = 'userReferrals',
     PAGE = 'pages',
 }
 
