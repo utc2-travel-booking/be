@@ -20,7 +20,6 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { removeDiacritics } from 'src/utils/helper';
 import { AppsService } from '../apps.service';
 import { SubmitAppDto } from '../dto/submit-app.dto';
-import { SubmitStatus } from '../entities/apps.entity';
 
 @Controller('apps')
 @Resource('apps')
@@ -46,7 +45,6 @@ export class AppsController {
         const result = await this.appsService.createOne(
             {
                 ...data,
-                status: SubmitStatus.Pending,
             },
             user,
             {
@@ -110,6 +108,24 @@ export class AppsController {
     ) {
         const { user } = req;
         const result = await this.appsService.getAllAppPublish(
+            queryParams,
+            user,
+        );
+        return result;
+    }
+
+    @SuperGet({
+        route: 'submitted',
+    })
+    @UseGuards(UserPayloadExtractorGuard)
+    @SuperAuthorize(PERMISSION.GET)
+    async getSubmittedApp(
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.appsService.getSubmittedApp(
             queryParams,
             user,
         );
