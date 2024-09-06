@@ -188,7 +188,7 @@ export class UserReferralsService extends BaseService<
         if (referralPending) {
             const referrer = await this.userService
                 .findOne({
-                    inviteCode: user.inviteCode,
+                    inviteCode: referralPending.code,
                 })
                 .exec();
             // Add point for referrer
