@@ -10,6 +10,7 @@ import {
 import { AutoPopulate } from '@libs/super-search';
 import { File, FileDocument } from 'src/apis/media/entities/files.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { SEOTag } from 'src/apis/pages/entities/pages.entity';
 
 @Schema({
     timestamps: true,
@@ -32,6 +33,7 @@ export class Tag extends AggregateRoot {
     @SuperProp({
         type: String,
         required: true,
+        unique: true,
         cms: {
             label: 'Slug',
             tableShow: true,
@@ -54,6 +56,11 @@ export class Tag extends AggregateRoot {
         ref: COLLECTION_NAMES.FILE,
     })
     featuredImage: FileDocument;
+
+    @SuperProp({
+        type: SEOTag,
+    })
+    seoTag: SEOTag;
 }
 
 export type TagDocument = Tag & Document;

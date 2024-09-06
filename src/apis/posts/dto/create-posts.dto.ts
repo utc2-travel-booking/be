@@ -32,7 +32,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     name: string;
 
     @SuperApiProperty({
-        name: 'status',
+        type: String,
         description:
             'Status for this post. Available values: PUBLISHED & DRAFT',
         default: PostStatus.PUBLISHED,
@@ -141,7 +141,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
             description: 'Post',
         },
     })
-    @IsNotEmpty()
+    @IsOptional()
     @ValidateNested()
     @Type(() => SEOTagDto)
     seoTag: SEOTagDto;

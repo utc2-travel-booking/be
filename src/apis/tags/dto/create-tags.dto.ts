@@ -1,8 +1,15 @@
 import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MaxLength,
+    ValidateNested,
+} from 'class-validator';
 import { Types } from 'mongoose';
+import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -51,4 +58,19 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
         message: 'Featured image does not exist',
     })
     featuredImage: Types.ObjectId;
+
+    @SuperApiProperty({
+        type: SEOTagDto,
+        description: 'SEO tag of the page',
+        title: 'SEO Tag',
+        required: true,
+        default: {
+            title: 'Post',
+            description: 'Post',
+        },
+    })
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => SEOTagDto)
+    seoTag: SEOTagDto;
 }
