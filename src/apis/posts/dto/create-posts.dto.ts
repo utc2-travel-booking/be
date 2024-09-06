@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsDate,
     IsEnum,
@@ -7,6 +7,7 @@ import {
     IsOptional,
     IsString,
     MaxLength,
+    ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
@@ -15,6 +16,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { PostStatus } from '../constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
+import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
 
 export class CreatePostDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
@@ -22,6 +24,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
         description: 'Name of the post',
         default: 'Post',
         title: 'Name',
+        required: true,
     })
     @MaxLength(255)
     @IsString()
@@ -62,21 +65,22 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     featuredImage: Types.ObjectId;
 
     @SuperApiProperty({
-        type: String,
+        type: [String],
         description: 'Category of id the post',
-        default: '60f3b3b3b3b3b3b3b3b3b3',
+        default: ['60f3b3b3b3b3b3b3b3b3b3'],
         title: 'Category',
         cms: {
             ref: COLLECTION_NAMES.CATEGORIES,
         },
     })
     @IsOptional()
-    @Transform(({ value }) => convertStringToObjectId(value))
+    @Transform(({ value }) => convertStringToObjectId(value, true))
     @IsExist({
         collectionName: COLLECTION_NAMES.CATEGORIES,
         message: 'Category does not exist',
+        isArray: true,
     })
-    category: Types.ObjectId;
+    categories: Types.ObjectId[];
 
     @SuperApiProperty({
         type: String,
@@ -110,9 +114,6 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
         description: 'Published date of the post',
         default: new Date(),
         title: 'Published Date',
-        cms: {
-            isShow: false,
-        },
     })
     @IsOptional()
     @IsDate()
@@ -124,12 +125,24 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
         default: new Date(),
         description: 'Published end date of the post',
         title: 'Published End Date',
-        cms: {
-            isShow: false,
-        },
     })
     @IsOptional()
     @IsDate()
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedEnd: Date;
+
+    @SuperApiProperty({
+        type: SEOTagDto,
+        description: 'SEO tag of the page',
+        title: 'SEO Tag',
+        required: true,
+        default: {
+            title: 'Post',
+            description: 'Post',
+        },
+    })
+    @IsNotEmpty()
+    @ValidateNested()
+    @Type(() => SEOTagDto)
+    seoTag: SEOTagDto;
 }

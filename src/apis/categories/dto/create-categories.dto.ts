@@ -1,14 +1,16 @@
 import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString,
     MaxLength,
+    ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
+import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -70,4 +72,19 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     @IsNumber()
     @IsOptional()
     position: number;
+
+    @SuperApiProperty({
+        type: SEOTagDto,
+        description: 'SEO tag of the page',
+        title: 'SEO Tag',
+        required: true,
+        default: {
+            title: 'Post',
+            description: 'Post',
+        },
+    })
+    @IsNotEmpty()
+    @ValidateNested()
+    @Type(() => SEOTagDto)
+    seoTag: SEOTagDto;
 }
