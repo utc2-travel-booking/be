@@ -14,3 +14,12 @@ export class AddPointForUserDto {
 
     limit: number;
 }
+export class AddPointMissionDto {
+    missionId: string;
+
+    name: string;
+
+    description: string;
+
+    reward: number;
+}

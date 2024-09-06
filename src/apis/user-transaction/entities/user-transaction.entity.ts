@@ -1,4 +1,4 @@
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserTransactionType } from '../constants';
@@ -6,6 +6,32 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+
+class Mission {
+    @Prop({
+        type: String,
+        required: true,
+    })
+    missionId: string;
+
+    @Prop({
+        type: String,
+        required: true,
+    })
+    name: string;
+
+    @Prop({
+        type: String,
+        required: true,
+    })
+    description: string;
+
+    @Prop({
+        type: Number,
+        required: true,
+    })
+    reward: number;
+}
 
 @Schema({
     timestamps: true,
@@ -56,6 +82,7 @@ export class UserTransaction extends AggregateRoot {
     after: number;
 
     @SuperProp({
+        required: false,
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         refClass: App,
@@ -68,9 +95,10 @@ export class UserTransaction extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.APP,
     })
-    app: AppDocument;
+    app?: AppDocument;
 
     @SuperProp({
+        required: false,
         type: String,
         cms: {
             label: 'Action',
@@ -78,7 +106,14 @@ export class UserTransaction extends AggregateRoot {
             columnPosition: 6,
         },
     })
-    action: string;
+    action?: string;
+
+    @Prop({
+        required: false,
+        type: Mission,
+    })
+    mission?: Mission;
+
 }
 
 export type UserTransactionDocument = UserTransaction & Document;

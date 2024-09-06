@@ -28,7 +28,27 @@ export class UserTransactionService extends BaseService<
             moduleRef,
         );
     }
+    async getTotalEarn(userId: Types.ObjectId) {
+        const aggregate = await this.userTransactionModel.aggregate([
+            {
+                $match: {
+                    createdBy: new Types.ObjectId(userId)
+                }
+            },
+            {
+                $group: {
+                    _id: "$createdBy",
+                    total: { $sum: "$amount" },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
 
+        if (aggregate.length < 0) {
+            return 0
+        }
+        return aggregate[0].total
+    }
     async checkReceivedReward(
         userId: Types.ObjectId,
         appId: Types.ObjectId,

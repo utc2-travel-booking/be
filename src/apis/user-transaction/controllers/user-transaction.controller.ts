@@ -27,6 +27,16 @@ export class UserTransactionController {
     constructor(
         private readonly userTransactionService: UserTransactionService,
     ) { }
+    @SuperGet({ route: '/earn/total' })
+    @ApiBearerAuth()
+    @SuperAuthorize(PERMISSION.GET)
+    async getTotalEarn(
+        @Req() req: { user: UserPayload }
+    ) {
+        const { user } = req;
+        return await this.userTransactionService.getTotalEarn(user._id);
+    }
+
 
     @SuperGet({ route: ':type' })
     @ApiBearerAuth()

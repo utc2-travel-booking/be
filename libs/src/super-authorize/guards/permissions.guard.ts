@@ -8,7 +8,7 @@ import { RESOURCE_KEY } from '../decorators';
 const paths = PermissionStorage.getPaths();
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-    constructor(private reflector: Reflector) {}
+    constructor(private reflector: Reflector) { }
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
@@ -31,7 +31,6 @@ export class PermissionsGuard implements CanActivate {
         const { pathname } = _parsedUrl;
 
         const path = paths.find((p) => pathname.includes(p));
-
         return user.permissions.some(
             (permission) =>
                 permission?.path === path &&

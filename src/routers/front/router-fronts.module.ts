@@ -26,6 +26,8 @@ import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
 import { UserTransactionController } from 'src/apis/user-transaction/controllers/user-transaction.controller';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
+import { MissionModule } from 'src/apis/mission/mission.module';
+import { MissionController } from 'src/apis/mission/controllers/mission.controller';
 
 @Module({
     imports: [
@@ -43,6 +45,7 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         NotificationsModule,
         FormBuilderModule,
         UserTransactionModule,
+        MissionModule
     ],
     controllers: [
         UserController,
@@ -57,7 +60,8 @@ import { UserTransactionModule } from 'src/apis/user-transaction/user-transactio
         TagsController,
         NotificationsController,
         FormBuilderController,
-        UserTransactionController
+        UserTransactionController,
+        MissionController
     ],
     providers: [],
 })

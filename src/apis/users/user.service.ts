@@ -21,7 +21,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { UserTransactionType } from '../user-transaction/constants';
-import { AddPointForUserDto } from '../apps/models/add-point-for-user.model';
+import { AddPointMissionDto, AddPointForUserDto } from '../apps/models/add-point-for-user.model';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
@@ -36,8 +36,7 @@ import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
-    implements OnModuleInit
-{
+    implements OnModuleInit {
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
@@ -133,7 +132,60 @@ export class UserService
 
         return result;
     }
+    async addPointUserCompletedMission(
+        userPayload: UserPayload,
+        addPointForUserDto: AddPointMissionDto
+    ) {
+        const { _id: userId } = userPayload;
+        const mission = addPointForUserDto;
+        const type = UserTransactionType.SUM
+        const userTransactionThisApp = await this.userTransactionService
+            .findOne({
+                createdBy: new Types.ObjectId(userId),
+                "mission.missionId": mission.missionId
+            })
+            .autoPopulate(false)
+            .exec();
 
+        if (userTransactionThisApp) {
+            return await this.getMe(userPayload);
+        }
+
+        const user = await this.findOne({ _id: userId }).exec();
+
+        const { currentPoint = 0, _id } = user;
+
+        const after = parseFloat(currentPoint.toString()) + mission.reward;
+
+        const userTransaction = await this.userTransactionService.create({
+            createdBy: _id,
+            type,
+            amount: mission.reward,
+            before: currentPoint,
+            after,
+            mission
+        });
+
+        if (userTransaction) {
+            await this.updateOne(
+                { _id },
+                {
+                    currentPoint: after,
+                },
+            );
+
+            this.websocketGateway.sendPointsUpdate(userId, after);
+
+            this.eventEmitter.emit(NOTIFICATION_EVENT_HANDLER.CREATE, {
+                name: `+${mission.reward}`,
+                userId: new Types.ObjectId(userId),
+                shortDescription: `You have completed the task of ${mission.name}`,
+                refSource: COLLECTION_NAMES.MISSION,
+            } as CreateNotificationModel);
+        }
+
+        return await this.getMe(userPayload);
+    }
     async addPointForUser(
         addPointForUserDto: AddPointForUserDto,
         appDocument: AppDocument,

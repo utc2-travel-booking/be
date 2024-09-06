@@ -42,12 +42,13 @@ export class UserAppHistoriesService extends BaseService<
                     updatedAt: new Date(),
                 },
             );
-            return;
+            return false;
         }
 
         await this.create({
             app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
         });
+        return true;
     }
 }
