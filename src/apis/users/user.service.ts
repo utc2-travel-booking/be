@@ -58,7 +58,6 @@ export class UserService
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
         private readonly userReferralsService: UserReferralsService,
-        private readonly telegramBotService: TelegramBotService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -391,6 +390,7 @@ export class UserService
                 status: ReferralStatus.PENDING,
             })
             .exec();
+
         if (referral) {
             await this.addPointForUserReferralAndUserReferred(
                 referral.code,
@@ -558,7 +558,6 @@ export class UserService
         if (user) {
             throw new BadRequestException('Invalid user');
         }
-        console.log('user', user);
 
         const referralCode = await this.findOne({
             inviteCode,
@@ -574,6 +573,7 @@ export class UserService
             })
             .exec();
         if (referral) {
+            console.log('referral', referral);
             throw new BadRequestException('User entered referral code');
         }
     }
@@ -620,12 +620,12 @@ export class UserService
         const amountRewardReferral =
             await this.metadataService.getAmountRewardReferral();
 
-        const after = user.currentPoint + amountRewardReferral.value;
+        const after = user.currentPoint + amountRewardReferral.value['reward'];
 
         await this.createUserTransaction(
             user._id,
             UserTransactionType.SUM,
-            amountRewardReferral.value,
+            amountRewardReferral.value['reward'],
             user.currentPoint,
             after,
             COLLECTION_NAMES.METADATA,
@@ -641,12 +641,13 @@ export class UserService
         const amountRewardReferral =
             await this.metadataService.getAmountRewardReferral();
 
-        const after = referrer.currentPoint + amountRewardReferral.value;
+        const after =
+            referrer.currentPoint + amountRewardReferral.value['reward'];
 
         await this.createUserTransaction(
             referrer._id,
             UserTransactionType.SUM,
-            amountRewardReferral.value,
+            amountRewardReferral.value['reward'],
             referrer.currentPoint,
             after,
             COLLECTION_NAMES.METADATA,
@@ -670,6 +671,14 @@ export class UserService
     ) {
         await this.addPointForUserReferral(inviteCode);
         await this.addPointForUserReferred(user);
+        await this.userReferralsService.updateOne(
+            {
+                code: inviteCode,
+            },
+            {
+                status: ReferralStatus.COMPLETED,
+            },
+        );
     }
 
     async getReferral(users: UserDocument[]) {
