@@ -68,7 +68,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         options?: Record<string, any>,
     ): Promise<any> {
         const result = await this.findOne({
-            _id,
+            $or: [{ _id }, { slug: _id }],
             ...options,
         }).exec();
 
