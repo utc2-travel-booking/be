@@ -82,7 +82,7 @@
             "$oid": "66d92f118cef9487b78f9499"
         },
         "deletedAt": null,
-        "type": "AMOUNT_REFERRAL_REWARD",
+        "type": "AMOUNT_REWARD_REFERRAL",
         "value": {
             "isGlobal": true,
             "reward": 100,

@@ -14,6 +14,7 @@ export enum UserCacheKey {
 
 export enum UserTransactionAction {
     REFERRAL = 'REFERRAL',
+    REFERRED = 'REFERRED',
 }
 
 export enum ParamTimeType {

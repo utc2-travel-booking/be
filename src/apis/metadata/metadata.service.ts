@@ -28,7 +28,7 @@ export class MetadataService extends BaseService<MetadataDocument, Metadata> {
     }
     async getAmountRewardReferral(): Promise<MetadataDocument> {
         const metadata = await this.findOne({
-            type: MetadataType.AMOUNT_REFERRAL_REWARD,
+            type: MetadataType.AMOUNT_REWARD_REFERRAL,
         }).exec();
 
         return metadata;
