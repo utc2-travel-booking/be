@@ -24,6 +24,7 @@ import { MetadataService } from '../metadata/metadata.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { CreateUserReferralDto } from './dto/create-referral.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserReferralsService extends BaseService<
@@ -72,7 +73,17 @@ export class UserReferralsService extends BaseService<
     }
 
     async createReferral(Referral: CreateUserReferralDto) {
-        const { inviteCode, telegramUserId } = Referral;
+        const { inviteCode, telegramUserId, key } = Referral;
+
+        const isMatch =
+            key &&
+            process.env.KEY_REFERRAL &&
+            (await bcrypt.compare(process.env.KEY_REFERRAL, key));
+
+        if (!isMatch) {
+            throw new BadRequestException('Wrong security key');
+        }
+
         await this.validateUserAndReferral(telegramUserId, inviteCode);
 
         await this.create({
@@ -106,7 +117,7 @@ export class UserReferralsService extends BaseService<
         });
 
         if (userTransaction) {
-            await this.updateOne(
+            await this.userService.updateOne(
                 { _id: new Types.ObjectId(userId.toString()) },
                 {
                     currentPoint: after,
@@ -170,7 +181,7 @@ export class UserReferralsService extends BaseService<
 
     async addPointForUserReferralAndUserReferred(user: UserDocument) {
         const referralPending = await this.findOne({
-            code: user.inviteCode,
+            telegramUserId: user.telegramUserId,
             status: ReferralStatus.PENDING,
         }).exec();
 

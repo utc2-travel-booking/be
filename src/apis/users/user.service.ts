@@ -396,6 +396,9 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        await this.userReferralService.addPointForUserReferralAndUserReferred(
+            result,
+        );
         const countReferral = await this.userReferralsService
             .countDocuments({
                 code: result.inviteCode,
