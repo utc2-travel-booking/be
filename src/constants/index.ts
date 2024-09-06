@@ -19,6 +19,7 @@ export enum COLLECTION_NAMES {
     NOTIFICATION = 'notifications',
     FORM_BUILDER = 'formBuilders',
     USER_REFERRAL = 'userReferrals',
+    PAGE = 'pages',
 }
 
 export enum CountryCode {

@@ -28,6 +28,8 @@ import { UserTransactionController } from 'src/apis/user-transaction/controllers
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 import { UserReferralsModule } from 'src/apis/user-referrals/user-referrals.module';
 import { UserReferralController } from 'src/apis/user-referrals/controller/user-referrals.controller';
+import { PagesModule } from 'src/apis/pages/pages.module';
+import { PagesController } from 'src/apis/pages/controllers/pages.controller';
 
 @Module({
     imports: [
@@ -46,6 +48,7 @@ import { UserReferralController } from 'src/apis/user-referrals/controller/user-
         FormBuilderModule,
         UserTransactionModule,
         UserReferralsModule,
+        PagesModule,
     ],
     controllers: [
         UserController,
@@ -62,6 +65,7 @@ import { UserReferralController } from 'src/apis/user-referrals/controller/user-
         FormBuilderController,
         UserTransactionController,
         UserReferralController,
+        PagesController,
     ],
     providers: [],
 })
