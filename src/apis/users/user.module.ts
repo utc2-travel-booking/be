@@ -10,7 +10,6 @@ import { MetadataModule } from '../metadata/metadata.module';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 import { UserReferralsModule } from '../user-referrals/referrals.module';
 import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
-import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
 
 @Module({
     imports: [
@@ -24,7 +23,6 @@ import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
         MetadataModule,
         WebsocketModule,
         UserReferralsModule,
-        TelegramBotModule,
     ],
     controllers: [],
     providers: [UserService],
