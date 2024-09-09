@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 import { AddPointMissionDto } from "../apps/models/add-point-for-user.model";
 import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
 import { AppsService } from "../apps/apps.service";
+import { ActionType } from "../user-app-histories/constants";
 
 @Injectable()
 export class MissionService {
@@ -48,9 +49,11 @@ export class MissionService {
     async verifyOpenApp(
         appId: Types.ObjectId,
         userPayload: UserPayload,
+        action: ActionType
     ) {
         const { _id: userId } = userPayload;
         const app = await this.appsServices.getAppById(appId);
+        console.log(app)
         if (!app) {
             throw new HttpException("AppId not Found", 400)
         }
@@ -58,11 +61,10 @@ export class MissionService {
         const isOpenNewApp = await this.userAppHistoriesService.createUserAppHistory(
             appId,
             userId,
+            action
         );
+
         if (!isOpenNewApp) { return false }
-
-
-
 
         return true
     }

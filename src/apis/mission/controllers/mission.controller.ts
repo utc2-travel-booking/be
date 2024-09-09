@@ -6,6 +6,7 @@ import { SuperGet, SuperPost, SuperPut } from "@libs/super-core";
 import { UserPayload } from "src/base/models/user-payload.model";
 import { ParseObjectIdPipe } from "src/pipes/parse-object-id.pipe";
 import { Types } from "mongoose";
+import { ActionType } from "src/apis/user-app-histories/constants";
 
 @Controller('mission')
 @Resource('mission')
@@ -22,15 +23,18 @@ export class MissionController {
         return await this.missionService.getMission();
     }
 
-    @SuperPut({ route: 'verify-app/:id' })
+    @SuperPut({ route: 'verify-app/:appId/:action' })
     @SuperAuthorize(PERMISSION.PUT)
-    @ApiParam({ name: 'id', type: String })
+    @ApiParam({ name: 'appId', type: String })
+    @ApiParam({ name: 'action', enum: ActionType })
     async addPointForUser(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
+        @Param('action') action: ActionType,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.missionService.verifyOpenApp(_id, user);
+        const result = await this.missionService.verifyOpenApp(appId, user, action);
+        console.log("result", result);
         return result;
     }
 

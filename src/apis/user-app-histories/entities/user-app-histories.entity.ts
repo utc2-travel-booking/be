@@ -6,6 +6,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { ActionType } from '../constants';
 
 @Schema({
     timestamps: true,
@@ -18,6 +19,13 @@ export class UserAppHistory extends AggregateRoot {
         refClass: App,
     })
     app: AppDocument;
+
+    @SuperProp({
+        required: false,
+        enum: ActionType,
+    })
+    action?: ActionType;
+
 }
 
 export type UserAppHistoryDocument = UserAppHistory & Document;
