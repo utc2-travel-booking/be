@@ -8,22 +8,23 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { ModuleRef } from '@nestjs/core';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MEDIA_EVENT_HANDLER } from './constants';
 
 @Injectable()
-export class MediaService
-    extends BaseService<FileDocument, File>
-    implements OnModuleInit
-{
+export class MediaService extends BaseService<FileDocument, File> {
     constructor(
         @InjectModel(COLLECTION_NAMES.FILE)
         private readonly fileModel: Model<FileDocument>,
         private readonly s3Service: S3Service,
         moduleRef: ModuleRef,
+        private readonly eventEmitter: EventEmitter2,
     ) {
         super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
+        this.migrateFileToS3();
     }
 
-    async onModuleInit() {
+    async migrateFileToS3() {
         const files = await this.find({}).exec();
 
         let count = 0;
