@@ -328,7 +328,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         const result = await this.findOne(
             {
-                _id,
+                $or: [{ _id }, { slug: _id }],
             },
             filterPipeline,
         ).exec();
