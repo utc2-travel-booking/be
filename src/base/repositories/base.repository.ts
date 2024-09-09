@@ -102,7 +102,7 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async updateOne<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
-        options?: QueryOptions<T> | null,
+        options?: QueryOptions,
     ) {
         const result = await this.model.updateOne(
             { deletedAt: null, ...filter },
@@ -117,12 +117,10 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async updateMany<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
-        options?: QueryOptions<T> | null,
     ) {
         const result = await this.model.updateMany(
             { deletedAt: null, ...filter },
             update,
-            options,
         );
         return result as unknown as ResultDoc;
     }
@@ -132,7 +130,7 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async findOneAndUpdate<ResultDoc = HydratedDocument<T>>(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
-        options?: QueryOptions<T> | null,
+        options?: QueryOptions,
     ) {
         const result = await this.model.findOneAndUpdate(
             { deletedAt: null, ...filter },
@@ -147,9 +145,8 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async findByIdAndUpdate<ResultDoc = HydratedDocument<T>>(
         id: Types.ObjectId | any,
         update: UpdateQuery<T>,
-        options: QueryOptions<T> = {},
     ) {
-        const result = await this.model.findByIdAndUpdate(id, update, options);
+        const result = await this.model.findByIdAndUpdate(id, update);
         return result as unknown as ResultDoc;
     }
 
@@ -166,21 +163,18 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     }
 
     @DeleteCache()
-    async deleteOne(filter: FilterQuery<T>, options?: QueryOptions<T>) {
-        const result = await this.model.deleteOne(filter, options);
+    async deleteOne(filter: FilterQuery<T>) {
+        const result = await this.model.deleteOne(filter);
         return result as unknown as T;
     }
 
     @DeleteCache()
-    deleteMany(filter?: FilterQuery<T>, options?: QueryOptions<T>) {
-        return this.model.deleteMany(filter, options);
+    deleteMany(filter?: FilterQuery<T>) {
+        return this.model.deleteMany(filter);
     }
 
     @DeleteCache()
-    findByIdAndDelete(
-        id?: Types.ObjectId | any,
-        options?: QueryOptions<T> | null,
-    ) {
-        return this.model.findByIdAndDelete(id, options);
+    findByIdAndDelete(id?: Types.ObjectId | any) {
+        return this.model.findByIdAndDelete(id);
     }
 }
