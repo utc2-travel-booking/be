@@ -169,8 +169,7 @@ export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
 
         const result = await this.findOne(
             {
-                _id,
-                deletedAt: null,
+                $or: [{ _id }, { slug: _id }],
                 ...options,
             },
             filterPipeline,
