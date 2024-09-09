@@ -27,7 +27,6 @@ import { FormBuilderController } from 'src/apis/form-builders/controllers/form-b
 import { UserTransactionController } from 'src/apis/user-transaction/controllers/user-transaction.controller';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 import { UserReferralsModule } from 'src/apis/user-referrals/user-referrals.module';
-import { UserReferralController } from 'src/apis/user-referrals/controller/user-referrals.controller';
 import { PagesModule } from 'src/apis/pages/pages.module';
 import { PagesController } from 'src/apis/pages/controllers/pages.controller';
 
@@ -64,7 +63,6 @@ import { PagesController } from 'src/apis/pages/controllers/pages.controller';
         NotificationsController,
         FormBuilderController,
         UserTransactionController,
-        UserReferralController,
         PagesController,
     ],
     providers: [],

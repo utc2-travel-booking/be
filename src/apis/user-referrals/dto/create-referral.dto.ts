@@ -24,13 +24,4 @@ export class CreateUserReferralDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     @IsString()
     inviteCode: string;
-
-    @SuperApiProperty({
-        type: String,
-        required: true,
-        title: 'KEY',
-    })
-    @IsNotEmpty()
-    @IsString()
-    key: string;
 }
