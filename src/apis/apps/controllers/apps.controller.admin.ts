@@ -37,7 +37,7 @@ export class AppsControllerAdmin {
     @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
-            queryParams: ExtendedPagingDto,
+        queryParams: ExtendedPagingDto,
     ) {
         const result = await this.appsService.getAll(queryParams);
         return result;
