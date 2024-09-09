@@ -425,4 +425,8 @@ export class AppsService extends BaseService<AppDocument, App> {
             return { items, meta };
         });
     }
+
+    async getAllSlug() {
+        return (await this.appModel.find({})).map((p) => p.slug);
+    }
 }
