@@ -23,7 +23,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
     }
 
     async getRoleByType(type: RoleType) {
-        return this.roleModel.findOne({ type });
+        return await this.findOne({ type }).exec();
     }
 
     async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
