@@ -8,7 +8,6 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
 import { TelegramBotService } from 'src/apis/telegram-bot/telegram-bot.service';
 import { Request } from 'express';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class LoginTelegramProviderStrategy extends PassportStrategy(
@@ -69,7 +68,7 @@ export class LoginTelegramProviderStrategy extends PassportStrategy(
             const { _id, role, name } = user;
             const userPayload: UserPayload = {
                 _id,
-                roleId: new Types.ObjectId(role._id),
+                roleId: role._id,
                 name,
             };
 

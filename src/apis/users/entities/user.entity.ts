@@ -1,6 +1,6 @@
 import { SchemaFactory, Schema } from '@nestjs/mongoose';
 import _ from 'lodash';
-import { Document, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
@@ -14,7 +14,7 @@ import {
     RoleDocument,
 } from '@libs/super-authorize/modules/roles/entities/roles.entity';
 
-export type UserDocument = User & Document;
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({
     timestamps: true,
