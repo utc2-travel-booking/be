@@ -40,11 +40,6 @@ import { PERMISSION, Resource } from '@libs/super-authorize';
 export class MediaControllerAdmin {
     constructor(private readonly mediaService: MediaService) {}
 
-    @SuperGet({ route: 'test' })
-    async test() {
-        return await this.mediaService.test();
-    }
-
     @SuperGet()
     @SuperAuthorize(PERMISSION.GET)
     async getAll(

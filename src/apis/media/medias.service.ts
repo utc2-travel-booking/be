@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUploadedMulterFile, S3Service } from 'src/packages/s3/s3.service';
 import { File, FileDocument } from './entities/files.entity';
@@ -10,7 +10,10 @@ import { appSettings } from 'src/configs/appsettings';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
-export class MediaService extends BaseService<FileDocument, File> {
+export class MediaService
+    extends BaseService<FileDocument, File>
+    implements OnModuleInit
+{
     constructor(
         @InjectModel(COLLECTION_NAMES.FILE)
         private readonly fileModel: Model<FileDocument>,
@@ -20,11 +23,10 @@ export class MediaService extends BaseService<FileDocument, File> {
         super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
     }
 
-    async test() {
-        const files = await this.fileModel.find({
-            _id: new Types.ObjectId('66b9d6866e8763d904111e30'),
-        });
+    async onModuleInit() {
+        const files = await this.find({}).exec();
 
+        let count = 0;
         for (const file of files) {
             const { filePath } = file;
             const urls = filePath.split('/');
@@ -36,7 +38,11 @@ export class MediaService extends BaseService<FileDocument, File> {
                     urls[urls.length - 1],
                 );
 
-                console.log(_file);
+                await this.fileModel.updateOne(
+                    { _id: file._id },
+                    { $set: { filePath: _file.url } },
+                );
+                console.log(count++);
             }
         }
     }

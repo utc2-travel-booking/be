@@ -85,8 +85,6 @@ export class S3Service {
             const buffer = Buffer.from(response.data, 'binary');
             const mimetype = response.headers['content-type'];
 
-            console.log('mimetype', `${appSettings.s3.bucket}/` + folder);
-
             const uploadResult = await this.s3
                 .upload({
                     Bucket: `${appSettings.s3.bucket}/` + folder,
