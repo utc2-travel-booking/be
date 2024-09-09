@@ -34,7 +34,6 @@ import { generateRandomString } from './common/generate-random-string.util';
 import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
-import { ReferralStatus } from '../user-referrals/constants';
 
 @Injectable()
 export class UserService
@@ -234,6 +233,7 @@ export class UserService
 
     async createUserTelegram(
         userLoginTelegramDto: Partial<UserLoginTelegramDto>,
+        inviteCode?: string,
     ) {
         const {
             id,
@@ -260,6 +260,10 @@ export class UserService
 
         const role = await this.roleService.getRoleByType(RoleType.USER);
 
+        if (inviteCode) {
+            console.log('inviteCode', inviteCode);
+        }
+
         const newUser = await this.create({
             name: `${firstName} ${lastName}`,
             telegramUserId: id,
@@ -268,9 +272,12 @@ export class UserService
             role: role._id,
         });
 
-        await this.userReferralService.addPointForUserReferralAndUserReferred(
-            newUser,
-        );
+        if (newUser && inviteCode) {
+            await this.userReferralService.createReferral(
+                newUser.telegramUserId,
+                inviteCode,
+            );
+        }
 
         return newUser;
     }
@@ -396,16 +403,12 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        await this.userReferralService.addPointForUserReferralAndUserReferred(
-            result,
-        );
         const referral = await this.userReferralsService
             .find({ code: result.inviteCode })
             .exec();
         const introducer = await this.userReferralsService
             .findOne({
                 telegramUserId: result.telegramUserId,
-                status: ReferralStatus.COMPLETED,
             })
             .exec();
 

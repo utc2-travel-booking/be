@@ -4,7 +4,6 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
-import { ReferralStatus } from '../constants';
 
 @Schema({
     timestamps: true,
@@ -22,13 +21,6 @@ export class UserReferral extends AggregateRoot {
         required: true,
     })
     code: string;
-
-    @SuperProp({
-        type: String,
-        enum: ReferralStatus,
-        default: ReferralStatus.PENDING,
-    })
-    status: ReferralStatus;
 }
 
 export type UserReferralDocument = UserReferral & Document;
