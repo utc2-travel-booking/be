@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { SchemaFactory, Schema } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';

@@ -2,7 +2,6 @@ import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Types } from 'mongoose';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 
 export class CreateUserReferralDto extends PartialType(ExcludeDto) {

@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(req: Request, userPayload: UserPayload, done: any) {
+    async validate(req: Request, userPayload: UserPayload) {
         const { roleId, _id } = userPayload;
         const permissions = await this.rolesService.findPermissionsByRole(
             roleId,

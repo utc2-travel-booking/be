@@ -1,4 +1,4 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 import { PipelineStage } from 'mongoose';
 import { PagingDto } from 'src/base/dto/paging.dto';
 import { createSearchPipeline } from '@libs/super-search/common/search.utils';
@@ -12,7 +12,7 @@ export class ExtendedPagingDto extends PagingDto {
 
 @Injectable()
 export class PagingDtoPipe implements PipeTransform {
-    transform(value: PagingDto, metadata: ArgumentMetadata): ExtendedPagingDto {
+    transform(value: PagingDto): ExtendedPagingDto {
         const {
             page = 1,
             search,
