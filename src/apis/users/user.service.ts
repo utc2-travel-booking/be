@@ -260,10 +260,6 @@ export class UserService
 
         const role = await this.roleService.getRoleByType(RoleType.USER);
 
-        if (inviteCode) {
-            console.log('inviteCode', inviteCode);
-        }
-
         const newUser = await this.create({
             name: `${firstName} ${lastName}`,
             telegramUserId: id,
