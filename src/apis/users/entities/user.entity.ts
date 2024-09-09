@@ -107,7 +107,7 @@ export class User extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
     })
-    role: RoleDocument;
+    role: Types.ObjectId | RoleDocument;
 
     @SuperProp({
         type: String,
