@@ -101,10 +101,11 @@ export class S3Service {
                 mimetype: mimetype,
             };
         } catch (error) {
-            this.logger.error(error);
-            throw new BadRequestException(
-                'Failed to upload file from URL: ' + error.message,
-            );
+            return {
+                key: '',
+                url: '',
+                mimetype: '',
+            };
         }
     }
 }

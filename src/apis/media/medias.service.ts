@@ -1,15 +1,13 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUploadedMulterFile, S3Service } from 'src/packages/s3/s3.service';
 import { File, FileDocument } from './entities/files.entity';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/appsettings';
 import { ModuleRef } from '@nestjs/core';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MEDIA_EVENT_HANDLER } from './constants';
 
 @Injectable()
 export class MediaService extends BaseService<FileDocument, File> {
@@ -18,7 +16,6 @@ export class MediaService extends BaseService<FileDocument, File> {
         private readonly fileModel: Model<FileDocument>,
         private readonly s3Service: S3Service,
         moduleRef: ModuleRef,
-        private readonly eventEmitter: EventEmitter2,
     ) {
         super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
         this.migrateFileToS3();
