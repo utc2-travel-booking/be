@@ -1,24 +1,28 @@
+import { SuperProp } from '@libs/super-core';
+import { AutoPopulate } from '@libs/super-search';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { File } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import {
-    MultipleLanguage,
-    MultipleLanguageType,
-} from '@libs/super-multiple-language';
-import { AutoPopulate } from '@libs/super-search';
-import { File, FileDocument } from 'src/apis/media/entities/files.entity';
-import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
-import { SEOTag } from 'src/apis/pages/entities/pages.entity';
+
+@Schema({})
+export class SEOTag {
+    @SuperProp({ type: String })
+    title: string;
+
+    @SuperProp({ type: String })
+    description: string;
+}
 
 @Schema({
     timestamps: true,
-    collection: COLLECTION_NAMES.TAG,
+    collection: COLLECTION_NAMES.PAGE,
 })
-export class Tag extends AggregateRoot {
+export class Pages extends AggregateRoot {
     @SuperProp({
-        type: MultipleLanguageType,
+        type: String,
         required: true,
         cms: {
             label: 'Name',
@@ -27,8 +31,7 @@ export class Tag extends AggregateRoot {
             columnPosition: 1,
         },
     })
-    @MultipleLanguage()
-    name: MultipleLanguageType;
+    name: string;
 
     @SuperProp({
         type: String,
@@ -55,7 +58,7 @@ export class Tag extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
     })
-    featuredImage: FileDocument;
+    featuredImage: File;
 
     @SuperProp({
         type: SEOTag,
@@ -63,7 +66,6 @@ export class Tag extends AggregateRoot {
     seoTag: SEOTag;
 }
 
-export type TagDocument = Tag & Document;
-export const TagSchema = SchemaFactory.createForClass(Tag);
-
-TagSchema.plugin(autopopulateSoftDelete);
+export type PagesDocument = Pages & Document;
+export const PagesSchema = SchemaFactory.createForClass(Pages);
+PagesSchema.plugin(autopopulateSoftDelete);

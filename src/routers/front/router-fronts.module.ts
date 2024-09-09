@@ -28,41 +28,47 @@ import { UserTransactionController } from 'src/apis/user-transaction/controllers
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 import { MissionModule } from 'src/apis/mission/mission.module';
 import { MissionController } from 'src/apis/mission/controllers/mission.controller';
+import { UserReferralsModule } from 'src/apis/user-referrals/user-referrals.module';
+import { PagesModule } from 'src/apis/pages/pages.module';
+import { PagesController } from 'src/apis/pages/controllers/pages.controller';
 
 @Module({
-    imports: [
-        CommonModule,
-        UserModule,
-        MediaModule,
-        AuthModule,
-        CategoriesModule,
-        PostsModule,
-        MetadataModule,
-        AppsModule,
-        ReviewRatingModule,
-        AdvertisersModule,
-        TagsModule,
-        NotificationsModule,
-        FormBuilderModule,
-        UserTransactionModule,
-        MissionModule
-    ],
-    controllers: [
-        UserController,
-        MediaController,
-        AuthController,
-        CategoriesController,
-        PostsController,
-        MetadataController,
-        AppsController,
-        ReviewRatingController,
-        AdvertisersController,
-        TagsController,
-        NotificationsController,
-        FormBuilderController,
-        UserTransactionController,
-        MissionController
-    ],
-    providers: [],
+        imports: [
+                CommonModule,
+                UserModule,
+                MediaModule,
+                AuthModule,
+                CategoriesModule,
+                PostsModule,
+                MetadataModule,
+                AppsModule,
+                ReviewRatingModule,
+                AdvertisersModule,
+                TagsModule,
+                NotificationsModule,
+                FormBuilderModule,
+                UserTransactionModule,
+                MissionModule,
+                UserReferralsModule,
+                PagesModule,
+        ],
+        controllers: [
+                UserController,
+                MediaController,
+                AuthController,
+                CategoriesController,
+                PostsController,
+                MetadataController,
+                AppsController,
+                ReviewRatingController,
+                AdvertisersController,
+                TagsController,
+                NotificationsController,
+                FormBuilderController,
+                UserTransactionController,
+                MissionController,
+                PagesController,
+        ],
+        providers: [],
 })
 export class RouterFrontsModule { }

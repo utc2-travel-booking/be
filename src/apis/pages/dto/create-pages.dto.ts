@@ -1,4 +1,4 @@
-import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core';
 import { PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -8,45 +8,60 @@ import {
     MaxLength,
     ValidateNested,
 } from 'class-validator';
-import { Types } from 'mongoose';
-import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
+import _ from 'lodash';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
+import { convertStringToObjectId } from 'src/utils/helper';
+import { SEOTag } from '../entities/pages.entity';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import { convertStringToObjectId } from 'src/utils/helper';
+import { Types } from 'mongoose';
 
-export class CreateTagDto extends PartialType(ExcludeDto) {
+export class SEOTagDto extends SEOTag {
     @SuperApiProperty({
         type: String,
-        description: 'Name of the tag',
-        default: 'Tag',
+        description: 'Title of the seo tag',
+        default: 'Post',
+        title: 'Title',
         required: true,
-        title: 'Name Of Tag',
     })
-    @MaxLength(50)
+    @MaxLength(255)
+    @IsString()
+    @IsOptional()
+    title: string;
+
+    @SuperApiProperty({
+        type: String,
+        description: 'Description of the seo tag',
+        default: 'Post',
+        title: 'Description',
+        required: true,
+        cms: {
+            widget: 'textarea',
+        },
+    })
+    @IsString()
+    @IsOptional()
+    description: string;
+}
+
+export class CreatePagesDto extends PartialType(ExcludeDto) {
+    @SuperApiProperty({
+        type: String,
+        description: 'Name of the page',
+        default: 'Page',
+        title: 'Name',
+        required: true,
+    })
+    @MaxLength(255)
     @IsString()
     @IsNotEmpty()
     name: string;
 
     @SuperApiProperty({
         type: String,
-        description: 'Short description of the tag',
-        default: 'Short description',
-        title: 'Short Description Of Tag',
-        cms: {
-            widget: 'textarea',
-        },
-    })
-    @MaxLength(1000)
-    @IsString()
-    @IsOptional()
-    shortDescription: string;
-
-    @SuperApiProperty({
-        type: String,
-        description: 'Featured image id of the tag',
+        description: 'Featured image id of the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
-        title: 'Featured Image Of Tag',
+        title: 'Featured Image',
         cms: {
             ref: COLLECTION_NAMES.FILE,
         },

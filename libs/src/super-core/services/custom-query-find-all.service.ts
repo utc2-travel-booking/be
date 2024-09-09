@@ -4,6 +4,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
+import { pipe } from 'rxjs';
 
 export class CustomQueryFindAllService<T extends Document>
     implements ICustomQueryFindAll<T>

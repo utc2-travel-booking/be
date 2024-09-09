@@ -12,8 +12,13 @@ export enum UserCacheKey {
     USER_BANNED = 'USER_BANNED',
 }
 
+export enum UserTransactionAction {
+    REFERRAL = 'REFERRAL',
+    REFERRED = 'REFERRED',
+}
+
 export enum ParamTimeType {
-    TODAY = "Today",
-    YESTERDAY = "Yesterday",
-    EARLIER = "Earlier"
+    TODAY = 'Today',
+    YESTERDAY = 'Yesterday',
+    EARLIER = 'Earlier',
 }

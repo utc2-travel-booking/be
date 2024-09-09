@@ -1,19 +1,20 @@
 import { SchemaFactory, Schema } from '@nestjs/mongoose';
 import _ from 'lodash';
-import { Document, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { generateRandomString } from '../common/generate-random-string.util';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import {
     Role,
     RoleDocument,
 } from '@libs/super-authorize/modules/roles/entities/roles.entity';
 
-export type UserDocument = User & Document;
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({
     timestamps: true,
@@ -106,7 +107,7 @@ export class User extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
     })
-    role: RoleDocument;
+    role: Types.ObjectId | RoleDocument;
 
     @SuperProp({
         type: String,
@@ -125,7 +126,23 @@ export class User extends AggregateRoot {
         required: false,
     })
     password: string;
+
+    @SuperProp({
+        type: String,
+        cms: {
+            label: 'Invite Code',
+            tableShow: true,
+            columnPosition: 9,
+        },
+    })
+    inviteCode: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(autopopulateSoftDelete);
+UserSchema.pre<UserDocument>('save', function (next) {
+    if (!this.inviteCode) {
+        this.inviteCode = generateRandomString(16);
+    }
+    next();
+});

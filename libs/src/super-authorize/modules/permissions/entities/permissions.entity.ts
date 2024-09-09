@@ -1,16 +1,16 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Document } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { RequestMethod } from '../constants';
 import { PermissionMetadata } from '@libs/super-authorize/metadata/permission.interface';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.PERMISSION,
 })
-export class Permission implements PermissionMetadata {
+export class Permission extends AggregateRoot implements PermissionMetadata {
     @SuperProp({ type: String })
     path: string;
 

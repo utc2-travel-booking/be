@@ -20,7 +20,7 @@ import { ReviewRatingControllerAdmin } from 'src/apis/review-ratings/controllers
 import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
-import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller';
+import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller.admin';
 import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
 import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
@@ -32,6 +32,8 @@ import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/contro
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/form-builders.controller.admin';
+import { PagesControllerAdmin } from 'src/apis/pages/controllers/pages.controller.admin';
+import { PagesModule } from 'src/apis/pages/pages.module';
 
 @Module({
     imports: [
@@ -53,6 +55,7 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         TagAppsModule,
         UserTransactionModule,
         FormBuilderModule,
+        PagesModule,
     ],
     controllers: [
         MediaControllerAdmin,
@@ -70,6 +73,7 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         TagAppsControllerAdmin,
         UserTransactionControllerAdmin,
         FormBuilderControllerAdmin,
+        PagesControllerAdmin,
     ],
     providers: [],
 })

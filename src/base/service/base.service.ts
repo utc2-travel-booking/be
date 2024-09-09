@@ -8,9 +8,13 @@ import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
 import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
+import { AggregateRoot } from '../entities/aggregate-root.schema';
 
 @Injectable()
-export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
+export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
+    T,
+    E
+> {
     constructor(
         model: Model<T>,
         entity: new () => E,
@@ -68,7 +72,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         options?: Record<string, any>,
     ): Promise<any> {
         const result = await this.findOne({
-            _id,
+            $or: [{ _id }, { slug: _id }],
             ...options,
         }).exec();
 
@@ -112,7 +116,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const result = await this.findOneAndUpdate(
             { _id },
             { ...payload, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {
