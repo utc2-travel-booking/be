@@ -38,8 +38,8 @@ export class UserTransactionService extends BaseService<
             return false;
         }
         const userTransactions = await this.findOne({
-            createdBy: new Types.ObjectId(userId),
-            app: new Types.ObjectId(appId),
+            createdBy: userId,
+            app: appId,
             action,
         })
             .autoPopulate(false)

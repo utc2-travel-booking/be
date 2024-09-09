@@ -80,11 +80,13 @@ export class CategoriesControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = updateCategoryDto;
 
         const result = await this.categoriesService.updateOneById(
             _id,
             updateCategoryDto,
             user,
+            { slug: _.kebabCase(removeDiacritics(name)) },
         );
         return result;
     }

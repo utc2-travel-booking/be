@@ -11,6 +11,7 @@ import {
 import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { SEOTag } from 'src/apis/pages/entities/pages.entity';
 
 @Schema({
     timestamps: true,
@@ -33,6 +34,7 @@ export class Category extends AggregateRoot {
     @SuperProp({
         type: String,
         required: true,
+        unique: true,
         cms: {
             label: 'Slug',
             tableShow: true,
@@ -95,6 +97,11 @@ export class Category extends AggregateRoot {
         },
     })
     parent: Category;
+
+    @SuperProp({
+        type: SEOTag,
+    })
+    seoTag: SEOTag;
 }
 
 export type CategoryDocument = Category & Document;

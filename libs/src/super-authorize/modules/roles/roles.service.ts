@@ -5,7 +5,6 @@ import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
-import _ from 'lodash';
 import { RoleType } from './constants';
 import { ModuleRef } from '@nestjs/core';
 import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';
@@ -23,7 +22,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
     }
 
     async getRoleByType(type: RoleType) {
-        return this.roleModel.findOne({ type });
+        return await this.findOne({ type }).exec();
     }
 
     async getOne(_id: Types.ObjectId, options?: Record<string, any>) {

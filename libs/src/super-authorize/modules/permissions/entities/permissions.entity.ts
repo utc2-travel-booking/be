@@ -1,5 +1,4 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Document } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';

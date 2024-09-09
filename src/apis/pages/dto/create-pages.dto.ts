@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import _ from 'lodash';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
-import { convertStringToObjectId, removeDiacritics } from 'src/utils/helper';
+import { convertStringToObjectId } from 'src/utils/helper';
 import { SEOTag } from '../entities/pages.entity';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -26,7 +26,7 @@ export class SEOTagDto extends SEOTag {
     })
     @MaxLength(255)
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     title: string;
 
     @SuperApiProperty({
@@ -40,7 +40,7 @@ export class SEOTagDto extends SEOTag {
         },
     })
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     description: string;
 }
 
@@ -84,7 +84,7 @@ export class CreatePagesDto extends PartialType(ExcludeDto) {
             description: 'Post',
         },
     })
-    @IsNotEmpty()
+    @IsOptional()
     @ValidateNested()
     @Type(() => SEOTagDto)
     seoTag: SEOTagDto;

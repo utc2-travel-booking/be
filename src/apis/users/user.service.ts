@@ -234,7 +234,7 @@ export class UserService
     async createUserTelegram(
         userLoginTelegramDto: Partial<UserLoginTelegramDto>,
         inviteCode?: string,
-    ) {
+    ): Promise<UserDocument> {
         const {
             id,
             first_name: firstName = '',

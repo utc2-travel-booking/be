@@ -1,11 +1,11 @@
 import { Schema } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from '@libs/super-search';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema()
-export abstract class AggregateRoot {
+export abstract class AggregateRoot extends Document<Types.ObjectId> {
     @SuperProp({
         default: null,
         cms: {
