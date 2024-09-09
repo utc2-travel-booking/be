@@ -14,7 +14,6 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
 import { UserDocument } from '../users/entities/user.entity';
-import { ReferralStatus } from './constants';
 import { UserService } from '../users/user.service';
 import {
     UserTransactionAction,
@@ -54,11 +53,9 @@ export class UserReferralsService extends BaseService<
             users.map(async (user) => {
                 const countReferral = await this.countDocuments({
                     code: user.inviteCode,
-                    status: ReferralStatus.COMPLETED,
                 }).exec();
                 const introducer = await this.findOne({
                     telegramUserId: user.telegramUserId,
-                    status: ReferralStatus.COMPLETED,
                 }).exec();
 
                 return {
@@ -72,24 +69,18 @@ export class UserReferralsService extends BaseService<
         return result;
     }
 
-    async createReferral(Referral: CreateUserReferralDto) {
-        const { inviteCode, telegramUserId, key } = Referral;
-
-        const isMatch =
-            key &&
-            process.env.KEY_REFERRAL &&
-            (await bcrypt.compare(process.env.KEY_REFERRAL, key));
-
-        if (!isMatch) {
-            throw new BadRequestException('Wrong security key');
-        }
-
-        await this.validateUserAndReferral(telegramUserId, inviteCode);
+    async createReferral(telegramUserId: number, inviteCode: string) {
+        await this.validateUserAndReferral(inviteCode);
 
         await this.create({
             telegramUserId,
             code: inviteCode,
         });
+
+        await this.addPointForUserReferralAndUserReferred(
+            telegramUserId,
+            inviteCode,
+        );
     }
     async createReferralTransaction(
         userId: Types.ObjectId,
@@ -130,16 +121,7 @@ export class UserReferralsService extends BaseService<
         }
     }
 
-    async validateUserAndReferral(telegramId: number, inviteCode: string) {
-        const user = await this.userService
-            .findOne({
-                telegramUserId: telegramId,
-            })
-            .exec();
-        if (user) {
-            throw new BadRequestException('Invalid user');
-        }
-
+    async validateUserAndReferral(inviteCode: string) {
         const referralCode = await this.userService
             .findOne({
                 inviteCode,
@@ -148,13 +130,6 @@ export class UserReferralsService extends BaseService<
 
         if (!referralCode) {
             throw new BadRequestException('Invalid referral code');
-        }
-
-        const referral = await this.findOne({
-            telegramUserId: telegramId,
-        }).exec();
-        if (referral) {
-            throw new BadRequestException('User entered referral code');
         }
     }
 
@@ -179,38 +154,29 @@ export class UserReferralsService extends BaseService<
         );
     }
 
-    async addPointForUserReferralAndUserReferred(user: UserDocument) {
-        const referralPending = await this.findOne({
-            telegramUserId: user.telegramUserId,
-            status: ReferralStatus.PENDING,
-        }).exec();
+    async addPointForUserReferralAndUserReferred(
+        telegramId: number,
+        code: string,
+    ) {
+        // Add point for referrer
+        const referrer = await this.userService
+            .findOne({
+                inviteCode: code,
+            })
+            .exec();
 
-        if (referralPending) {
-            const referrer = await this.userService
-                .findOne({
-                    inviteCode: referralPending.code,
-                })
-                .exec();
-            // Add point for referrer
-            await this.addPointForReferral(
-                referrer,
-                UserTransactionAction.REFERRAL,
-            );
-            // Add point for user referred
-            await this.addPointForReferral(
-                user,
-                UserTransactionAction.REFERRED,
-            );
+        await this.addPointForReferral(
+            referrer,
+            UserTransactionAction.REFERRAL,
+        );
+        // Add point for user referred
 
-            // Update status of referral
-            await this.updateOne(
-                {
-                    telegramUserId: user.telegramUserId,
-                },
-                {
-                    status: ReferralStatus.COMPLETED,
-                },
-            );
-        }
+        const user = await this.userService
+            .findOne({
+                telegramUserId: telegramId,
+            })
+            .exec();
+
+        await this.addPointForReferral(user, UserTransactionAction.REFERRED);
     }
 }

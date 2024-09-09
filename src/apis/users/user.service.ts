@@ -34,7 +34,6 @@ import { generateRandomString } from './common/generate-random-string.util';
 import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
-import { ReferralStatus } from '../user-referrals/constants';
 
 @Injectable()
 export class UserService
@@ -234,6 +233,7 @@ export class UserService
 
     async createUserTelegram(
         userLoginTelegramDto: Partial<UserLoginTelegramDto>,
+        inviteCode?: string,
     ): Promise<UserDocument> {
         const {
             id,
@@ -268,9 +268,12 @@ export class UserService
             role: role._id,
         });
 
-        await this.userReferralService.addPointForUserReferralAndUserReferred(
-            newUser,
-        );
+        if (newUser && inviteCode) {
+            await this.userReferralService.createReferral(
+                newUser.telegramUserId,
+                inviteCode,
+            );
+        }
 
         return newUser;
     }
@@ -395,26 +398,19 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        await this.userReferralService.addPointForUserReferralAndUserReferred(
-            result,
-        );
-        const countReferral = await this.userReferralsService
-            .countDocuments({
-                code: result.inviteCode,
-                status: ReferralStatus.COMPLETED,
-            })
+        const referral = await this.userReferralsService
+            .find({ code: result.inviteCode })
             .exec();
         const introducer = await this.userReferralsService
             .findOne({
                 telegramUserId: result.telegramUserId,
-                status: ReferralStatus.COMPLETED,
             })
             .exec();
 
         return {
             ...result,
             introducer: introducer?.code,
-            countReferral,
+            referral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };

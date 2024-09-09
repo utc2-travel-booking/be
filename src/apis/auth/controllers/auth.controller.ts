@@ -1,4 +1,4 @@
-import { Body, Controller, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -44,6 +44,10 @@ export class AuthController {
     @ApiHeader({
         name: 'authorization',
         description: 'tma {token}',
+    })
+    @ApiHeader({
+        name: 'code',
+        description: 'Code Referral',
     })
     async loginTelegramMiniApp(@Req() req: { user: UserPayload }) {
         const { user } = req;
