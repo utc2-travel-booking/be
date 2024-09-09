@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUploadedMulterFile, S3Service } from 'src/packages/s3/s3.service';
 import { File, FileDocument } from './entities/files.entity';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -18,6 +18,27 @@ export class MediaService extends BaseService<FileDocument, File> {
         moduleRef: ModuleRef,
     ) {
         super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
+    }
+
+    async test() {
+        const files = await this.fileModel.find({
+            _id: new Types.ObjectId('66b9d6866e8763d904111e30'),
+        });
+
+        for (const file of files) {
+            const { filePath } = file;
+            const urls = filePath.split('/');
+
+            if (urls.length > 0 && urls[2] === 'ton.app') {
+                const _file = await this.s3Service.uploadFileByUrl(
+                    filePath,
+                    appSettings.s3.folder,
+                    urls[urls.length - 1],
+                );
+
+                console.log(_file);
+            }
+        }
     }
 
     async createFile(

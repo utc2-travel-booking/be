@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import {
-    Document,
     FilterQuery,
     Model,
     PipelineStage,
-    QueryOptions,
     Types,
     UpdateQuery,
     UpdateWithAggregationPipeline,
     HydratedDocument,
 } from 'mongoose';
 import { DynamicLookup } from '@libs/super-search';
-import _ from 'lodash';
 import {
     CreateWithMultipleLanguage,
     FindWithMultipleLanguage,

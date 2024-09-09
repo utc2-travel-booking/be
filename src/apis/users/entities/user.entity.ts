@@ -1,5 +1,4 @@
 import { SchemaFactory, Schema } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { HydratedDocument, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserStatus } from '../constants';

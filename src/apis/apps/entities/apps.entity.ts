@@ -14,7 +14,6 @@ import {
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
-import { SuperApiProperty } from '@libs/super-core';
 
 export enum SubmitStatus {
     Pending = 'Pending',

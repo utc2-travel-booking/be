@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import _ from 'lodash';
 import { subtle } from 'crypto';
 import { Strategy } from 'passport-custom';
 import { UserService } from 'src/apis/users/user.service';

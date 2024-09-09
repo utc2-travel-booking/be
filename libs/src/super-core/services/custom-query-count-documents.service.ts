@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
 
 export class CustomQueryCountDocumentsService<T extends Document>
-    implements ICustomQueryCountDocuments<T>
+    implements ICustomQueryCountDocuments
 {
     private id: string;
     private collectionName: COLLECTION_NAMES;

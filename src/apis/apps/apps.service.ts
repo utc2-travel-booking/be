@@ -13,7 +13,6 @@ import { activePublications } from 'src/base/aggregates/active-publications.aggr
 import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import _ from 'lodash';
 import { pagination } from '@libs/super-search';
 import { ModuleRef } from '@nestjs/core';
 import { UserService } from '../users/user.service';

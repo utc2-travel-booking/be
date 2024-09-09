@@ -11,8 +11,6 @@ import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
-import { SuperPost } from '@libs/super-core';
-import { CreateUserReferralDto } from '../../user-referrals/dto/create-referral.dto';
 
 @Controller('users')
 @Resource('users')

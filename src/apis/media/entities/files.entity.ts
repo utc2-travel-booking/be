@@ -1,6 +1,5 @@
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';

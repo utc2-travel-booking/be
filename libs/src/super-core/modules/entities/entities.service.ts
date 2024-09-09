@@ -30,7 +30,7 @@ export class EntitiesService implements OnModuleInit {
         const models = [];
 
         for (const module of modules) {
-            for (const [token, provider] of module.providers) {
+            for (const [, provider] of module.providers) {
                 if (
                     provider.instance &&
                     (provider.instance as Model<any>).modelName
