@@ -45,4 +45,7 @@ export abstract class AggregateRoot extends Document<Types.ObjectId> {
         },
     })
     deletedBy: Types.ObjectId;
+
+    createdAt: Date;
+    updatedAt: Date;
 }

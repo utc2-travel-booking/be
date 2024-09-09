@@ -23,11 +23,12 @@ import { ModuleRef } from '@nestjs/core';
 import { CustomQueryFindAllService } from '@libs/super-core/services/custom-query-find-all.service';
 import { CustomQueryFindOneService } from '@libs/super-core/services/custom-query-find-one.service';
 import { CustomQueryCountDocumentsService } from '@libs/super-core/services/custom-query-count-documents.service';
+import { AggregateRoot } from '../entities/aggregate-root.schema';
 
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
 @Injectable()
-export class BaseRepositories<T extends Document, E> {
+export class BaseRepositories<T extends AggregateRoot, E> {
     public static moduleRef: ModuleRef;
 
     constructor(
