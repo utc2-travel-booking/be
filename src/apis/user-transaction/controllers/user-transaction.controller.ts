@@ -26,7 +26,7 @@ import { ParamTimeType } from '../constants';
 export class UserTransactionController {
     constructor(
         private readonly userTransactionService: UserTransactionService,
-    ) { }
+    ) {}
 
     @SuperGet({ route: ':type' })
     @ApiBearerAuth()
@@ -34,13 +34,13 @@ export class UserTransactionController {
     @ApiParam({
         enum: ParamTimeType,
         required: false,
-        name: 'type'
+        name: 'type',
     })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Param("type") type: ParamTimeType,
-        @Req() req: { user: UserPayload }
+        @Param('type') type: ParamTimeType,
+        @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
         const today = new Date();
@@ -56,15 +56,18 @@ export class UserTransactionController {
         const endOfBeforeYesterday = new Date(startOfYesterday);
         endOfBeforeYesterday.setMilliseconds(-1);
         const query: any = {
-            createdBy: new Types.ObjectId(user._id)
-        }
+            createdBy: new Types.ObjectId(user._id),
+        };
 
         switch (type) {
             case ParamTimeType.TODAY:
                 query.createdAt = { $gte: startOfDay, $lt: endOfDay };
                 break;
             case ParamTimeType.YESTERDAY:
-                query.createdAt = { $gte: startOfYesterday, $lt: endOfYesterday };
+                query.createdAt = {
+                    $gte: startOfYesterday,
+                    $lt: endOfYesterday,
+                };
                 break;
             case ParamTimeType.EARLIER:
                 query.createdAt = { $lt: endOfBeforeYesterday };
@@ -72,9 +75,8 @@ export class UserTransactionController {
         }
         const result = await this.userTransactionService.getAll(
             queryParams,
-            query
+            query,
         );
         return result;
     }
-
 }

@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
 import { Permission, PermissionDocument } from './entities/permissions.entity';
 
