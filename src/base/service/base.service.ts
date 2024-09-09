@@ -116,7 +116,6 @@ export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
         const result = await this.findOneAndUpdate(
             { _id },
             { ...payload, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {

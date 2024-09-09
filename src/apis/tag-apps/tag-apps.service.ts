@@ -59,7 +59,6 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
         const result = await this.findOneAndUpdate(
             { _id },
             { ...updateTagAppDto, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {
@@ -102,7 +101,6 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
             const _tagApp = await this.findOneAndUpdate(
                 { _id: tagApp._id },
                 { position },
-                { new: true },
             );
 
             await this.updatePosition(tag, position, _tagApp._id);

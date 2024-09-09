@@ -102,12 +102,10 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async updateOne<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<T>,
         update?: UpdateQuery<T> | UpdateWithAggregationPipeline,
-        options?: QueryOptions,
     ) {
         const result = await this.model.updateOne(
             { deletedAt: null, ...filter },
             update,
-            options,
         );
         return result as unknown as ResultDoc;
     }
@@ -130,12 +128,10 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     async findOneAndUpdate<ResultDoc = HydratedDocument<T>>(
         filter?: FilterQuery<T>,
         update?: UpdateQuery<T>,
-        options?: QueryOptions,
     ) {
         const result = await this.model.findOneAndUpdate(
             { deletedAt: null, ...filter },
             update,
-            options,
         );
         return result as unknown as ResultDoc;
     }

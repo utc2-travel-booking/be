@@ -66,7 +66,6 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const result = await this.findOneAndUpdate(
             { _id, type },
             { ...updatePostDto, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {
