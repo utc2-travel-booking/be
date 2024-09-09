@@ -345,13 +345,13 @@ export class AppsService extends BaseService<AppDocument, App> {
             isReceivedReward:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    _id,
+                    result._id,
                     MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
                 ),
             isReceivedRewardShare:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    _id,
+                    result._id,
                     MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
                 ),
         };
