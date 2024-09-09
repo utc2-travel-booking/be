@@ -399,11 +399,8 @@ export class UserService
         await this.userReferralService.addPointForUserReferralAndUserReferred(
             result,
         );
-        const countReferral = await this.userReferralsService
-            .countDocuments({
-                code: result.inviteCode,
-                status: ReferralStatus.COMPLETED,
-            })
+        const referral = await this.userReferralsService
+            .find({ code: result.inviteCode })
             .exec();
         const introducer = await this.userReferralsService
             .findOne({
@@ -415,7 +412,7 @@ export class UserService
         return {
             ...result,
             introducer: introducer?.code,
-            countReferral,
+            referral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
