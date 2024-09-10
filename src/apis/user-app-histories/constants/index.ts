@@ -3,3 +3,8 @@ export enum ActionType {
     COMMENT_APP = 'Comment',
     SHARE_APP = 'Share'
 }
+export enum EStatusTask {
+    IN_PROGRESS = "in_progress",
+    CLAIMED = "claimed",
+    COMPLETED = "completed",
+}

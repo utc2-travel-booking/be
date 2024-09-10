@@ -15,8 +15,7 @@ import { ReviewRatingDocument } from 'src/apis/review-ratings/entities/review-ra
     cors: true,
 })
 export class WebsocketGateway
-    implements OnGatewayConnection, OnGatewayDisconnect
-{
+    implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server;
     private readonly logger = new Logger(WebsocketGateway.name);
 
@@ -56,6 +55,12 @@ export class WebsocketGateway
                 `Client disconnected: ${client.id} (AppId: ${appId})`,
             );
         }
+    }
+
+    sendMissionUpdate(userId: Types.ObjectId) {
+        this.server
+            .to(userId.toString())
+            .emit(EVENT_NAME.MISSION_UPDATE);
     }
 
     sendPointsUpdate(userId: Types.ObjectId, currentPoint: number) {

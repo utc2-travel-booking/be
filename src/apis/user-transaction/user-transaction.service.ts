@@ -10,6 +10,7 @@ import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
 import { MetadataType } from '../metadata/constants';
+import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -49,6 +50,17 @@ export class UserTransactionService extends BaseService<
         }
         return aggregate[0].total
     }
+
+    async getTransactionMeByMissionId(missionId: string, userId: Types.ObjectId) {
+        const data = await this.findOne({
+            createdBy: userId,
+            "mission._id": missionId
+        })
+            .autoPopulate(false)
+            .exec();
+        return data;
+    }
+
     async checkReceivedReward(
         userId: Types.ObjectId,
         appId: Types.ObjectId,

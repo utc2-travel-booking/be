@@ -20,7 +20,8 @@ export class MissionController {
     async getMission(
         @Req() req: { user: UserPayload }
     ) {
-        return await this.missionService.getMission();
+        const { user } = req;
+        return await this.missionService.getMission(user);
     }
 
     @SuperPut({ route: 'verify-app/:appId/:action' })
@@ -33,9 +34,21 @@ export class MissionController {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.missionService.verifyOpenApp(appId, user, action);
+        const result = await this.missionService.updateProgressActionApp(appId, user, action);
         console.log("result", result);
         return result;
     }
 
+    @SuperPut({ route: 'claim/:missionId' })
+    @SuperAuthorize(PERMISSION.PUT)
+    @ApiParam({ name: 'missionId', type: String })
+    async claimMission(
+        @Param('missionId') missionId: string,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.missionService.claimMission(missionId, user);
+        console.log("result", result);
+        return result;
+    }
 }

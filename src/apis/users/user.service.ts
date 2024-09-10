@@ -21,7 +21,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { UserTransactionType } from '../user-transaction/constants';
-import { AddPointMissionDto, AddPointForUserDto } from '../apps/models/add-point-for-user.model';
+import { AddPointForUserDto, AddPointMissionDto } from '../apps/models/add-point-for-user.model';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
@@ -160,7 +160,7 @@ export class UserService
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
                 createdBy: new Types.ObjectId(userId),
-                "mission.missionId": mission.missionId
+                "mission._id": mission._id
             })
             .autoPopulate(false)
             .exec();
@@ -168,11 +168,10 @@ export class UserService
         if (userTransactionThisApp) {
             return await this.getMe(userPayload);
         }
-
         const user = await this.findOne({ _id: userId }).exec();
 
         const { currentPoint = 0, _id } = user;
-
+        console.log(mission)
         const after = parseFloat(currentPoint.toString()) + mission.reward;
 
         const userTransaction = await this.userTransactionService.create({
