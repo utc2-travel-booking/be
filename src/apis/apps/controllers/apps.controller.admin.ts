@@ -43,6 +43,13 @@ export class AppsControllerAdmin {
         return result;
     }
 
+    @SuperGet({ route: 'get-app-count-by-status' })
+    @SuperAuthorize(PERMISSION.GET)
+    async getStatus() {
+        const result = await this.appsService.GetAppCountByStatus();
+        return result;
+    }
+
     @SuperGet({ route: ':id' })
     @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })

@@ -4,6 +4,7 @@ import { Transform } from 'class-transformer';
 import {
     IsArray,
     IsDate,
+    IsEnum,
     IsNotEmpty,
     IsOptional,
     IsString,
@@ -14,6 +15,7 @@ import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
+import { SubmitStatus } from '../entities/apps.entity';
 
 export class CreateAppDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
@@ -142,4 +144,15 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsDate()
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedEnd: Date;
+
+    @SuperApiProperty({
+        type: String,
+        required: false,
+        description: 'Status for App',
+        title: 'Status for App',
+        enum: SubmitStatus,
+        default: SubmitStatus.Approved,
+    })
+    @IsEnum(SubmitStatus)
+    status: SubmitStatus;
 }
