@@ -11,6 +11,7 @@ import { LoginTelegramMiniAppStrategy } from 'src/strategies/login-telegram-mini
 import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
 import { UserPayloadExtractorStrategy } from 'src/strategies/user-payload-extractor.strategy';
 import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
+import { MissionModule } from '../mission/mission.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
         RolesModule,
         MetadataModule,
         TelegramBotModule,
+        MissionModule
     ],
     controllers: [],
     providers: [
@@ -37,4 +39,4 @@ import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
     ],
     exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }

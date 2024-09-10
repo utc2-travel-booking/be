@@ -39,6 +39,9 @@ export class AppsService extends BaseService<AppDocument, App> {
     ) {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
+    async getAppById(appId: Types.ObjectId) {
+        return await this.findOne({ _id: appId }).exec();
+    }
 
     async GetAppCountByStatus() {
         const statusApp = [
@@ -422,10 +425,10 @@ export class AppsService extends BaseService<AppDocument, App> {
                 ...item,
                 isReceivedReward: userId
                     ? await this.userTransactionService.checkReceivedReward(
-                          userId,
-                          item._id,
-                          MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                      )
+                        userId,
+                        item._id,
+                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                    )
                     : false,
             };
         });

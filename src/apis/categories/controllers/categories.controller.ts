@@ -22,7 +22,7 @@ import { Resource } from '@libs/super-authorize';
     refSource: COLLECTION_NAMES.CATEGORIES,
 })
 export class CategoriesController {
-    constructor(private readonly categoriesService: CategoriesService) {}
+    constructor(private readonly categoriesService: CategoriesService) { }
 
     @SuperGet({ route: ':type' })
     async getAll(

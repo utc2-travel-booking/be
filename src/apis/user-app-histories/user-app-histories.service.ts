@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
+import { ActionType } from './constants';
 
 @Injectable()
 export class UserAppHistoriesService extends BaseService<
@@ -27,27 +28,44 @@ export class UserAppHistoriesService extends BaseService<
         );
     }
 
-    async createUserAppHistory(appId: Types.ObjectId, userId: Types.ObjectId) {
+    async createUserAppHistory(appId: Types.ObjectId, userId: Types.ObjectId, action?: ActionType) {
         const userAppHistory = await this.findOne({
             app: new Types.ObjectId(appId.toString()),
             createdBy: new Types.ObjectId(userId.toString()),
+            action
         })
             .autoPopulate(false)
             .exec();
 
         if (userAppHistory) {
+            const history: any = userAppHistory;
+            const date = history.updatedAt;
             await this.updateOne(
                 { _id: userAppHistory._id },
                 {
                     updatedAt: new Date(),
                 },
             );
-            return;
+            return !this.compareWithToday(date);
         }
 
         await this.create({
             app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
+            action
         });
+        return true;
+    }
+    compareWithToday(dateFromApi: string): boolean {
+        const today = new Date();
+        const apiDate = new Date(dateFromApi);
+
+        // So sánh năm, tháng và ngày
+        const isSameDay =
+            apiDate.getUTCFullYear() === today.getUTCFullYear() &&
+            apiDate.getUTCMonth() === today.getUTCMonth() &&
+            apiDate.getUTCDate() === today.getUTCDate();
+
+        return isSameDay;
     }
 }

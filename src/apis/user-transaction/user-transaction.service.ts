@@ -10,6 +10,7 @@ import { Model, Types } from 'mongoose';
 import _ from 'lodash';
 import { ModuleRef } from '@nestjs/core';
 import { MetadataType } from '../metadata/constants';
+import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -27,6 +28,37 @@ export class UserTransactionService extends BaseService<
             COLLECTION_NAMES.USER_TRANSACTION,
             moduleRef,
         );
+    }
+    async getTotalEarn(userId: Types.ObjectId) {
+        const aggregate = await this.userTransactionModel.aggregate([
+            {
+                $match: {
+                    createdBy: new Types.ObjectId(userId)
+                }
+            },
+            {
+                $group: {
+                    _id: "$createdBy",
+                    total: { $sum: "$amount" },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
+
+        if (aggregate.length < 0) {
+            return 0
+        }
+        return aggregate[0].total
+    }
+
+    async getTransactionMeByMissionId(missionId: string, userId: Types.ObjectId) {
+        const data = await this.findOne({
+            createdBy: userId,
+            "mission._id": missionId
+        })
+            .autoPopulate(false)
+            .exec();
+        return data;
     }
 
     async checkReceivedReward(
