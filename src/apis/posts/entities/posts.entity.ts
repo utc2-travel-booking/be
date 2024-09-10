@@ -86,7 +86,7 @@ export class Post extends AggregateRoot {
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
         cms: {
-            label: 'Category',
+            label: 'Categories',
             tableShow: true,
             columnPosition: 6,
         },

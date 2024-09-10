@@ -22,8 +22,6 @@ import {
 import { MetadataService } from '../metadata/metadata.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
-import { CreateUserReferralDto } from './dto/create-referral.dto';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserReferralsService extends BaseService<

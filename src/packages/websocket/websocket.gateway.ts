@@ -19,7 +19,7 @@ export class WebsocketGateway
     @WebSocketServer() server: Server;
     private readonly logger = new Logger(WebsocketGateway.name);
 
-    handleConnection(client: Socket, ...args: any[]) {
+    handleConnection(client: Socket) {
         const { userId, appId } = client.handshake.query;
 
         if (userId) {

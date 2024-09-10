@@ -13,7 +13,6 @@ import { activePublications } from 'src/base/aggregates/active-publications.aggr
 import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import _ from 'lodash';
 import { pagination } from '@libs/super-search';
 import { ModuleRef } from '@nestjs/core';
 import { UserService } from '../users/user.service';
@@ -43,6 +42,26 @@ export class AppsService extends BaseService<AppDocument, App> {
     async getAppById(appId: Types.ObjectId) {
         return await this.findOne({ _id: appId }).exec();
     }
+
+    async GetAppCountByStatus() {
+        const statusApp = [
+            SubmitStatus.Draft,
+            SubmitStatus.Pending,
+            SubmitStatus.Rejected,
+        ];
+
+        const result = await Promise.all(
+            statusApp.map(async (status) => {
+                return {
+                    [status]: await this.countDocuments({ status }).exec(),
+                };
+            }),
+        );
+        result.unshift({ All: await this.countDocuments({}).exec() });
+
+        return result;
+    }
+
     async getAllAppPublish(
         queryParams: ExtendedPagingDto,
         userPayload: UserPayload,
@@ -427,5 +446,9 @@ export class AppsService extends BaseService<AppDocument, App> {
             const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
+    }
+
+    async getAllSlug() {
+        return (await this.appModel.find({})).map((p) => p.slug);
     }
 }

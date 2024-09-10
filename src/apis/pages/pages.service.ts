@@ -3,8 +3,6 @@ import { BaseService } from 'src/base/service/base.service';
 import { Pages, PagesDocument } from './entities/pages.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { UpdatePagesDto } from './dto/update-pages.dto';
-import { CreatePagesDto } from './dto/create-pages.dto';
 import { ModuleRef } from '@nestjs/core';
 import { Model } from 'mongoose';
 

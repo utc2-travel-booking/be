@@ -73,6 +73,12 @@ export class AppsController {
         return result;
     }
 
+    @SuperGet({ route: 'slugs' })
+    async getAllSlug() {
+        const result = await this.appsService.getAllSlug();
+        return result;
+    }
+
     @SuperPost({ route: 'add-point/:id/:type' })
     @SuperAuthorize(PERMISSION.POST)
     @ApiParam({ name: 'id', type: String })

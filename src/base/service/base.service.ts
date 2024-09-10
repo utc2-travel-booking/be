@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Document, FilterQuery, Model, PipelineStage, Types } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from '@libs/super-search';
 import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
-import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
 import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
@@ -170,8 +169,7 @@ export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
 
         const result = await this.findOne(
             {
-                _id,
-                deletedAt: null,
+                $or: [{ _id }, { slug: _id }],
                 ...options,
             },
             filterPipeline,

@@ -35,7 +35,7 @@ const applyMultipleLanguageFields = (
                                     [`${propertyKey}`]: {
                                         $ifNull: [
                                             `$$item.${propertyKey}.${locale}`,
-                                            'NO DATA',
+                                            `$$item.${propertyKey}.${appSettings.mainLanguage}`,
                                         ],
                                     },
                                 },
@@ -52,7 +52,10 @@ const applyMultipleLanguageFields = (
                 );
                 currentMergeObjects.push({
                     [`${propertyKey}`]: {
-                        $ifNull: [`$$item.${propertyKey}.${locale}`, 'NO DATA'],
+                        $ifNull: [
+                            `$$item.${propertyKey}.${locale}`,
+                            `$$item.${propertyKey}.${appSettings.mainLanguage}`,
+                        ],
                     },
                 });
                 _.set(addFieldsStage, mergeObjectsPath, currentMergeObjects);
@@ -61,7 +64,10 @@ const applyMultipleLanguageFields = (
             const _prefix = prefix ? `${prefix}.` : '';
             const fieldPath = `$addFields.${_prefix}${propertyKey}`;
             _.set(addFieldsStage, fieldPath, {
-                $ifNull: [`$${_prefix}${propertyKey}.${locale}`, 'NO DATA'],
+                $ifNull: [
+                    `$${_prefix}${propertyKey}.${locale}`,
+                    `$${_prefix}${propertyKey}.${appSettings.mainLanguage}`,
+                ],
             });
         }
     });
