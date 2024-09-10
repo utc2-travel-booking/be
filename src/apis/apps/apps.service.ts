@@ -40,6 +40,25 @@ export class AppsService extends BaseService<AppDocument, App> {
         super(appModel, App, COLLECTION_NAMES.APP, moduleRef);
     }
 
+    async GetAppCountByStatus() {
+        const statusApp = [
+            SubmitStatus.Draft,
+            SubmitStatus.Pending,
+            SubmitStatus.Rejected,
+        ];
+
+        const result = await Promise.all(
+            statusApp.map(async (status) => {
+                return {
+                    [status]: await this.countDocuments({ status }).exec(),
+                };
+            }),
+        );
+        result.unshift({ All: await this.countDocuments({}).exec() });
+
+        return result;
+    }
+
     async getAllAppPublish(
         queryParams: ExtendedPagingDto,
         userPayload: UserPayload,

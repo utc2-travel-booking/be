@@ -188,6 +188,11 @@ export class App extends AggregateRoot {
         required: true,
         default: SubmitStatus.Approved,
         enum: SubmitStatus,
+        cms: {
+            label: 'Status',
+            tableShow: true,
+            columnPosition: 11,
+        },
     })
     status: SubmitStatus;
 }
