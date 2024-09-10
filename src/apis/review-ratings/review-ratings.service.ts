@@ -17,6 +17,7 @@ import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from '@libs/super-search';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { AppsService } from '../apps/apps.service';
 
 @Injectable()
 export class ReviewRatingService extends BaseService<
@@ -29,6 +30,7 @@ export class ReviewRatingService extends BaseService<
         moduleRef: ModuleRef,
         private readonly eventEmitter: EventEmitter2,
         private readonly websocketGateway: WebsocketGateway,
+        private readonly appService: AppsService,
     ) {
         super(
             reviewModel,
@@ -40,7 +42,7 @@ export class ReviewRatingService extends BaseService<
 
     async getAllForFront(
         queryParams: ExtendedPagingDto,
-        options?: Record<string, any>,
+        appId: Types.ObjectId,
     ) {
         const {
             page,
@@ -52,10 +54,19 @@ export class ReviewRatingService extends BaseService<
             select,
         } = queryParams;
 
+        const app = await this.appService
+            .findOne({
+                $or: [{ _id: appId }, { slug: appId }],
+            })
+            .exec();
+
+        if (!app) {
+            return null;
+        }
+
         const result = this.find(
             {
-                ...options,
-                deletedAt: null,
+                app: app._id,
             },
             [
                 ...filterPipeline,
@@ -83,8 +94,7 @@ export class ReviewRatingService extends BaseService<
 
         const total = this.countDocuments(
             {
-                ...options,
-                deletedAt: null,
+                app: app._id,
             },
             filterPipeline,
         ).exec();
@@ -133,9 +143,11 @@ export class ReviewRatingService extends BaseService<
         app: Types.ObjectId,
     ) {
         const review = await this.findOne({
-            'createdBy._id': createdBy,
-            'app._id': app,
-        }).exec();
+            createdBy: createdBy,
+            app: app,
+        })
+            .autoPopulate(false)
+            .exec();
 
         if (review) {
             throw new BadRequestException('You have already reviewed this app');
@@ -143,9 +155,21 @@ export class ReviewRatingService extends BaseService<
     }
 
     async reviewRatingOverviewForApp(appId: Types.ObjectId) {
+        const app = await this.appService
+            .findOne({
+                $or: [{ _id: appId }, { slug: appId }],
+            })
+            .exec();
+
+        if (!app) {
+            return null;
+        }
+
         const reviews = await this.find({
-            'app._id': appId,
-        }).exec();
+            app: app._id,
+        })
+            .autoPopulate(false)
+            .exec();
 
         const totalReviews = reviews.length;
         const starRatingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
