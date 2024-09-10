@@ -154,7 +154,7 @@ export class SubmitAppDto extends PartialType(ExcludeDto) {
         description: 'Draft or Pending',
         title: 'Status for App',
     })
-    @IsEnum(SubmitStatus)
+    @IsEnum([SubmitStatus.Draft, SubmitStatus.Pending])
     @IsOptional()
     status: SubmitStatus.Draft | SubmitStatus.Pending = SubmitStatus.Draft;
 }
