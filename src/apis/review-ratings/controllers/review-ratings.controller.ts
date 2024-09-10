@@ -45,9 +45,7 @@ export class ReviewRatingController {
     ) {
         const result = await this.reviewRatingService.getAllForFront(
             queryParams,
-            {
-                'app._id': appId,
-            },
+            appId,
         );
         return result;
     }
