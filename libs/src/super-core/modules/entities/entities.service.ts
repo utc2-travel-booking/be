@@ -2,16 +2,13 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { Model } from 'mongoose';
 import _ from 'lodash';
-import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { COLLECTION_NAMES } from 'src/constants';
+import { Entity, Schema } from '@libs/super-core/metadata/entity.interface';
 
 @Injectable()
 export class EntitiesService implements OnModuleInit {
-    private entities = new Array<any>();
-    constructor(
-        private readonly modulesContainer: ModulesContainer,
-        private readonly superCacheService: SuperCacheService,
-    ) {}
+    private entities = new Array<Entity>();
+    constructor(private readonly modulesContainer: ModulesContainer) {}
 
     async onModuleInit() {
         await this.getMongooseModels();
@@ -52,7 +49,7 @@ export class EntitiesService implements OnModuleInit {
     private async processModels(models: any[]) {
         for (const model of models) {
             const { name, schema } = model;
-            const _schema: any[] = [];
+            const _schema: Schema[] = [];
 
             for (const [key, value] of Object.entries(schema.obj)) {
                 const ref = _.get(value, 'ref', null);
@@ -71,7 +68,7 @@ export class EntitiesService implements OnModuleInit {
                     default: _.get(value, 'default', null),
                     required: _.get(value, 'required', false),
                     enum: _.get(value, 'enum', null),
-                    schema: null,
+                    entity: null,
                     label: _.get(value, 'cms.label', key),
                     isTableShow: _.get(value, 'cms.tableShow', false),
                     index: _.get(value, 'cms.index', false),
