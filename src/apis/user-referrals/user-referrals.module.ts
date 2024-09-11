@@ -7,6 +7,7 @@ import { UserModule } from '../users/user.module';
 import { MetadataModule } from '../metadata/metadata.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
+import { MissionModule } from '../mission/mission.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { WebsocketModule } from 'src/packages/websocket/websocket.module';
         MetadataModule,
         UserTransactionModule,
         WebsocketModule,
+        MissionModule,
     ],
     controllers: [],
     providers: [UserReferralsService],

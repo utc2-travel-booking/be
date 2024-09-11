@@ -1,3 +1,4 @@
+import { MissionService } from './../mission/mission.service';
 import {
     BadRequestException,
     forwardRef,
@@ -36,6 +37,7 @@ export class UserReferralsService extends BaseService<
         private readonly metadataService: MetadataService,
         private readonly userTransactionService: UserTransactionService,
         private readonly websocketGateway: WebsocketGateway,
+        private readonly missionService: MissionService,
         moduleRef: ModuleRef,
     ) {
         super(
@@ -167,6 +169,9 @@ export class UserReferralsService extends BaseService<
             referrer,
             UserTransactionAction.REFERRAL,
         );
+
+        await this.missionService.updateMissionReferral(referrer);
+
         // Add point for user referred
 
         const user = await this.userService
