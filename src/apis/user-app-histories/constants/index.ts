@@ -4,7 +4,12 @@ export enum ActionType {
     SHARE_APP = 'Share'
 }
 export enum EStatusTask {
-    IN_PROGRESS = "in_progress",
-    CLAIMED = "claimed",
-    COMPLETED = "completed",
+    IN_PROGRESS = 'in_progress',
+    CLAIMED = 'claimed',
+    COMPLETED = 'completed',
+}
+export enum ESocialMedia {
+    FACEBOOK = 'facebook',
+    X = 'x',
+    TELEGRAM = 'telegram'
 }

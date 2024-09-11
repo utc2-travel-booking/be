@@ -43,4 +43,21 @@ export const appSettings = {
     webSocket: {
         port: Number(process.env.WEBSOCKET_PORT),
     },
+    mission: {
+        baseUrl: process.env.BASE_URL_MISSION_SYSTEM,
+        apiKeyMission: process.env.API_KEY_MISSION,
+        missionId: {
+            dailyLoginId: process.env.MISSION_ID_DAILY_LOGIN,
+            openAppId: process.env.MISSION_ID_OPEN_APP,
+            shareAppId: process.env.MISSION_ID_SHARE_APP,
+            reviewAppId: process.env.MISSION_ID_REVIEW_APP,
+            followFBId: process.env.MISSION_ID_FOLLOW_FB,
+            followXId: process.env.MISSION_ID_FOLLOW_X,
+            joinTelegramId: process.env.MISSION_ID_JOIN_TELEGRAM,
+            firstInviteId: process.env.MISSION_ID_FIRST_INVITE,
+            growingCircleId: process.env.MISSION_ID_GROWING_CIRCLE,
+            friendGrathererId: process.env.MISSION_ID_FRIEND_GRATHERER,
+            communityBuilderId: process.env.MISSION_ID_COMMUNITY_BUILDER,
+        }
+    }
 };

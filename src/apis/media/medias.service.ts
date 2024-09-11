@@ -40,7 +40,6 @@ export class MediaService extends BaseService<FileDocument, File> {
                     { _id: file._id },
                     { $set: { filePath: _file.url } },
                 );
-                console.log(count++);
             }
         }
     }

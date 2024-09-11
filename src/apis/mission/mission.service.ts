@@ -5,9 +5,11 @@ import { UserService } from "../users/user.service";
 import { Types } from 'mongoose';
 import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
 import { AppsService } from "../apps/apps.service";
-import { ActionType, EStatusTask } from "../user-app-histories/constants";
+import { ActionType, ESocialMedia, EStatusTask } from "../user-app-histories/constants";
 import { UserTransactionService } from "../user-transaction/user-transaction.service";
 import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
+import { appSettings } from "src/configs/appsettings";
+import { UserDocument } from "../users/entities/user.entity";
 
 @Injectable()
 export class MissionService {
@@ -22,10 +24,10 @@ export class MissionService {
     async getMission(user: UserPayload) {
         const { telegramUserId } = await this.userServices.getMe(user);
         try {
-            const url = `${process.env.BASE_URL_MISSION_SYSTEM}/mission/${telegramUserId}/progress`
+            const url = `${appSettings.mission.baseUrl}/mission/${telegramUserId}/progress`
             const params = {
                 limit: 50,
-                apiKey: process.env.API_KEY_MISSION
+                apiKey: appSettings.mission.apiKeyMission
             }
             const response = await axios.get(url, {
                 params
@@ -36,7 +38,6 @@ export class MissionService {
                 }
                 else {
                     const history = await this.userTransactionService.getTransactionMeByMissionId(item.mission._id, user._id);
-                    console.log(history)
                     if (history) {
                         item.status = EStatusTask.CLAIMED
                     }
@@ -55,11 +56,11 @@ export class MissionService {
     }
     async updateMissionProcess(ids: string[], telegramId: string) {
         try {
-            const url = `${process.env.BASE_URL_MISSION_SYSTEM}/mission/progress`
+            const url = `${appSettings.mission.baseUrl}/mission/progress`
             const payload = {
                 ids,
                 telegramId,
-                apiKey: process.env.API_KEY_MISSION
+                apiKey: appSettings.mission.apiKeyMission
             }
             const res = await axios.put(
                 url,
@@ -68,9 +69,17 @@ export class MissionService {
             return res.data;
         }
         catch (e) {
-            console.error(e.response)
-            throw new HttpException(e.message, 400)
+            throw new HttpException(e.response.data, 400)
         }
+    }
+
+    async updateProgressSocial(userPayload: UserPayload, type: ESocialMedia) {
+        const { _id: userId } = userPayload;
+        const user = await this.userServices.getMe(userPayload);
+        const missionId = this.getMissionIdByType(type)
+        await this.updateMissionProcess([missionId], user.telegramUserId.toString())
+        this.websocketGateway.sendMissionUpdate(userId);
+        return true
     }
 
     async updateProgressActionApp(
@@ -85,13 +94,13 @@ export class MissionService {
             throw new HttpException("AppId not Found", 400)
         }
 
-        const isOpenNewApp = await this.userAppHistoriesService.createUserAppHistory(
+        const history = await this.userAppHistoriesService.createUserAppHistory(
             appId,
             userId,
             action
         );
 
-        if (!isOpenNewApp) { return false }
+        if (!history) { return false }
 
         const missionId = this.getMissionIdByType(action)
 
@@ -118,16 +127,37 @@ export class MissionService {
         return true;
     }
 
-    getMissionIdByType(action: ActionType) {
+    async updateMissionReferral(user: UserDocument) {
+
+        const missionReferral = [
+            appSettings.mission.missionId.firstInviteId,
+            appSettings.mission.missionId.growingCircleId,
+            appSettings.mission.missionId.friendGrathererId,
+            appSettings.mission.missionId.communityBuilderId
+        ]
+        await this.updateMissionProcess(missionReferral, user.telegramUserId.toString())
+        this.websocketGateway.sendMissionUpdate(user._id);
+        return true
+    }
+
+
+
+    getMissionIdByType(action: ActionType | ESocialMedia) {
         switch (action) {
             case ActionType.OPEN_APP:
-                return process.env.MISSION_ID_OPEN_APP;
+                return appSettings.mission.missionId.openAppId;
             case ActionType.COMMENT_APP:
-                return process.env.MISSION_ID_REVIEW_APP;
+                return appSettings.mission.missionId.reviewAppId;
             case ActionType.SHARE_APP:
-                return process.env.MISSION_ID_SHARE_APP;
+                return appSettings.mission.missionId.shareAppId;
+            case ESocialMedia.FACEBOOK:
+                return appSettings.mission.missionId.followFBId;
+            case ESocialMedia.X:
+                return appSettings.mission.missionId.followXId;
+            case ESocialMedia.TELEGRAM:
+                return appSettings.mission.missionId.joinTelegramId;
             default:
-                return process.env.MISSION_ID_OPEN_APP
+                return appSettings.mission.missionId.openAppId;
         }
     }
 

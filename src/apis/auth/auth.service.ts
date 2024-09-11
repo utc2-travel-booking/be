@@ -11,15 +11,14 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly missionService: MissionService,
         private readonly userService: UserService,
-    ) {}
+    ) { }
 
     async login(user: UserPayload) {
         const tokens = await this.getTokens(user);
         const { telegramUserId } = await this.userService.getMe(user);
-
         if (telegramUserId) {
             await this.missionService.updateMissionProcess(
-                [process.env.MISSION_ID_DAILY_LOGIN],
+                [appSettings.mission.missionId.dailyLoginId],
                 telegramUserId.toString(),
             );
         }

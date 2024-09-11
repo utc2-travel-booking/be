@@ -60,7 +60,7 @@ export class WebsocketGateway
     sendMissionUpdate(userId: Types.ObjectId) {
         this.server
             .to(userId.toString())
-            .emit(EVENT_NAME.MISSION_UPDATE);
+            .emit(EVENT_NAME.MISSION_UPDATE, { data: true });
     }
 
     sendPointsUpdate(userId: Types.ObjectId, currentPoint: number) {
