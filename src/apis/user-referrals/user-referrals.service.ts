@@ -61,7 +61,7 @@ export class UserReferralsService extends BaseService<
                     })
                     .exec();
 
-                return result.name;
+                return { username: result.name };
             }),
         );
 
