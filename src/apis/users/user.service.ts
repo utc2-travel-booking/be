@@ -171,7 +171,6 @@ export class UserService
         const user = await this.findOne({ _id: userId }).exec();
 
         const { currentPoint = 0, _id } = user;
-        console.log(mission)
         const after = parseFloat(currentPoint.toString()) + mission.reward;
 
         const userTransaction = await this.userTransactionService.create({

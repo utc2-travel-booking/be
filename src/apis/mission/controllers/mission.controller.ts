@@ -35,7 +35,6 @@ export class MissionController {
     ) {
         const { user } = req;
         const result = await this.missionService.updateProgressActionApp(appId, user, action);
-        console.log("result", result);
         return result;
     }
 
@@ -48,7 +47,6 @@ export class MissionController {
     ) {
         const { user } = req;
         const result = await this.missionService.claimMission(missionId, user);
-        console.log("result", result);
         return result;
     }
 }

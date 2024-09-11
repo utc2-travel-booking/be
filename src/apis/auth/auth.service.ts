@@ -16,7 +16,7 @@ export class AuthService {
     async login(user: UserPayload) {
         const tokens = await this.getTokens(user);
         const { telegramUserId } = await this.userService.getMe(user);
-        const mission = await this.missionService.updateMissionProcess([process.env.MISSION_ID_DAILY_LOGIN], telegramUserId.toString());
+        const mission = await this.missionService.updateMissionProcess([appSettings.mission.missionId.dailyLoginId], telegramUserId.toString());
         console.log(mission);
         return tokens;
     }
