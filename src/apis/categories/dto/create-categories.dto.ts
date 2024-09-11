@@ -1,21 +1,25 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+    IsEnum,
     IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString,
     MaxLength,
+    ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
+import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
+import { CategoryType } from '../constants';
 
 export class CreateCategoryDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Name of the category',
         default: 'Category',
@@ -27,7 +31,20 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
+        type: String,
+        description: 'Name of the category',
+        default: CategoryType.APP,
+        title: 'Type',
+        required: true,
+        enum: CategoryType,
+    })
+    @IsString()
+    @IsNotEmpty()
+    @IsEnum(CategoryType)
+    type: CategoryType;
+
+    @SuperApiProperty({
         type: String,
         description: 'Parent of the category',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -44,7 +61,7 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     })
     parent: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Featured image id of the post',
         default: '60f3b3b3b3b3b3b3b3b3b3',
@@ -61,7 +78,7 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: Number,
         description: 'Position of the tag in the app',
         default: 0,
@@ -70,4 +87,19 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     @IsNumber()
     @IsOptional()
     position: number;
+
+    @SuperApiProperty({
+        type: SEOTagDto,
+        description: 'SEO tag of the page',
+        title: 'SEO Tag',
+        required: true,
+        default: {
+            title: 'Post',
+            description: 'Post',
+        },
+    })
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => SEOTagDto)
+    seoTag: SEOTagDto;
 }

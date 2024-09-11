@@ -4,7 +4,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { Post as PostEntity } from 'src/apis/posts/entities/posts.entity';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -12,9 +11,11 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { PostsService } from '../posts.service';
 import { PostStatus, PostType } from '../constants';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { Resource } from '@libs/super-authorize';
 
 @Controller('posts')
+@Resource('posts')
 @ApiTags('Front: Posts')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -23,7 +24,7 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
-    @ExtendedGet({ route: ':type' })
+    @SuperGet({ route: ':type' })
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -36,7 +37,7 @@ export class PostsController {
         return result;
     }
 
-    @ExtendedGet({ route: ':type/:id' })
+    @SuperGet({ route: ':type/:id' })
     @ApiParam({ name: 'id', type: String })
     async getOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,

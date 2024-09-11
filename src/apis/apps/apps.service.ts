@@ -4,16 +4,15 @@ import {
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
-import { App, AppDocument } from './entities/apps.entity';
+import { App, AppDocument, SubmitStatus } from './entities/apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model, PipelineStage, Types } from 'mongoose';
+import mongoose, { Model, PipelineStage, Types } from 'mongoose';
 import { SumRatingAppModel } from './models/sum-rating-app.model';
 import { activePublications } from 'src/base/aggregates/active-publications.aggregates';
 import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
-import _ from 'lodash';
 import { pagination } from '@libs/super-search';
 import { ModuleRef } from '@nestjs/core';
 import { UserService } from '../users/user.service';
@@ -57,8 +56,66 @@ export class AppsService extends BaseService<AppDocument, App> {
         } = queryParams;
 
         activePublications(queryParams.filterPipeline);
+        const result = await this.find(
+            {
+                $or: [
+                    {
+                        status: SubmitStatus.Approved,
+                    },
+                    {
+                        status: null,
+                    },
+                ],
+            },
+            filterPipeline,
+        )
+            .limit(limit)
+            .skip(skip)
+            .sort({ [sortBy]: sortDirection })
+            .select(select)
+            .exec();
 
-        const result = await this.find({}, filterPipeline)
+        const total = await this.countDocuments({}, filterPipeline).exec();
+        const meta = pagination(result, page, limit, total);
+
+        const items = result.map(async (item) => {
+            return {
+                ...item,
+                isReceivedReward:
+                    await this.userTransactionService.checkReceivedReward(
+                        userId,
+                        item?._id,
+                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                    ),
+            };
+        });
+
+        return Promise.all(items).then((items) => {
+            return { items, meta };
+        });
+    }
+
+    async getSubmittedApp(
+        queryParams: ExtendedPagingDto,
+        userPayload: UserPayload,
+    ) {
+        const { _id: userId } = userPayload;
+        const {
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+            skip,
+            filterPipeline,
+            select,
+        } = queryParams;
+
+        const result = await this.find(
+            {
+                createdBy: new mongoose.Types.ObjectId(userId),
+            },
+            filterPipeline,
+        )
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
@@ -270,7 +327,7 @@ export class AppsService extends BaseService<AppDocument, App> {
 
         const result = await this.findOne(
             {
-                _id,
+                $or: [{ _id }, { slug: _id }],
             },
             filterPipeline,
         ).exec();
@@ -287,13 +344,13 @@ export class AppsService extends BaseService<AppDocument, App> {
             isReceivedReward:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    _id,
+                    result._id,
                     MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
                 ),
             isReceivedRewardShare:
                 await this.userTransactionService.checkReceivedReward(
                     userId,
-                    _id,
+                    result._id,
                     MetadataType.AMOUNT_REWARD_USER_SHARE_APP,
                 ),
         };
@@ -310,8 +367,6 @@ export class AppsService extends BaseService<AppDocument, App> {
             .find({
                 createdBy: userId,
             })
-            .limit(limit)
-            .skip(skip)
             .sort({ updatedAt: -1 })
             .autoPopulate(false)
             .exec();
@@ -319,6 +374,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         const appIds = userAppHistories.map(
             (item) => new Types.ObjectId(item?.app?.toString()),
         );
+
         const apps = await this.find(
             {
                 _id: {
@@ -338,6 +394,8 @@ export class AppsService extends BaseService<AppDocument, App> {
         )
             .select(select)
             .sort({ __order: 1 })
+            .limit(limit)
+            .skip(skip)
             .exec();
 
         const items = apps.map(async (item) => {
@@ -366,5 +424,9 @@ export class AppsService extends BaseService<AppDocument, App> {
             const meta = pagination(items, page, limit, total);
             return { items, meta };
         });
+    }
+
+    async getAllSlug() {
+        return (await this.appModel.find({})).map((p) => p.slug);
     }
 }

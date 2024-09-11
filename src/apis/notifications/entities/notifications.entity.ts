@@ -7,14 +7,14 @@ import { UserNotificationStatus } from '../constants';
 import { AutoPopulate } from '@libs/super-search';
 import { FileDocument } from 'src/apis/media/entities/files.entity';
 import { UserDocument } from 'src/apis/users/entities/user.entity';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.NOTIFICATION,
 })
 export class Notification extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -25,7 +25,7 @@ export class Notification extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Short Description',
@@ -35,7 +35,7 @@ export class Notification extends AggregateRoot {
     })
     shortDescription: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         enum: UserNotificationStatus,
         default: UserNotificationStatus.UNREAD,
@@ -47,7 +47,7 @@ export class Notification extends AggregateRoot {
     })
     status: UserNotificationStatus;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         cms: {
             label: 'Ref Id',
@@ -57,7 +57,7 @@ export class Notification extends AggregateRoot {
     })
     refId: Types.ObjectId;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Ref Source',
@@ -67,7 +67,7 @@ export class Notification extends AggregateRoot {
     })
     refSource: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         required: true,
@@ -82,10 +82,10 @@ export class Notification extends AggregateRoot {
     })
     user: UserDocument;
 
-    @ExtendedProp({ type: String })
+    @SuperProp({ type: String })
     urlRedirect: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
     })
@@ -94,7 +94,7 @@ export class Notification extends AggregateRoot {
     })
     featuredImage: FileDocument;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         cms: {

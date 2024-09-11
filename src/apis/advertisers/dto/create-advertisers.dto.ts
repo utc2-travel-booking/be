@@ -13,10 +13,10 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 import { BannerImage } from '../entities/advertisers.entity';
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 
 export class BannerImageDto extends BannerImage {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Url redirect of the post',
         default: 'https://www.google.com',
@@ -24,7 +24,7 @@ export class BannerImageDto extends BannerImage {
     })
     urlRedirect: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'File id of the post',
         default: '66ac363aca5ae70c449940f0',
@@ -41,7 +41,7 @@ export class BannerImageDto extends BannerImage {
     })
     featuredImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Title of image',
         default: 'Millionaire',
@@ -49,7 +49,7 @@ export class BannerImageDto extends BannerImage {
     })
     title: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Sub description of the post',
         default: 'Lorem ipsum dolor sit',
@@ -57,7 +57,7 @@ export class BannerImageDto extends BannerImage {
     })
     shortDescription: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'File id of the post',
         default: '66ac363aca5ae70c449940f0',
@@ -84,7 +84,7 @@ export class BannerImageDto extends BannerImage {
 }
 
 export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Name of the advertiser',
         default: 'Advertiser',
@@ -95,7 +95,7 @@ export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
     @IsNotEmpty()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: [BannerImageDto],
         description: 'bannerImages image of the post',
         default: [

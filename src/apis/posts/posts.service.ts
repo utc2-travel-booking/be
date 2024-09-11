@@ -59,13 +59,13 @@ export class PostsService extends BaseService<PostDocument, Post> {
         type: PostType,
         updatePostDto: UpdatePostDto,
         user: UserPayload,
+        options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
 
         const result = await this.findOneAndUpdate(
             { _id, type },
-            { ...updatePostDto, updatedBy: userId },
-            { new: true },
+            { ...updatePostDto, ...options, updatedBy: userId },
         );
 
         if (!result) {

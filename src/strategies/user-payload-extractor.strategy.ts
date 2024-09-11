@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import _ from 'lodash';
 import { Strategy } from 'passport-custom';
 import { appSettings } from 'src/configs/appsettings';
 import { UserPayload } from 'src/base/models/user-payload.model';

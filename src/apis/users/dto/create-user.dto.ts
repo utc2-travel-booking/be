@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
@@ -9,7 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateUserDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Name Of User',
@@ -18,7 +18,7 @@ export class CreateUserDto extends PartialType(ExcludeDto) {
     @IsString()
     name: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Email Of User',
@@ -27,7 +27,7 @@ export class CreateUserDto extends PartialType(ExcludeDto) {
     @IsString()
     email: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Password Of User',
@@ -39,7 +39,7 @@ export class CreateUserDto extends PartialType(ExcludeDto) {
     @IsString()
     password: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         required: true,
         title: 'Role Of User',

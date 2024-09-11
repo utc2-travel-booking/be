@@ -4,8 +4,7 @@ import { TagsService } from '../tags.service';
 import _ from 'lodash';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -17,12 +16,15 @@ import { CreateTagDto } from '../dto/create-tags.dto';
 import { UpdateTagDto } from '../dto/update-tags.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('tags')
+@Resource('tags')
 @ApiTags('Admin: Tags')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -31,8 +33,8 @@ import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator'
 export class TagsControllerAdmin {
     constructor(private readonly tagsService: TagsService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.TAG.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -41,16 +43,16 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.TAG.index)
+    @SuperGet({ route: ':id' })
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.tagsService.getOne(_id);
         return result;
     }
 
-    @ExtendedPost({ dto: CreateTagDto })
-    @Authorize(PERMISSIONS.TAG.create)
+    @SuperPost({ dto: CreateTagDto })
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createTagDto: CreateTagDto,
         @Req() req: { user: UserPayload },
@@ -64,8 +66,8 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateTagDto })
-    @Authorize(PERMISSIONS.TAG.edit)
+    @SuperPut({ route: ':id', dto: UpdateTagDto })
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -87,8 +89,8 @@ export class TagsControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
-    @Authorize(PERMISSIONS.TAG.destroy)
+    @SuperDelete()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

@@ -1,7 +1,5 @@
-import { Contact } from 'aws-sdk/clients/alexaforbusiness';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RolesControllerAdmin } from 'src/apis/roles/controllers/roles.controller.admin';
 import { UserControllerAdmin } from 'src/apis/users/controllers/user.controller.admin';
 import { AuthModule } from 'src/apis/auth/auth.module';
 import { AuthControllerAdmin } from 'src/apis/auth/controllers/auth.controller.admin';
@@ -11,10 +9,8 @@ import { MediaControllerAdmin } from 'src/apis/media/controllers/medias.controll
 import { MediaModule } from 'src/apis/media/medias.module';
 import { MetadataControllerAdmin } from 'src/apis/metadata/controllers/metadata.controller.admin';
 import { MetadataModule } from 'src/apis/metadata/metadata.module';
-import { PermissionsModule } from 'src/apis/permissions/permissions.module';
 import { PostsControllerAdmin } from 'src/apis/posts/controllers/posts.controller.admin';
 import { PostsModule } from 'src/apis/posts/posts.module';
-import { RolesModule } from 'src/apis/roles/roles.module';
 import { UserModule } from 'src/apis/users/user.module';
 import { CommonModule } from 'src/common/common.module';
 import { AuditsModule } from 'src/packages/audits/audits.module';
@@ -24,7 +20,7 @@ import { ReviewRatingControllerAdmin } from 'src/apis/review-ratings/controllers
 import { ReviewRatingModule } from 'src/apis/review-ratings/review-ratings.module';
 import { AdvertisersControllerAdmin } from 'src/apis/advertisers/controllers/advertisers.controller.admin';
 import { AdvertisersModule } from 'src/apis/advertisers/advertisers.module';
-import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller';
+import { TelegramBotControllerAdmin } from 'src/apis/telegram-bot/controllers/telegram-bot.controller.admin';
 import { TelegramBotModule } from 'src/apis/telegram-bot/telegram-bot.module';
 import { TagsModule } from 'src/apis/tags/tags.module';
 import { TagsControllerAdmin } from 'src/apis/tags/controllers/tags.controller.admin';
@@ -36,6 +32,8 @@ import { UserTransactionControllerAdmin } from 'src/apis/user-transaction/contro
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
 import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/form-builders.controller.admin';
+import { PagesControllerAdmin } from 'src/apis/pages/controllers/pages.controller.admin';
+import { PagesModule } from 'src/apis/pages/pages.module';
 
 @Module({
     imports: [
@@ -43,8 +41,6 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         CommonModule,
         UserModule,
         MediaModule,
-        RolesModule,
-        PermissionsModule,
         AuthModule,
         CategoriesModule,
         PostsModule,
@@ -59,10 +55,10 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         TagAppsModule,
         UserTransactionModule,
         FormBuilderModule,
+        PagesModule,
     ],
     controllers: [
         MediaControllerAdmin,
-        RolesControllerAdmin,
         AuthControllerAdmin,
         CategoriesControllerAdmin,
         PostsControllerAdmin,
@@ -77,6 +73,7 @@ import { FormBuilderControllerAdmin } from 'src/apis/form-builders/controllers/f
         TagAppsControllerAdmin,
         UserTransactionControllerAdmin,
         FormBuilderControllerAdmin,
+        PagesControllerAdmin,
     ],
     providers: [],
 })

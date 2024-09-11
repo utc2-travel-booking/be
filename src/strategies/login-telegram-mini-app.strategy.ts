@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { validate, parse } from '@tma.js/init-data-node';
-import _ from 'lodash';
 import { UserService } from 'src/apis/users/user.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserLoginTelegramDto } from 'src/apis/auth/dto/user-login-telegram.dto';
@@ -22,6 +21,8 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
     }
 
     async validate(req: Request): Promise<any> {
+        const inviteCode = req.header('code') || '';
+
         const [authType, authData = ''] = (
             req.header('authorization') || ''
         ).split(' ');
@@ -29,16 +30,13 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
         if (authType !== 'tma') {
             throw new UnauthorizedException();
         }
-
         try {
             const domain = req.get('origin');
             const bot = await this.telegramBotService.findByDomain(domain);
             const { token } = bot || {};
             validate(authData, token, {});
-
             const initData = parse(authData);
             const { user } = initData;
-
             const {
                 username,
                 id,
@@ -46,7 +44,6 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
                 lastName: last_name,
                 photoUrl: photo_url,
             } = user;
-
             const userLoginTelegramDto = {
                 username,
                 id,
@@ -54,17 +51,17 @@ export class LoginTelegramMiniAppStrategy extends PassportStrategy(
                 last_name,
                 photo_url,
             } as UserLoginTelegramDto;
-
             const createUserTelegram =
-                await this.userService.createUserTelegram(userLoginTelegramDto);
-
+                await this.userService.createUserTelegram(
+                    userLoginTelegramDto,
+                    inviteCode,
+                );
             const { _id, role, name } = createUserTelegram;
             const userPayload: UserPayload = {
                 _id,
                 roleId: role._id,
                 name,
             };
-
             return userPayload;
         } catch (e) {
             throw new UnauthorizedException();

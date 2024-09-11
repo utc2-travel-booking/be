@@ -1,4 +1,4 @@
-import { ExtendedApiProperty } from '@libs/super-core/decorators/extended-api-property.decorator';
+import { SuperApiProperty } from '@libs/super-core/decorators/super-api-property.decorator';
 import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -16,7 +16,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 
 export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Content of the review',
         default: 'Content',
@@ -26,7 +26,7 @@ export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
     @IsOptional()
     content: string;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: Number,
         description: 'Star of the review',
         default: 0,
@@ -37,7 +37,7 @@ export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
     @IsNumber()
     star: number;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'App id',
         default: '60f3b3b3b3b3b3b3b3b3b3',

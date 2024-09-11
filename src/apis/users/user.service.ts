@@ -11,14 +11,12 @@ import { User, UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
-import { RolesService } from '../roles/roles.service';
 import _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
 import { MediaService } from '../media/medias.service';
-import { RoleType } from '../roles/constants';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
@@ -32,6 +30,10 @@ import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
+import { generateRandomString } from './common/generate-random-string.util';
+import { UserReferralsService } from '../user-referrals/user-referrals.service';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
+import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 
 @Injectable()
 export class UserService
@@ -46,9 +48,11 @@ export class UserService
         private readonly mediaService: MediaService,
         moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
+        private readonly userReferralService: UserReferralsService,
         private readonly metadataService: MetadataService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly eventEmitter: EventEmitter2,
+        private readonly userReferralsService: UserReferralsService,
     ) {
         super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
     }
@@ -72,6 +76,20 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+
+        await this.addInviteCodeForUser();
+    }
+
+    async getAllAdmin(queryParams) {
+        const result = await this.getAll(queryParams);
+        const countReferral = await this.userReferralService.getReferral(
+            result.items,
+        );
+
+        return {
+            items: countReferral,
+            meta: result.meta,
+        };
     }
 
     async getHistoryReward(user: UserPayload, action: MetadataType) {
@@ -215,7 +233,8 @@ export class UserService
 
     async createUserTelegram(
         userLoginTelegramDto: Partial<UserLoginTelegramDto>,
-    ) {
+        inviteCode?: string,
+    ): Promise<UserDocument> {
         const {
             id,
             first_name: firstName = '',
@@ -248,6 +267,13 @@ export class UserService
             avatar: _.get(avatar, '_id', null),
             role: role._id,
         });
+
+        if (newUser && inviteCode) {
+            await this.userReferralService.createReferral(
+                newUser.telegramUserId,
+                inviteCode,
+            );
+        }
 
         return newUser;
     }
@@ -302,7 +328,6 @@ export class UserService
             {
                 ...update,
             },
-            { new: true },
         );
 
         return result;
@@ -373,8 +398,19 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
+        const referral = await this.userReferralsService
+            .find({ code: result.inviteCode })
+            .exec();
+        const introducer = await this.userReferralsService
+            .findOne({
+                telegramUserId: result.telegramUserId,
+            })
+            .exec();
+
         return {
             ...result,
+            introducer: introducer?.code,
+            referral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
@@ -491,5 +527,20 @@ export class UserService
                 items: usersBannedInCache.items,
             });
         }
+    }
+
+    private async addInviteCodeForUser() {
+        const users = await this.find({
+            inviteCode: { $exists: false },
+        }).exec();
+
+        users.forEach(async (user) => {
+            await this.updateOne(
+                { _id: user._id },
+                {
+                    inviteCode: generateRandomString(16),
+                },
+            );
+        });
     }
 }

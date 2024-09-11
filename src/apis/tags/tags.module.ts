@@ -1,4 +1,3 @@
-import { TagsController } from './controllers/tags.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TagsService } from './tags.service';
 import { Module } from '@nestjs/common';

@@ -1,9 +1,9 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { Expression, FilterQuery, PipelineStage, SortOrder } from 'mongoose';
+import { Injectable, PipeTransform } from '@nestjs/common';
+import { PipelineStage } from 'mongoose';
 import { PagingDto } from 'src/base/dto/paging.dto';
-import { SearchType } from 'src/constants/enums';
 import { createSearchPipeline } from '@libs/super-search/common/search.utils';
 import { configSelect } from 'src/utils/select.utils';
+import { SearchType } from '@libs/super-search/constants';
 
 export class ExtendedPagingDto extends PagingDto {
     skip: number;
@@ -12,7 +12,7 @@ export class ExtendedPagingDto extends PagingDto {
 
 @Injectable()
 export class PagingDtoPipe implements PipeTransform {
-    transform(value: PagingDto, metadata: ArgumentMetadata): ExtendedPagingDto {
+    transform(value: PagingDto): ExtendedPagingDto {
         const {
             page = 1,
             search,

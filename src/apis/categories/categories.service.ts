@@ -53,7 +53,6 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         const result = await this.findOneAndUpdate(
             { _id },
             { ...updateCategoryDto, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {
@@ -96,7 +95,6 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         const result = await this.findOneAndUpdate(
             { _id, type },
             { ...updateCategoryDto, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {

@@ -1,8 +1,7 @@
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { Authorize } from 'src/decorators/authorize.decorator';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
+import { COLLECTION_NAMES } from 'src/constants';
 import { UpdateMeDto } from 'src/apis/users/dto/update-me.dto';
 import { UserService } from 'src/apis/users/user.service';
 import { Types } from 'mongoose';
@@ -16,13 +15,15 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('users')
+@Resource('users')
 @ApiTags('Admin: User')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -31,8 +32,8 @@ import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.deco
 export class UserControllerAdmin {
     constructor(private readonly userService: UserService) {}
 
-    @ExtendedPut({ route: 'ban', dto: CreateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperPut({ route: 'ban', dto: CreateUserDto })
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
@@ -44,8 +45,8 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: 'un-ban', dto: CreateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperPut({ route: 'un-ban', dto: CreateUserDto })
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
@@ -56,8 +57,8 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: 'me' })
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperGet({ route: 'me' })
+    @SuperAuthorize(PERMISSION.GET)
     async getMe(@Req() req: { user: UserPayload }) {
         const { user } = req;
 
@@ -65,8 +66,8 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: 'me', dto: UpdateMeDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperPut({ route: 'me', dto: UpdateMeDto })
+    @SuperAuthorize(PERMISSION.PUT)
     async updateMe(
         @Body() updateMeDto: UpdateMeDto,
         @Req() req: { user: UserPayload },
@@ -75,28 +76,29 @@ export class UserControllerAdmin {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
     ) {
-        const result = await this.userService.getAll(queryParams);
+        const result = await this.userService.getAllAdmin(queryParams);
+
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.USER.index)
+    @SuperGet({ route: ':id' })
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.userService.getOne(_id);
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateUserDto,
     })
-    @Authorize(PERMISSIONS.USER.create)
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createRoleDto: CreateUserDto,
         @Req() req: { user: UserPayload },
@@ -107,8 +109,8 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateUserDto })
-    @Authorize(PERMISSIONS.USER.edit)
+    @SuperPut({ route: ':id', dto: UpdateUserDto })
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -126,8 +128,8 @@ export class UserControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
-    @Authorize(PERMISSIONS.USER.destroy)
+    @SuperDelete()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

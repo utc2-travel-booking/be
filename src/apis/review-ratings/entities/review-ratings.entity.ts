@@ -5,14 +5,14 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.REVIEW_RATING,
 })
 export class ReviewRating extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Content',
@@ -22,7 +22,7 @@ export class ReviewRating extends AggregateRoot {
     })
     content: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         min: 0,
         max: 5,
@@ -34,7 +34,7 @@ export class ReviewRating extends AggregateRoot {
     })
     star: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
         relationClass: App,
@@ -49,7 +49,7 @@ export class ReviewRating extends AggregateRoot {
     })
     app: AppDocument;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         cms: {
             label: 'Created At',

@@ -3,8 +3,7 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdvertisersService } from '../advertisers.service';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { COLLECTION_NAMES, PERMISSIONS } from 'src/constants';
-import { Authorize } from 'src/decorators/authorize.decorator';
+import { COLLECTION_NAMES } from 'src/constants';
 import {
     PagingDtoPipe,
     ExtendedPagingDto,
@@ -13,17 +12,19 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { CreateAdvertiserDto } from '../dto/create-advertisers.dto';
 import { UpdateAdvertiserDto } from '../dto/update-advertisers.dto';
-
 import _ from 'lodash';
 import { removeDiacritics } from 'src/utils/helper';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
-import { ExtendedPost } from '@libs/super-core/decorators/extended-post.decorator';
-import { ExtendedPut } from '@libs/super-core/decorators/extended-put.decorator';
-import { ExtendedGet } from '@libs/super-core/decorators/extended-get.decorator';
-import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.decorator';
+import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
+import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
+import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
+import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
+import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
+import { PERMISSION, Resource } from '@libs/super-authorize';
 
 @Controller('advertisers')
+@Resource('advertisers')
 @ApiTags('Admin: Advertisers')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],
@@ -32,8 +33,8 @@ import { ExtendedDelete } from '@libs/super-core/decorators/extended-delete.deco
 export class AdvertisersControllerAdmin {
     constructor(private readonly advertisersService: AdvertisersService) {}
 
-    @ExtendedGet()
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
@@ -42,24 +43,23 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedGet({ route: ':id' })
-    @Authorize(PERMISSIONS.ADVERTISER.index)
+    @SuperGet({ route: ':id' })
+    @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })
     async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
         const result = await this.advertisersService.getOne(_id);
         return result;
     }
 
-    @ExtendedPost({
+    @SuperPost({
         dto: CreateAdvertiserDto,
     })
-    @Authorize(PERMISSIONS.ADVERTISER.create)
+    @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createAdvertiserDto: CreateAdvertiserDto,
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        console.log('createAdvertiserDto', createAdvertiserDto);
         const result = await this.advertisersService.createOne(
             {
                 ...createAdvertiserDto,
@@ -70,8 +70,8 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedPut({ route: ':id', dto: UpdateAdvertiserDto })
-    @Authorize(PERMISSIONS.ADVERTISER.edit)
+    @SuperPut({ route: ':id', dto: UpdateAdvertiserDto })
+    @SuperAuthorize(PERMISSION.PUT)
     @ApiParam({ name: 'id', type: String })
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
@@ -79,7 +79,6 @@ export class AdvertisersControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        console.log('createAdvertiserDto', updateAdvertiserDto);
 
         const result = await this.advertisersService.updateOneById(
             _id,
@@ -90,8 +89,8 @@ export class AdvertisersControllerAdmin {
         return result;
     }
 
-    @ExtendedDelete()
-    @Authorize(PERMISSIONS.ADVERTISER.destroy)
+    @SuperDelete()
+    @SuperAuthorize(PERMISSION.DELETE)
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],

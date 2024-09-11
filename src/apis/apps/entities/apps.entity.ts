@@ -13,14 +13,21 @@ import {
 } from '@libs/super-multiple-language';
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
-import { ExtendedProp } from '@libs/super-core/decorators/extended-prop.decorator';
+import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+
+export enum SubmitStatus {
+    Pending = 'Pending',
+    Approved = 'Approved',
+    Rejected = 'Rejected',
+    Draft = 'Draft',
+}
 
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.APP,
 })
 export class App extends AggregateRoot {
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -32,7 +39,7 @@ export class App extends AggregateRoot {
     })
     name: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         cms: {
             label: 'Slug',
@@ -42,7 +49,7 @@ export class App extends AggregateRoot {
     })
     slug: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -57,7 +64,7 @@ export class App extends AggregateRoot {
     })
     featuredImage: FileDocument;
 
-    @ExtendedProp({
+    @SuperProp({
         type: String,
         required: true,
         cms: {
@@ -68,7 +75,7 @@ export class App extends AggregateRoot {
     })
     url: string;
 
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         cms: {
             label: 'Short Description',
@@ -79,7 +86,7 @@ export class App extends AggregateRoot {
     @MultipleLanguage()
     shortDescription: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: MultipleLanguageType,
         cms: {
             label: 'Description',
@@ -90,7 +97,7 @@ export class App extends AggregateRoot {
     @MultipleLanguage()
     caption: MultipleLanguageType;
 
-    @ExtendedProp({
+    @SuperProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
@@ -106,7 +113,7 @@ export class App extends AggregateRoot {
     })
     categories: CategoryDocument[];
 
-    @ExtendedProp({
+    @SuperProp({
         type: [Types.ObjectId],
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
@@ -120,7 +127,7 @@ export class App extends AggregateRoot {
     })
     previewImages: FileDocument[];
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         default: null,
         cms: {
@@ -129,14 +136,14 @@ export class App extends AggregateRoot {
     })
     publishedStart: Date;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Date,
         default: null,
         cms: { label: 'Published End' },
     })
     publishedEnd: Date;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: false,
         default: 0,
@@ -148,7 +155,7 @@ export class App extends AggregateRoot {
     })
     totalRatingCount: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: false,
         default: 0,
@@ -160,7 +167,7 @@ export class App extends AggregateRoot {
     })
     avgRating: number;
 
-    @ExtendedProp({
+    @SuperProp({
         type: Number,
         required: false,
         default: 0,
@@ -171,6 +178,18 @@ export class App extends AggregateRoot {
         },
     })
     totalRating: number;
+
+    @SuperProp({
+        type: 'object',
+    })
+    socialMedia?: Record<string, string>;
+
+    @SuperProp({
+        required: true,
+        default: SubmitStatus.Approved,
+        enum: SubmitStatus,
+    })
+    status: SubmitStatus;
 }
 
 export type AppDocument = App & Document;

@@ -1,6 +1,6 @@
-import { Document, Expression } from 'mongoose';
+import { Expression } from 'mongoose';
 
-export interface ICustomQueryCountDocuments<T extends Document> {
+export interface ICustomQueryCountDocuments {
     select(fields: Record<string, number>): this;
     skip(value: number): this;
     limit(value: number): this;
