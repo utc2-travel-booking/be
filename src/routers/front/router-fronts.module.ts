@@ -26,9 +26,10 @@ import { FormBuilderModule } from 'src/apis/form-builders/form-builders.module';
 import { FormBuilderController } from 'src/apis/form-builders/controllers/form-builders.controller';
 import { UserTransactionController } from 'src/apis/user-transaction/controllers/user-transaction.controller';
 import { UserTransactionModule } from 'src/apis/user-transaction/user-transaction.module';
-import { UserReferralsModule } from 'src/apis/user-referrals/user-referrals.module';
 import { PagesModule } from 'src/apis/pages/pages.module';
 import { PagesController } from 'src/apis/pages/controllers/pages.controller';
+import { UserReferralsModule } from 'src/apis/user-referrals/user-referrals.module';
+import { UserReferralsController } from 'src/apis/user-referrals/controller/user-referrals.controller';
 
 @Module({
     imports: [
@@ -64,6 +65,7 @@ import { PagesController } from 'src/apis/pages/controllers/pages.controller';
         FormBuilderController,
         UserTransactionController,
         PagesController,
+        UserReferralsController,
     ],
     providers: [],
 })
