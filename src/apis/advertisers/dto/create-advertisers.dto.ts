@@ -73,6 +73,14 @@ export class BannerImageDto extends BannerImage {
         message: 'File  does not exist',
     })
     iconImage: Types.ObjectId;
+
+    @SuperApiProperty({
+        type: String,
+        description: 'Label of the post',
+        default: 'Play on telegram',
+        title: 'Label of button',
+    })
+    labelButton: string;
 }
 
 export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
