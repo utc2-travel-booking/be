@@ -1,3 +1,4 @@
+import { MissionService } from './../mission/mission.service';
 import {
     BadRequestException,
     forwardRef,
@@ -36,6 +37,8 @@ export class UserReferralsService extends BaseService<
         private readonly metadataService: MetadataService,
         private readonly userTransactionService: UserTransactionService,
         private readonly websocketGateway: WebsocketGateway,
+        @Inject(forwardRef(() => MissionService))
+        private readonly missionService: MissionService,
         moduleRef: ModuleRef,
     ) {
         super(
@@ -44,6 +47,26 @@ export class UserReferralsService extends BaseService<
             COLLECTION_NAMES.USER_REFERRAL,
             moduleRef,
         );
+    }
+
+    async getReferralFront(userId: Types.ObjectId) {
+        const user = await this.userService.findOne({ _id: userId }).exec();
+
+        const referralList = await this.find({ code: user.inviteCode }).exec();
+
+        const resultList = await Promise.all(
+            referralList.map(async (referral) => {
+                const result = await this.userService
+                    .findOne({
+                        telegramUserId: referral.telegramUserId,
+                    })
+                    .exec();
+
+                return { username: result.name };
+            }),
+        );
+
+        return resultList;
     }
 
     async getReferral(users: UserDocument[]) {
@@ -167,6 +190,9 @@ export class UserReferralsService extends BaseService<
             referrer,
             UserTransactionAction.REFERRAL,
         );
+
+        // await this.missionService.updateMissionReferral(referrer);
+
         // Add point for user referred
 
         const user = await this.userService

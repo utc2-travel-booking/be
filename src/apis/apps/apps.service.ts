@@ -1,5 +1,7 @@
 import {
     BadRequestException,
+    forwardRef,
+    Inject,
     Injectable,
     UnprocessableEntityException,
 } from '@nestjs/common';
@@ -31,6 +33,7 @@ export class AppsService extends BaseService<AppDocument, App> {
         private readonly appModel: Model<AppDocument>,
         moduleRef: ModuleRef,
         private readonly userAppHistoriesService: UserAppHistoriesService,
+        @Inject(forwardRef(() => UserService))
         private readonly userServices: UserService,
         private readonly tagAppsService: TagAppsService,
         private readonly tagService: TagsService,
@@ -425,10 +428,10 @@ export class AppsService extends BaseService<AppDocument, App> {
                 ...item,
                 isReceivedReward: userId
                     ? await this.userTransactionService.checkReceivedReward(
-                        userId,
-                        item._id,
-                        MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
-                    )
+                          userId,
+                          item._id,
+                          MetadataType.AMOUNT_REWARD_USER_OPEN_APP,
+                      )
                     : false,
             };
         });
