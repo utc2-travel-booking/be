@@ -17,14 +17,6 @@ import {
 export class MissionController {
     constructor(private readonly missionService: MissionService) {}
 
-    @SuperGet({ route: 'update-referral' })
-    @ApiBearerAuth()
-    @SuperAuthorize(PERMISSION.GET)
-    async updateReferral(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-        return await this.missionService.updateMissionReferral(user);
-    }
-
     @SuperGet()
     @ApiBearerAuth()
     @SuperAuthorize(PERMISSION.GET)
