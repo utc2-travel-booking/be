@@ -28,6 +28,9 @@ export class BannerImage {
         required: true,
     })
     iconImage: Types.ObjectId;
+
+    @ExtendedProp({ type: String, required: true })
+    labelButton: string;
 }
 
 @Schema({
