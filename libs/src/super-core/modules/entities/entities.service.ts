@@ -1,9 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { Model } from 'mongoose';
-import _ from 'lodash';
+import _, { isBoolean } from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Entity, Schema } from '@libs/super-core/metadata/entity.interface';
+import { isDate, isNumber, isString } from '@libs/super-core';
 
 @Injectable()
 export class EntitiesService implements OnModuleInit {
@@ -53,12 +54,29 @@ export class EntitiesService implements OnModuleInit {
 
             for (const [key, value] of Object.entries(schema.obj)) {
                 const ref = _.get(value, 'ref', null);
-
                 let type = _.get(value, 'type', null);
-                if (ref && ref === COLLECTION_NAMES.FILE) {
-                    type = 'File';
-                } else if (ref) {
-                    type = 'Relation';
+
+                switch (true) {
+                    case isString(type):
+                        type = 'String';
+                        break;
+                    case isNumber(type):
+                        type = 'Number';
+                        break;
+                    case isDate(type):
+                        type = 'Date';
+                        break;
+                    case isBoolean(type):
+                        type = 'Boolean';
+                        break;
+                    case !!ref && ref === COLLECTION_NAMES.FILE:
+                        type = 'File';
+                        break;
+                    case !!ref:
+                        type = 'Relation';
+                        break;
+                    default:
+                        type = 'String';
                 }
 
                 _schema.push({

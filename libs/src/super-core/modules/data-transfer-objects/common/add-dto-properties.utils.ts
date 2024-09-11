@@ -5,7 +5,7 @@ import {
     DTOMetadataForm,
 } from '../metadata/data-transfer-objects.interface';
 import _ from 'lodash';
-import { isClass } from '@libs/super-core/common/isClass.utils';
+import { isClass } from '@libs/super-core';
 
 export const addDtoProperties = (dto: new () => any) => {
     const properties =
