@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserService } from '../users/user.service';
@@ -18,7 +18,9 @@ import { UserDocument } from '../users/entities/user.entity';
 @Injectable()
 export class MissionService {
     constructor(
+        @Inject(forwardRef(() => UserService))
         private readonly userServices: UserService,
+        @Inject(forwardRef(() => AppsService))
         private readonly appsServices: AppsService,
         private readonly userAppHistoriesService: UserAppHistoriesService,
         private readonly websocketGateway: WebsocketGateway,

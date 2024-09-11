@@ -10,14 +10,15 @@ import { MetadataModule } from '../metadata/metadata.module';
 import { WebsocketModule } from 'src/packages/websocket/websocket.module';
 import { UserReferralsModule } from '../user-referrals/user-referrals.module';
 import { RolesModule } from '@libs/super-authorize/modules/roles/roles.module';
-
+import { AppsModule } from '../apps/apps.module';
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: COLLECTION_NAMES.USER, schema: UserSchema },
         ]),
         forwardRef(() => RolesModule),
-        UserReferralsModule,
+        forwardRef(() => UserReferralsModule),
+        forwardRef(() => AppsModule),
         SuperCacheModule,
         MediaModule,
         UserTransactionModule,

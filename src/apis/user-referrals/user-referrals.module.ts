@@ -18,8 +18,7 @@ import { MissionModule } from '../mission/mission.module';
             },
         ]),
         forwardRef(() => UserModule),
-        // forwardRef(() => MissionModule),
-
+        forwardRef(() => MissionModule),
         MetadataModule,
         UserTransactionModule,
         WebsocketModule,

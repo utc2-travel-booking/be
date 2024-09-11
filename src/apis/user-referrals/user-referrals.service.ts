@@ -37,8 +37,8 @@ export class UserReferralsService extends BaseService<
         private readonly metadataService: MetadataService,
         private readonly userTransactionService: UserTransactionService,
         private readonly websocketGateway: WebsocketGateway,
-        // @Inject(forwardRef(() => MissionService))
-        // private readonly missionService: MissionService,
+        @Inject(forwardRef(() => MissionService))
+        private readonly missionService: MissionService,
         moduleRef: ModuleRef,
     ) {
         super(
