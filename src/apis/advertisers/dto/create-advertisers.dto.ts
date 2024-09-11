@@ -74,7 +74,7 @@ export class BannerImageDto extends BannerImage {
     })
     iconImage: Types.ObjectId;
 
-    @ExtendedApiProperty({
+    @SuperApiProperty({
         type: String,
         description: 'Label of the post',
         default: 'Play on telegram',

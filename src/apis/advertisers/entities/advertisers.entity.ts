@@ -29,7 +29,7 @@ export class BannerImage {
     })
     iconImage: Types.ObjectId;
 
-    @ExtendedProp({ type: String, required: true })
+    @SuperProp({ type: String, required: true })
     labelButton: string;
 }
 
