@@ -448,9 +448,6 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        const referral = await this.userReferralsService
-            .find({ code: result.inviteCode })
-            .exec();
         const introducer = await this.userReferralsService
             .findOne({
                 telegramUserId: result.telegramUserId,
@@ -460,7 +457,6 @@ export class UserService
         return {
             ...result,
             introducer: introducer?.code,
-            referral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
