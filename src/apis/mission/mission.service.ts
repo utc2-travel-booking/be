@@ -9,6 +9,7 @@ import { ActionType, EStatusTask } from "../user-app-histories/constants";
 import { UserTransactionService } from "../user-transaction/user-transaction.service";
 import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
 import { appSettings } from "src/configs/appsettings";
+import { UserDocument } from "../users/entities/user.entity";
 
 @Injectable()
 export class MissionService {
@@ -118,9 +119,7 @@ export class MissionService {
         return true;
     }
 
-    async updateMissionReferral(userPayload: UserPayload) {
-        const { _id: userId } = userPayload;
-        const user = await this.userServices.getMe(userPayload);
+    async updateMissionReferral(user: UserDocument) {
 
         const missionReferral = [
             appSettings.mission.missionId.firstInviteId,
@@ -128,9 +127,8 @@ export class MissionService {
             appSettings.mission.missionId.friendGrathererId,
             appSettings.mission.missionId.communityBuilderId
         ]
-
         await this.updateMissionProcess(missionReferral, user.telegramUserId.toString())
-        this.websocketGateway.sendMissionUpdate(userId);
+        this.websocketGateway.sendMissionUpdate(user._id);
         return true
     }
 
