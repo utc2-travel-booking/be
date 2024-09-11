@@ -47,6 +47,7 @@ export const populateGroupBannerImageAggregate = [
                     iconImage: '$iconImage',
                     title: '$bannerImages.title',
                     shortDescription: '$bannerImages.shortDescription',
+                    labelButton: '$bannerImages.labelButton',
                 },
             },
             createdAt: { $first: '$createdAt' },
