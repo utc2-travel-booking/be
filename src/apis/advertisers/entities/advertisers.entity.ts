@@ -28,6 +28,9 @@ export class BannerImage {
         required: true,
     })
     iconImage: Types.ObjectId;
+
+    @SuperProp({ type: String, required: true })
+    labelButton: string;
 }
 
 @Schema({
