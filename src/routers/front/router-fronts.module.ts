@@ -51,6 +51,7 @@ import { UserReferralsController } from 'src/apis/user-referrals/controller/user
         UserTransactionModule,
         UserReferralsModule,
         PagesModule,
+        MissionModule,
     ],
     controllers: [
         UserController,
@@ -68,6 +69,7 @@ import { UserReferralsController } from 'src/apis/user-referrals/controller/user
         UserTransactionController,
         PagesController,
         UserReferralsController,
+        MissionController,
     ],
     providers: [],
 })
