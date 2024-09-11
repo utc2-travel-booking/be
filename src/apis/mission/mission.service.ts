@@ -5,7 +5,7 @@ import { UserService } from "../users/user.service";
 import { Types } from 'mongoose';
 import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
 import { AppsService } from "../apps/apps.service";
-import { ActionType, EStatusTask } from "../user-app-histories/constants";
+import { ActionType, ESocialMedia, EStatusTask } from "../user-app-histories/constants";
 import { UserTransactionService } from "../user-transaction/user-transaction.service";
 import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
 import { appSettings } from "src/configs/appsettings";
@@ -69,9 +69,17 @@ export class MissionService {
             return res.data;
         }
         catch (e) {
-            console.error(e.response)
-            throw new HttpException(e.message, 400)
+            throw new HttpException(e.response.data, 400)
         }
+    }
+
+    async updateProgressSocial(userPayload: UserPayload, type: ESocialMedia) {
+        const { _id: userId } = userPayload;
+        const user = await this.userServices.getMe(userPayload);
+        const missionId = this.getMissionIdByType(type)
+        await this.updateMissionProcess([missionId], user.telegramUserId.toString())
+        this.websocketGateway.sendMissionUpdate(userId);
+        return true
     }
 
     async updateProgressActionApp(
@@ -86,13 +94,13 @@ export class MissionService {
             throw new HttpException("AppId not Found", 400)
         }
 
-        const isOpenNewApp = await this.userAppHistoriesService.createUserAppHistory(
+        const history = await this.userAppHistoriesService.createUserAppHistory(
             appId,
             userId,
             action
         );
 
-        if (!isOpenNewApp) { return false }
+        if (!history) { return false }
 
         const missionId = this.getMissionIdByType(action)
 
@@ -134,7 +142,7 @@ export class MissionService {
 
 
 
-    getMissionIdByType(action: ActionType) {
+    getMissionIdByType(action: ActionType | ESocialMedia) {
         switch (action) {
             case ActionType.OPEN_APP:
                 return appSettings.mission.missionId.openAppId;
@@ -142,6 +150,12 @@ export class MissionService {
                 return appSettings.mission.missionId.reviewAppId;
             case ActionType.SHARE_APP:
                 return appSettings.mission.missionId.shareAppId;
+            case ESocialMedia.FACEBOOK:
+                return appSettings.mission.missionId.followFBId;
+            case ESocialMedia.X:
+                return appSettings.mission.missionId.followXId;
+            case ESocialMedia.TELEGRAM:
+                return appSettings.mission.missionId.joinTelegramId;
             default:
                 return appSettings.mission.missionId.openAppId;
         }

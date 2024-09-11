@@ -10,14 +10,19 @@ export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly missionService: MissionService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
     ) { }
 
     async login(user: UserPayload) {
         const tokens = await this.getTokens(user);
         const { telegramUserId } = await this.userService.getMe(user);
-        const mission = await this.missionService.updateMissionProcess([appSettings.mission.missionId.dailyLoginId], telegramUserId.toString());
-        console.log(mission);
+        if (telegramUserId) {
+            await this.missionService.updateMissionProcess(
+                [appSettings.mission.missionId.dailyLoginId],
+                telegramUserId.toString(),
+            );
+        }
+
         return tokens;
     }
 

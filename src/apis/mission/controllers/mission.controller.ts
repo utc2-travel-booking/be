@@ -6,7 +6,10 @@ import { SuperGet, SuperPost, SuperPut } from '@libs/super-core';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import { ActionType } from 'src/apis/user-app-histories/constants';
+import {
+    ActionType,
+    ESocialMedia,
+} from 'src/apis/user-app-histories/constants';
 
 @Controller('mission')
 @Resource('mission')
@@ -44,6 +47,21 @@ export class MissionController {
             appId,
             user,
             action,
+        );
+        return result;
+    }
+
+    @SuperPut({ route: 'verify-social/:social' })
+    @SuperAuthorize(PERMISSION.PUT)
+    @ApiParam({ name: 'social', enum: ESocialMedia })
+    async updateSocialMedia(
+        @Param('social') social: ESocialMedia,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+        const result = await this.missionService.updateProgressSocial(
+            user,
+            social,
         );
         return result;
     }
