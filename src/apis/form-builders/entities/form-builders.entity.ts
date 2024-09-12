@@ -6,6 +6,7 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import { FormBuilderType } from '../constants';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { AutoPopulate } from '@libs/super-search';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -81,8 +82,11 @@ export class FormBuilder extends AggregateRoot {
     @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
+        refClass: User,
         cms: {
             label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
         },
     })
     @AutoPopulate({

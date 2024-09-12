@@ -6,6 +6,8 @@ import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { ActionType } from '../constants';
+import { AutoPopulate } from '@libs/super-search';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -25,6 +27,20 @@ export class UserAppHistory extends AggregateRoot {
     })
     action?: ActionType;
 
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type UserAppHistoryDocument = UserAppHistory & Document;

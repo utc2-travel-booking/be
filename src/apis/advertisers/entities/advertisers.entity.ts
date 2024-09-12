@@ -1,6 +1,9 @@
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { AutoPopulate } from '@libs/super-search';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { File } from 'src/apis/media/entities/files.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
@@ -13,6 +16,7 @@ export class BannerImage {
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         required: true,
+        refClass: File,
     })
     featuredImage: Types.ObjectId;
 
@@ -26,6 +30,7 @@ export class BannerImage {
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         required: true,
+        refClass: File,
     })
     iconImage: Types.ObjectId;
 
@@ -64,6 +69,21 @@ export class Advertiser extends AggregateRoot {
         type: [BannerImage],
     })
     bannerImages: BannerImage[];
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type AdvertiserDocument = Advertiser & Document;

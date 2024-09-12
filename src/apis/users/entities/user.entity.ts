@@ -121,6 +121,7 @@ export class User extends AggregateRoot {
     status: UserStatus;
 
     @SuperProp({
+        autoPopulateExclude: true,
         type: String,
         required: false,
     })
@@ -135,6 +136,21 @@ export class User extends AggregateRoot {
         },
     })
     inviteCode: string;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

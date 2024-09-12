@@ -7,6 +7,7 @@ import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { EMissionType } from 'src/apis/user-app-histories/constants';
+import { User } from 'src/apis/users/entities/user.entity';
 
 class Mission {
     _id: string;
@@ -105,6 +106,20 @@ export class UserTransaction extends AggregateRoot {
     })
     mission?: Mission;
 
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type UserTransactionDocument = UserTransaction & Document;

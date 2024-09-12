@@ -172,13 +172,9 @@ export class UserService
 
         if (
             userTransactionThisApp &&
-            (
-                userTransactionThisApp.mission.type !== EMissionType.Daily ||
-                (
-                    userTransactionThisApp.mission.type !== EMissionType.Daily &&
-                    compareToday(userTransactionThisApp.updatedAt)
-                )
-            )
+            (userTransactionThisApp.mission.type !== EMissionType.Daily ||
+                (userTransactionThisApp.mission.type !== EMissionType.Daily &&
+                    compareToday(userTransactionThisApp.updatedAt)))
         ) {
             return false;
         }
