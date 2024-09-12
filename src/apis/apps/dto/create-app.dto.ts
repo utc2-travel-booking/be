@@ -51,6 +51,17 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     caption: string;
 
     @SuperApiProperty({
+        type: String,
+        required: false,
+        description: 'Status for App',
+        title: 'Status for App',
+        enum: SubmitStatus,
+        default: SubmitStatus.Approved,
+    })
+    @IsEnum(SubmitStatus)
+    status: SubmitStatus;
+
+    @SuperApiProperty({
         type: [String],
         description: 'Categories of the app',
         default: ['60f3b3b3b3b3b3b3b3b3b3'],
@@ -144,15 +155,4 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @IsDate()
     @Transform(({ value }) => (value == null ? null : new Date(value)))
     publishedEnd: Date;
-
-    @SuperApiProperty({
-        type: String,
-        required: false,
-        description: 'Status for App',
-        title: 'Status for App',
-        enum: SubmitStatus,
-        default: SubmitStatus.Approved,
-    })
-    @IsEnum(SubmitStatus)
-    status: SubmitStatus;
 }

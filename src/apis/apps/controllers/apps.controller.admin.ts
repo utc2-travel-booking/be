@@ -14,8 +14,6 @@ import { UpdateAppDto } from 'src/apis/apps/dto/update-app.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AppsService } from '../apps.service';
-import _ from 'lodash';
-import { removeDiacritics } from 'src/utils/helper';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
@@ -70,7 +68,7 @@ export class AppsControllerAdmin {
         const { name } = createAppDto;
 
         const result = await this.appsService.createOne(createAppDto, user, {
-            slug: _.kebabCase(removeDiacritics(name)),
+            slug: await this.appsService.generateSlug(name),
         });
         return result;
     }
@@ -84,11 +82,15 @@ export class AppsControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = updateAppDto;
 
         const result = await this.appsService.updateOneById(
             _id,
             updateAppDto,
             user,
+            {
+                slug: await this.appsService.generateSlug(name),
+            },
         );
 
         return result;

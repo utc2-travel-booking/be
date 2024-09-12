@@ -91,7 +91,7 @@ export class PostsControllerAdmin {
             user,
             {
                 type,
-                slug: _.kebabCase(removeDiacritics(name)),
+                slug: await this.postsService.generateSlug(name),
             },
         );
         return result;
@@ -115,7 +115,7 @@ export class PostsControllerAdmin {
             updatePostDto,
             user,
             {
-                slug: _.kebabCase(removeDiacritics(name)),
+                slug: await this.postsService.generateSlug(name),
             },
         );
 

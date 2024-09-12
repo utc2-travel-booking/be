@@ -61,7 +61,7 @@ export class TagsControllerAdmin {
         const { name } = createTagDto;
 
         const result = await this.tagsService.createOne(createTagDto, user, {
-            slug: _.kebabCase(removeDiacritics(name)),
+            slug: await this.tagsService.generateSlug(name),
         });
         return result;
     }
@@ -82,7 +82,7 @@ export class TagsControllerAdmin {
             updateTagDto,
             user,
             {
-                slug: _.kebabCase(removeDiacritics(name)),
+                slug: await this.tagsService.generateSlug(name),
             },
         );
 
