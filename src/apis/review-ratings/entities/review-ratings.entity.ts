@@ -6,6 +6,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -37,7 +38,7 @@ export class ReviewRating extends AggregateRoot {
     @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.APP,
-        relationClass: App,
+        refClass: App,
         cms: {
             label: 'App',
             tableShow: true,
@@ -59,6 +60,21 @@ export class ReviewRating extends AggregateRoot {
         default: () => new Date().toISOString(),
     })
     createdAt: Date;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type ReviewRatingDocument = ReviewRating & Document;

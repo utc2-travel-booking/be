@@ -12,6 +12,7 @@ import { AutoPopulate } from '@libs/super-search';
 import { File } from 'src/apis/media/entities/files.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 import { SEOTag } from 'src/apis/pages/entities/pages.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -102,6 +103,21 @@ export class Category extends AggregateRoot {
         type: SEOTag,
     })
     seoTag: SEOTag;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type CategoryDocument = Category & Document;

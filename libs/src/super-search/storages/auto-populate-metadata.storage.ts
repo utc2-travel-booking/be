@@ -8,19 +8,21 @@ export class AutoPopulateMetadataStorageHost {
     }
 
     getAutoPopulateMetadata(target: object): AutoPopulateMetadata[] {
-        let metas: AutoPopulateMetadata[] = [];
+        let autoPopulateMetadata: AutoPopulateMetadata[] = [];
 
-        metas = this.properties.filter((meta) => meta.target === target);
+        autoPopulateMetadata = this.properties.filter(
+            (meta) => meta.target === target,
+        );
 
         let parent = Object.getPrototypeOf(target);
         while (parent && parent !== Function.prototype) {
-            metas = metas.concat(
+            autoPopulateMetadata = autoPopulateMetadata.concat(
                 this.properties.filter((meta) => meta.target === parent),
             );
             parent = Object.getPrototypeOf(parent);
         }
 
-        return metas;
+        return autoPopulateMetadata;
     }
 }
 

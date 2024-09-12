@@ -4,6 +4,8 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { Document, Types } from 'mongoose';
 import { AuditStatus } from '../constants';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { User } from 'src/apis/users/entities/user.entity';
+import { AutoPopulate } from '@libs/super-search';
 
 @Schema({
     timestamps: true,
@@ -113,6 +115,21 @@ export class Audit extends AggregateRoot {
 
     @SuperProp({ type: Object, default: {} })
     body: any;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type AuditDocument = Audit & Document;

@@ -1,12 +1,8 @@
 import { PipelineStage } from 'mongoose';
 import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
-import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 import { appSettings } from 'src/configs/appsettings';
 import _ from 'lodash';
-
-const getSchemaMetadata = (entity: any) => {
-    return TypeMetadataStorage.getSchemaMetadataByTarget(entity);
-};
+import { getSchemaMetadata } from '@libs/super-core';
 
 const applyMultipleLanguageFields = (
     entity: any,

@@ -14,6 +14,7 @@ import {
 import { AutoPopulate } from '@libs/super-search';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { User } from 'src/apis/users/entities/user.entity';
 
 export enum SubmitStatus {
     Pending = 'Pending',
@@ -195,6 +196,21 @@ export class App extends AggregateRoot {
         },
     })
     status: SubmitStatus;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type AppDocument = App & Document;

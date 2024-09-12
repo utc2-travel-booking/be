@@ -7,6 +7,7 @@ import { AutoPopulate } from '@libs/super-search';
 import { Tag, TagDocument } from 'src/apis/tags/entities/tags.entity';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -54,6 +55,21 @@ export class TagApp extends AggregateRoot {
         ref: COLLECTION_NAMES.APP,
     })
     app: AppDocument;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type TagAppDocument = TagApp & Document;

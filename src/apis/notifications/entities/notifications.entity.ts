@@ -5,8 +5,8 @@ import { COLLECTION_NAMES } from 'src/constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
 import { UserNotificationStatus } from '../constants';
 import { AutoPopulate } from '@libs/super-search';
-import { FileDocument } from 'src/apis/media/entities/files.entity';
-import { UserDocument } from 'src/apis/users/entities/user.entity';
+import { File, FileDocument } from 'src/apis/media/entities/files.entity';
+import { User, UserDocument } from 'src/apis/users/entities/user.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
 
 @Schema({
@@ -88,6 +88,7 @@ export class Notification extends AggregateRoot {
     @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
+        refClass: File,
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.FILE,
@@ -97,8 +98,11 @@ export class Notification extends AggregateRoot {
     @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
+        refClass: User,
         cms: {
             label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
         },
     })
     @AutoPopulate({
