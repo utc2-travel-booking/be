@@ -1,26 +1,26 @@
-import { PERMISSION, Resource, SuperAuthorize } from "@libs/super-authorize";
-import { Controller, Param, Req } from "@nestjs/common";
-import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
-import { MissionService } from "../mission.service";
-import { SuperGet, SuperPost, SuperPut } from "@libs/super-core";
-import { UserPayload } from "src/base/models/user-payload.model";
-import { ParseObjectIdPipe } from "src/pipes/parse-object-id.pipe";
-import { Types } from "mongoose";
-import { ActionType, ESocialMedia } from "src/apis/user-app-histories/constants";
+import { PERMISSION, Resource, SuperAuthorize } from '@libs/super-authorize';
+import { Controller, Param, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { MissionService } from '../mission.service';
+import { SuperGet, SuperPost, SuperPut } from '@libs/super-core';
+import { UserPayload } from 'src/base/models/user-payload.model';
+import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
+import { Types } from 'mongoose';
+import {
+    ActionType,
+    ESocialMedia,
+} from 'src/apis/user-app-histories/constants';
 
 @Controller('mission')
 @Resource('mission')
 @ApiTags('Front: Mission')
 export class MissionController {
-    constructor(private readonly missionService: MissionService) { }
-
+    constructor(private readonly missionService: MissionService) {}
 
     @SuperGet()
     @ApiBearerAuth()
     @SuperAuthorize(PERMISSION.GET)
-    async getMission(
-        @Req() req: { user: UserPayload }
-    ) {
+    async getMission(@Req() req: { user: UserPayload }) {
         const { user } = req;
         return await this.missionService.getMission(user);
     }
@@ -35,7 +35,11 @@ export class MissionController {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.missionService.updateProgressActionApp(appId, user, action);
+        const result = await this.missionService.updateProgressActionApp(
+            appId,
+            user,
+            action,
+        );
         return result;
     }
 
@@ -47,7 +51,10 @@ export class MissionController {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
-        const result = await this.missionService.updateProgressSocial(user, social);
+        const result = await this.missionService.updateProgressSocial(
+            user,
+            social,
+        );
         return result;
     }
 

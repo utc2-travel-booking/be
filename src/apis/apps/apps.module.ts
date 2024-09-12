@@ -1,6 +1,6 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppsService } from './apps.service';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AppSchema } from './entities/apps.entity';
 import { AppEvent } from './event-handlers/apps.event';
@@ -17,7 +17,7 @@ import { MetadataModule } from '../metadata/metadata.module';
             { name: COLLECTION_NAMES.APP, schema: AppSchema },
         ]),
         UserAppHistoriesModule,
-        UserModule,
+        forwardRef(() => UserModule),
         TagAppsModule,
         TagsModule,
         UserTransactionModule,

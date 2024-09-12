@@ -21,7 +21,10 @@ import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { UserTransactionType } from '../user-transaction/constants';
-import { AddPointForUserDto, AddPointMissionDto } from '../apps/models/add-point-for-user.model';
+import {
+    AddPointForUserDto,
+    AddPointMissionDto,
+} from '../apps/models/add-point-for-user.model';
 import { AppDocument } from '../apps/entities/apps.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MetadataType } from '../metadata/constants';
@@ -41,7 +44,8 @@ import { compareToday, resetMissionTime } from 'src/utils/helper';
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
-    implements OnModuleInit {
+    implements OnModuleInit
+{
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
@@ -155,15 +159,15 @@ export class UserService
     }
     async addPointUserCompletedMission(
         userPayload: UserPayload,
-        addPointForUserDto: AddPointMissionDto
+        addPointForUserDto: AddPointMissionDto,
     ) {
         const { _id: userId } = userPayload;
         const mission = addPointForUserDto;
-        const type = UserTransactionType.SUM
+        const type = UserTransactionType.SUM;
         const userTransactionThisApp = await this.userTransactionService
             .findOne({
                 createdBy: new Types.ObjectId(userId),
-                "mission._id": mission._id
+                'mission._id': mission._id,
             })
             .autoPopulate(false)
             .exec();
@@ -191,7 +195,7 @@ export class UserService
             amount: mission.reward,
             before: currentPoint,
             after,
-            mission
+            mission,
         });
 
         if (userTransaction) {
@@ -460,9 +464,6 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        const referral = await this.userReferralsService
-            .find({ code: result.inviteCode })
-            .exec();
         const introducer = await this.userReferralsService
             .findOne({
                 telegramUserId: result.telegramUserId,
@@ -472,7 +473,6 @@ export class UserService
         return {
             ...result,
             introducer: introducer?.code,
-            referral,
             countReceivedReward,
             limitReceivedReward: amountRewardUserForApp.value.limit,
         };
