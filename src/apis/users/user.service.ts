@@ -38,14 +38,12 @@ import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
 import { EMissionType } from '../user-app-histories/constants';
-import moment from 'moment';
 import { compareToday, resetMissionTime } from 'src/utils/helper';
 
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
-    implements OnModuleInit
-{
+    implements OnModuleInit {
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
