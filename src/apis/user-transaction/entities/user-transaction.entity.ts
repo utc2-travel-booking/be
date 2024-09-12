@@ -6,31 +6,22 @@ import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { AutoPopulate } from '@libs/super-search';
 import { App, AppDocument } from 'src/apis/apps/entities/apps.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { EMissionType } from 'src/apis/user-app-histories/constants';
 
 class Mission {
-    @Prop({
-        type: String,
-        required: true,
-    })
-    missionId: string;
-
-    @Prop({
-        type: String,
-        required: true,
-    })
+    _id: string;
     name: string;
-
-    @Prop({
-        type: String,
-        required: true,
-    })
     description: string;
-
-    @Prop({
-        type: Number,
-        required: true,
-    })
     reward: number;
+    startDate: string;
+    endDate: string;
+    type: EMissionType;
+    progress: number;
+    createdAt: string;
+    updatedAt: string;
+    link?: string;
+    group?: string;
+    missionId: string;
 }
 
 @Schema({

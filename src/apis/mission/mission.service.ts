@@ -3,17 +3,14 @@ import axios from 'axios';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UserService } from '../users/user.service';
 import { Types } from 'mongoose';
-import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
-import { AppsService } from '../apps/apps.service';
-import {
-    ActionType,
-    ESocialMedia,
-    EStatusTask,
-} from '../user-app-histories/constants';
-import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
-import { appSettings } from 'src/configs/appsettings';
-import { UserDocument } from '../users/entities/user.entity';
+import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
+import { AppsService } from "../apps/apps.service";
+import { ActionType, EMissionType, ESocialMedia, EStatusTask } from "../user-app-histories/constants";
+import { UserTransactionService } from "../user-transaction/user-transaction.service";
+import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
+import { appSettings } from "src/configs/appsettings";
+import { UserDocument } from "../users/entities/user.entity";
+import { compareToday, hasOneHourPassed } from "src/utils/helper";
 
 @Injectable()
 export class MissionService {
@@ -25,7 +22,7 @@ export class MissionService {
         private readonly userAppHistoriesService: UserAppHistoriesService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly userTransactionService: UserTransactionService,
-    ) {}
+    ) { }
 
     async getMission(user: UserPayload) {
         const { telegramUserId } = await this.userServices.getMe(user);
@@ -38,25 +35,41 @@ export class MissionService {
             const response = await axios.get(url, {
                 params,
             });
-            const data = await Promise.all(
-                response.data.data.map(async (item) => {
-                    if (!item.isCompleted) {
-                        item.status = EStatusTask.IN_PROGRESS;
-                    } else {
-                        const history =
-                            await this.userTransactionService.getTransactionMeByMissionId(
-                                item.mission._id,
-                                user._id,
-                            );
-                        if (history) {
-                            item.status = EStatusTask.CLAIMED;
-                        } else {
-                            item.status = EStatusTask.COMPLETED;
+            const data = await Promise.all(response.data.data.map(async (item) => {
+                if (!item.isCompleted) {
+                    item.status = EStatusTask.IN_PROGRESS
+                }
+                else {
+                    const history = await this.userTransactionService.getTransactionMeByMissionId(item.mission._id, user._id);
+                    if (history) {
+                        if (item.mission.type === EMissionType.Daily) {
+                            if (compareToday(history.updatedAt)) {
+                                item.status = EStatusTask.COMPLETED
+                            }
+                            else {
+                                item.status = EStatusTask.CLAIMED
+                            }
+                        }
+                        else {
+                            item.status = EStatusTask.CLAIMED
                         }
                     }
-                    return item;
-                }),
-            );
+                    else {
+                        if (item.mission.type === EMissionType.JOIN_TELEGRAM || item.mission.type === EMissionType.OPEN_LINK) {
+                            if (hasOneHourPassed(history.updatedAt)) {
+                                item.status = EStatusTask.COMPLETED
+                            }
+                            else {
+                                item.status = EStatusTask.WAITING
+                            }
+                        }
+                        else {
+                            item.status = EStatusTask.COMPLETED
+                        }
+                    }
+                }
+                return item;
+            }));
 
             return data;
         } catch (e) {
@@ -79,15 +92,10 @@ export class MissionService {
     }
 
     async updateProgressSocial(userPayload: UserPayload, type: ESocialMedia) {
-        const { _id: userId } = userPayload;
         const user = await this.userServices.getMe(userPayload);
-        const missionId = this.getMissionIdByType(type);
-        await this.updateMissionProcess(
-            [missionId],
-            user.telegramUserId.toString(),
-        );
-        this.websocketGateway.sendMissionUpdate(userId);
-        return true;
+        const missionId = this.getMissionIdByType(type)
+        await this.updateMissionProcess([missionId], user.telegramUserId.toString())
+        return true
     }
 
     async updateProgressActionApp(
@@ -136,10 +144,7 @@ export class MissionService {
             throw new HttpException('Mission is currently in progress', 400);
         }
         if (history.status === EStatusTask.COMPLETED) {
-            await this.userServices.addPointUserCompletedMission(
-                user,
-                history.mission,
-            );
+            return await this.userServices.addPointUserCompletedMission(user, history.mission)
         }
         return true;
     }
@@ -177,4 +182,6 @@ export class MissionService {
                 return appSettings.mission.missionId.openAppId;
         }
     }
+
+
 }
