@@ -1,16 +1,16 @@
 import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { UserPayload } from 'src/base/models/user-payload.model';
-import { UserService } from '../users/user.service';
 import { Types } from 'mongoose';
-import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
+import { UserPayload } from 'src/base/models/user-payload.model';
+import { appSettings } from "src/configs/appsettings";
+import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
+import { compareToday, hasOneHourPassed } from "src/utils/helper";
 import { AppsService } from "../apps/apps.service";
 import { ActionType, EMissionType, ESocialMedia, EStatusTask } from "../user-app-histories/constants";
+import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
 import { UserTransactionService } from "../user-transaction/user-transaction.service";
-import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
-import { appSettings } from "src/configs/appsettings";
 import { UserDocument } from "../users/entities/user.entity";
-import { compareToday, hasOneHourPassed } from "src/utils/helper";
+import { UserService } from '../users/user.service';
 
 @Injectable()
 export class MissionService {
@@ -56,7 +56,7 @@ export class MissionService {
                     }
                     else {
                         if (item.mission.type === EMissionType.JOIN_TELEGRAM || item.mission.type === EMissionType.OPEN_LINK) {
-                            if (hasOneHourPassed(history.updatedAt)) {
+                            if (hasOneHourPassed(item.updatedAt)) {
                                 item.status = EStatusTask.COMPLETED
                             }
                             else {
