@@ -9,7 +9,7 @@ export const handlerBetweenOperator = (search: any, key: string) => {
         );
     }
 
-    if (_.isDate(from) && _.isDate(to)) {
+    if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
         const fromDate = new Date(from);
         const toDate = new Date(to);
 
@@ -21,8 +21,16 @@ export const handlerBetweenOperator = (search: any, key: string) => {
         return { from: fromDate, to: toDate };
     }
 
-    if (_.isNumber(from) && _.isNumber(to)) {
-        return { from: Number(from), to: Number(to) };
+    const fromNumber = Number(from);
+    const toNumber = Number(to);
+
+    if (
+        _.isNumber(fromNumber) &&
+        !isNaN(fromNumber) &&
+        _.isNumber(toNumber) &&
+        !isNaN(toNumber)
+    ) {
+        return { from: fromNumber, to: toNumber };
     }
 
     throw new UnprocessableEntityException(

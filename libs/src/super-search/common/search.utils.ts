@@ -1,5 +1,5 @@
 import { UnprocessableEntityException } from '@nestjs/common';
-import _, { isDate, isNumber } from 'lodash';
+import _ from 'lodash';
 import { PipelineStage, Types } from 'mongoose';
 import { OPERATOR, SearchType } from '../constants';
 import {
@@ -34,11 +34,10 @@ export const createSearchPipeline = (search: any, searchType: string) => {
             }
 
             if (_.upperCase(operator) === OPERATOR.BETWEEN) {
-                const value = handlerBetweenOperator(search, key);
                 return {
                     field,
                     operator,
-                    value,
+                    value: handlerBetweenOperator(search, key),
                 };
             }
 
