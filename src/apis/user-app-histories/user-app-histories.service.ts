@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { compareToday } from 'src/utils/helper';
+import { ActionType } from './constants';
 import {
     UserAppHistory,
     UserAppHistoryDocument,
 } from './entities/user-app-histories.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
-import { ModuleRef } from '@nestjs/core';
-import { ActionType } from './constants';
-import { compareWithToday } from 'src/utils/helper';
 
 @Injectable()
 export class UserAppHistoriesService extends BaseService<
@@ -47,7 +47,7 @@ export class UserAppHistoriesService extends BaseService<
                     updatedAt: new Date(),
                 },
             );
-            return !compareWithToday(date);
+            return !compareToday(date);
         }
 
         await this.create({
