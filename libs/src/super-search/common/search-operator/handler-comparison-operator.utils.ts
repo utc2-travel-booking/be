@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 export const handlerComparisonOperator = (search: any, key: string) => {
-    if (_.isDate(search[key])) {
+    if (!isNaN(Date.parse(search[key]))) {
         return new Date(search[key]);
     }
 
-    if (_.isNumber(search[key])) {
+    if (_.isNumber(Number(search[key])) && !isNaN(Number(search[key]))) {
         return Number(search[key]);
     }
 
