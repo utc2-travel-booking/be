@@ -8,6 +8,9 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
 import { AggregateRoot } from '../entities/aggregate-root.schema';
+import { removeDiacritics } from 'src/utils/helper';
+import _ from 'lodash';
+import { generateRandomString } from 'src/apis/users/common/generate-random-string.util';
 
 @Injectable()
 export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
@@ -188,5 +191,18 @@ export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
         return this.updateMany(filter, {
             deletedAt: null,
         });
+    }
+
+    async generateSlug(name: string) {
+        const slug = _.kebabCase(removeDiacritics(name));
+        const exist = await this.findOne({ slug }).exec();
+
+        if (exist) {
+            return await this.generateSlug(
+                `${slug}-${generateRandomString(2)}`,
+            );
+        }
+
+        return slug;
     }
 }

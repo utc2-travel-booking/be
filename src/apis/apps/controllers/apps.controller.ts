@@ -50,7 +50,7 @@ export class AppsController {
             },
             user,
             {
-                slug: _.kebabCase(removeDiacritics(name)),
+                slug: await this.appsService.generateSlug(name),
             },
         );
         return result;

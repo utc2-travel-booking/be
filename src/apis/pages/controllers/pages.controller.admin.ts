@@ -62,7 +62,7 @@ export class PagesControllerAdmin {
         const { user } = req;
         const { name } = createPagesDto;
         const result = await this.pagesService.createOne(createPagesDto, user, {
-            slug: _.kebabCase(removeDiacritics(name)),
+            slug: await this.pagesService.generateSlug(name),
         });
         return result;
     }
@@ -88,7 +88,7 @@ export class PagesControllerAdmin {
             updatePagesDto,
             user,
             {
-                slug: _.kebabCase(removeDiacritics(name)),
+                slug: await this.pagesService.generateSlug(name),
             },
         );
         return result;

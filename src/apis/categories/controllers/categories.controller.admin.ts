@@ -65,7 +65,7 @@ export class CategoriesControllerAdmin {
         const result = await this.categoriesService.createOne(
             createCategoryDto,
             user,
-            { slug: _.kebabCase(removeDiacritics(name)) },
+            { slug: await this.categoriesService.generateSlug(name) },
         );
 
         return result;
@@ -86,7 +86,7 @@ export class CategoriesControllerAdmin {
             _id,
             updateCategoryDto,
             user,
-            { slug: _.kebabCase(removeDiacritics(name)) },
+            { slug: await this.categoriesService.generateSlug(name) },
         );
         return result;
     }
