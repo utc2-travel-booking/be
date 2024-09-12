@@ -44,10 +44,10 @@ export class MissionService {
                     if (history) {
                         if (item.mission.type === EMissionType.Daily) {
                             if (compareToday(history.updatedAt)) {
-                                item.status = EStatusTask.COMPLETED
+                                item.status = EStatusTask.CLAIMED
                             }
                             else {
-                                item.status = EStatusTask.CLAIMED
+                                item.status = EStatusTask.COMPLETED
                             }
                         }
                         else {
