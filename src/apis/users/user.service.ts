@@ -34,6 +34,9 @@ import { generateRandomString } from './common/generate-random-string.util';
 import { UserReferralsService } from '../user-referrals/user-referrals.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { RoleType } from '@libs/super-authorize/modules/roles/constants';
+import { EMissionType } from '../user-app-histories/constants';
+import moment from 'moment';
+import { compareToday, resetMissionTime } from 'src/utils/helper';
 
 @Injectable()
 export class UserService
@@ -165,8 +168,17 @@ export class UserService
             .autoPopulate(false)
             .exec();
 
-        if (userTransactionThisApp) {
-            return await this.getMe(userPayload);
+        if (
+            userTransactionThisApp &&
+            (
+                userTransactionThisApp.mission.type !== EMissionType.Daily ||
+                (
+                    userTransactionThisApp.mission.type !== EMissionType.Daily &&
+                    compareToday(userTransactionThisApp.updatedAt)
+                )
+            )
+        ) {
+            return false;
         }
         const user = await this.findOne({ _id: userId }).exec();
 
@@ -200,7 +212,7 @@ export class UserService
             } as CreateNotificationModel);
         }
 
-        return await this.getMe(userPayload);
+        return true;
     }
     async addPointForUser(
         addPointForUserDto: AddPointForUserDto,

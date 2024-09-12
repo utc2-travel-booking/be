@@ -9,6 +9,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { Model, Types } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
 import { ActionType } from './constants';
+import { compareWithToday } from 'src/utils/helper';
 
 @Injectable()
 export class UserAppHistoriesService extends BaseService<
@@ -46,7 +47,7 @@ export class UserAppHistoriesService extends BaseService<
                     updatedAt: new Date(),
                 },
             );
-            return !this.compareWithToday(date);
+            return !compareWithToday(date);
         }
 
         await this.create({
@@ -55,17 +56,5 @@ export class UserAppHistoriesService extends BaseService<
             action
         });
         return true;
-    }
-    compareWithToday(dateFromApi: string): boolean {
-        const today = new Date();
-        const apiDate = new Date(dateFromApi);
-
-        // So sánh năm, tháng và ngày
-        const isSameDay =
-            apiDate.getUTCFullYear() === today.getUTCFullYear() &&
-            apiDate.getUTCMonth() === today.getUTCMonth() &&
-            apiDate.getUTCDate() === today.getUTCDate();
-
-        return isSameDay;
     }
 }
