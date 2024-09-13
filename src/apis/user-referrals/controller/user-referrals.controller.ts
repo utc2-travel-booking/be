@@ -1,4 +1,4 @@
-import { Controller, Req } from '@nestjs/common';
+import { Controller, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -8,6 +8,10 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { UserReferralsService } from '../user-referrals.service';
+import {
+    ExtendedPagingDto,
+    PagingDtoPipe,
+} from 'src/pipes/page-result.dto.pipe';
 
 @Controller('user-referral')
 @Resource('user-referral')
@@ -21,8 +25,12 @@ export class UserReferralsController {
 
     @SuperGet()
     @SuperAuthorize(PERMISSION.GET)
-    async getReferral(@Req() req: { user: UserPayload }) {
+    async getReferral(
+        @Req() req: { user: UserPayload },
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+    ) {
         const { user } = req;
-        return this.userReferral.getReferralFront(user._id);
+        return this.userReferral.getReferralFront(user._id, queryParams);
     }
 }

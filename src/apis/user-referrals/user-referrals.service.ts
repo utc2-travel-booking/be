@@ -23,6 +23,7 @@ import {
 import { MetadataService } from '../metadata/metadata.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 
 @Injectable()
 export class UserReferralsService extends BaseService<
@@ -49,10 +50,31 @@ export class UserReferralsService extends BaseService<
         );
     }
 
-    async getReferralFront(userId: Types.ObjectId) {
+    async getReferralFront(userId: Types.ObjectId, params: ExtendedPagingDto) {
         const user = await this.userService.findOne({ _id: userId }).exec();
 
-        return await this.find({ code: user.inviteCode }).exec();
+        const referralList = await this.getAllForFront(params, {
+            code: user.inviteCode,
+        });
+
+        const result = await this.userService
+            .find({
+                telegramUserId: {
+                    $in: referralList.items.map((r) => r.telegramUserId),
+                },
+            })
+            .select({ name: 1 })
+            .exec();
+
+        const amount = await this.metadataService.getAmountRewardReferral();
+        const response = result.map((r) => ({
+            ...r,
+            amount,
+        }));
+        return {
+            items: response,
+            meta: referralList.meta,
+        };
     }
 
     async getReferral(users: UserDocument[]) {
@@ -177,7 +199,7 @@ export class UserReferralsService extends BaseService<
             UserTransactionAction.REFERRAL,
         );
 
-        await this.missionService.updateMissionReferral(referrer);
+        // await this.missionService.updateMissionReferral(referrer);
 
         // Add point for user referred
 
