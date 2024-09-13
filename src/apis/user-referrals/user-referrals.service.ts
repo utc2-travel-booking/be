@@ -69,7 +69,7 @@ export class UserReferralsService extends BaseService<
         const amount = await this.metadataService.getAmountRewardReferral();
         const response = result.map((r) => ({
             ...r,
-            amount,
+            amount: amount.value.reward,
         }));
         return {
             items: response,
