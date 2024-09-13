@@ -2,14 +2,19 @@ import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from "src/configs/appsettings";
-import { WebsocketGateway } from "src/packages/websocket/websocket.gateway";
-import { compareToday, hasOneHourPassed } from "src/utils/helper";
-import { AppsService } from "../apps/apps.service";
-import { ActionType, EMissionType, ESocialMedia, EStatusTask } from "../user-app-histories/constants";
-import { UserAppHistoriesService } from "../user-app-histories/user-app-histories.service";
-import { UserTransactionService } from "../user-transaction/user-transaction.service";
-import { UserDocument } from "../users/entities/user.entity";
+import { appSettings } from 'src/configs/appsettings';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { compareToday, hasOneHourPassed } from 'src/utils/helper';
+import { AppsService } from '../apps/apps.service';
+import {
+    ActionType,
+    EMissionType,
+    ESocialMedia,
+    EStatusTask,
+} from '../user-app-histories/constants';
+import { UserAppHistoriesService } from '../user-app-histories/user-app-histories.service';
+import { UserTransactionService } from '../user-transaction/user-transaction.service';
+import { UserDocument } from '../users/entities/user.entity';
 import { UserService } from '../users/user.service';
 
 @Injectable()
@@ -22,7 +27,7 @@ export class MissionService {
         private readonly userAppHistoriesService: UserAppHistoriesService,
         private readonly websocketGateway: WebsocketGateway,
         private readonly userTransactionService: UserTransactionService,
-    ) { }
+    ) {}
 
     async getMission(user: UserPayload) {
         const { telegramUserId } = await this.userServices.getMe(user);
@@ -41,41 +46,41 @@ export class MissionService {
             const response = await axios.get(url, {
                 params,
             });
-            const data = await Promise.all(response.data.data.map(async (item) => {
-                if (!item.isCompleted) {
-                    item.status = EStatusTask.IN_PROGRESS
-                }
-                else {
-                    const history = await this.userTransactionService.getTransactionMeByMissionId(item.mission._id, user._id);
-                    if (history) {
-                        if (item.mission.type === EMissionType.Daily) {
-                            if (compareToday(history.updatedAt)) {
-                                item.status = EStatusTask.CLAIMED
+            const data = await Promise.all(
+                response.data.data.map(async (item) => {
+                    if (!item.isCompleted) {
+                        item.status = EStatusTask.IN_PROGRESS;
+                    } else {
+                        const history =
+                            await this.userTransactionService.getTransactionMeByMissionId(
+                                item.mission._id,
+                                user._id,
+                            );
+                        if (history) {
+                            if (item.mission.type === EMissionType.Daily) {
+                                if (compareToday(history.updatedAt)) {
+                                    item.status = EStatusTask.CLAIMED;
+                                } else {
+                                    item.status = EStatusTask.COMPLETED;
+                                }
+                            } else {
+                                item.status = EStatusTask.CLAIMED;
                             }
-                            else {
-                                item.status = EStatusTask.COMPLETED
+                        } else {
+                            if (item.mission.type === EMissionType.OPEN_LINK) {
+                                if (hasOneHourPassed(item.updatedAt)) {
+                                    item.status = EStatusTask.WAITING;
+                                } else {
+                                    item.status = EStatusTask.WAITING;
+                                }
+                            } else {
+                                item.status = EStatusTask.COMPLETED;
                             }
-                        }
-                        else {
-                            item.status = EStatusTask.CLAIMED
                         }
                     }
-                    else {
-                        if (item.mission.type === EMissionType.OPEN_LINK) {
-                            if (hasOneHourPassed(item.updatedAt)) {
-                                item.status = EStatusTask.WAITING
-                            }
-                            else {
-                                item.status = EStatusTask.WAITING
-                            }
-                        }
-                        else {
-                            item.status = EStatusTask.COMPLETED
-                        }
-                    }
-                }
-                return item;
-            }));
+                    return item;
+                }),
+            );
 
             return data;
         } catch (e) {
@@ -99,9 +104,12 @@ export class MissionService {
 
     async updateProgressSocial(userPayload: UserPayload, type: ESocialMedia) {
         const user = await this.userServices.getMe(userPayload);
-        const missionId = this.getMissionIdByType(type)
-        await this.updateMissionProcess([missionId], user.telegramUserId.toString())
-        return true
+        const missionId = this.getMissionIdByType(type);
+        await this.updateMissionProcess(
+            [missionId],
+            user.telegramUserId.toString(),
+        );
+        return true;
     }
 
     async updateProgressActionApp(
@@ -150,7 +158,10 @@ export class MissionService {
             throw new HttpException('Mission is currently in progress', 400);
         }
         if (history.status === EStatusTask.COMPLETED) {
-            return await this.userServices.addPointUserCompletedMission(user, history.mission)
+            return await this.userServices.addPointUserCompletedMission(
+                user,
+                history.mission,
+            );
         }
         return true;
     }
@@ -188,6 +199,4 @@ export class MissionService {
                 return appSettings.mission.missionId.openAppId;
         }
     }
-
-
 }

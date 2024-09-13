@@ -27,7 +27,7 @@ import { MissionModule } from '../mission/mission.module';
         RolesModule,
         MetadataModule,
         TelegramBotModule,
-        MissionModule
+        MissionModule,
     ],
     controllers: [],
     providers: [
@@ -39,4 +39,4 @@ import { MissionModule } from '../mission/mission.module';
     ],
     exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

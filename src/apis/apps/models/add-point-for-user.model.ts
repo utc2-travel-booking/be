@@ -15,7 +15,6 @@ export class AddPointForUserDto {
     limit: number;
 }
 
-
 export type AddPointMissionDto = {
     _id: string;
     name: string;
@@ -29,10 +28,10 @@ export type AddPointMissionDto = {
     updatedAt: string;
     link?: string;
     group?: string;
-}
+};
 export enum EMissionType {
     JOIN_TELEGRAM = 'JoinTelegramGoupMission',
     OPEN_LINK = 'OpenLinkMission',
     Default = 'DefaultMission',
-    Daily = 'DailyMission'
+    Daily = 'DailyMission',
 }

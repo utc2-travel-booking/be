@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export const appSettings = {
     port: Number(process.env.PORT) || 3000,
-    development: process.env.DEVELOPMENT,
+    development: process.env.DEVELOPMENT === 'true' ? true : false,
     mainLanguage: process.env.MAIN_LANGUAGE || 'en',
     maxFileSize: {
         admin: Number(process.env.MAX_FILE_SIZE_UPLOAD_ADMIN),
@@ -58,6 +58,6 @@ export const appSettings = {
             growingCircleId: process.env.MISSION_ID_GROWING_CIRCLE,
             friendGrathererId: process.env.MISSION_ID_FRIEND_GRATHERER,
             communityBuilderId: process.env.MISSION_ID_COMMUNITY_BUILDER,
-        }
-    }
+        },
+    },
 };

@@ -32,28 +32,31 @@ export class UserTransactionService extends BaseService<
         const aggregate = await this.userTransactionModel.aggregate([
             {
                 $match: {
-                    createdBy: new Types.ObjectId(userId)
-                }
+                    createdBy: new Types.ObjectId(userId),
+                },
             },
             {
                 $group: {
-                    _id: "$createdBy",
-                    total: { $sum: "$amount" },
-                    count: { $sum: 1 }
-                }
-            }
-        ])
+                    _id: '$createdBy',
+                    total: { $sum: '$amount' },
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
 
         if (aggregate.length < 0) {
-            return 0
+            return 0;
         }
-        return aggregate[0].total
+        return aggregate[0].total;
     }
 
-    async getTransactionMeByMissionId(missionId: string, userId: Types.ObjectId) {
+    async getTransactionMeByMissionId(
+        missionId: string,
+        userId: Types.ObjectId,
+    ) {
         const data = await this.findOne({
             createdBy: userId,
-            "mission._id": missionId
+            'mission._id': missionId,
         })
             .sort({ updatedAt: -1 })
             .autoPopulate(false)

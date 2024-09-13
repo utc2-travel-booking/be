@@ -1,7 +1,7 @@
 export enum ActionType {
     OPEN_APP = 'Open',
     COMMENT_APP = 'Comment',
-    SHARE_APP = 'Share'
+    SHARE_APP = 'Share',
 }
 export enum EStatusTask {
     IN_PROGRESS = 'in_progress',
@@ -12,11 +12,11 @@ export enum EStatusTask {
 export enum ESocialMedia {
     FACEBOOK = 'facebook',
     X = 'x',
-    TELEGRAM = 'telegram'
+    TELEGRAM = 'telegram',
 }
 export enum EMissionType {
     JOIN_TELEGRAM = 'JoinTelegramGoupMission',
     OPEN_LINK = 'OpenLinkMission',
     Default = 'DefaultMission',
-    Daily = 'DailyMission'
+    Daily = 'DailyMission',
 }

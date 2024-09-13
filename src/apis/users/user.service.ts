@@ -43,7 +43,8 @@ import { User, UserDocument } from './entities/user.entity';
 @Injectable()
 export class UserService
     extends BaseService<UserDocument, User>
-    implements OnModuleInit {
+    implements OnModuleInit
+{
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
@@ -173,10 +174,9 @@ export class UserService
         if (userTransactionThisApp) {
             if (userTransactionThisApp.mission.type !== EMissionType.Daily) {
                 return false;
-            }
-            else {
+            } else {
                 if (compareToday(userTransactionThisApp.updatedAt)) {
-                    return false
+                    return false;
                 }
             }
         }

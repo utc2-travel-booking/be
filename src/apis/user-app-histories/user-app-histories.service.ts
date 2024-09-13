@@ -29,11 +29,15 @@ export class UserAppHistoriesService extends BaseService<
         );
     }
 
-    async createUserAppHistory(appId: Types.ObjectId, userId: Types.ObjectId, action?: ActionType) {
+    async createUserAppHistory(
+        appId: Types.ObjectId,
+        userId: Types.ObjectId,
+        action?: ActionType,
+    ) {
         const userAppHistory = await this.findOne({
             app: new Types.ObjectId(appId.toString()),
             createdBy: new Types.ObjectId(userId.toString()),
-            action
+            action,
         })
             .autoPopulate(false)
             .exec();
@@ -53,7 +57,7 @@ export class UserAppHistoriesService extends BaseService<
         await this.create({
             app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
-            action
+            action,
         });
         return true;
     }
