@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { InjectModel } from '@nestjs/mongoose';
+import _ from 'lodash';
+import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { MetadataType } from '../metadata/constants';
 import {
     UserTransaction,
     UserTransactionDocument,
 } from './entities/user-transaction.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
-import _ from 'lodash';
-import { ModuleRef } from '@nestjs/core';
-import { MetadataType } from '../metadata/constants';
-import { UserPayload } from 'src/base/models/user-payload.model';
 
 @Injectable()
 export class UserTransactionService extends BaseService<
@@ -56,6 +55,7 @@ export class UserTransactionService extends BaseService<
             createdBy: userId,
             "mission._id": missionId
         })
+            .sort({ updatedAt: -1 })
             .autoPopulate(false)
             .exec();
         return data;

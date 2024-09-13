@@ -1,44 +1,44 @@
+import { RoleType } from '@libs/super-authorize/modules/roles/constants';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
+import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import {
     BadRequestException,
     Injectable,
     OnModuleInit,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/base.service';
-import { User, UserDocument } from './entities/user.entity';
-import { COLLECTION_NAMES } from 'src/constants';
-import { UserPayload } from 'src/base/models/user-payload.model';
-import { UpdateMeDto } from './dto/update-me.dto';
-import _ from 'lodash';
-import * as bcrypt from 'bcryptjs';
-import { UserCacheKey, UserStatus } from './constants';
-import { SuperCacheService } from '@libs/super-cache/super-cache.service';
-import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
-import { MediaService } from '../media/medias.service';
 import { ModuleRef } from '@nestjs/core';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { UserTransactionType } from '../user-transaction/constants';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcryptjs';
+import _ from 'lodash';
+import { Model, Types } from 'mongoose';
+import { UserPayload } from 'src/base/models/user-payload.model';
+import { BaseService } from 'src/base/service/base.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { compareToday } from 'src/utils/helper';
+import { AppDocument } from '../apps/entities/apps.entity';
 import {
     AddPointForUserDto,
     AddPointMissionDto,
 } from '../apps/models/add-point-for-user.model';
-import { AppDocument } from '../apps/entities/apps.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserLoginTelegramDto } from '../auth/dto/user-login-telegram.dto';
+import { MediaService } from '../media/medias.service';
 import { MetadataType } from '../metadata/constants';
 import { MetadataService } from '../metadata/metadata.service';
-import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { NOTIFICATION_EVENT_HANDLER } from '../notifications/constants';
-import { generateRandomString } from './common/generate-random-string.util';
-import { UserReferralsService } from '../user-referrals/user-referrals.service';
-import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
-import { RoleType } from '@libs/super-authorize/modules/roles/constants';
+import { CreateNotificationModel } from '../notifications/models/create-notification.model';
 import { EMissionType } from '../user-app-histories/constants';
-import { compareToday, resetMissionTime } from 'src/utils/helper';
+import { UserReferralsService } from '../user-referrals/user-referrals.service';
+import { UserTransactionType } from '../user-transaction/constants';
+import { UserTransactionService } from '../user-transaction/user-transaction.service';
+import { generateRandomString } from './common/generate-random-string.util';
+import { UserCacheKey, UserStatus } from './constants';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateMeDto } from './dto/update-me.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
 export class UserService
@@ -167,16 +167,18 @@ export class UserService
                 createdBy: new Types.ObjectId(userId),
                 'mission._id': mission._id,
             })
+            .sort({ updatedAt: -1 })
             .autoPopulate(false)
             .exec();
-
-        if (
-            userTransactionThisApp &&
-            (userTransactionThisApp.mission.type !== EMissionType.Daily ||
-                (userTransactionThisApp.mission.type !== EMissionType.Daily &&
-                    compareToday(userTransactionThisApp.updatedAt)))
-        ) {
-            return false;
+        if (userTransactionThisApp) {
+            if (userTransactionThisApp.mission.type !== EMissionType.Daily) {
+                return false;
+            }
+            else {
+                if (compareToday(userTransactionThisApp.updatedAt)) {
+                    return false
+                }
+            }
         }
         const user = await this.findOne({ _id: userId }).exec();
 
