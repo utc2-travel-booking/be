@@ -26,6 +26,12 @@ export class MissionService {
 
     async getMission(user: UserPayload) {
         const { telegramUserId } = await this.userServices.getMe(user);
+        if (telegramUserId) {
+            await this.updateMissionProcess(
+                [appSettings.mission.missionId.dailyLoginId],
+                telegramUserId.toString(),
+            );
+        }
         try {
             const url = `${appSettings.mission.baseUrl}/mission/${telegramUserId}/progress`;
             const params = {
