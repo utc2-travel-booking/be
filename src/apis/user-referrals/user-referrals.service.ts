@@ -52,21 +52,7 @@ export class UserReferralsService extends BaseService<
     async getReferralFront(userId: Types.ObjectId) {
         const user = await this.userService.findOne({ _id: userId }).exec();
 
-        const referralList = await this.find({ code: user.inviteCode }).exec();
-
-        const resultList = await Promise.all(
-            referralList.map(async (referral) => {
-                const result = await this.userService
-                    .findOne({
-                        telegramUserId: referral.telegramUserId,
-                    })
-                    .exec();
-
-                return { username: result.name };
-            }),
-        );
-
-        return resultList;
+        return await this.find({ code: user.inviteCode }).exec();
     }
 
     async getReferral(users: UserDocument[]) {
