@@ -191,7 +191,7 @@ export class UserReferralsService extends BaseService<
             UserTransactionAction.REFERRAL,
         );
 
-        // await this.missionService.updateMissionReferral(referrer);
+        await this.missionService.updateMissionReferral(referrer);
 
         // Add point for user referred
 
