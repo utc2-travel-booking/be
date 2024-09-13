@@ -63,7 +63,7 @@ export class MissionService {
                     else {
                         if (item.mission.type === EMissionType.OPEN_LINK) {
                             if (hasOneHourPassed(item.updatedAt)) {
-                                item.status = EStatusTask.WAITING
+                                item.status = EStatusTask.COMPLETED
                             }
                             else {
                                 item.status = EStatusTask.WAITING
