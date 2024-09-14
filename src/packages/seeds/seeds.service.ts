@@ -25,6 +25,7 @@ export class SeedsService implements OnModuleInit {
 
         // await this.seedPermissions();
         await this.seedRoles();
+        await this.seedMetadata();
         await this.seedUsers();
         this.logger.debug('Seeding completed');
     }
@@ -51,12 +52,27 @@ export class SeedsService implements OnModuleInit {
                         path: 'admin',
                     })
                     .exec();
-                await this.roleService.updateMany(
-                    { type: RoleType.SUPER_ADMIN },
-                    {
+
+                const superAdmin = await this.roleService
+                    .findOne({
+                        type: RoleType.SUPER_ADMIN,
+                    })
+                    .exec();
+
+                if (!superAdmin) {
+                    await this.roleService.create({
+                        ...role,
+                        _id: new Types.ObjectId(role._id.$oid),
                         permissions: permissions.map((p) => p._id),
-                    },
-                );
+                    });
+                } else {
+                    await this.roleService.updateMany(
+                        { type: RoleType.SUPER_ADMIN },
+                        {
+                            permissions: permissions.map((p) => p._id),
+                        },
+                    );
+                }
             }
 
             if (type === RoleType.USER) {
@@ -64,12 +80,26 @@ export class SeedsService implements OnModuleInit {
                     .find({ path: 'front' })
                     .exec();
 
-                await this.roleService.updateMany(
-                    { type: RoleType.USER },
-                    {
+                const userRole = await this.roleService
+                    .findOne({
+                        type: RoleType.USER,
+                    })
+                    .exec();
+
+                if (!userRole) {
+                    await this.roleService.create({
+                        ...role,
+                        _id: new Types.ObjectId(role._id.$oid),
                         permissions: permissions.map((p) => p._id),
-                    },
-                );
+                    });
+                } else {
+                    await this.roleService.updateMany(
+                        { type: RoleType.USER },
+                        {
+                            permissions: permissions.map((p) => p._id),
+                        },
+                    );
+                }
             }
         }
     }

@@ -32,7 +32,7 @@ export class MediaController {
                 fileSize: 1024 * 1024 * appSettings.maxFileSize.front,
             },
             fileFilter: (req, file, callback) => {
-                if (!file.mimetype.match(/^image\/(jpeg|png)$/)) {
+                if (!file.mimetype.match(/^image\/(jpeg|png|webp)$/)) {
                     return callback(
                         new Error('Only image files are allowed!'),
                         false,

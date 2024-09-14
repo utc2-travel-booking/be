@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import { PipelineStage } from 'mongoose';
 import { AutoPopulateMetadataStorage } from '../storages/auto-populate-metadata.storage';
+import { getSchemaMetadata, SuperPropOptions } from '@libs/super-core';
+import { Type } from '@nestjs/common';
+import { COLLECTION_NAMES } from 'src/constants';
+import { User } from 'src/apis/users/entities/user.entity';
 
-export const dynamicLookupAggregates = (target: Function) => {
+export const dynamicLookupAggregates = (target: Type<unknown>) => {
     const pipelines: PipelineStage[] = [];
     const autoPopulateOptions =
         AutoPopulateMetadataStorage.getAutoPopulateMetadata(target);
@@ -15,6 +17,7 @@ export const dynamicLookupAggregates = (target: Function) => {
     const lookupStages = autoPopulateOptions.map((option) => {
         const { autoPopulateOptions, propertyKey: fieldName } = option;
         const { ref, isArray } = autoPopulateOptions;
+        const metadataSchema = getSchemaMetadata(target);
 
         const lookupStage: PipelineStage[] = [
             {
@@ -27,6 +30,8 @@ export const dynamicLookupAggregates = (target: Function) => {
             },
         ];
 
+        const { properties } = metadataSchema;
+
         if (!isArray) {
             lookupStage.push({
                 $unwind: {
@@ -35,6 +40,35 @@ export const dynamicLookupAggregates = (target: Function) => {
                 },
             });
         }
+
+        const refMetadata = properties.find(
+            (property) => property.propertyKey === fieldName,
+        );
+
+        if (!refMetadata) {
+            return lookupStage;
+        }
+
+        const options = refMetadata?.options as SuperPropOptions;
+
+        const { properties: refProperties } =
+            getSchemaMetadata(options.refClass) || {};
+
+        if (!refProperties) {
+            return lookupStage;
+        }
+
+        refProperties.forEach((refProperty) => {
+            const options = refProperty.options as SuperPropOptions;
+
+            if (options?.autoPopulateExclude) {
+                lookupStage.push({
+                    $project: {
+                        [`${fieldName}.${refProperty.propertyKey}`]: 0,
+                    },
+                });
+            }
+        });
 
         return lookupStage;
     });

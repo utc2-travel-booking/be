@@ -1,6 +1,6 @@
-import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 import { SuperCacheService } from '../super-cache.service';
 import _ from 'lodash';
+import { getSchemaMetadata } from '@libs/super-core';
 
 export const createRedisFolderCollection = async (
     collectionName: string,
@@ -11,8 +11,7 @@ export const createRedisFolderCollection = async (
         return;
     }
 
-    const schemaMetadata =
-        TypeMetadataStorage.getSchemaMetadataByTarget(entity);
+    const schemaMetadata = getSchemaMetadata(entity);
 
     if (!schemaMetadata) return;
 

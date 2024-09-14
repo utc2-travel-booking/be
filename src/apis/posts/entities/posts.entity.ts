@@ -12,6 +12,8 @@ import { AutoPopulate } from '@libs/super-search';
 import { Category } from 'src/apis/categories/entities/categories.entity';
 import { File } from 'src/apis/media/entities/files.entity';
 import { SuperProp } from '@libs/super-core/decorators/super-prop.decorator';
+import { SEOTag } from 'src/apis/pages/entities/pages.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 @Schema({
     timestamps: true,
     collection: COLLECTION_NAMES.POST,
@@ -33,6 +35,7 @@ export class Post extends AggregateRoot {
     @SuperProp({
         type: String,
         required: true,
+        unique: true,
         cms: {
             label: 'Slug',
             tableShow: true,
@@ -80,19 +83,20 @@ export class Post extends AggregateRoot {
     type: PostType;
 
     @SuperProp({
-        type: Types.ObjectId,
+        type: [Types.ObjectId],
         ref: COLLECTION_NAMES.CATEGORIES,
         refClass: Category,
         cms: {
-            label: 'Category',
+            label: 'Categories',
             tableShow: true,
             columnPosition: 6,
         },
     })
     @AutoPopulate({
         ref: COLLECTION_NAMES.CATEGORIES,
+        isArray: true,
     })
-    category: Category;
+    categories: Category[];
 
     @SuperProp({
         type: MultipleLanguageType,
@@ -130,6 +134,26 @@ export class Post extends AggregateRoot {
     @SuperProp({ type: MultipleLanguageType })
     @MultipleLanguage()
     longDescription: MultipleLanguageType;
+
+    @SuperProp({
+        type: SEOTag,
+    })
+    seoTag: SEOTag;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type PostDocument = Post & Document;

@@ -65,7 +65,7 @@ export class CategoriesControllerAdmin {
         const result = await this.categoriesService.createOne(
             createCategoryDto,
             user,
-            { slug: _.kebabCase(removeDiacritics(name)) },
+            { slug: await this.categoriesService.generateSlug(name) },
         );
 
         return result;
@@ -80,11 +80,13 @@ export class CategoriesControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = updateCategoryDto;
 
         const result = await this.categoriesService.updateOneById(
             _id,
             updateCategoryDto,
             user,
+            { slug: await this.categoriesService.generateSlug(name) },
         );
         return result;
     }

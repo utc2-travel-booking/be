@@ -5,7 +5,7 @@ import {
     DTOMetadataForm,
 } from '../metadata/data-transfer-objects.interface';
 import _ from 'lodash';
-import { isClass } from '@libs/super-core/common/isClass.utils';
+import { isClass } from '@libs/super-core';
 
 export const addDtoProperties = (dto: new () => any) => {
     const properties =
@@ -33,6 +33,7 @@ export const addDtoProperties = (dto: new () => any) => {
             form: null,
             isShow: _.get(propertyData, 'cms.isShow', true),
             widget: _.get(propertyData, 'cms.widget', null),
+            enum: _.get(propertyData, 'enum', null),
         };
 
         const type = _.get(propertyData, 'type');

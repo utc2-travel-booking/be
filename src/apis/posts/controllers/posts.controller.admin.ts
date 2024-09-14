@@ -6,6 +6,7 @@ import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { Body, Controller, Param, Query, Req } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import _ from 'lodash';
 import { Types } from 'mongoose';
 import { PostType } from 'src/apis/posts/constants';
 import { CreatePostDto } from 'src/apis/posts/dto/create-posts.dto';
@@ -21,6 +22,7 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
+import { removeDiacritics } from 'src/utils/helper';
 
 @Controller('posts')
 @Resource('posts')
@@ -81,12 +83,15 @@ export class PostsControllerAdmin {
         @Param('type') type: PostType,
     ) {
         const { user } = req;
+        const { name } = createPostDto;
+
         const result = await this.postsService.createByType(
             createPostDto,
             type,
             user,
             {
                 type,
+                slug: await this.postsService.generateSlug(name),
             },
         );
         return result;
@@ -102,12 +107,16 @@ export class PostsControllerAdmin {
         @Req() req: { user: UserPayload },
     ) {
         const { user } = req;
+        const { name } = updatePostDto;
 
         const result = await this.postsService.updateOneByIdAndType(
             _id,
             type,
             updatePostDto,
             user,
+            {
+                slug: await this.postsService.generateSlug(name),
+            },
         );
 
         return result;

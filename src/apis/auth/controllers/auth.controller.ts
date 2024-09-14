@@ -45,6 +45,10 @@ export class AuthController {
         name: 'authorization',
         description: 'tma {token}',
     })
+    @ApiHeader({
+        name: 'code',
+        description: 'Code Referral',
+    })
     async loginTelegramMiniApp(@Req() req: { user: UserPayload }) {
         const { user } = req;
         return this.authService.login(user);

@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class ParseObjectIdPipe
 {
     transform(value: string): Types.ObjectId | string {
         if (!Types.ObjectId.isValid(value)) {
-            throw new BadGatewayException('Invalid ObjectId');
+            return value;
         }
         return new Types.ObjectId(value);
     }

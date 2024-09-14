@@ -1,8 +1,10 @@
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, Type } from '@nestjs/common';
 import { Prop } from '@nestjs/mongoose';
 import { SchemaTypeOptions, Types } from 'mongoose';
 
 export class SuperPropOptions extends SchemaTypeOptions<any> {
+    autoPopulateExclude?: boolean;
+    refClass?: any;
     cms?: {
         label?: string;
         tableShow?: boolean;

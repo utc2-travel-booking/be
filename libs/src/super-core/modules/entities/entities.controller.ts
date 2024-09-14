@@ -5,7 +5,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { Resource } from '@libs/super-authorize';
 
 @Controller('admin/entities')
-@Resource('admin/entities')
+@Resource('entities')
 @ApiTags('Admin: Entities')
 export class EntitiesController {
     constructor(private readonly entitiesService: EntitiesService) {}

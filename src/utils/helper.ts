@@ -1,4 +1,5 @@
 import { BadGatewayException } from '@nestjs/common';
+import dayjs from 'dayjs';
 import { Types } from 'mongoose';
 
 export const removeDiacritics = (str: string) => {
@@ -28,4 +29,20 @@ export const convertStringToObjectId = (value: any, isArray = false) => {
     }
 
     return new Types.ObjectId(value);
+};
+export const resetMissionTime = () => {
+    return new Date().setHours(0, 0, 0, 0);
+};
+
+export const compareToday = (dateFromApi: Date): boolean => {
+    const today = dayjs().startOf('day');
+    const isSameDay = dayjs(dateFromApi).isAfter(today)
+
+    return isSameDay;
+};
+
+export const hasOneHourPassed = (timestamp: Date): boolean => {
+    const now = dayjs();
+
+    return now.isAfter(dayjs(timestamp).add(1, 'hour'));
 };

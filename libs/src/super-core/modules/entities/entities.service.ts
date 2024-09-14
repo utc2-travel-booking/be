@@ -1,17 +1,15 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core/injector/modules-container';
 import { Model } from 'mongoose';
-import _ from 'lodash';
-import { SuperCacheService } from '@libs/super-cache/super-cache.service';
+import _, { isBoolean } from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
+import { Entity, Schema } from '@libs/super-core/metadata/entity.interface';
+import { isDate, isNumber, isString } from '@libs/super-core';
 
 @Injectable()
 export class EntitiesService implements OnModuleInit {
-    private entities = new Array<any>();
-    constructor(
-        private readonly modulesContainer: ModulesContainer,
-        private readonly superCacheService: SuperCacheService,
-    ) {}
+    private entities = new Array<Entity>();
+    constructor(private readonly modulesContainer: ModulesContainer) {}
 
     async onModuleInit() {
         await this.getMongooseModels();
@@ -30,7 +28,7 @@ export class EntitiesService implements OnModuleInit {
         const models = [];
 
         for (const module of modules) {
-            for (const [token, provider] of module.providers) {
+            for (const [, provider] of module.providers) {
                 if (
                     provider.instance &&
                     (provider.instance as Model<any>).modelName
@@ -52,16 +50,33 @@ export class EntitiesService implements OnModuleInit {
     private async processModels(models: any[]) {
         for (const model of models) {
             const { name, schema } = model;
-            const _schema: any[] = [];
+            const _schema: Schema[] = [];
 
             for (const [key, value] of Object.entries(schema.obj)) {
                 const ref = _.get(value, 'ref', null);
-
                 let type = _.get(value, 'type', null);
-                if (ref && ref === COLLECTION_NAMES.FILE) {
-                    type = 'File';
-                } else if (ref) {
-                    type = 'Relation';
+
+                switch (true) {
+                    case isString(type):
+                        type = 'String';
+                        break;
+                    case isNumber(type):
+                        type = 'Number';
+                        break;
+                    case isDate(type):
+                        type = 'Date';
+                        break;
+                    case isBoolean(type):
+                        type = 'Boolean';
+                        break;
+                    case !!ref && ref === COLLECTION_NAMES.FILE:
+                        type = 'File';
+                        break;
+                    case !!ref:
+                        type = 'Relation';
+                        break;
+                    default:
+                        type = 'String';
                 }
 
                 _schema.push({
@@ -71,7 +86,7 @@ export class EntitiesService implements OnModuleInit {
                     default: _.get(value, 'default', null),
                     required: _.get(value, 'required', false),
                     enum: _.get(value, 'enum', null),
-                    schema: null,
+                    entity: null,
                     label: _.get(value, 'cms.label', key),
                     isTableShow: _.get(value, 'cms.tableShow', false),
                     index: _.get(value, 'cms.index', false),

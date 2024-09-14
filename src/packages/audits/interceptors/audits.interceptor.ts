@@ -75,7 +75,7 @@ export class AuditsInterceptor implements NestInterceptor {
                     auditData.body = body;
                     if (newValues['_id']) {
                         auditData.refId = new Types.ObjectId(
-                            newValues['_id'].toString(),
+                            _.get(newValues, '_id'),
                         );
                     }
                     this.eventEmitter.emit(AUDIT_LOG, auditData);

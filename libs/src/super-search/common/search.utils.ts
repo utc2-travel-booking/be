@@ -2,6 +2,11 @@ import { UnprocessableEntityException } from '@nestjs/common';
 import _ from 'lodash';
 import { PipelineStage, Types } from 'mongoose';
 import { OPERATOR, SearchType } from '../constants';
+import {
+    handlerBetweenOperator,
+    handlerComparisonOperator,
+    handlerInAndNotInOperator,
+} from '.';
 
 export const createSearchPipeline = (search: any, searchType: string) => {
     if (!_.isObjectLike(search)) {
@@ -29,41 +34,37 @@ export const createSearchPipeline = (search: any, searchType: string) => {
             }
 
             if (_.upperCase(operator) === OPERATOR.BETWEEN) {
-                const [from, to] = search[key].split(',');
-                const fromDate = new Date(from);
-                const toDate = new Date(to);
-
-                if (fromDate.toDateString() === toDate.toDateString()) {
-                    fromDate.setHours(0, 0, 0, 0);
-                    toDate.setHours(23, 59, 59, 999);
-                }
-
                 return {
                     field,
                     operator,
-                    value: { from: fromDate, to: toDate },
+                    value: handlerBetweenOperator(search, key),
                 };
             }
 
             if (
-                operator.toLocaleUpperCase() === OPERATOR.IN ||
-                operator.toLocaleUpperCase() === OPERATOR.NOT_IN
+                [OPERATOR.IN, OPERATOR.NOT_IN].includes(
+                    operator.toUpperCase() as OPERATOR,
+                )
             ) {
-                const array = search[key].split(',');
-                for (let i = 0; i < array.length; i++) {
-                    if (Number(array[i])) {
-                        array[i] = Number(array[i]);
-                    }
-
-                    if (_.isString(array[i])) {
-                        array[i] = array[i].replace(/%3C/g, '<');
-                    }
-                }
-
                 return {
                     field,
                     operator,
-                    value: array,
+                    value: handlerInAndNotInOperator(search, key),
+                };
+            }
+
+            if (
+                [
+                    OPERATOR.BEFORE,
+                    OPERATOR.AFTER,
+                    OPERATOR.IS_AND_BEFORE,
+                    OPERATOR.IS_AND_AFTER,
+                ].includes(operator.toUpperCase() as OPERATOR)
+            ) {
+                return {
+                    field,
+                    operator,
+                    value: handlerComparisonOperator(search, key),
                 };
             }
 

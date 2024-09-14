@@ -51,7 +51,7 @@ export class CustomQueryFindOneService<T extends Document>
     }
 
     @SGetCache()
-    async exec(): Promise<T | null> {
+    async exec(): Promise<T> {
         let pipeline: PipelineStage[] = [
             { $match: { deletedAt: null, ...this._conditions } },
         ];
@@ -63,6 +63,6 @@ export class CustomQueryFindOneService<T extends Document>
         pipeline = sortPipelines(pipeline);
 
         const result = await this.model.aggregate(pipeline).exec();
-        return result.length ? result[0] : null;
+        return result?.length ? result[0] : null;
     }
 }

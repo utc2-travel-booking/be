@@ -1,5 +1,4 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Document, Types } from 'mongoose';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -11,6 +10,7 @@ import {
     Permission,
     PermissionDocument,
 } from '@libs/super-authorize/modules/permissions/entities/permissions.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 
 @Schema({
     timestamps: true,
@@ -52,6 +52,21 @@ export class Role extends AggregateRoot {
         isArray: true,
     })
     permissions: PermissionDocument[];
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export type RoleDocument = Role & Document;

@@ -1,6 +1,5 @@
 import { SchemaFactory, Schema } from '@nestjs/mongoose';
-import _ from 'lodash';
-import { Document, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserStatus } from '../constants';
 import autopopulateSoftDelete from 'src/utils/mongoose-plugins/autopopulate-soft-delete';
@@ -13,7 +12,7 @@ import {
     RoleDocument,
 } from '@libs/super-authorize/modules/roles/entities/roles.entity';
 
-export type UserDocument = User & Document;
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({
     timestamps: true,
@@ -73,7 +72,7 @@ export class User extends AggregateRoot {
     @AutoPopulate({
         ref: COLLECTION_NAMES.ROLE,
     })
-    role: RoleDocument;
+    role: Types.ObjectId | RoleDocument;
 
     @SuperProp({
         type: String,
@@ -88,10 +87,36 @@ export class User extends AggregateRoot {
     status: UserStatus;
 
     @SuperProp({
+        autoPopulateExclude: true,
         type: String,
         required: false,
     })
     password: string;
+
+    @SuperProp({
+        type: String,
+        cms: {
+            label: 'Invite Code',
+            tableShow: true,
+            columnPosition: 9,
+        },
+    })
+    inviteCode: string;
+
+    @SuperProp({
+        type: Types.ObjectId,
+        ref: COLLECTION_NAMES.USER,
+        refClass: User,
+        cms: {
+            label: 'Created By',
+            tableShow: true,
+            columnPosition: 99,
+        },
+    })
+    @AutoPopulate({
+        ref: COLLECTION_NAMES.USER,
+    })
+    createdBy: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

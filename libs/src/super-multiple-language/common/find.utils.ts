@@ -1,12 +1,8 @@
 import { PipelineStage } from 'mongoose';
 import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
-import { TypeMetadataStorage } from '@nestjs/mongoose/dist/storages/type-metadata.storage';
 import { appSettings } from 'src/configs/appsettings';
 import _ from 'lodash';
-
-const getSchemaMetadata = (entity: any) => {
-    return TypeMetadataStorage.getSchemaMetadataByTarget(entity);
-};
+import { getSchemaMetadata } from '@libs/super-core';
 
 const applyMultipleLanguageFields = (
     entity: any,
@@ -35,7 +31,7 @@ const applyMultipleLanguageFields = (
                                     [`${propertyKey}`]: {
                                         $ifNull: [
                                             `$$item.${propertyKey}.${locale}`,
-                                            'NO DATA',
+                                            `$$item.${propertyKey}.${appSettings.mainLanguage}`,
                                         ],
                                     },
                                 },
@@ -52,7 +48,10 @@ const applyMultipleLanguageFields = (
                 );
                 currentMergeObjects.push({
                     [`${propertyKey}`]: {
-                        $ifNull: [`$$item.${propertyKey}.${locale}`, 'NO DATA'],
+                        $ifNull: [
+                            `$$item.${propertyKey}.${locale}`,
+                            `$$item.${propertyKey}.${appSettings.mainLanguage}`,
+                        ],
                     },
                 });
                 _.set(addFieldsStage, mergeObjectsPath, currentMergeObjects);
@@ -61,7 +60,10 @@ const applyMultipleLanguageFields = (
             const _prefix = prefix ? `${prefix}.` : '';
             const fieldPath = `$addFields.${_prefix}${propertyKey}`;
             _.set(addFieldsStage, fieldPath, {
-                $ifNull: [`$${_prefix}${propertyKey}.${locale}`, 'NO DATA'],
+                $ifNull: [
+                    `$${_prefix}${propertyKey}.${locale}`,
+                    `$${_prefix}${propertyKey}.${appSettings.mainLanguage}`,
+                ],
             });
         }
     });

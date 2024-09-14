@@ -1,16 +1,22 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Document, FilterQuery, Model, PipelineStage, Types } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from '@libs/super-search';
 import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
-import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
 import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
+import { AggregateRoot } from '../entities/aggregate-root.schema';
+import { removeDiacritics } from 'src/utils/helper';
+import _ from 'lodash';
+import { generateRandomString } from 'src/apis/users/common/generate-random-string.util';
 
 @Injectable()
-export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
+export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
+    T,
+    E
+> {
     constructor(
         model: Model<T>,
         entity: new () => E,
@@ -68,7 +74,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         options?: Record<string, any>,
     ): Promise<any> {
         const result = await this.findOne({
-            _id,
+            $or: [{ _id }, { slug: _id }],
             ...options,
         }).exec();
 
@@ -112,7 +118,6 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         const result = await this.findOneAndUpdate(
             { _id },
             { ...payload, ...options, updatedBy: userId },
-            { new: true },
         );
 
         if (!result) {
@@ -167,8 +172,7 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
 
         const result = await this.findOne(
             {
-                _id,
-                deletedAt: null,
+                $or: [{ _id }, { slug: _id }],
                 ...options,
             },
             filterPipeline,
@@ -187,5 +191,18 @@ export class BaseService<T extends Document, E> extends BaseRepositories<T, E> {
         return this.updateMany(filter, {
             deletedAt: null,
         });
+    }
+
+    async generateSlug(name: string) {
+        const slug = _.kebabCase(removeDiacritics(name));
+        const exist = await this.findOne({ slug }).exec();
+
+        if (exist) {
+            return await this.generateSlug(
+                `${slug}-${generateRandomString(2)}`,
+            );
+        }
+
+        return slug;
     }
 }
