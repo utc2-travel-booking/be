@@ -104,7 +104,6 @@ export class UserService
             {
                 ...update,
             },
-            { new: true },
         );
 
         return result;

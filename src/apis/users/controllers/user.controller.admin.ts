@@ -76,17 +76,6 @@ export class UserControllerAdmin {
         return this.userService.updateMe(user, updateMeDto);
     }
 
-    @SuperGet()
-    @SuperAuthorize(PERMISSION.GET)
-    async getAll(
-        @Query(new PagingDtoPipe())
-        queryParams: ExtendedPagingDto,
-    ) {
-        const result = await this.userService.getAllAdmin(queryParams);
-
-        return result;
-    }
-
     @SuperGet({ route: ':id' })
     @SuperAuthorize(PERMISSION.GET)
     @ApiParam({ name: 'id', type: String })

@@ -25,7 +25,7 @@ export class SeedsService implements OnModuleInit {
 
         // await this.seedPermissions();
         await this.seedRoles();
-        await this.seedMetadata();
+        // await this.seedMetadata();
         await this.seedUsers();
         this.logger.debug('Seeding completed');
     }
