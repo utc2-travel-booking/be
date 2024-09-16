@@ -26,7 +26,7 @@ import { AppsModule } from '../apps/apps.module';
         WebsocketModule,
     ],
     controllers: [],
-    providers: [UserService, UserService],
+    providers: [UserService],
     exports: [UserService],
 })
 export class UserModule {}
