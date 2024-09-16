@@ -3,6 +3,7 @@ import { RouterModule } from '@nestjs/core';
 import { RouterFrontsModule } from './front/router-fronts.module';
 import { RouterAdminsModule } from './admin/router-admins.module';
 import { RouterCommonModule } from './common/router-common.module';
+import { RouterAdminsModuleDev } from './admin/router-admins.module.dev';
 
 @Module({})
 export class RoutersModule {
@@ -18,6 +19,7 @@ export class RoutersModule {
             RouterFrontsModule,
             RouterAdminsModule,
             RouterCommonModule,
+            RouterAdminsModuleDev,
             RouterModule.register([
                 {
                     path: ``,
@@ -29,6 +31,10 @@ export class RoutersModule {
                         {
                             path: '/admin',
                             module: RouterAdminsModule,
+                        },
+                        {
+                            path: '/admin',
+                            module: RouterAdminsModuleDev,
                         },
                     ],
                 },

@@ -11,7 +11,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly missionService: MissionService,
         private readonly userService: UserService,
-    ) { }
+    ) {}
 
     async login(user: UserPayload) {
         const tokens = await this.getTokens(user);

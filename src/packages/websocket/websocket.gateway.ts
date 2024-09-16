@@ -15,7 +15,8 @@ import { ReviewRatingDocument } from 'src/apis/review-ratings/entities/review-ra
     cors: true,
 })
 export class WebsocketGateway
-    implements OnGatewayConnection, OnGatewayDisconnect {
+    implements OnGatewayConnection, OnGatewayDisconnect
+{
     @WebSocketServer() server: Server;
     private readonly logger = new Logger(WebsocketGateway.name);
 
