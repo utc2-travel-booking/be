@@ -5,6 +5,7 @@ import {
     BadRequestException,
     Injectable,
     OnModuleInit,
+    UnauthorizedException,
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
@@ -433,20 +434,22 @@ export class UserService
     }
 
     async getMe(user: UserPayload) {
-        return await this.findOne({
+        const me = await this.findOne({
             _id: user._id,
         })
             .select({ password: 0 })
             .exec();
+
+        if (!me) {
+            throw new UnauthorizedException('user_not_found', 'User not found');
+        }
+
+        return me;
     }
 
     async getMeForFront(user: UserPayload) {
         const { _id } = user;
-        const result = await this.findOne({
-            _id: _id,
-        })
-            .select({ password: 0 })
-            .exec();
+        const result = await this.getMe(user);
 
         const amountRewardUserForApp =
             await this.metadataService.getAmountRewardUserForApp(
@@ -462,7 +465,7 @@ export class UserService
 
         const introducer = await this.userReferralsService
             .findOne({
-                telegramUserId: result.telegramUserId,
+                telegramUserId: result?.telegramUserId,
             })
             .exec();
 
