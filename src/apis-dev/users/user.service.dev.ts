@@ -4,10 +4,14 @@ import { Connection } from 'mongoose';
 import { TruncateAllInfoUserDto } from './dto/truncate-all-info-user.dto';
 import _ from 'lodash';
 import { COLLECTION_NAMES } from 'src/constants';
+import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 
 @Injectable()
 export class UserServiceDev {
-    constructor(@InjectConnection() private readonly connection: Connection) {}
+    constructor(
+        @InjectConnection() private readonly connection: Connection,
+        private readonly superCacheService: SuperCacheService,
+    ) {}
 
     async truncateAllInfoUser(truncateAllInfoUserDto: TruncateAllInfoUserDto) {
         const { users, telegramUserIds } = truncateAllInfoUserDto;
@@ -52,5 +56,7 @@ export class UserServiceDev {
                 }
             }
         }
+
+        await this.superCacheService.resetCache();
     }
 }
