@@ -1,28 +1,29 @@
-import { MissionService } from './../mission/mission.service';
 import {
     BadRequestException,
     forwardRef,
     Inject,
     Injectable,
 } from '@nestjs/common';
-import { BaseService } from 'src/base/service/base.service';
-import {
-    UserReferral,
-    UserReferralDocument,
-} from './entities/user-referrals.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
-import { UserDocument } from '../users/entities/user.entity';
-import { UserService } from '../users/user.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { BaseService } from 'src/base/service/base.service';
+import { COLLECTION_NAMES } from 'src/constants';
+import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import { MetadataService } from '../metadata/metadata.service';
 import {
     UserTransactionAction,
     UserTransactionType,
 } from '../user-transaction/constants';
-import { MetadataService } from '../metadata/metadata.service';
 import { UserTransactionService } from '../user-transaction/user-transaction.service';
-import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
+import { UserDocument } from '../users/entities/user.entity';
+import { UserService } from '../users/user.service';
+import { MissionService } from './../mission/mission.service';
+import {
+    UserReferral,
+    UserReferralDocument,
+} from './entities/user-referrals.entity';
 
 @Injectable()
 export class UserReferralsService extends BaseService<
@@ -49,10 +50,31 @@ export class UserReferralsService extends BaseService<
         );
     }
 
-    async getReferralFront(userId: Types.ObjectId) {
+    async getReferralFront(userId: Types.ObjectId, params: ExtendedPagingDto) {
         const user = await this.userService.findOne({ _id: userId }).exec();
 
-        return await this.find({ code: user.inviteCode }).exec();
+        const referralList = await this.getAllForFront(params, {
+            code: user.inviteCode,
+        });
+
+        const result = await this.userService
+            .find({
+                telegramUserId: {
+                    $in: referralList.items.map((r) => r.telegramUserId),
+                },
+            })
+            .select({ name: 1 })
+            .exec();
+
+        const amount = await this.metadataService.getAmountRewardReferral();
+        const response = result.map((r) => ({
+            ...r,
+            amount: amount.value.reward,
+        }));
+        return {
+            items: response,
+            meta: referralList.meta,
+        };
     }
 
     async getReferral(users: UserDocument[]) {

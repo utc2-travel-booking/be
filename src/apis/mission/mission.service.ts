@@ -78,6 +78,7 @@ export class MissionService {
                             }
                         }
                     }
+
                     return item;
                 }),
             );
