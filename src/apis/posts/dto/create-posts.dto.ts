@@ -4,6 +4,7 @@ import {
     IsDate,
     IsEnum,
     IsNotEmpty,
+    IsNumber,
     IsOptional,
     IsString,
     MaxLength,
@@ -46,6 +47,16 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
     })
     @IsNotEmpty()
     status: PostStatus;
+
+    @SuperApiProperty({
+        type: Number,
+        description: 'Position of the tag in the app',
+        default: 0,
+        title: 'Position Of Category',
+    })
+    @IsNumber()
+    @IsOptional()
+    position: number;
 
     @SuperApiProperty({
         type: String,

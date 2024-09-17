@@ -8,6 +8,7 @@ import { UpdateCategoryDto } from './dto/update-categories.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ModuleRef } from '@nestjs/core';
 import { CreateCategoryDto } from './dto/create-categories.dto';
+import { CategoryType } from './constants';
 
 @Injectable()
 export class CategoriesService extends BaseService<CategoryDocument, Category> {
@@ -25,9 +26,9 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { position } = createCategoryDto;
+        const { position, type } = createCategoryDto;
 
-        await this.updatePosition(position);
+        await this.updatePosition(position, type);
 
         const result = new this.model({
             ...createCategoryDto,
@@ -46,9 +47,9 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { position } = updateCategoryDto;
+        const { position, type } = updateCategoryDto;
 
-        await this.updatePosition(position);
+        await this.updatePosition(position, type);
 
         const result = await this.findOneAndUpdate(
             { _id },
@@ -104,9 +105,18 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         return result;
     }
 
-    private async updatePosition(position: number, thisId?: Types.ObjectId) {
+    private async updatePosition(
+        position: number,
+        type: CategoryType,
+        thisId?: Types.ObjectId,
+    ) {
+        if (!position) {
+            return;
+        }
+
         const category = await this.findOne({
             position,
+            type,
             _id: { $ne: thisId },
         })
             .autoPopulate(false)
@@ -121,7 +131,7 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
                 { new: true },
             );
 
-            await this.updatePosition(position, _tagApp._id);
+            await this.updatePosition(position, _tagApp?.type, _tagApp._id);
         }
     }
 }

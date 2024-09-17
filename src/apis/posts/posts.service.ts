@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -7,14 +7,16 @@ import { BaseService } from 'src/base/service/base.service';
 import { UpdatePostDto } from './dto/update-posts.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreatePostDto } from './dto/create-posts.dto';
-import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 import { PostType } from './constants';
 import { ModuleRef } from '@nestjs/core';
 import { calculateEstimatedReadingTime } from './common/calculate-estimated-reading-time.until';
 
 @Injectable()
-export class PostsService extends BaseService<PostDocument, Post> {
+export class PostsService
+    extends BaseService<PostDocument, Post>
+    implements OnModuleInit
+{
     constructor(
         @InjectModel(COLLECTION_NAMES.POST)
         private readonly postModel: Model<PostDocument>,
@@ -23,24 +25,23 @@ export class PostsService extends BaseService<PostDocument, Post> {
         super(postModel, Post, COLLECTION_NAMES.POST, moduleRef);
     }
 
+    async onModuleInit() {
+        // DELETE AFTER GO PRODUCTION
+        await this.updateMany(
+            { position: { $exists: false } },
+            { position: 99999 },
+        );
+    }
+
     async createByType(
         createPostDto: CreatePostDto,
         type: PostType,
         user: UserPayload,
         options?: Record<string, any>,
     ) {
-        const { name, longDescription } = createPostDto;
-        const slug = _.kebabCase(removeDiacritics(name));
+        const { position, longDescription } = createPostDto;
 
-        const existed = await this.postModel.exists({
-            type,
-            slug,
-            deletedAt: null,
-        });
-
-        if (existed) {
-            throw new BadRequestException('Post name already exists');
-        }
+        await this.updatePosition(position, type);
 
         const estimatedReadingTime =
             calculateEstimatedReadingTime(longDescription);
@@ -48,9 +49,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const result = new this.postModel({
             ...createPostDto,
             ...options,
-            name,
             type,
-            slug,
             createdBy: user._id,
             estimatedReadingTime,
         });
@@ -67,9 +66,13 @@ export class PostsService extends BaseService<PostDocument, Post> {
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { longDescription } = updatePostDto;
+        const { position, longDescription } = updatePostDto;
+
+        await this.updatePosition(position, type);
+
         const estimatedReadingTime =
             calculateEstimatedReadingTime(longDescription);
+
         const result = await this.findOneAndUpdate(
             { _id, type },
             {
@@ -101,5 +104,34 @@ export class PostsService extends BaseService<PostDocument, Post> {
         );
 
         return data;
+    }
+
+    private async updatePosition(
+        position: number,
+        type: PostType,
+        thisId?: Types.ObjectId,
+    ) {
+        if (!position) {
+            return;
+        }
+        const post = await this.findOne({
+            position,
+            type,
+            _id: { $ne: thisId },
+        })
+            .autoPopulate(false)
+            .exec();
+
+        if (post) {
+            position++;
+
+            const _post = await this.model.findOneAndUpdate(
+                { _id: new Types.ObjectId(post?._id) },
+                { position },
+                { new: true },
+            );
+
+            await this.updatePosition(position, _post?.type, _post._id);
+        }
     }
 }
