@@ -154,6 +154,18 @@ export class Post extends AggregateRoot {
         ref: COLLECTION_NAMES.USER,
     })
     createdBy: Types.ObjectId;
+
+    @SuperProp({
+        type: String,
+        default: 0,
+        unique: true,
+        cms: {
+            label: 'Reading Time',
+            tableShow: true,
+            columnPosition: 10,
+        },
+    })
+    estimatedReadingTime: number;
 }
 
 export type PostDocument = Post & Document;
