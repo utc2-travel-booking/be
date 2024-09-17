@@ -11,6 +11,7 @@ import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 import { PostType } from './constants';
 import { ModuleRef } from '@nestjs/core';
+import { calculateEstimatedReadingTime } from './common/calculate-estimated-reading-time.until';
 
 @Injectable()
 export class PostsService extends BaseService<PostDocument, Post> {
@@ -28,7 +29,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
         user: UserPayload,
         options?: Record<string, any>,
     ) {
-        const { name } = createPostDto;
+        const { name, longDescription } = createPostDto;
         const slug = _.kebabCase(removeDiacritics(name));
 
         const existed = await this.postModel.exists({
@@ -41,6 +42,9 @@ export class PostsService extends BaseService<PostDocument, Post> {
             throw new BadRequestException('Post name already exists');
         }
 
+        const estimatedReadingTime =
+            calculateEstimatedReadingTime(longDescription);
+
         const result = new this.postModel({
             ...createPostDto,
             ...options,
@@ -48,6 +52,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
             type,
             slug,
             createdBy: user._id,
+            estimatedReadingTime,
         });
 
         await this.create(result);
@@ -62,10 +67,17 @@ export class PostsService extends BaseService<PostDocument, Post> {
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-
+        const { longDescription } = updatePostDto;
+        const estimatedReadingTime =
+            calculateEstimatedReadingTime(longDescription);
         const result = await this.findOneAndUpdate(
             { _id, type },
-            { ...updatePostDto, ...options, updatedBy: userId },
+            {
+                ...updatePostDto,
+                ...options,
+                updatedBy: userId,
+                estimatedReadingTime,
+            },
         );
 
         if (!result) {
