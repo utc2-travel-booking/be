@@ -158,7 +158,6 @@ export class Post extends AggregateRoot {
     @SuperProp({
         type: String,
         default: 0,
-        unique: true,
         cms: {
             label: 'Reading Time',
             tableShow: true,
