@@ -10,6 +10,7 @@ import { CreatePostDto } from './dto/create-posts.dto';
 import _ from 'lodash';
 import { PostType } from './constants';
 import { ModuleRef } from '@nestjs/core';
+import { calculateEstimatedReadingTime } from './common/calculate-estimated-reading-time.until';
 
 @Injectable()
 export class PostsService
@@ -38,15 +39,19 @@ export class PostsService
         user: UserPayload,
         options?: Record<string, any>,
     ) {
-        const { position } = createPostDto;
+        const { position, longDescription } = createPostDto;
 
         await this.updatePosition(position, type);
+
+        const estimatedReadingTime =
+            calculateEstimatedReadingTime(longDescription);
 
         const result = new this.postModel({
             ...createPostDto,
             ...options,
             type,
             createdBy: user._id,
+            estimatedReadingTime,
         });
 
         await this.create(result);
@@ -61,13 +66,21 @@ export class PostsService
         options?: Record<string, any>,
     ) {
         const { _id: userId } = user;
-        const { position } = updatePostDto;
+        const { position, longDescription } = updatePostDto;
 
         await this.updatePosition(position, type);
 
+        const estimatedReadingTime =
+            calculateEstimatedReadingTime(longDescription);
+
         const result = await this.findOneAndUpdate(
             { _id, type },
-            { ...updatePostDto, ...options, updatedBy: userId },
+            {
+                ...updatePostDto,
+                ...options,
+                updatedBy: userId,
+                estimatedReadingTime,
+            },
         );
 
         if (!result) {
