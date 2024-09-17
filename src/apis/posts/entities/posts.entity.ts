@@ -45,6 +45,17 @@ export class Post extends AggregateRoot {
     slug: string;
 
     @SuperProp({
+        type: Number,
+        default: 99999,
+        cms: {
+            label: 'Position',
+            tableShow: true,
+            columnPosition: 2,
+        },
+    })
+    position: number;
+
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.FILE,
         refClass: File,
