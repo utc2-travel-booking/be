@@ -85,15 +85,13 @@ export class NotificationsService extends BaseService<
             totalPromise,
         ]);
 
-        const handleResult = await Promise.all(
-            result.map(async (item) => {
-                const updateItem = {
-                    ...item,
-                    shortDescription: parseDescription(item.shortDescription),
-                };
-                return updateItem;
-            }),
-        );
+        const handleResult = result.map((item) => {
+            const updateItem = {
+                ...item,
+                shortDescription: parseDescription(item.shortDescription),
+            };
+            return updateItem;
+        });
 
         const meta = pagination(handleResult, page, limit, total);
 
