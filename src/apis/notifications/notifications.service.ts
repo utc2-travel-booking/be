@@ -16,6 +16,8 @@ import { UserNotificationStatus } from './constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EVENT_NAME } from 'src/packages/websocket/constants';
 import { CreateNotificationModel } from './models/create-notification.model';
+import { parseDescription } from './common/handle-description.util';
+import { it } from 'node:test';
 
 @Injectable()
 export class NotificationsService extends BaseService<
@@ -60,7 +62,7 @@ export class NotificationsService extends BaseService<
         } = queryParams;
         const { _id } = user;
 
-        const result = this.find(
+        const resultPromise = this.find(
             {
                 'user._id': _id,
                 status: { $ne: UserNotificationStatus.DELETED },
@@ -73,17 +75,27 @@ export class NotificationsService extends BaseService<
             .select(select)
             .exec();
 
-        const total = this.countDocuments(
-            {
-                'user._id': _id,
-            },
-            filterPipeline,
-        ).exec();
+        const totalPromise = this.countDocuments({
+            'user._id': _id,
+            ...filterPipeline,
+        }).exec();
 
-        return Promise.all([result, total]).then(([items, total]) => {
-            const meta = pagination(items, page, limit, total);
-            return { items, meta };
+        const [result, total] = await Promise.all([
+            resultPromise,
+            totalPromise,
+        ]);
+
+        const handleResult = result.map((item) => {
+            const updateItem = {
+                ...item,
+                shortDescription: parseDescription(item.shortDescription),
+            };
+            return updateItem;
         });
+
+        const meta = pagination(handleResult, page, limit, total);
+
+        return { items: handleResult, meta };
     }
 
     async updateNotificationsStatus(

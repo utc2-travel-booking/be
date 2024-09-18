@@ -96,6 +96,17 @@ export class Notification extends AggregateRoot {
     featuredImage: FileDocument;
 
     @SuperProp({
+        type: Date,
+        cms: {
+            label: 'Time Created',
+            tableShow: true,
+            columnPosition: 7,
+        },
+        default: () => new Date().toISOString(),
+    })
+    createdAt: Date;
+
+    @SuperProp({
         type: Types.ObjectId,
         ref: COLLECTION_NAMES.USER,
         refClass: User,
