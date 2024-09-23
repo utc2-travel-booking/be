@@ -18,30 +18,6 @@ export class MediaService extends BaseService<FileDocument, File> {
         moduleRef: ModuleRef,
     ) {
         super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
-        this.migrateFileToS3();
-    }
-
-    async migrateFileToS3() {
-        const files = await this.find({}).exec();
-
-        let count = 0;
-        for (const file of files) {
-            const { filePath } = file;
-            const urls = filePath.split('/');
-
-            if (urls.length > 0 && urls[2] === 'ton.app') {
-                const _file = await this.s3Service.uploadFileByUrl(
-                    filePath,
-                    appSettings.s3.folder,
-                    urls[urls.length - 1],
-                );
-
-                await this.fileModel.updateOne(
-                    { _id: file._id },
-                    { $set: { filePath: _file.url } },
-                );
-            }
-        }
     }
 
     async createFile(

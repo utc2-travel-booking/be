@@ -11,7 +11,6 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { removeDiacritics } from 'src/utils/helper';
 import { CreateTagDto } from '../dto/create-tags.dto';
 import { UpdateTagDto } from '../dto/update-tags.dto';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
