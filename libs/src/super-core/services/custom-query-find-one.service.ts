@@ -2,7 +2,7 @@ import { Expression, Document, PipelineStage } from 'mongoose';
 import { ICustomQueryFindOne } from './interfaces/custom-query-find-one.interface';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
 import { SGetCache } from '@libs/super-cache';
-import { CustomQueryBaseService } from 'src/base/service/base-query.service';
+import { CustomQueryBaseService } from 'libs/src/super-core/services/base-query.service';
 
 export class CustomQueryFindOneService<T extends Document>
     extends CustomQueryBaseService<T>

@@ -3,7 +3,7 @@ import { SGetCache } from '../../super-cache';
 import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
 import _ from 'lodash';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
-import { CustomQueryBaseService } from 'src/base/service/base-query.service';
+import { CustomQueryBaseService } from 'libs/src/super-core/services/base-query.service';
 
 export class CustomQueryCountDocumentsService<T extends Document>
     extends CustomQueryBaseService<T>

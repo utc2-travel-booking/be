@@ -45,17 +45,23 @@ export class S3Service {
         private readonly httpService: HttpService,
     ) {}
 
-    private returnUrl(key) {
+    private returnKey(folder: string, originalname: string) {
+        return (
+            `${appSettings.s3.bucket}/` +
+            folder +
+            `/${Date.now().toString()}-${originalname}`
+        );
+    }
+
+    private returnUrl(key: string) {
         return `https://${appSettings.s3.bucket}.s3.amazonaws.com/${key}`;
     }
 
     async uploadPublicFile(file: IUploadedMulterFile, folder: string) {
         try {
             const { buffer, originalname, mimetype } = file;
-            const key =
-                `${appSettings.s3.bucket}/` +
-                folder +
-                `/${Date.now().toString()}-${originalname}`;
+            const key = this.returnKey(folder, originalname);
+
             const command = new PutObjectCommand({
                 Bucket: `${appSettings.s3.bucket}`,
                 Body: buffer,
@@ -96,10 +102,7 @@ export class S3Service {
             const response = await this.httpService.axiosRef.get(url, {
                 responseType: 'arraybuffer',
             });
-            const key =
-                `${appSettings.s3.bucket}/` +
-                folder +
-                `/${Date.now().toString()}-${fileName}`;
+            const key = this.returnKey(folder, fileName);
             const buffer = Buffer.from(response.data, 'binary');
             const mimetype = response.headers['content-type'];
 
