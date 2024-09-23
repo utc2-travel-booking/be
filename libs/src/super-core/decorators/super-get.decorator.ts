@@ -1,6 +1,6 @@
 import { applyDecorators, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 
 export interface SuperGetOptions {
     route?: string;

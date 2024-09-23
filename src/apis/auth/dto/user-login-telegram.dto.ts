@@ -28,7 +28,7 @@ export class UserLoginTelegramDto {
 
     @SuperApiProperty({
         description: 'Telegram user username',
-        example: 'johndoe',
+        example: 'john doe',
     })
     @IsOptional()
     @IsString()

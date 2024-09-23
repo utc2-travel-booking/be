@@ -8,7 +8,7 @@ import { CommonModule } from './common/common.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SeedsModule } from './packages/seeds/seeds.module';
-import { appSettings } from './configs/appsettings';
+import { appSettings } from './configs/app-settings';
 import { AuditsModule } from './packages/audits/audits.module';
 import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-language.module';
 

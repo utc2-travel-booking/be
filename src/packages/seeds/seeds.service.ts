@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import fs from 'fs';
 import { Types } from 'mongoose';
 import { UserService } from 'src/apis/users/user.service';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { MetadataService } from 'src/apis/metadata/metadata.service';
 import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';

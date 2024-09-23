@@ -21,7 +21,6 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { removeDiacritics } from 'src/utils/helper';
 
 @Controller('categories')
 @Resource('categories')

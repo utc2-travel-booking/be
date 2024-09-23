@@ -5,7 +5,7 @@
         },
         "name": "Admin",
         "email": "admin@gmail.com",
-        "password": "$2a$10$WJCtdSLlM5HqXDm4Eu8N3uharIq9R/ykEjfRx0fGqXyeiNP8UspQO",
+        "password": "$2a$10$wbLPgDAJ3oTmQAiigDQwFe8rm.Mw7qLhhcD1uUHWTEg3yuhKLwaBC",
         "role": {
             "$oid": "667940bbf2b6c4781339f664"
         }
@@ -16,7 +16,7 @@
         },
         "name": "Admin",
         "email": "user@gmail.com",
-        "password": "$2a$10$WJCtdSLlM5HqXDm4Eu8N3uharIq9R/ykEjfRx0fGqXyeiNP8UspQO",
+        "password": "$2a$10$wbLPgDAJ3oTmQAiigDQwFe8rm.Mw7qLhhcD1uUHWTEg3yuhKLwaBC",
         "role": {
             "$oid": "667b7b83462a35d0fbe5d251"
         }

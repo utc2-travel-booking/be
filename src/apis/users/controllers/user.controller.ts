@@ -6,10 +6,11 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
-import { PERMISSION, SuperAuthorize } from '@libs/super-authorize';
+import { PERMISSION, Resource, SuperAuthorize } from '@libs/super-authorize';
 import { SuperGet, SuperPut } from '@libs/super-core';
 
 @Controller('users')
+@Resource('users')
 @ApiTags('Front: User')
 @AuditLog({
     events: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT, AUDIT_EVENT.DELETE],

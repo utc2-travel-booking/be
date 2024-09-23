@@ -20,7 +20,7 @@ import { Types } from 'mongoose';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 
