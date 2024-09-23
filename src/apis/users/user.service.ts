@@ -54,6 +54,11 @@ export class UserService
         }
     }
 
+    async getAllAdmin(queryParams) {
+        const result = await this.getAll(queryParams);
+        return result;
+    }
+
     async createOne(
         createUserDto: CreateUserDto,
         user: UserPayload,

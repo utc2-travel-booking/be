@@ -1,6 +1,6 @@
 import { createDocumentMultipleLanguage } from '../common/create.utils';
 import _ from 'lodash';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { RequestContext } from '@libs/super-request-context';
 
 export function CreateWithMultipleLanguage() {

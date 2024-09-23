@@ -5,10 +5,6 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { UpdateMeDto } from 'src/apis/users/dto/update-me.dto';
 import { UserService } from 'src/apis/users/user.service';
 import { Types } from 'mongoose';
-import {
-    PagingDtoPipe,
-    ExtendedPagingDto,
-} from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
@@ -21,6 +17,10 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import {
+    ExtendedPagingDto,
+    PagingDtoPipe,
+} from 'src/pipes/page-result.dto.pipe';
 
 @Controller('users')
 @Resource('users')
@@ -54,6 +54,17 @@ export class UserControllerAdmin {
     ) {
         const { user } = req;
         const result = await this.userService.unBan(_ids, user);
+        return result;
+    }
+
+    @SuperGet()
+    @SuperAuthorize(PERMISSION.GET)
+    async getAll(
+        @Query(new PagingDtoPipe())
+        queryParams: ExtendedPagingDto,
+    ) {
+        const result = await this.userService.getAllAdmin(queryParams);
+
         return result;
     }
 

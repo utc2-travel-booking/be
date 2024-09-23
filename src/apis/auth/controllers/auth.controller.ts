@@ -1,4 +1,4 @@
-import { Body, Controller, Req, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -31,10 +31,7 @@ export class AuthController {
         dto: UserLoginTelegramDto,
     })
     @UseGuards(LoginTelegramProviderGuard)
-    async loginTelegramProvider(
-        @Body() userLoginTelegramDto: UserLoginTelegramDto,
-        @Req() req: { user: UserPayload },
-    ) {
+    async loginTelegramProvider(@Req() req: { user: UserPayload }) {
         const { user } = req;
         return this.authService.login(user);
     }

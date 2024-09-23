@@ -1,6 +1,6 @@
 import { applyDecorators, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 
 export interface SuperDeleteOptions {
     route?: string;

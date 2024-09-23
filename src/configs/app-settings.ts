@@ -15,7 +15,7 @@ export const appSettings = {
         refreshExpireIn: process.env.JWT_REFRESH_EXPIRES_IN,
         issuer: process.env.JWT_ISSUER,
     },
-    oidc: {
+    openIdConnect: {
         sessionSecret: process.env.SESSION_SECRET,
     },
     mongoose: {

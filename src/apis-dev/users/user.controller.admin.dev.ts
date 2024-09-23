@@ -1,5 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { appSettings } from 'src/configs/appsettings';
+import { Body, Controller } from '@nestjs/common';
+import { appSettings } from 'src/configs/app-settings';
 import { ApiTags } from '@nestjs/swagger';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';

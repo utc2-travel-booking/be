@@ -1,7 +1,7 @@
 import { Controller, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { COLLECTION_NAMES } from 'src/constants';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IUploadedMulterFile } from 'src/packages/s3/s3.service';
 import { UserPayload } from 'src/base/models/user-payload.model';

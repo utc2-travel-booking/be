@@ -1,5 +1,5 @@
 import { updateDocumentMultipleLanguage } from '../common/update.utils';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import _ from 'lodash';
 import { RequestContext } from '@libs/super-request-context';
 
