@@ -1,3 +1,6 @@
+- yarn install -> yarn run start:dev
+
+
 -   [Authorize](#Authorize)
     -   [SuperAuthorizeModule](#SuperAuthorizeModule)
     -   [@Resource()](<#@Resource()>)

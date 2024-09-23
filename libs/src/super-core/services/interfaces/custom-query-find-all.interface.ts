@@ -1,9 +1,9 @@
-import { Document, Expression } from 'mongoose';
+import { Document } from 'mongoose';
+import { ICustomQueryBase } from 'src/base/interface/base.interface';
 
-export interface ICustomQueryFindAll<T extends Document> {
-    select(fields: Record<string, number>): this;
+export interface ICustomQueryFindAll<T extends Document>
+    extends ICustomQueryBase<T> {
     skip(value: number): this;
     limit(value: number): this;
-    sort(sort: Record<string, 1 | -1 | Expression.Meta>): this;
     exec(): Promise<T[]>;
 }

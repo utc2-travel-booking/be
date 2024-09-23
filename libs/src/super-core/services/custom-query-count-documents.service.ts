@@ -1,39 +1,14 @@
-import { ModuleRef } from '@nestjs/core';
-import { Model, PipelineStage, Document, Expression } from 'mongoose';
-import { COLLECTION_NAMES } from 'src/constants';
+import { PipelineStage, Document, Expression } from 'mongoose';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryCountDocuments } from './interfaces/custom-query-count-documents.interface';
 import _ from 'lodash';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
+import { CustomQueryBaseService } from 'src/base/service/base-query.service';
 
 export class CustomQueryCountDocumentsService<T extends Document>
+    extends CustomQueryBaseService<T>
     implements ICustomQueryCountDocuments
 {
-    private id: string;
-    private collectionName: COLLECTION_NAMES;
-    private model: Model<T>;
-    private _conditions: Record<string, any> = {};
-    private _pipeline: PipelineStage[] = [];
-    public static moduleRef: ModuleRef;
-    private _entity: new () => any;
-
-    constructor(
-        model: Model<T>,
-        entity: new () => any,
-        collectionName: COLLECTION_NAMES,
-        moduleRef: ModuleRef,
-        conditions: Record<string, any> = {},
-        pipeline: PipelineStage[] = [],
-    ) {
-        this.id = CustomQueryCountDocumentsService.name;
-        CustomQueryCountDocumentsService.moduleRef = moduleRef;
-        this.model = model;
-        this._conditions = conditions;
-        this._pipeline = pipeline;
-        this.collectionName = collectionName;
-        this._entity = entity;
-    }
-
     select(fields: Record<string, number>): this {
         this._pipeline.push({ $project: fields });
         return this;
