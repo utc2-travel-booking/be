@@ -36,7 +36,7 @@ export const resetMissionTime = () => {
 
 export const compareToday = (dateFromApi: Date): boolean => {
     const today = dayjs().startOf('day');
-    const isSameDay = dayjs(dateFromApi).isAfter(today)
+    const isSameDay = dayjs(dateFromApi).isAfter(today);
 
     return isSameDay;
 };

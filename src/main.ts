@@ -58,7 +58,7 @@ async function bootstrap() {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    if (_.isEqual(appSettings.development, 'true')) {
+    if (appSettings.development) {
         const config = new DocumentBuilder()
             .setTitle('API Documentation')
             .setDescription('API description')
