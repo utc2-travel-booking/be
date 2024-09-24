@@ -44,8 +44,8 @@ export class UserTransactionService extends BaseService<
             },
         ]);
 
-        if (aggregate.length < 0) {
-            return 0;
+        if (!aggregate || aggregate.length < 0) {
+            return 0
         }
         return aggregate[0].total;
     }
