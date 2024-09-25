@@ -8,22 +8,23 @@ export class AuthService {
     constructor(private readonly jwtService: JwtService) {}
 
     async login(user: UserPayload) {
-        const tokens = await this.getTokens(user);
+        const tokens = this.getTokens(user);
         return tokens;
     }
 
     private async getTokens(user: UserPayload) {
         const { _id } = user;
 
-        const refreshToken = await this.jwtService.signAsync(
-            { _id },
-            {
-                expiresIn: appSettings.jwt.refreshExpireIn,
-                secret: appSettings.jwt.refreshSecret,
-            },
-        );
-
-        const accessToken = await this.jwtService.signAsync(user);
+        const [refreshToken, accessToken] = await Promise.all([
+            this.jwtService.signAsync(
+                { _id },
+                {
+                    expiresIn: appSettings.jwt.refreshExpireIn,
+                    secret: appSettings.jwt.refreshSecret,
+                },
+            ),
+            this.jwtService.signAsync(user),
+        ]);
 
         return {
             accessToken,
