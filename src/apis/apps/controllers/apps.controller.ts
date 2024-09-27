@@ -19,7 +19,6 @@ import {
 } from 'src/pipes/page-result.dto.pipe';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
-import { removeDiacritics } from 'src/utils/helper';
 import { AppsService } from '../apps.service';
 import { SubmitAppDto } from '../dto/submit-app.dto';
 

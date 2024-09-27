@@ -4,8 +4,6 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
-import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
-import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
@@ -37,13 +35,10 @@ export class PostsController {
         return result;
     }
 
-    @SuperGet({ route: ':type/:id' })
-    @ApiParam({ name: 'id', type: String })
-    async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Param('type') type: PostType,
-    ) {
-        const result = await this.postsService.getOneByIdForFront(_id, {
+    @SuperGet({ route: ':type/:slug' })
+    @ApiParam({ name: 'slug', type: String })
+    async getOne(@Param('slug') slug: string, @Param('type') type: PostType) {
+        const result = await this.postsService.getOneByIdForFront(slug, {
             type,
             status: PostStatus.PUBLISHED,
         });
