@@ -36,13 +36,15 @@ export class CategoriesController {
         return result;
     }
 
-    @SuperGet({ route: ':type/:id' })
-    @ApiParam({ name: 'id', type: String })
+    @SuperGet({ route: ':type/:slug' })
+    @ApiParam({ name: 'slug', type: String })
     async getOne(
-        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Param('slug') slug: string,
         @Param('type') type: CategoryType,
     ) {
-        const result = await this.categoriesService.getOne(_id, { type });
+        const result = await this.categoriesService.getOneBySlug(slug, {
+            type,
+        });
         return result;
     }
 }

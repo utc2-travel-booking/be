@@ -163,24 +163,6 @@ export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<
         });
     }
 
-    async getOneByIdForFront(
-        _id: Types.ObjectId,
-        options?: Record<string, any>,
-    ) {
-        const filterPipeline: PipelineStage[] = [];
-        activePublications(filterPipeline);
-
-        const result = await this.findOne(
-            {
-                $or: [{ _id }, { slug: _id }],
-                ...options,
-            },
-            filterPipeline,
-        ).exec();
-
-        return result;
-    }
-
     async delete(filter: FilterQuery<T>) {
         return await this.updateOne(filter, {
             deletedAt: new Date(),

@@ -32,10 +32,10 @@ export class TagsController {
         return result;
     }
 
-    @SuperGet({ route: ':id' })
-    @ApiParam({ name: 'id', type: String, description: 'ID/Slug' })
-    async getOne(@Param('id', ParseObjectIdPipe) _id: Types.ObjectId) {
-        const result = await this.tagsService.getOne(_id);
+    @SuperGet({ route: ':slug' })
+    @ApiParam({ name: 'slug', type: String, description: 'Slug' })
+    async getOne(@Param('slug') slug: string) {
+        const result = await this.tagsService.getOneBySlug(slug);
         return result;
     }
 }

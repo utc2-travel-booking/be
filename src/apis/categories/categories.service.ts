@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import { Category, CategoryDocument } from './entities/categories.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -133,5 +137,24 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
 
             await this.updatePosition(position, _tagApp?.type, _tagApp._id);
         }
+    }
+
+    async getOneBySlug(
+        slug: string,
+        options?: Record<string, any>,
+    ): Promise<any> {
+        const result = await this.findOne({
+            slug,
+            ...options,
+        }).exec();
+
+        if (!result) {
+            throw new NotFoundException(
+                'category_not_found',
+                'Category not found',
+            );
+        }
+
+        return result;
     }
 }

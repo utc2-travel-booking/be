@@ -3,6 +3,7 @@ import {
     forwardRef,
     Inject,
     Injectable,
+    NotFoundException,
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
@@ -350,18 +351,10 @@ export class AppsService extends BaseService<AppDocument, App> {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne(
-            {
-                $or: [{ _id }, { slug: _id }],
-            },
-            filterPipeline,
-        ).exec();
+        const result = await this.findOne({ slug: _id }, filterPipeline).exec();
 
         if (!result) {
-            throw new UnprocessableEntityException(
-                'app_not_found',
-                'App not found',
-            );
+            throw new NotFoundException('app_not_found', 'App not found');
         }
 
         return {

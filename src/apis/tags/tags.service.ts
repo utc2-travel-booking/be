@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { BaseService } from 'src/base/service/base.service';
 import { Tag, TagDocument } from './entities/tags.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,5 +14,21 @@ export class TagsService extends BaseService<TagDocument, Tag> {
         moduleRef: ModuleRef,
     ) {
         super(tagModel, Tag, COLLECTION_NAMES.TAG, moduleRef);
+    }
+
+    async getOneBySlug(
+        slug: string,
+        options?: Record<string, any>,
+    ): Promise<any> {
+        const result = await this.findOne({
+            slug,
+            ...options,
+        }).exec();
+
+        if (!result) {
+            throw new NotFoundException('tag_not_found', 'Tag not found');
+        }
+
+        return result;
     }
 }
