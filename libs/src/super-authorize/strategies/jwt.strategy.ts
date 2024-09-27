@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(userPayload: UserPayload) {
+    async validate(req: Request, userPayload: UserPayload) {
         const { roleId, _id } = userPayload;
 
         const [permissions, usersBannedInCache] = await Promise.all([

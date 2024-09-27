@@ -9,6 +9,7 @@ import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller()
 @Resource()
@@ -27,9 +28,7 @@ export class AuthControllerAdmin {
 
     @SuperPost({ route: 'login', dto: UserLoginDto })
     @UseGuards(LocalAuthGuard)
-    async login(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-
+    async login(@Me() user: UserPayload) {
         if (!user) {
             return undefined;
         }
