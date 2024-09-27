@@ -8,6 +8,7 @@ import { UpdateMeDto } from '../dto/update-me.dto';
 import { UserService } from '../user.service';
 import { PERMISSION, Resource, SuperAuthorize } from '@libs/super-authorize';
 import { SuperGet, SuperPut } from '@libs/super-core';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('users')
 @Resource('users')
@@ -21,20 +22,14 @@ export class UserController {
 
     @SuperGet({ route: 'me' })
     @SuperAuthorize(PERMISSION.GET)
-    async getMe(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-
+    async getMe(@Me() user: UserPayload) {
         const result = await this.userService.getMe(user);
         return result;
     }
 
     @SuperPut({ route: 'me', dto: UpdateMeDto })
     @SuperAuthorize(PERMISSION.PUT)
-    async updateMe(
-        @Body() updateMeDto: UpdateMeDto,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    async updateMe(@Body() updateMeDto: UpdateMeDto, @Me() user: UserPayload) {
         return this.userService.updateMe(user, updateMeDto);
     }
 }

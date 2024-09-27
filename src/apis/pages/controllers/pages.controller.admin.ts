@@ -17,6 +17,7 @@ import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { COLLECTION_NAMES } from 'src/constants';
 import _ from 'lodash';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('pages')
 @Resource('pages')
@@ -56,9 +57,8 @@ export class PagesControllerAdmin {
     })
     async create(
         @Body() createPagesDto: CreatePagesDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = createPagesDto;
         const result = await this.pagesService.createOne(createPagesDto, user, {
             slug: await this.pagesService.generateSlug(name),
@@ -78,9 +78,8 @@ export class PagesControllerAdmin {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updatePagesDto: UpdatePagesDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = updatePagesDto;
         const result = await this.pagesService.updateOneById(
             _id,
@@ -98,10 +97,8 @@ export class PagesControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.pagesService.deletes(_ids, user);
         return result;
     }
