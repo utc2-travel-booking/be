@@ -1,4 +1,10 @@
-import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
+import {
+    forwardRef,
+    HttpException,
+    Inject,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import axios from 'axios';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -19,6 +25,7 @@ import { UserService } from '../users/user.service';
 
 @Injectable()
 export class MissionService {
+    private readonly logger = new Logger(MissionService.name);
     constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userServices: UserService,
@@ -85,9 +92,10 @@ export class MissionService {
 
             return data;
         } catch (e) {
-            throw new HttpException(e.message, 400);
+            this.logger.error(e);
         }
     }
+
     async updateMissionProcess(ids: string[], telegramId: string) {
         try {
             const url = `${appSettings.mission.baseUrl}/mission/progress`;
@@ -99,7 +107,7 @@ export class MissionService {
             const res = await axios.put(url, payload);
             return res.data;
         } catch (e) {
-            throw new HttpException(e.response.data, 400);
+            this.logger.error(e);
         }
     }
 
