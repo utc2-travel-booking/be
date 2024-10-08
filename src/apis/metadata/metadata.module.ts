@@ -1,14 +1,18 @@
-import { MongooseModule } from '@nestjs/mongoose';
 import { MetadataService } from './metadata.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
-import { MetadataSchema } from './entities/metadata.entity';
+import { Metadata, MetadataSchema } from './entities/metadata.entity';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
+import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: COLLECTION_NAMES.METADATA, schema: MetadataSchema },
+        ExtendedMongooseModule.forFeature([
+            {
+                name: COLLECTION_NAMES.METADATA,
+                schema: MetadataSchema,
+                entity: Metadata,
+            },
         ]),
         SuperCacheModule,
     ],

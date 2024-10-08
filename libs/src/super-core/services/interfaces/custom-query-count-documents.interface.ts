@@ -1,4 +1,4 @@
-import { ICustomQueryBase } from 'src/base/interface/base.interface';
+import { ICustomQueryBase } from './custom-query-base.interface';
 
 export interface ICustomQueryCountDocuments extends ICustomQueryBase<any> {
     skip(value: number): this;

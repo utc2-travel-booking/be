@@ -2,43 +2,42 @@ import {
     BadRequestException,
     Injectable,
     NotFoundException,
-    OnModuleInit,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage, Types } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Post, PostDocument } from './entities/posts.entity';
-import { BaseService } from 'src/base/service/_base.service';
+import { PostDocument } from './entities/posts.entity';
+import { BaseService } from 'src/base/service/base.service';
 import { UpdatePostDto } from './dto/update-posts.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreatePostDto } from './dto/create-posts.dto';
-import _ from 'lodash';
 import { PostType } from './constants';
-import { ModuleRef } from '@nestjs/core';
 import { calculateEstimatedReadingTime } from './common/calculate-estimated-reading-time.until';
 import { activePublications } from 'src/base/aggregates/active-publications.aggregates';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class PostsService extends BaseService<PostDocument, Post> {
+export class PostsService extends BaseService<PostDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.POST)
-        private readonly postModel: Model<PostDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.POST)
+        private readonly postModel: ExtendedModel<PostDocument>,
     ) {
-        super(postModel, Post, COLLECTION_NAMES.POST, moduleRef);
+        super(postModel);
     }
 
     async getOneByIdForFront(slug: string, options?: Record<string, any>) {
         const filterPipeline: PipelineStage[] = [];
         activePublications(filterPipeline);
 
-        const result = await this.findOne(
-            {
-                slug,
-                ...options,
-            },
-            filterPipeline,
-        ).exec();
+        const result = await this.postModel
+            .findOne(
+                {
+                    slug,
+                    ...options,
+                },
+                filterPipeline,
+            )
+            .exec();
 
         if (!result) {
             throw new NotFoundException('post_not_found', 'Post not found');
@@ -60,15 +59,13 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const estimatedReadingTime =
             calculateEstimatedReadingTime(longDescription);
 
-        const result = new this.postModel({
+        const result = await this.postModel.create({
             ...createPostDto,
             ...options,
             type,
             createdBy: user._id,
             estimatedReadingTime,
         });
-
-        await this.create(result);
         return result;
     }
 
@@ -87,7 +84,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const estimatedReadingTime =
             calculateEstimatedReadingTime(longDescription);
 
-        const result = await this.findOneAndUpdate(
+        const result = await this.postModel.findOneAndUpdate(
             { _id, type },
             {
                 ...updatePostDto,
@@ -112,7 +109,7 @@ export class PostsService extends BaseService<PostDocument, Post> {
         const { _id: userId } = user;
         const data = await this.postModel.find({ _id: { $in: _ids }, type });
 
-        await this.updateMany(
+        await this.postModel.updateMany(
             { _id: { $in: _ids }, type },
             { deletedAt: new Date(), deletedBy: userId },
         );
@@ -128,11 +125,12 @@ export class PostsService extends BaseService<PostDocument, Post> {
         if (!position) {
             return;
         }
-        const post = await this.findOne({
-            position,
-            type,
-            _id: { $ne: thisId },
-        })
+        const post = await this.postModel
+            .findOne({
+                position,
+                type,
+                _id: { $ne: thisId },
+            })
             .autoPopulate(false)
             .exec();
 
@@ -142,7 +140,6 @@ export class PostsService extends BaseService<PostDocument, Post> {
             const _post = await this.model.findOneAndUpdate(
                 { _id: new Types.ObjectId(post?._id) },
                 { position },
-                { new: true },
             );
 
             await this.updatePosition(position, _post?.type, _post._id);

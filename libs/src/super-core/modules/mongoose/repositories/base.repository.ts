@@ -177,4 +177,9 @@ export class BaseRepositories<T extends AggregateRoot, E>
     findByIdAndDelete(id?: Types.ObjectId | any) {
         return this.model.findByIdAndDelete(id);
     }
+
+    @DeleteCache()
+    aggregate(pipeline: PipelineStage[]) {
+        return this.model.aggregate(pipeline);
+    }
 }

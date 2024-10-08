@@ -4,7 +4,7 @@ import {
     OnModuleInit,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
 import { UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -17,9 +17,10 @@ import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModelExtend } from '@libs/super-core';
+import { ExtendedInjectModel } from '@libs/super-core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
+import { RolesService } from '@libs/super-authorize/modules/roles/roles.service';
 
 @Injectable()
 export class UserService
@@ -27,10 +28,10 @@ export class UserService
     implements OnModuleInit
 {
     constructor(
-        @InjectModelExtend(COLLECTION_NAMES.USER)
+        @ExtendedInjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: ExtendedModel<UserDocument>,
+        private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
-        moduleRef: ModuleRef,
     ) {
         super(userModel);
     }
@@ -59,11 +60,6 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
-    }
-
-    async getAllAdmin(queryParams: ExtendedPagingDto) {
-        const result = await this.getAll(queryParams);
-        return result;
     }
 
     async createOne(

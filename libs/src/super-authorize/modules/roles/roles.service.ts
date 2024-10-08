@@ -2,34 +2,36 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Role, RoleDocument } from './entities/roles.entity';
 import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { RoleType } from './constants';
 import { ModuleRef } from '@nestjs/core';
 import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class RolesService extends BaseService<RoleDocument, Role> {
+export class RolesService extends BaseService<RoleDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.ROLE)
-        private readonly roleModel: Model<RoleDocument>,
+        @ExtendedInjectModel(COLLECTION_NAMES.ROLE)
+        private readonly roleModel: ExtendedModel<RoleDocument>,
         private readonly superCacheService: SuperCacheService,
-        private readonly permissionsService: PermissionsService,
-        moduleRef: ModuleRef,
     ) {
-        super(roleModel, Role, COLLECTION_NAMES.ROLE, moduleRef);
+        super(roleModel);
     }
 
     async getRoleByType(type: RoleType) {
-        return await this.findOne({ type }).exec();
+        return await this.roleModel.findOne({ type }).exec();
     }
 
     async getOne(_id: Types.ObjectId, options?: Record<string, any>) {
-        const result = await this.findOne({
-            _id,
-            ...options,
-        }).exec();
+        const result = await this.roleModel
+            .findOne({
+                _id,
+                ...options,
+            })
+            .exec();
 
         if (!result) {
             throw new BadRequestException(`Not found ${_id}`);
@@ -47,9 +49,7 @@ export class RolesService extends BaseService<RoleDocument, Role> {
             return cachePermissions;
         }
 
-        const role = await this.roleModel
-            .findById(roleId)
-            .populate('permissions');
+        const role = await this.roleModel.findById(roleId).exec();
 
         await this.superCacheService.set(`role:${roleId}`, role?.permissions);
 

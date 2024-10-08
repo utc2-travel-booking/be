@@ -21,7 +21,7 @@ export class SEOTag {
     timestamps: true,
     collection: COLLECTION_NAMES.PAGE,
 })
-export class Pages extends AggregateRoot {
+export class Page extends AggregateRoot {
     @SuperProp({
         type: String,
         required: true,
@@ -82,6 +82,6 @@ export class Pages extends AggregateRoot {
     createdBy: Types.ObjectId;
 }
 
-export type PagesDocument = Pages & Document;
-export const PagesSchema = SchemaFactory.createForClass(Pages);
-PagesSchema.plugin(autopopulateSoftDelete);
+export type PageDocument = Page & Document;
+export const PageSchema = SchemaFactory.createForClass(Page);
+PageSchema.plugin(autopopulateSoftDelete);
