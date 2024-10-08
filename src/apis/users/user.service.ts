@@ -30,7 +30,6 @@ export class UserService
     constructor(
         @ExtendedInjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: ExtendedModel<UserDocument>,
-        private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
     ) {
         super(userModel);
@@ -60,6 +59,11 @@ export class UserService
 
             await this.addCacheBannedUser(ids);
         }
+    }
+
+    async getAllAdmin(queryParams: ExtendedPagingDto) {
+        const result = await this.getAll(queryParams);
+        return result;
     }
 
     async createOne(

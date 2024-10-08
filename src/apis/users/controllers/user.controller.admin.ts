@@ -62,7 +62,6 @@ export class UserControllerAdmin {
         queryParams: ExtendedPagingDto,
     ) {
         const result = await this.userService.getAllAdmin(queryParams);
-
         return result;
     }
 

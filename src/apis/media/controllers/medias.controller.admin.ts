@@ -30,7 +30,6 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
-import { Me } from 'src/decorators/me.decorator';
 import { SuperPut } from '@libs/super-core';
 import { UpdateMediaDto } from '../dto/update-media.dto';
 import { Me } from 'src/decorators/me.decorator';
