@@ -1,37 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
-import {
-    TelegramBot,
-    TelegramBotDocument,
-} from './entities/telegram-bot.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { BaseService } from 'src/base/service/base.service';
+import { TelegramBotDocument } from './entities/telegram-bot.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model } from 'mongoose';
-import { ModuleRef } from '@nestjs/core';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class TelegramBotService extends BaseService<
-    TelegramBotDocument,
-    TelegramBot
-> {
+export class TelegramBotService extends BaseService<TelegramBotDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.TELEGRAM_BOT)
-        private readonly telegramBotModel: Model<TelegramBotDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.TELEGRAM_BOT)
+        private readonly telegramBotModel: ExtendedModel<TelegramBotDocument>,
     ) {
-        super(
-            telegramBotModel,
-            TelegramBot,
-            COLLECTION_NAMES.TELEGRAM_BOT,
-            moduleRef,
-        );
+        super(telegramBotModel);
     }
 
     async findByDomain(domain: string): Promise<TelegramBotDocument> {
         if (!domain) {
             return null;
         }
-        const result = await this.findOne({ domain }).exec();
+        const result = await this.telegramBotModel.findOne({ domain }).exec();
         return result;
     }
 }

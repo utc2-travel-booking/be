@@ -1,40 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
-import {
-    FormBuilderDocument,
-    FormBuilder,
-} from './entities/form-builders.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { FormBuilderDocument } from './entities/form-builders.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model } from 'mongoose';
 import { CreateFormBuildersDto } from './dto/create-form-builders.dto';
-import { ModuleRef } from '@nestjs/core';
 import TelegramBot from 'node-telegram-bot-api';
 import { appSettings } from 'src/configs/app-settings';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class FormBuilderService extends BaseService<
-    FormBuilderDocument,
-    FormBuilder
-> {
+export class FormBuilderService extends BaseService<FormBuilderDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.FORM_BUILDER)
-        private readonly formBuildersModel: Model<FormBuilderDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.FORM_BUILDER)
+        private readonly formBuildersModel: ExtendedModel<FormBuilderDocument>,
     ) {
-        super(
-            formBuildersModel,
-            FormBuilder,
-            COLLECTION_NAMES.FORM_BUILDER,
-            moduleRef,
-        );
+        super(formBuildersModel);
     }
     async createOne(createFormBuilderDto: CreateFormBuildersDto) {
         const { type, subject, name, email, content } = createFormBuilderDto;
-        const result = new this.model({
+        const result = await this.formBuildersModel.create({
             ...createFormBuilderDto,
         });
-        await this.create(result);
 
         const bot = new TelegramBot(
             appSettings.provider.telegram.contractBotToken,

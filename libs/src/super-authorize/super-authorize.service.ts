@@ -16,7 +16,7 @@ export class SuperAuthorizeService implements OnModuleInit {
 
     async onModuleInit() {
         const permissionMetadata = PermissionStorage.getPermissionMetadata();
-        const permissions = await this.permissionsService.find({}).exec();
+        const permissions = await this.permissionsService.model.find({}).exec();
 
         const newPermissions = _.differenceWith(
             permissionMetadata,
@@ -28,7 +28,7 @@ export class SuperAuthorizeService implements OnModuleInit {
         );
 
         if (!_.isEmpty(newPermissions)) {
-            await this.permissionsService.insertMany(newPermissions);
+            await this.permissionsService.model.insertMany(newPermissions);
         }
 
         const permissionsToDelete = _.differenceWith(
@@ -42,7 +42,7 @@ export class SuperAuthorizeService implements OnModuleInit {
 
         if (!_.isEmpty(permissionsToDelete)) {
             const deletePromises = _.map(permissionsToDelete, (item) =>
-                this.permissionsService.deleteOne({ _id: item._id }),
+                this.permissionsService.model.deleteOne({ _id: item._id }),
             );
             await Promise.all(deletePromises);
         }

@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { MediaService } from './medias.service';
 import { S3Module } from 'src/packages/s3/s3.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { FileSchema } from './entities/files.entity';
+import { File, FileSchema } from './entities/files.entity';
 import { COLLECTION_NAMES } from 'src/constants';
+import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([
+        ExtendedMongooseModule.forFeature([
             {
                 name: COLLECTION_NAMES.FILE,
                 schema: FileSchema,
+                entity: File,
             },
         ]),
         S3Module,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
+import { BaseService } from 'src/base/service/base.service';
 import {
     Notification,
     NotificationDocument,
@@ -17,32 +17,26 @@ import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { EVENT_NAME } from 'src/packages/websocket/constants';
 import { CreateNotificationModel } from './models/create-notification.model';
 import { parseDescription } from './common/handle-description.util';
-import { it } from 'node:test';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class NotificationsService extends BaseService<
-    NotificationDocument,
-    Notification
-> {
+export class NotificationsService extends BaseService<NotificationDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.NOTIFICATION)
-        private readonly notificationModel: Model<NotificationDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.NOTIFICATION)
+        private readonly notificationModel: ExtendedModel<NotificationDocument>,
+
         private readonly websocketGateway: WebsocketGateway,
     ) {
-        super(
-            notificationModel,
-            Notification,
-            COLLECTION_NAMES.NOTIFICATION,
-            moduleRef,
-        );
+        super(notificationModel);
     }
 
     async countNotificationUnreadOfUser(userId: Types.ObjectId) {
-        return this.countDocuments({
-            user: userId,
-            status: UserNotificationStatus.UNREAD,
-        })
+        return this.notificationModel
+            .countDocuments({
+                user: userId,
+                status: UserNotificationStatus.UNREAD,
+            })
             .autoPopulate(false)
             .exec();
     }
@@ -62,23 +56,26 @@ export class NotificationsService extends BaseService<
         } = queryParams;
         const { _id } = user;
 
-        const resultPromise = this.find(
-            {
-                'user._id': _id,
-                status: { $ne: UserNotificationStatus.DELETED },
-            },
-            filterPipeline,
-        )
+        const resultPromise = this.notificationModel
+            .find(
+                {
+                    'user._id': _id,
+                    status: { $ne: UserNotificationStatus.DELETED },
+                },
+                filterPipeline,
+            )
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit)
             .select(select)
             .exec();
 
-        const totalPromise = this.countDocuments({
-            'user._id': _id,
-            ...filterPipeline,
-        }).exec();
+        const totalPromise = this.notificationModel
+            .countDocuments({
+                'user._id': _id,
+                ...filterPipeline,
+            })
+            .exec();
 
         const [result, total] = await Promise.all([
             resultPromise,
@@ -105,7 +102,7 @@ export class NotificationsService extends BaseService<
         const { notifications } = updateStatusNotificationDto;
         const { _id } = userPayload;
 
-        await this.updateMany(
+        await this.notificationModel.updateMany(
             { _id: { $in: notifications }, user: _id },
             { status: UserNotificationStatus.READ },
         );
@@ -116,7 +113,7 @@ export class NotificationsService extends BaseService<
     async deleteNotificationOfUser(_id: Types.ObjectId, user: UserPayload) {
         const { _id: userId } = user;
 
-        const result = await this.findOneAndUpdate(
+        const result = await this.notificationModel.findOneAndUpdate(
             { _id, user: userId },
             { status: UserNotificationStatus.DELETED },
         );
@@ -129,7 +126,7 @@ export class NotificationsService extends BaseService<
     async updateAllStatus(user: UserPayload) {
         const { _id } = user;
 
-        await this.updateMany(
+        await this.notificationModel.updateMany(
             { user: _id },
             { status: UserNotificationStatus.READ },
         );
@@ -141,7 +138,7 @@ export class NotificationsService extends BaseService<
         const { name, userId, refId, shortDescription, refSource } =
             createNotificationModel;
 
-        const newNotification = await this.create({
+        const newNotification = await this.notificationModel.create({
             name,
             shortDescription,
             user: userId,
@@ -152,9 +149,11 @@ export class NotificationsService extends BaseService<
         if (newNotification) {
             await this.sendSocketCountNotificationUnread(userId);
 
-            const notification = await this.findOne({
-                _id: newNotification._id,
-            }).exec();
+            const notification = await this.notificationModel
+                .findOne({
+                    _id: newNotification._id,
+                })
+                .exec();
 
             this.websocketGateway.sendToClient(
                 userId,

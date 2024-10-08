@@ -1,43 +1,31 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
-import {
-    ReviewRating,
-    ReviewRatingDocument,
-} from './entities/review-ratings.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { BaseService } from 'src/base/service/base.service';
+import { ReviewRatingDocument } from './entities/review-ratings.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateReviewRatingDto } from './dto/create-review-rating.dto';
 import _ from 'lodash';
 import { SumRatingAppModel } from '../apps/models/sum-rating-app.model';
 import { APP_EVENT_HANDLER } from '../apps/constants';
-import { ModuleRef } from '@nestjs/core';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from '@libs/super-search';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { AppsService } from '../apps/apps.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class ReviewRatingService extends BaseService<
-    ReviewRatingDocument,
-    ReviewRating
-> {
+export class ReviewRatingService extends BaseService<ReviewRatingDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.REVIEW_RATING)
-        private readonly reviewModel: Model<ReviewRatingDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.REVIEW_RATING)
+        private readonly reviewModel: ExtendedModel<ReviewRatingDocument>,
         private readonly eventEmitter: EventEmitter2,
         private readonly websocketGateway: WebsocketGateway,
         private readonly appService: AppsService,
     ) {
-        super(
-            reviewModel,
-            ReviewRating,
-            COLLECTION_NAMES.REVIEW_RATING,
-            moduleRef,
-        );
+        super(reviewModel);
     }
 
     async getAllForFront(
@@ -54,7 +42,7 @@ export class ReviewRatingService extends BaseService<
             select,
         } = queryParams;
 
-        const app = await this.appService
+        const app = await this.appService.model
             .findOne({
                 $or: [{ _id: appId }, { slug: appId }],
             })
@@ -64,40 +52,43 @@ export class ReviewRatingService extends BaseService<
             return null;
         }
 
-        const result = this.find(
-            {
-                app: app._id,
-            },
-            [
-                ...filterPipeline,
+        const result = this.reviewModel
+            .find(
                 {
-                    $lookup: {
-                        from: 'files',
-                        localField: 'createdBy.avatar',
-                        foreignField: '_id',
-                        as: 'createdBy.avatar',
-                    },
+                    app: app._id,
                 },
-                {
-                    $unwind: {
-                        path: '$createdBy.avatar',
-                        preserveNullAndEmptyArrays: true,
+                [
+                    ...filterPipeline,
+                    {
+                        $lookup: {
+                            from: 'files',
+                            localField: 'createdBy.avatar',
+                            foreignField: '_id',
+                            as: 'createdBy.avatar',
+                        },
                     },
-                },
-            ],
-        )
+                    {
+                        $unwind: {
+                            path: '$createdBy.avatar',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ],
+            )
             .limit(limit)
             .skip(skip)
             .sort({ [sortBy]: sortDirection })
             .select(select)
             .exec();
 
-        const total = this.countDocuments(
-            {
-                app: app._id,
-            },
-            filterPipeline,
-        ).exec();
+        const total = this.reviewModel
+            .countDocuments(
+                {
+                    app: app._id,
+                },
+                filterPipeline,
+            )
+            .exec();
 
         return Promise.all([result, total]).then(([items, total]) => {
             const meta = pagination(items, page, limit, total);
@@ -115,12 +106,11 @@ export class ReviewRatingService extends BaseService<
 
         await this.userJustOneReviewEachApp(userId, app);
 
-        const result = new this.reviewModel({
+        const result = await this.reviewModel.create({
             ...createReviewRatingDto,
             ...options,
             createdBy: userId,
         });
-        await this.create(result);
 
         if (result) {
             const sumRatingAppModel: SumRatingAppModel = {
@@ -142,10 +132,11 @@ export class ReviewRatingService extends BaseService<
         createdBy: Types.ObjectId,
         app: Types.ObjectId,
     ) {
-        const review = await this.findOne({
-            createdBy: createdBy,
-            app: app,
-        })
+        const review = await this.reviewModel
+            .findOne({
+                createdBy: createdBy,
+                app: app,
+            })
             .autoPopulate(false)
             .exec();
 
@@ -155,7 +146,7 @@ export class ReviewRatingService extends BaseService<
     }
 
     async reviewRatingOverviewForApp(appId: Types.ObjectId) {
-        const app = await this.appService
+        const app = await this.appService.model
             .findOne({
                 $or: [{ _id: appId }, { slug: appId }],
             })
@@ -165,9 +156,10 @@ export class ReviewRatingService extends BaseService<
             return null;
         }
 
-        const reviews = await this.find({
-            app: app._id,
-        })
+        const reviews = await this.reviewModel
+            .find({
+                app: app._id,
+            })
             .autoPopulate(false)
             .exec();
 
@@ -193,27 +185,29 @@ export class ReviewRatingService extends BaseService<
         reviewRatingId: Types.ObjectId,
         appId: Types.ObjectId,
     ) {
-        const result = await this.findOne(
-            {
-                _id: new Types.ObjectId(reviewRatingId),
-            },
-            [
+        const result = await this.reviewModel
+            .findOne(
                 {
-                    $lookup: {
-                        from: 'files',
-                        localField: 'createdBy.avatar',
-                        foreignField: '_id',
-                        as: 'createdBy.avatar',
-                    },
+                    _id: new Types.ObjectId(reviewRatingId),
                 },
-                {
-                    $unwind: {
-                        path: '$createdBy.avatar',
-                        preserveNullAndEmptyArrays: true,
+                [
+                    {
+                        $lookup: {
+                            from: 'files',
+                            localField: 'createdBy.avatar',
+                            foreignField: '_id',
+                            as: 'createdBy.avatar',
+                        },
                     },
-                },
-            ],
-        ).exec();
+                    {
+                        $unwind: {
+                            path: '$createdBy.avatar',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ],
+            )
+            .exec();
 
         this.websocketGateway.sendNewReviewRating(appId, result);
     }

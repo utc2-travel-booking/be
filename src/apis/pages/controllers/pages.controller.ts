@@ -19,7 +19,7 @@ export class PagesController {
 
     @SuperGet({ route: ':slug' })
     async getOne(@Param('slug') slug: string) {
-        const result = await this.pagesService
+        const result = await this.pagesService.model
             .findOne({ slug })
             .select({ createdBy: 0 })
             .exec();

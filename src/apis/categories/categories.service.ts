@@ -3,7 +3,6 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
 import { Category, CategoryDocument } from './entities/categories.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -13,15 +12,17 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { ModuleRef } from '@nestjs/core';
 import { CreateCategoryDto } from './dto/create-categories.dto';
 import { CategoryType } from './constants';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class CategoriesService extends BaseService<CategoryDocument, Category> {
+export class CategoriesService extends BaseService<CategoryDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.CATEGORIES)
-        private readonly categoryModel: Model<CategoryDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.CATEGORIES)
+        private readonly categoryModel: ExtendedModel<CategoryDocument>,
     ) {
-        super(categoryModel, Category, COLLECTION_NAMES.CATEGORIES, moduleRef);
+        super(categoryModel);
     }
 
     async createOne(
@@ -34,13 +35,11 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
 
         await this.updatePosition(position, type);
 
-        const result = new this.model({
+        const result = await this.categoryModel.create({
             ...createCategoryDto,
             ...options,
             createdBy: userId,
         });
-        await this.create(result);
-
         return result;
     }
 
@@ -55,7 +54,7 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
 
         await this.updatePosition(position, type);
 
-        const result = await this.findOneAndUpdate(
+        const result = await this.categoryModel.findOneAndUpdate(
             { _id },
             { ...updateCategoryDto, ...options, updatedBy: userId },
         );
@@ -79,7 +78,7 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
             type,
         };
 
-        const data = await this.categoryModel.find(condition);
+        const data = await this.categoryModel.find(condition).exec();
 
         await this.categoryModel.updateMany(condition, {
             deletedAt: new Date(),
@@ -97,7 +96,7 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
     ) {
         const { _id: userId } = user;
 
-        const result = await this.findOneAndUpdate(
+        const result = await this.categoryModel.findOneAndUpdate(
             { _id, type },
             { ...updateCategoryDto, updatedBy: userId },
         );
@@ -118,21 +117,21 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
             return;
         }
 
-        const category = await this.findOne({
-            position,
-            type,
-            _id: { $ne: thisId },
-        })
+        const category = await this.categoryModel
+            .findOne({
+                position,
+                type,
+                _id: { $ne: thisId },
+            })
             .autoPopulate(false)
             .exec();
 
         if (category) {
             position++;
 
-            const _tagApp = await this.model.findOneAndUpdate(
+            const _tagApp = await this.categoryModel.findOneAndUpdate(
                 { _id: new Types.ObjectId(category?._id) },
                 { position },
-                { new: true },
             );
 
             await this.updatePosition(position, _tagApp?.type, _tagApp._id);
@@ -143,10 +142,12 @@ export class CategoriesService extends BaseService<CategoryDocument, Category> {
         slug: string,
         options?: Record<string, any>,
     ): Promise<any> {
-        const result = await this.findOne({
-            slug,
-            ...options,
-        }).exec();
+        const result = await this.categoryModel
+            .findOne({
+                slug,
+                ...options,
+            })
+            .exec();
 
         if (!result) {
             throw new NotFoundException(

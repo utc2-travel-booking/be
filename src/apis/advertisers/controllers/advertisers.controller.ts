@@ -33,7 +33,7 @@ export class AdvertisersController {
 
     @SuperGet({ route: ':slug' })
     async getOneBySlug(@Param('slug') slug: string) {
-        const result = await this.advertisersService
+        const result = await this.advertisersService.model
             .findOne({ slug }, populateGroupBannerImageAggregate)
             .exec();
         return result;

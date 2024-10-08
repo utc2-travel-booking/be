@@ -1,26 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import { ModuleRef } from '@nestjs/core';
-import { Permission, PermissionDocument } from './entities/permissions.entity';
+import { PermissionDocument } from './entities/permissions.entity';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class PermissionsService extends BaseService<
-    PermissionDocument,
-    Permission
-> {
+export class PermissionsService extends BaseService<PermissionDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.PERMISSION)
-        private readonly permissionModel: Model<PermissionDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.PERMISSION)
+        private readonly permissionModel: ExtendedModel<PermissionDocument>,
     ) {
-        super(
-            permissionModel,
-            Permission,
-            COLLECTION_NAMES.PERMISSION,
-            moduleRef,
-        );
+        super(permissionModel);
     }
 }

@@ -61,4 +61,6 @@ export interface ExtendedModel<T extends Document> {
     deleteMany(filter?: FilterQuery<T>);
 
     findByIdAndDelete(id: Types.ObjectId | any): Promise<T>;
+
+    aggregate(pipeline: PipelineStage[]): Promise<any[]>;
 }

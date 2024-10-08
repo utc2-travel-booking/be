@@ -1,21 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
+import { BaseService } from 'src/base/service/base.service';
 import { Audit, AuditDocument } from './entities/audits.entity';
-import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { AUDIT_EVENT } from './constants';
 import _ from 'lodash';
-import { ModuleRef } from '@nestjs/core';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class AuditsService extends BaseService<AuditDocument, Audit> {
+export class AuditsService extends BaseService<AuditDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.AUDIT)
-        private readonly auditModel: Model<AuditDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.AUDIT)
+        private readonly auditModel: ExtendedModel<AuditDocument>,
     ) {
-        super(auditModel, Audit, COLLECTION_NAMES.AUDIT, moduleRef);
+        super(auditModel);
     }
 
     async createAudit(audit: Audit) {
@@ -25,21 +24,22 @@ export class AuditsService extends BaseService<AuditDocument, Audit> {
             audit.oldValues = await this.findOldData(refId, refSource);
         }
 
-        return await this.create(audit);
+        return await this.auditModel.create(audit);
     }
 
     async findOldData(refId: Types.ObjectId, refSource: string) {
-        const result = await this.findOne({
-            $and: [
-                {
-                    event: {
-                        $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
+        const result = await this.auditModel
+            .findOne({
+                $and: [
+                    {
+                        event: {
+                            $in: [AUDIT_EVENT.POST, AUDIT_EVENT.PUT],
+                        },
                     },
-                },
-            ],
-            refSource,
-            refId,
-        })
+                ],
+                refSource,
+                refId,
+            })
             .sort({ createdAt: -1 })
             .exec();
 

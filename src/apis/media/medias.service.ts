@@ -3,21 +3,22 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUploadedMulterFile, S3Service } from 'src/packages/s3/s3.service';
 import { File, FileDocument } from './entities/files.entity';
 import { Model } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { appSettings } from 'src/configs/app-settings';
 import { ModuleRef } from '@nestjs/core';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class MediaService extends BaseService<FileDocument, File> {
+export class MediaService extends BaseService<FileDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.FILE)
-        private readonly fileModel: Model<FileDocument>,
+        @ExtendedInjectModel(COLLECTION_NAMES.FILE)
+        private readonly fileModel: ExtendedModel<FileDocument>,
         private readonly s3Service: S3Service,
-        moduleRef: ModuleRef,
     ) {
-        super(fileModel, File, COLLECTION_NAMES.FILE, moduleRef);
+        super(fileModel);
     }
 
     async createFile(
@@ -36,7 +37,7 @@ export class MediaService extends BaseService<FileDocument, File> {
 
         const { fieldName, originalname, mimetype, size } = file;
 
-        const result = new this.fileModel({
+        const result = await this.fileModel.create({
             filename: fieldName,
             name: originalname,
             alt: originalname,
@@ -46,8 +47,6 @@ export class MediaService extends BaseService<FileDocument, File> {
             folder,
             createdBy: user._id,
         });
-        await this.create(result);
-
         return result;
     }
 

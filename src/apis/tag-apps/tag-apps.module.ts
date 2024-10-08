@@ -1,13 +1,17 @@
-import { MongooseModule } from '@nestjs/mongoose';
 import { TagAppsService } from './tag-apps.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
-import { TagAppSchema } from './entities/tag-apps.entity';
+import { TagApp, TagAppSchema } from './entities/tag-apps.entity';
+import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: COLLECTION_NAMES.TAG_APP, schema: TagAppSchema },
+        ExtendedMongooseModule.forFeature([
+            {
+                name: COLLECTION_NAMES.TAG_APP,
+                schema: TagAppSchema,
+                entity: TagApp,
+            },
         ]),
     ],
     controllers: [],

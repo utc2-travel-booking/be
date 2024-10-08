@@ -30,10 +30,7 @@ export class SeedsService implements OnModuleInit {
         this.logger.debug('Seeding completed');
     }
 
-    async seedPermissions() {
-        await this.permissionService.model.db.dropCollection('permissions');
-        this.logger.debug('Dropped permissions collection');
-    }
+    async seedPermissions() {}
 
     async seedRoles() {
         const roles = JSON.parse(
@@ -47,26 +44,26 @@ export class SeedsService implements OnModuleInit {
             delete role.updatedAt;
             const { type } = role;
             if (type === RoleType.SUPER_ADMIN) {
-                const permissions = await this.permissionService
+                const permissions = await this.permissionService.model
                     .find({
                         path: 'admin',
                     })
                     .exec();
 
-                const superAdmin = await this.roleService
+                const superAdmin = await this.roleService.model
                     .findOne({
                         type: RoleType.SUPER_ADMIN,
                     })
                     .exec();
 
                 if (!superAdmin) {
-                    await this.roleService.create({
+                    await this.roleService.model.create({
                         ...role,
                         _id: new Types.ObjectId(role._id.$oid),
                         permissions: permissions.map((p) => p._id),
                     });
                 } else {
-                    await this.roleService.updateMany(
+                    await this.roleService.model.updateMany(
                         { type: RoleType.SUPER_ADMIN },
                         {
                             permissions: permissions.map((p) => p._id),
@@ -76,24 +73,24 @@ export class SeedsService implements OnModuleInit {
             }
 
             if (type === RoleType.USER) {
-                const permissions = await this.permissionService
+                const permissions = await this.permissionService.model
                     .find({ path: 'front' })
                     .exec();
 
-                const userRole = await this.roleService
+                const userRole = await this.roleService.model
                     .findOne({
                         type: RoleType.USER,
                     })
                     .exec();
 
                 if (!userRole) {
-                    await this.roleService.create({
+                    await this.roleService.model.create({
                         ...role,
                         _id: new Types.ObjectId(role._id.$oid),
                         permissions: permissions.map((p) => p._id),
                     });
                 } else {
-                    await this.roleService.updateMany(
+                    await this.roleService.model.updateMany(
                         { type: RoleType.USER },
                         {
                             permissions: permissions.map((p) => p._id),
@@ -140,7 +137,7 @@ export class SeedsService implements OnModuleInit {
         );
 
         this.logger.debug('Seeding metadata');
-        await this.metadataService.deleteMany({});
+        await this.metadataService.model.deleteMany({});
 
         const result = metadata.map((item) => {
             delete item.createdAt;
@@ -151,6 +148,6 @@ export class SeedsService implements OnModuleInit {
             };
         });
 
-        await this.metadataService.insertMany(result);
+        await this.metadataService.model.insertMany(result);
     }
 }
