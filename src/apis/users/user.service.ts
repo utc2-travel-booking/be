@@ -4,10 +4,9 @@ import {
     OnModuleInit,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { BaseService } from 'src/base/service/base.service';
-import { User, UserDocument } from './entities/user.entity';
+import { UserDocument } from './entities/user.entity';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
@@ -18,28 +17,36 @@ import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModelExtend } from '@libs/super-core';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
 export class UserService
-    extends BaseService<UserDocument, User>
+    extends BaseService<UserDocument>
     implements OnModuleInit
 {
     constructor(
-        @InjectModel(COLLECTION_NAMES.USER)
-        private readonly userModel: Model<UserDocument>,
+        @InjectModelExtend(COLLECTION_NAMES.USER)
+        private readonly userModel: ExtendedModel<UserDocument>,
         private readonly superCacheService: SuperCacheService,
         moduleRef: ModuleRef,
     ) {
-        super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
+        super(userModel);
     }
 
     async onModuleInit() {
-        const usersBanned = await this.find({
-            status: UserStatus.INACTIVE,
-        }).exec();
-        const usersDeleted = await this.find({
-            deletedAt: { $ne: null },
-        }).exec();
+        const usersBanned = await this.userModel
+            .find({
+                status: UserStatus.INACTIVE,
+            })
+            .exec();
+
+        const usersDeleted = await this.userModel
+            .find({
+                deletedAt: { $ne: null },
+            })
+            .exec();
 
         if (usersBanned.length) {
             const ids = usersBanned.map((user) => user._id);
@@ -54,7 +61,7 @@ export class UserService
         }
     }
 
-    async getAllAdmin(queryParams) {
+    async getAllAdmin(queryParams: ExtendedPagingDto) {
         const result = await this.getAll(queryParams);
         return result;
     }
@@ -67,13 +74,12 @@ export class UserService
         const { _id: userId } = user;
         const { password } = createUserDto;
 
-        const result = new this.model({
+        const result = await this.userModel.create({
             ...createUserDto,
             ...options,
             createdBy: userId,
             password: await this.hashPassword(password),
         });
-        await this.create(result);
 
         return result;
     }
@@ -94,7 +100,7 @@ export class UserService
             password: await this.hashPassword(password),
         };
 
-        const user = await this.findOne({ _id }).exec();
+        const user = await this.userModel.findOne({ _id }).exec();
 
         if (!user) {
             throw new BadRequestException(`Not found ${_id}`);
@@ -104,7 +110,7 @@ export class UserService
             delete update.password;
         }
 
-        const result = await this.updateOne(
+        const result = await this.userModel.updateOne(
             { _id },
             {
                 ...update,
@@ -122,7 +128,7 @@ export class UserService
             );
         }
 
-        const user = await this.findOne({ email }).exec();
+        const user = await this.userModel.findOne({ email }).exec();
 
         const isMatch =
             user &&
@@ -140,7 +146,7 @@ export class UserService
     }
 
     async updateMe(user: UserPayload, updateMeDto: UpdateMeDto) {
-        await this.updateOne(
+        await this.userModel.updateOne(
             { _id: user._id },
             {
                 ...updateMeDto,
@@ -152,17 +158,18 @@ export class UserService
     }
 
     async getMe(user: UserPayload) {
-        return await this.findOne({
-            _id: user._id,
-        })
+        return await this.userModel
+            .findOne({
+                _id: user._id,
+            })
             .select({ password: 0 })
             .exec();
     }
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
         const { _id: userId } = user;
-        const data = await this.find({ _id: { $in: _ids } }).exec();
-        await this.updateMany(
+        const data = await this.userModel.find({ _id: { $in: _ids } }).exec();
+        await this.userModel.updateMany(
             { _id: { $in: _ids } },
             { deletedAt: new Date(), deletedBy: userId },
         );
@@ -173,7 +180,7 @@ export class UserService
     }
 
     async ban(_ids: Types.ObjectId[], user: UserPayload) {
-        await this.updateMany(
+        await this.userModel.updateMany(
             { _id: { $in: _ids } },
             { status: UserStatus.INACTIVE, updatedBy: user._id },
         );
@@ -184,7 +191,7 @@ export class UserService
     }
 
     async unBan(_ids: Types.ObjectId[], user: UserPayload) {
-        await this.updateMany(
+        await this.userModel.updateMany(
             { _id: { $in: _ids } },
             { status: UserStatus.ACTIVE, updatedBy: user._id },
         );

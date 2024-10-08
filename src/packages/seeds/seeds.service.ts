@@ -112,17 +112,17 @@ export class SeedsService implements OnModuleInit {
         this.logger.debug('Seeding users');
 
         if (appSettings.development) {
-            await this.userService.updateMany({}, { deletedAt: null });
+            await this.userService.model.updateMany({}, { deletedAt: null });
         }
 
         for (const user of users) {
             const { _id } = user;
             delete user.createdAt;
             delete user.updatedAt;
-            const exit = await this.userService.findById(_id.$oid).exec();
+            const exit = await this.userService.model.findById(_id.$oid).exec();
 
             if (!exit) {
-                await this.userService.create({
+                await this.userService.model.create({
                     ...user,
                     _id: new Types.ObjectId(_id.$oid),
                     role: new Types.ObjectId(user.role.$oid),

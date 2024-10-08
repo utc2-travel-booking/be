@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from './entities/user.entity';
+import { User, UserSchema } from './entities/user.entity';
 import { UserService } from './user.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
-import { MediaModule } from '../media/medias.module';
-import { MetadataModule } from '../metadata/metadata.module';
-
+import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: COLLECTION_NAMES.USER, schema: UserSchema },
+        ExtendedMongooseModule.forFeature([
+            {
+                name: COLLECTION_NAMES.USER,
+                schema: UserSchema,
+                entity: User,
+            },
         ]),
         SuperCacheModule,
     ],

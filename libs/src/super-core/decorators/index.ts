@@ -4,3 +4,4 @@ export * from './super-get.decorator';
 export * from './super-post.decorator';
 export * from './super-put.decorator';
 export * from './super-prop.decorator';
+export * from './mongoose-extend.decorators';

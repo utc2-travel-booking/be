@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+    OnModuleInit,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Post, PostDocument } from './entities/posts.entity';
-import { BaseService } from 'src/base/service/base.service';
+import { BaseService } from 'src/base/service/_base.service';
 import { UpdatePostDto } from './dto/update-posts.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreatePostDto } from './dto/create-posts.dto';
@@ -11,12 +16,10 @@ import _ from 'lodash';
 import { PostType } from './constants';
 import { ModuleRef } from '@nestjs/core';
 import { calculateEstimatedReadingTime } from './common/calculate-estimated-reading-time.until';
+import { activePublications } from 'src/base/aggregates/active-publications.aggregates';
 
 @Injectable()
-export class PostsService
-    extends BaseService<PostDocument, Post>
-    implements OnModuleInit
-{
+export class PostsService extends BaseService<PostDocument, Post> {
     constructor(
         @InjectModel(COLLECTION_NAMES.POST)
         private readonly postModel: Model<PostDocument>,
@@ -25,12 +28,23 @@ export class PostsService
         super(postModel, Post, COLLECTION_NAMES.POST, moduleRef);
     }
 
-    async onModuleInit() {
-        // DELETE AFTER GO PRODUCTION
-        await this.updateMany(
-            { position: { $exists: false } },
-            { position: 99999 },
-        );
+    async getOneByIdForFront(slug: string, options?: Record<string, any>) {
+        const filterPipeline: PipelineStage[] = [];
+        activePublications(filterPipeline);
+
+        const result = await this.findOne(
+            {
+                slug,
+                ...options,
+            },
+            filterPipeline,
+        ).exec();
+
+        if (!result) {
+            throw new NotFoundException('post_not_found', 'Post not found');
+        }
+
+        return result;
     }
 
     async createByType(

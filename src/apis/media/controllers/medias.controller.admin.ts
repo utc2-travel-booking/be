@@ -1,4 +1,5 @@
 import {
+    Body,
     Controller,
     Param,
     Query,
@@ -30,6 +31,8 @@ import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator'
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { Me } from 'src/decorators/me.decorator';
+import { SuperPut } from '@libs/super-core';
+import { UpdateMediaDto } from '../dto/update-media.dto';
 
 @Controller('media')
 @Resource('media')
@@ -74,6 +77,25 @@ export class MediaControllerAdmin {
         @Me() user: UserPayload,
     ) {
         const result = await this.mediaService.createFile(file, user);
+        return result;
+    }
+
+    @SuperPut({ route: ':id', dto: UpdateMediaDto })
+    @SuperAuthorize(PERMISSION.PUT)
+    @ApiParam({ name: 'id', type: String })
+    async update(
+        @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
+        @Body() updateMediaDto: UpdateMediaDto,
+        @Req() req: { user: UserPayload },
+    ) {
+        const { user } = req;
+
+        const result = await this.mediaService.updateOneById(
+            _id,
+            updateMediaDto,
+            user,
+        );
+
         return result;
     }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/base.service';
+import { BaseService } from 'src/base/service/_base.service';
 import { Pages, PagesDocument } from './entities/pages.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
