@@ -14,9 +14,6 @@ import { AppsModule } from '../apps/apps.module';
 import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: COLLECTION_NAMES.USER, schema: UserSchema },
-        ]),
         ExtendedMongooseModule.forFeature([
             {
                 name: COLLECTION_NAMES.USER,

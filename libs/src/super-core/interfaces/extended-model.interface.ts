@@ -7,12 +7,13 @@ import {
     Types,
     Document,
 } from 'mongoose';
+import { CustomQueryFindAllService } from '../services/custom-query-find-all.service';
 
 export interface ExtendedModel<T extends Document> {
     find<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<ResultDoc>,
         pipeline?: PipelineStage[],
-    );
+    ): CustomQueryFindAllService<T>;
 
     findOne<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<ResultDoc>,

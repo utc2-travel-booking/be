@@ -7,7 +7,7 @@ import {
 import { ModuleRef } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/base.service';
+import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
@@ -51,13 +51,15 @@ export class UserReferralsService extends BaseService<
     }
 
     async getReferralFront(userId: Types.ObjectId, params: ExtendedPagingDto) {
-        const user = await this.userService.findOne({ _id: userId }).exec();
+        const user = await this.userService.model
+            .findOne({ _id: userId })
+            .exec();
 
         const referralList = await this.getAllForFront(params, {
             code: user.inviteCode,
         });
 
-        const result = await this.userService
+        const result = await this.userService.model
             .find({
                 telegramUserId: {
                     $in: referralList.items.map((r) => r.telegramUserId),
@@ -137,7 +139,7 @@ export class UserReferralsService extends BaseService<
         });
 
         if (userTransaction) {
-            await this.userService.updateOne(
+            await this.userService.model.updateOne(
                 { _id: new Types.ObjectId(userId.toString()) },
                 {
                     currentPoint: after,
@@ -151,7 +153,7 @@ export class UserReferralsService extends BaseService<
     }
 
     async validateUserAndReferral(inviteCode: string) {
-        const referralCode = await this.userService
+        const referralCode = await this.userService.model
             .findOne({
                 inviteCode,
             })
@@ -188,7 +190,7 @@ export class UserReferralsService extends BaseService<
         code: string,
     ) {
         // Add point for referrer
-        const referrer = await this.userService
+        const referrer = await this.userService.model
             .findOne({
                 inviteCode: code,
             })
@@ -203,7 +205,7 @@ export class UserReferralsService extends BaseService<
 
         // Add point for user referred
 
-        const user = await this.userService
+        const user = await this.userService.model
             .findOne({
                 telegramUserId: telegramId,
             })
