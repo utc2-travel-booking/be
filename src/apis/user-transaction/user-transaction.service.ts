@@ -3,7 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/base.service';
+import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { MetadataType } from '../metadata/constants';
 import {
@@ -45,7 +45,7 @@ export class UserTransactionService extends BaseService<
         ]);
 
         if (!aggregate || aggregate.length <= 0) {
-            return 0
+            return 0;
         }
         return aggregate[0].total;
     }

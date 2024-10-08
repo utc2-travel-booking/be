@@ -8,14 +8,10 @@ import {
     UnauthorizedException,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcryptjs';
 import _ from 'lodash';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { compareToday } from 'src/utils/helper';
@@ -39,20 +35,24 @@ import { UserCacheKey, UserStatus } from './constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserDocument } from './entities/user.entity';
+import { UserDocument } from './entities/user.entity';
+import { InjectModelExtend } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService
-    extends BaseService<UserDocument, User>
+    extends BaseService<UserDocument>
     implements OnModuleInit
 {
     constructor(
-        @InjectModel(COLLECTION_NAMES.USER)
-        private readonly userModel: Model<UserDocument>,
+        @InjectModelExtend(COLLECTION_NAMES.USER)
+        private readonly userModelExtend: ExtendedModel<UserDocument>,
         private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
         private readonly mediaService: MediaService,
-        moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
         private readonly userReferralService: UserReferralsService,
         private readonly metadataService: MetadataService,
@@ -60,16 +60,21 @@ export class UserService
         private readonly eventEmitter: EventEmitter2,
         private readonly userReferralsService: UserReferralsService,
     ) {
-        super(userModel, User, COLLECTION_NAMES.USER, moduleRef);
+        super(userModelExtend);
     }
 
     async onModuleInit() {
-        const usersBanned = await this.find({
-            status: UserStatus.INACTIVE,
-        }).exec();
-        const usersDeleted = await this.find({
-            deletedAt: { $ne: null },
-        }).exec();
+        const usersBanned = await this.userModelExtend
+            .find({
+                status: UserStatus.INACTIVE,
+            })
+            .exec();
+
+        const usersDeleted = await this.userModelExtend
+            .find({
+                deletedAt: { $ne: null },
+            })
+            .exec();
 
         if (usersBanned.length) {
             const ids = usersBanned.map((user) => user._id);
@@ -86,7 +91,7 @@ export class UserService
         await this.addInviteCodeForUser();
     }
 
-    async getAllAdmin(queryParams) {
+    async getAllAdmin(queryParams: ExtendedPagingDto) {
         const result = await this.getAll(queryParams);
         const countReferral = await this.userReferralService.getReferral(
             result.items,
@@ -181,7 +186,7 @@ export class UserService
                 }
             }
         }
-        const user = await this.findOne({ _id: userId }).exec();
+        const user = await this.userModelExtend.findOne({ _id: userId }).exec();
 
         const { currentPoint = 0, _id } = user;
         const after = parseFloat(currentPoint.toString()) + mission.reward;
@@ -196,7 +201,7 @@ export class UserService
         });
 
         if (userTransaction) {
-            await this.updateOne(
+            await this.userModelExtend.updateOne(
                 { _id },
                 {
                     currentPoint: after,
@@ -251,7 +256,7 @@ export class UserService
             );
         }
 
-        const user = await this.findOne({ _id: userId }).exec();
+        const user = await this.userModelExtend.findOne({ _id: userId }).exec();
 
         const { currentPoint = 0, _id } = user;
 
@@ -271,7 +276,7 @@ export class UserService
         });
 
         if (userTransaction) {
-            await this.updateOne(
+            await this.userModelExtend.updateOne(
                 { _id },
                 {
                     currentPoint: after,
@@ -306,7 +311,9 @@ export class UserService
             username,
         } = userLoginTelegramDto;
 
-        const user = await this.findOne({ telegramUserId: id }).exec();
+        const user = await this.userModelExtend
+            .findOne({ telegramUserId: id })
+            .exec();
 
         if (user) {
             return user;
@@ -323,7 +330,7 @@ export class UserService
 
         const role = await this.roleService.getRoleByType(RoleType.USER);
 
-        const newUser = await this.create({
+        const newUser = await this.userModelExtend.create({
             name: `${firstName} ${lastName}`,
             telegramUserId: id,
             telegramUsername: username,
@@ -349,13 +356,12 @@ export class UserService
         const { _id: userId } = user;
         const { password } = createUserDto;
 
-        const result = new this.model({
+        const result = await this.userModelExtend.create({
             ...createUserDto,
             ...options,
             createdBy: userId,
             password: await this.hashPassword(password),
         });
-        await this.create(result);
 
         return result;
     }
@@ -376,7 +382,7 @@ export class UserService
             password: await this.hashPassword(password),
         };
 
-        const user = await this.findOne({ _id }).exec();
+        const user = await this.userModelExtend.findOne({ _id }).exec();
 
         if (!user) {
             throw new BadRequestException(`Not found ${_id}`);
@@ -386,7 +392,7 @@ export class UserService
             delete update.password;
         }
 
-        const result = await this.updateOne(
+        const result = await this.userModelExtend.updateOne(
             { _id },
             {
                 ...update,
@@ -404,7 +410,7 @@ export class UserService
             );
         }
 
-        const user = await this.findOne({ email }).exec();
+        const user = await this.userModelExtend.findOne({ email }).exec();
 
         const isMatch =
             user &&
@@ -422,7 +428,7 @@ export class UserService
     }
 
     async updateMe(user: UserPayload, updateMeDto: UpdateMeDto) {
-        await this.updateOne(
+        await this.userModelExtend.updateOne(
             { _id: user._id },
             {
                 ...updateMeDto,
@@ -434,9 +440,10 @@ export class UserService
     }
 
     async getMe(user: UserPayload) {
-        const me = await this.findOne({
-            _id: user._id,
-        })
+        const me = await this.userModelExtend
+            .findOne({
+                _id: user._id,
+            })
             .select({ password: 0 })
             .exec();
 
@@ -463,7 +470,7 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        const introducer = await this.userReferralsService
+        const introducer = await this.userReferralsService.model
             .findOne({
                 telegramUserId: result?.telegramUserId,
             })
@@ -479,8 +486,10 @@ export class UserService
 
     async deletes(_ids: Types.ObjectId[], user: UserPayload) {
         const { _id: userId } = user;
-        const data = await this.find({ _id: { $in: _ids } }).exec();
-        await this.updateMany(
+        const data = await this.userModelExtend
+            .find({ _id: { $in: _ids } })
+            .exec();
+        await this.userModelExtend.updateMany(
             { _id: { $in: _ids } },
             { deletedAt: new Date(), deletedBy: userId },
         );
@@ -491,7 +500,7 @@ export class UserService
     }
 
     async ban(_ids: Types.ObjectId[], user: UserPayload) {
-        await this.updateMany(
+        await this.userModelExtend.updateMany(
             { _id: { $in: _ids } },
             { status: UserStatus.INACTIVE, updatedBy: user._id },
         );
@@ -502,7 +511,7 @@ export class UserService
     }
 
     async unBan(_ids: Types.ObjectId[], user: UserPayload) {
-        await this.updateMany(
+        await this.userModelExtend.updateMany(
             { _id: { $in: _ids } },
             { status: UserStatus.ACTIVE, updatedBy: user._id },
         );
@@ -591,12 +600,14 @@ export class UserService
     }
 
     private async addInviteCodeForUser() {
-        const users = await this.find({
-            inviteCode: { $exists: false },
-        }).exec();
+        const users = await this.userModelExtend
+            .find({
+                inviteCode: { $exists: false },
+            })
+            .exec();
 
         users.forEach(async (user) => {
-            await this.updateOne(
+            await this.userModelExtend.updateOne(
                 { _id: user._id },
                 {
                     inviteCode: generateRandomString(16),

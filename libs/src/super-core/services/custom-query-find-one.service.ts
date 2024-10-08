@@ -1,15 +1,15 @@
 import { Expression, Document, Model, PipelineStage } from 'mongoose';
 import { ICustomQueryFindOne } from './interfaces/custom-query-find-one.interface';
 import { ModuleRef } from '@nestjs/core';
-import { COLLECTION_NAMES } from 'src/constants';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
 import { SGetCache } from '@libs/super-cache';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 
 export class CustomQueryFindOneService<T extends Document>
     implements ICustomQueryFindOne<T>
 {
     private id: string;
-    private collectionName: COLLECTION_NAMES;
+    private collectionName: string;
     private model: Model<T>;
     private _conditions: Record<string, any> = {};
     private _pipeline: PipelineStage[] = [];
@@ -19,7 +19,7 @@ export class CustomQueryFindOneService<T extends Document>
     constructor(
         model: Model<T>,
         entity: new () => any,
-        collectionName: COLLECTION_NAMES,
+        collectionName: string,
         moduleRef: ModuleRef,
         conditions: Record<string, any> = {},
         pipeline: PipelineStage[] = [],

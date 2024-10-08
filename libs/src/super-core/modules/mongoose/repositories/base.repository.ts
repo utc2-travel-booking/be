@@ -7,6 +7,7 @@ import {
     UpdateQuery,
     UpdateWithAggregationPipeline,
     HydratedDocument,
+    MergeType,
 } from 'mongoose';
 import { DynamicLookup } from '@libs/super-search';
 import {
@@ -14,24 +15,26 @@ import {
     FindWithMultipleLanguage,
     UpdateWithMultipleLanguage,
 } from '@libs/super-multiple-language';
-import { COLLECTION_NAMES } from 'src/constants';
 import { DeleteCache } from '@libs/super-cache';
 import { ModuleRef } from '@nestjs/core';
 import { CustomQueryFindAllService } from '@libs/super-core/services/custom-query-find-all.service';
 import { CustomQueryFindOneService } from '@libs/super-core/services/custom-query-find-one.service';
 import { CustomQueryCountDocumentsService } from '@libs/super-core/services/custom-query-count-documents.service';
-import { AggregateRoot } from '../entities/aggregate-root.schema';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
 @Injectable()
-export class BaseRepositories<T extends AggregateRoot, E> {
+export class BaseRepositories<T extends AggregateRoot, E>
+    implements ExtendedModel<T>
+{
     public static moduleRef: ModuleRef;
 
     constructor(
         public readonly model: Model<T>,
         public readonly entity: new () => E,
-        public readonly collectionName: COLLECTION_NAMES,
+        public readonly collectionName: string,
         public moduleRef: ModuleRef,
     ) {
         BaseRepositories.moduleRef = moduleRef;
@@ -90,7 +93,11 @@ export class BaseRepositories<T extends AggregateRoot, E> {
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async insertMany(docs: Array<Partial<T>>) {
+    async insertMany<DocContents = T>(
+        docs: Array<DocContents | T>,
+    ): Promise<
+        Array<MergeType<HydratedDocument<T>, Omit<DocContents, '_id'>>>
+    > {
         return await this.model.insertMany(docs);
     }
 
@@ -162,7 +169,7 @@ export class BaseRepositories<T extends AggregateRoot, E> {
     }
 
     @DeleteCache()
-    deleteMany(filter?: FilterQuery<T>) {
+    deleteMany(filter?: FilterQuery<T>): Promise<any> {
         return this.model.deleteMany(filter);
     }
 

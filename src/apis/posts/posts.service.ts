@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, PipelineStage, Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { Post, PostDocument } from './entities/posts.entity';
-import { BaseService } from 'src/base/service/base.service';
+import { BaseService } from 'src/base/service/_base.service';
 import { UpdatePostDto } from './dto/update-posts.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreatePostDto } from './dto/create-posts.dto';
