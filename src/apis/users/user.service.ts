@@ -40,6 +40,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
+import { InjectModelExtend } from '@libs/super-core';
 
 @Injectable()
 export class UserService
@@ -49,6 +50,8 @@ export class UserService
     constructor(
         @InjectModel(COLLECTION_NAMES.USER)
         private readonly userModel: Model<UserDocument>,
+        @InjectModelExtend(COLLECTION_NAMES.USER)
+        private readonly userModelExtend: Model<UserDocument>,
         private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
         private readonly mediaService: MediaService,

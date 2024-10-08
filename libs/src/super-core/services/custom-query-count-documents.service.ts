@@ -10,7 +10,7 @@ export class CustomQueryCountDocumentsService<T extends Document>
     implements ICustomQueryCountDocuments
 {
     private id: string;
-    private collectionName: COLLECTION_NAMES;
+    private collectionName: string;
     private model: Model<T>;
     private _conditions: Record<string, any> = {};
     private _pipeline: PipelineStage[] = [];
@@ -20,7 +20,7 @@ export class CustomQueryCountDocumentsService<T extends Document>
     constructor(
         model: Model<T>,
         entity: new () => any,
-        collectionName: COLLECTION_NAMES,
+        collectionName: string,
         moduleRef: ModuleRef,
         conditions: Record<string, any> = {},
         pipeline: PipelineStage[] = [],

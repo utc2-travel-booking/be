@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
 import { pagination } from '@libs/super-search';
 import { UserPayload } from '../models/user-payload.model';
 import { activePublications } from '../aggregates/active-publications.aggregates';
 import { COLLECTION_NAMES } from 'src/constants';
-import { BaseRepositories } from '../repositories/base.repository';
 import { ModuleRef } from '@nestjs/core';
 import { AggregateRoot } from '../entities/aggregate-root.schema';
 import { removeDiacritics } from 'src/utils/helper';
 import _ from 'lodash';
 import { generateRandomString } from 'src/apis/users/common/generate-random-string.util';
+import { BaseRepositories } from '@libs/super-core/modules/mongoose/repositories/base.repository';
 
 @Injectable()
 export class BaseService<T extends AggregateRoot, E> extends BaseRepositories<

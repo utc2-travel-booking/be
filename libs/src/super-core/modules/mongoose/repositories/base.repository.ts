@@ -14,24 +14,26 @@ import {
     FindWithMultipleLanguage,
     UpdateWithMultipleLanguage,
 } from '@libs/super-multiple-language';
-import { COLLECTION_NAMES } from 'src/constants';
 import { DeleteCache } from '@libs/super-cache';
 import { ModuleRef } from '@nestjs/core';
 import { CustomQueryFindAllService } from '@libs/super-core/services/custom-query-find-all.service';
 import { CustomQueryFindOneService } from '@libs/super-core/services/custom-query-find-one.service';
 import { CustomQueryCountDocumentsService } from '@libs/super-core/services/custom-query-count-documents.service';
-import { AggregateRoot } from '../entities/aggregate-root.schema';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
 @Injectable()
-export class BaseRepositories<T extends AggregateRoot, E> {
+export class BaseRepositories<T extends AggregateRoot, E>
+    implements ExtendedModel<T>
+{
     public static moduleRef: ModuleRef;
 
     constructor(
         public readonly model: Model<T>,
         public readonly entity: new () => E,
-        public readonly collectionName: COLLECTION_NAMES,
+        public readonly collectionName: string,
         public moduleRef: ModuleRef,
     ) {
         BaseRepositories.moduleRef = moduleRef;
