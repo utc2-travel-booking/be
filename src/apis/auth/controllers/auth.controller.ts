@@ -10,6 +10,7 @@ import { UserPayload } from 'src/base/models/user-payload.model';
 import { LoginTelegramMiniAppGuard } from 'src/guards/login-telegram-mini-app.guard';
 import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller()
 @Resource()
@@ -33,9 +34,8 @@ export class AuthController {
     @UseGuards(LoginTelegramProviderGuard)
     async loginTelegramProvider(
         @Body() userLoginTelegramDto: UserLoginTelegramDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         return this.authService.login(user);
     }
 
@@ -49,8 +49,7 @@ export class AuthController {
         name: 'code',
         description: 'Code Referral',
     })
-    async loginTelegramMiniApp(@Req() req: { user: UserPayload }) {
-        const { user } = req;
+    async loginTelegramMiniApp(@Me() user: UserPayload) {
         return this.authService.login(user);
     }
 }

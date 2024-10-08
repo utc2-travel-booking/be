@@ -21,6 +21,7 @@ import { ParseObjectIdPipe } from 'src/pipes/parse-object-id.pipe';
 import { ParseObjectIdArrayPipe } from 'src/pipes/parse-object-ids.pipe';
 import { AppsService } from '../apps.service';
 import { SubmitAppDto } from '../dto/submit-app.dto';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('apps')
 @Resource('apps')
@@ -36,11 +37,7 @@ export class AppsController {
         dto: SubmitAppDto,
     })
     @SuperAuthorize(PERMISSION.POST)
-    async create(
-        @Body() data: SubmitAppDto,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    async create(@Body() data: SubmitAppDto, @Me() user: UserPayload) {
         const { name } = data;
 
         const result = await this.appsService.createOne(
@@ -61,9 +58,8 @@ export class AppsController {
         @Param('tagSlug') tagSlug: string,
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.getAppsByTag(
             tagSlug,
             queryParams,
@@ -84,9 +80,8 @@ export class AppsController {
     async addPointForUser(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Param('type') type: MetadataType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.addPointForUser(_id, type, user);
         return result;
     }
@@ -96,9 +91,8 @@ export class AppsController {
     async getUserAppHistories(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.getUserAppHistories(
             queryParams,
             user,
@@ -110,9 +104,8 @@ export class AppsController {
     @UseGuards(UserPayloadExtractorGuard)
     async getAllForFront(
         @Query(new PagingDtoPipe()) queryParams: ExtendedPagingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.getAllAppPublish(
             queryParams,
             user,
@@ -128,9 +121,8 @@ export class AppsController {
     async getSubmittedApp(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.getSubmittedApp(
             queryParams,
             user,
@@ -144,9 +136,8 @@ export class AppsController {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() data: SubmitAppDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.updateOneById(_id, data, user);
         return result;
     }
@@ -156,9 +147,8 @@ export class AppsController {
     @ApiParam({ name: 'id', type: String })
     async getOneAppPublish(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.appsService.getOneAppPublish(_id, user);
         return result;
     }
@@ -168,10 +158,8 @@ export class AppsController {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.appsService.deletes(_ids, user);
         return result;
     }

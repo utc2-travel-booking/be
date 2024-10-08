@@ -11,6 +11,7 @@ import { SuperPut } from '@libs/super-core/decorators/super-put.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('users')
 @Resource('users')
@@ -24,20 +25,14 @@ export class UserController {
 
     @SuperGet({ route: 'me' })
     @SuperAuthorize(PERMISSION.GET)
-    async getMe(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-
+    async getMe(@Me() user: UserPayload) {
         const result = await this.userService.getMeForFront(user);
         return result;
     }
 
     @SuperPut({ route: 'me', dto: UpdateMeDto })
     @SuperAuthorize(PERMISSION.PUT)
-    async updateMe(
-        @Body() updateMeDto: UpdateMeDto,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    async updateMe(@Body() updateMeDto: UpdateMeDto, @Me() user: UserPayload) {
         return this.userService.updateMe(user, updateMeDto);
     }
 
@@ -45,9 +40,8 @@ export class UserController {
     @SuperAuthorize(PERMISSION.GET)
     async getHistoryReward(
         @Param('type') type: MetadataType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         return this.userService.getHistoryReward(user, type);
     }
 }

@@ -10,6 +10,7 @@ import {
     ActionType,
     ESocialMedia,
 } from 'src/apis/user-app-histories/constants';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('mission')
 @Resource('mission')
@@ -20,8 +21,7 @@ export class MissionController {
     @SuperGet()
     @ApiBearerAuth()
     @SuperAuthorize(PERMISSION.GET)
-    async getMission(@Req() req: { user: UserPayload }) {
-        const { user } = req;
+    async getMission(@Me() user: UserPayload) {
         return await this.missionService.getMission(user);
     }
 
@@ -32,9 +32,8 @@ export class MissionController {
     async addPointForUser(
         @Param('appId', ParseObjectIdPipe) appId: Types.ObjectId,
         @Param('action') action: ActionType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.missionService.updateProgressActionApp(
             appId,
             user,
@@ -48,9 +47,8 @@ export class MissionController {
     @ApiParam({ name: 'social', enum: ESocialMedia })
     async updateSocialMedia(
         @Param('social') social: ESocialMedia,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.missionService.updateProgressSocial(
             user,
             social,
@@ -63,9 +61,8 @@ export class MissionController {
     @ApiParam({ name: 'missionId', type: String })
     async claimMission(
         @Param('missionId') missionId: string,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.missionService.claimMission(missionId, user);
         return result;
     }

@@ -14,6 +14,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 import { PERMISSION, Resource } from '@libs/super-authorize';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { ParamTimeType } from '../constants';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('user-transactions')
 @Resource('user-transactions')
@@ -29,8 +30,7 @@ export class UserTransactionController {
     @SuperGet({ route: '/earn/total' })
     @ApiBearerAuth()
     @SuperAuthorize(PERMISSION.GET)
-    async getTotalEarn(@Req() req: { user: UserPayload }) {
-        const { user } = req;
+    async getTotalEarn(@Me() user: UserPayload) {
         return await this.userTransactionService.getTotalEarn(user._id);
     }
 
@@ -46,9 +46,8 @@ export class UserTransactionController {
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
         @Param('type') type: ParamTimeType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const today = new Date();
         const startOfDay = new Date(today.setHours(0, 0, 0, 0));
         const endOfDay = new Date(today.setHours(23, 59, 59, 999));

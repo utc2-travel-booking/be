@@ -14,6 +14,7 @@ import { UpdatePostDto } from 'src/apis/posts/dto/update-posts.dto';
 import { PostsService } from 'src/apis/posts/posts.service';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES } from 'src/constants';
+import { Me } from 'src/decorators/me.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import {
@@ -79,10 +80,9 @@ export class PostsControllerAdmin {
     })
     async create(
         @Body() createPostDto: CreatePostDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
         @Param('type') type: PostType,
     ) {
-        const { user } = req;
         const { name } = createPostDto;
 
         const result = await this.postsService.createByType(
@@ -104,9 +104,8 @@ export class PostsControllerAdmin {
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updatePostDto: UpdatePostDto,
         @Param('type') type: PostType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = updatePostDto;
 
         const result = await this.postsService.updateOneByIdAndType(
@@ -128,9 +127,8 @@ export class PostsControllerAdmin {
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
         @Param('type') type: PostType,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.postsService.deleteManyByIdsAndType(
             _ids,
             type,

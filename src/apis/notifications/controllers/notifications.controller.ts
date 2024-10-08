@@ -17,6 +17,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('notifications')
 @Resource('notifications')
@@ -33,10 +34,8 @@ export class NotificationsController {
     async getAll(
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.notificationsService.getNotificationsOfUser(
             queryParams,
             user,
@@ -46,8 +45,7 @@ export class NotificationsController {
 
     @SuperGet({ route: 'count' })
     @SuperAuthorize(PERMISSION.GET)
-    async countNotificationUnreadOfUser(@Req() req: { user: UserPayload }) {
-        const { user } = req;
+    async countNotificationUnreadOfUser(@Me() user: UserPayload) {
         const { _id } = user;
 
         const result =
@@ -59,10 +57,8 @@ export class NotificationsController {
     @SuperAuthorize(PERMISSION.PUT)
     async updateStatus(
         @Body() updateStatusNotificationDto: UpdateStatusNotificationDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result =
             await this.notificationsService.updateNotificationsStatus(
                 updateStatusNotificationDto,
@@ -73,9 +69,7 @@ export class NotificationsController {
 
     @SuperPut({ route: 'read/all' })
     @SuperAuthorize(PERMISSION.PUT)
-    async updateAllStatus(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-
+    async updateAllStatus(@Me() user: UserPayload) {
         const result = await this.notificationsService.updateAllStatus(user);
         return result;
     }
@@ -85,10 +79,8 @@ export class NotificationsController {
     @ApiParam({ name: 'id', type: String })
     async deleteOne(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.notificationsService.deleteNotificationOfUser(
             _id,
             user,

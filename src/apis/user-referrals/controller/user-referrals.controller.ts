@@ -12,6 +12,7 @@ import {
     ExtendedPagingDto,
     PagingDtoPipe,
 } from 'src/pipes/page-result.dto.pipe';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('user-referral')
 @Resource('user-referral')
@@ -26,11 +27,10 @@ export class UserReferralsController {
     @SuperGet()
     @SuperAuthorize(PERMISSION.GET)
     async getReferral(
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
         @Query(new PagingDtoPipe())
         queryParams: ExtendedPagingDto,
     ) {
-        const { user } = req;
         return this.userReferral.getReferralFront(user._id, queryParams);
     }
 }
