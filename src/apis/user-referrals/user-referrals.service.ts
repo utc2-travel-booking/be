@@ -4,10 +4,7 @@ import {
     Inject,
     Injectable,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
+import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
@@ -20,19 +17,16 @@ import { UserTransactionService } from '../user-transaction/user-transaction.ser
 import { UserDocument } from '../users/entities/user.entity';
 import { UserService } from '../users/user.service';
 import { MissionService } from './../mission/mission.service';
-import {
-    UserReferral,
-    UserReferralDocument,
-} from './entities/user-referrals.entity';
+import { UserReferralDocument } from './entities/user-referrals.entity';
+import { InjectModelExtend } from '@libs/super-core';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class UserReferralsService extends BaseService<
-    UserReferralDocument,
-    UserReferral
-> {
+export class UserReferralsService extends BaseService<UserReferralDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.USER_REFERRAL)
-        private readonly userReferralModel: Model<UserReferralDocument>,
+        @InjectModelExtend(COLLECTION_NAMES.USER_REFERRAL)
+        private readonly userReferralModel: ExtendedModel<UserReferralDocument>,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly metadataService: MetadataService,
@@ -40,14 +34,8 @@ export class UserReferralsService extends BaseService<
         private readonly websocketGateway: WebsocketGateway,
         @Inject(forwardRef(() => MissionService))
         private readonly missionService: MissionService,
-        moduleRef: ModuleRef,
     ) {
-        super(
-            userReferralModel,
-            UserReferral,
-            COLLECTION_NAMES.USER_REFERRAL,
-            moduleRef,
-        );
+        super(userReferralModel);
     }
 
     async getReferralFront(userId: Types.ObjectId, params: ExtendedPagingDto) {
@@ -82,12 +70,16 @@ export class UserReferralsService extends BaseService<
     async getReferral(users: UserDocument[]) {
         const result = await Promise.all(
             users.map(async (user) => {
-                const countReferral = await this.countDocuments({
-                    code: user.inviteCode,
-                }).exec();
-                const introducer = await this.findOne({
-                    telegramUserId: user.telegramUserId,
-                }).exec();
+                const countReferral = await this.userReferralModel
+                    .countDocuments({
+                        code: user.inviteCode,
+                    })
+                    .exec();
+                const introducer = await this.userReferralModel
+                    .findOne({
+                        telegramUserId: user.telegramUserId,
+                    })
+                    .exec();
 
                 return {
                     ...user,
@@ -103,7 +95,7 @@ export class UserReferralsService extends BaseService<
     async createReferral(telegramUserId: number, inviteCode: string) {
         await this.validateUserAndReferral(inviteCode);
 
-        await this.create({
+        await this.userReferralModel.create({
             telegramUserId,
             code: inviteCode,
         });

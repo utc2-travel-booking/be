@@ -1,9 +1,9 @@
 import { Expression, Document, Model, PipelineStage } from 'mongoose';
 import { ICustomQueryFindOne } from './interfaces/custom-query-find-one.interface';
 import { ModuleRef } from '@nestjs/core';
-import { COLLECTION_NAMES } from 'src/constants';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
 import { SGetCache } from '@libs/super-cache';
+import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 
 export class CustomQueryFindOneService<T extends Document>
     implements ICustomQueryFindOne<T>

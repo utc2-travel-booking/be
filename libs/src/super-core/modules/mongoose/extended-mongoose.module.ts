@@ -1,6 +1,5 @@
 import { ExtendedModelDefinition } from '@libs/super-core/interfaces/extended-model-definition.interface';
 import { DynamicModule, Module } from '@nestjs/common';
-import { createExtendMongooseProviders } from './extended-mongoose.provider';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';

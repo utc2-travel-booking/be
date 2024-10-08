@@ -11,7 +11,7 @@ import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interf
 
 @Injectable()
 export class BaseService<T extends Document> {
-    constructor(readonly model: ExtendedModel<T>) {}
+    constructor(public readonly model: ExtendedModel<T>) {}
 
     async getAll(
         queryParams: ExtendedPagingDto,

@@ -8,6 +8,8 @@ import {
     Document,
 } from 'mongoose';
 import { CustomQueryFindAllService } from '../services/custom-query-find-all.service';
+import { CustomQueryFindOneService } from '../services/custom-query-find-one.service';
+import { CustomQueryCountDocumentsService } from '../services/custom-query-count-documents.service';
 
 export interface ExtendedModel<T extends Document> {
     find<ResultDoc = HydratedDocument<T>>(
@@ -18,12 +20,12 @@ export interface ExtendedModel<T extends Document> {
     findOne<ResultDoc = HydratedDocument<T>>(
         filter: FilterQuery<ResultDoc>,
         pipeline?: PipelineStage[],
-    );
+    ): CustomQueryFindOneService<T>;
 
     findById<ResultDoc = HydratedDocument<T>>(
         id: any,
         pipeline?: PipelineStage[],
-    );
+    ): CustomQueryFindOneService<T>;
 
     create<DocContents = Partial<T>>(doc: DocContents | T): Promise<T>;
 
@@ -49,7 +51,10 @@ export interface ExtendedModel<T extends Document> {
         update: UpdateQuery<T>,
     ): Promise<ResultDoc>;
 
-    countDocuments(filter: FilterQuery<T>, pipeline?: PipelineStage[]);
+    countDocuments(
+        filter: FilterQuery<T>,
+        pipeline?: PipelineStage[],
+    ): CustomQueryCountDocumentsService<T>;
 
     deleteOne(filter: FilterQuery<T>): Promise<T>;
 

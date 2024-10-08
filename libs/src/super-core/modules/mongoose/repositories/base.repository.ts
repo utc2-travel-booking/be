@@ -7,6 +7,7 @@ import {
     UpdateQuery,
     UpdateWithAggregationPipeline,
     HydratedDocument,
+    MergeType,
 } from 'mongoose';
 import { DynamicLookup } from '@libs/super-search';
 import {
@@ -92,7 +93,11 @@ export class BaseRepositories<T extends AggregateRoot, E>
 
     @CreateWithMultipleLanguage()
     @DeleteCache()
-    async insertMany(docs: Array<Partial<T>>) {
+    async insertMany<DocContents = T>(
+        docs: Array<DocContents | T>,
+    ): Promise<
+        Array<MergeType<HydratedDocument<T>, Omit<DocContents, '_id'>>>
+    > {
         return await this.model.insertMany(docs);
     }
 
@@ -164,7 +169,7 @@ export class BaseRepositories<T extends AggregateRoot, E>
     }
 
     @DeleteCache()
-    deleteMany(filter?: FilterQuery<T>) {
+    deleteMany(filter?: FilterQuery<T>): Promise<any> {
         return this.model.deleteMany(filter);
     }
 

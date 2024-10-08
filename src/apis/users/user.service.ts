@@ -8,9 +8,7 @@ import {
     UnauthorizedException,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import * as bcrypt from 'bcryptjs';
 import _ from 'lodash';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
@@ -37,10 +35,12 @@ import { UserCacheKey, UserStatus } from './constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserDocument } from './entities/user.entity';
+import { UserDocument } from './entities/user.entity';
 import { InjectModelExtend } from '@libs/super-core';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 import { BaseService } from 'src/base/service/base.service';
+import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService
@@ -53,7 +53,6 @@ export class UserService
         private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
         private readonly mediaService: MediaService,
-        moduleRef: ModuleRef,
         private readonly userTransactionService: UserTransactionService,
         private readonly userReferralService: UserReferralsService,
         private readonly metadataService: MetadataService,
@@ -92,7 +91,7 @@ export class UserService
         await this.addInviteCodeForUser();
     }
 
-    async getAllAdmin(queryParams) {
+    async getAllAdmin(queryParams: ExtendedPagingDto) {
         const result = await this.getAll(queryParams);
         const countReferral = await this.userReferralService.getReferral(
             result.items,
@@ -471,7 +470,7 @@ export class UserService
                 MetadataType.AMOUNT_REWARD_USER_COMMENT_APP,
             ]);
 
-        const introducer = await this.userReferralsService
+        const introducer = await this.userReferralsService.model
             .findOne({
                 telegramUserId: result?.telegramUserId,
             })
