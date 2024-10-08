@@ -1,10 +1,9 @@
 import { Model, PipelineStage, Document } from 'mongoose';
 import { ModuleRef } from '@nestjs/core';
-import { COLLECTION_NAMES } from 'src/constants';
 
 export class CustomQueryBaseService<T extends Document> {
     protected id: string;
-    protected collectionName: COLLECTION_NAMES;
+    protected collectionName: string;
     protected model: Model<T>;
     protected _conditions: Record<string, any> = {};
     protected _pipeline: PipelineStage[] = [];
@@ -14,7 +13,7 @@ export class CustomQueryBaseService<T extends Document> {
     constructor(
         model: Model<T>,
         entity: new () => any,
-        collectionName: COLLECTION_NAMES,
+        collectionName: string,
         moduleRef: ModuleRef,
         conditions: Record<string, any> = {},
         pipeline: PipelineStage[] = [],

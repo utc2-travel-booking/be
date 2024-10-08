@@ -11,7 +11,7 @@ import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { UpdateMeDto } from './dto/update-me.dto';
 import _ from 'lodash';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import { UserCacheKey, UserStatus } from './constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { ModuleRef } from '@nestjs/core';
