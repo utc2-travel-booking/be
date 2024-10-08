@@ -21,6 +21,7 @@ import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator'
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('tags')
 @Resource('tags')
@@ -52,11 +53,7 @@ export class TagsControllerAdmin {
 
     @SuperPost({ dto: CreateTagDto })
     @SuperAuthorize(PERMISSION.POST)
-    async create(
-        @Body() createTagDto: CreateTagDto,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    async create(@Body() createTagDto: CreateTagDto, @Me() user: UserPayload) {
         const { name } = createTagDto;
 
         const result = await this.tagsService.createOne(createTagDto, user, {
@@ -71,9 +68,8 @@ export class TagsControllerAdmin {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateTagDto: UpdateTagDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = updateTagDto;
 
         const result = await this.tagsService.updateOneById(
@@ -93,10 +89,8 @@ export class TagsControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.tagsService.deletes(_ids, user);
         return result;
     }

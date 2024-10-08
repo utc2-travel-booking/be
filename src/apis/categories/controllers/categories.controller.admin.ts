@@ -13,6 +13,7 @@ import { CreateCategoryDto } from 'src/apis/categories/dto/create-categories.dto
 import { UpdateCategoryDto } from 'src/apis/categories/dto/update-categories.dto';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { COLLECTION_NAMES } from 'src/constants';
+import { Me } from 'src/decorators/me.decorator';
 import { AUDIT_EVENT } from 'src/packages/audits/constants';
 import { AuditLog } from 'src/packages/audits/decorators/audits.decorator';
 import {
@@ -57,9 +58,8 @@ export class CategoriesControllerAdmin {
     @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = createCategoryDto;
 
         const result = await this.categoriesService.createOne(
@@ -77,9 +77,8 @@ export class CategoriesControllerAdmin {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateCategoryDto: UpdateCategoryDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const { name } = updateCategoryDto;
 
         const result = await this.categoriesService.updateOneById(
@@ -96,10 +95,8 @@ export class CategoriesControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.categoriesService.deletes(_ids, user);
         return result;
     }

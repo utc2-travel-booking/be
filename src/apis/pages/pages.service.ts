@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
-import { Pages, PagesDocument } from './entities/pages.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { BaseService } from 'src/base/service/base.service';
+import { PageDocument } from './entities/pages.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { ModuleRef } from '@nestjs/core';
-import { Model } from 'mongoose';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class PagesService extends BaseService<PagesDocument, Pages> {
+export class PagesService extends BaseService<PageDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.PAGE)
-        private readonly pagesModel: Model<PagesDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.PAGE)
+        private readonly pagesModel: ExtendedModel<PageDocument>,
     ) {
-        super(pagesModel, Pages, COLLECTION_NAMES.PAGE, moduleRef);
+        super(pagesModel);
     }
 }

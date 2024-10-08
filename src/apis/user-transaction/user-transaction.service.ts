@@ -3,30 +3,23 @@ import { ModuleRef } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import _ from 'lodash';
 import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
+import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { MetadataType } from '../metadata/constants';
 import {
     UserTransaction,
     UserTransactionDocument,
 } from './entities/user-transaction.entity';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class UserTransactionService extends BaseService<
-    UserTransactionDocument,
-    UserTransaction
-> {
+export class UserTransactionService extends BaseService<UserTransactionDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.USER_TRANSACTION)
-        private readonly userTransactionModel: Model<UserTransactionDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.USER_TRANSACTION)
+        private readonly userTransactionModel: ExtendedModel<UserTransactionDocument>,
     ) {
-        super(
-            userTransactionModel,
-            UserTransaction,
-            COLLECTION_NAMES.USER_TRANSACTION,
-            moduleRef,
-        );
+        super(userTransactionModel);
     }
     async getTotalEarn(userId: Types.ObjectId) {
         const aggregate = await this.userTransactionModel.aggregate([
@@ -54,10 +47,11 @@ export class UserTransactionService extends BaseService<
         missionId: string,
         userId: Types.ObjectId,
     ) {
-        const data = await this.findOne({
-            createdBy: userId,
-            'mission._id': missionId,
-        })
+        const data = await this.userTransactionModel
+            .findOne({
+                createdBy: userId,
+                mission: missionId,
+            })
             .sort({ updatedAt: -1 })
             .autoPopulate(false)
             .exec();
@@ -72,11 +66,12 @@ export class UserTransactionService extends BaseService<
         if (!userId || !appId) {
             return false;
         }
-        const userTransactions = await this.findOne({
-            createdBy: userId,
-            app: appId,
-            action,
-        })
+        const userTransactions = await this.userTransactionModel
+            .findOne({
+                createdBy: userId,
+                app: appId,
+                action,
+            })
             .autoPopulate(false)
             .exec();
 
@@ -88,14 +83,15 @@ export class UserTransactionService extends BaseService<
             return 0;
         }
 
-        const userTransactions = await this.countDocuments({
-            createdBy: new Types.ObjectId(userId),
-            action: { $in: action },
-            createdAt: {
-                $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-                $lte: new Date(new Date().setHours(23, 59, 59, 999)),
-            },
-        })
+        const userTransactions = await this.userTransactionModel
+            .countDocuments({
+                createdBy: new Types.ObjectId(userId),
+                action: { $in: action },
+                createdAt: {
+                    $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                    $lte: new Date(new Date().setHours(23, 59, 59, 999)),
+                },
+            })
             .autoPopulate(false)
             .exec();
 

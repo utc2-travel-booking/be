@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
+import { BaseService } from 'src/base/service/base.service';
 import { TagApp, TagAppDocument } from './entities/tag-apps.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
@@ -8,15 +8,16 @@ import { ModuleRef } from '@nestjs/core';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { CreateTagAppDto } from './dto/create-tag-apps.dto';
 import { UpdateTagAppDto } from './dto/update-tag-apps.dto';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
+export class TagAppsService extends BaseService<TagAppDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.TAG_APP)
-        private readonly tagAppModel: Model<TagAppDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.TAG_APP)
+        private readonly tagAppModel: ExtendedModel<TagAppDocument>,
     ) {
-        super(tagAppModel, TagApp, COLLECTION_NAMES.TAG_APP, moduleRef);
+        super(tagAppModel);
     }
 
     async createOne(
@@ -31,13 +32,11 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
 
         await this.updatePosition(tag, position);
 
-        const result = new this.model({
+        const result = await this.tagAppModel.create({
             ...createTagAppDto,
             ...options,
             createdBy: userId,
         });
-        await this.create(result);
-
         return result;
     }
 
@@ -56,7 +55,7 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
             _id,
         );
 
-        const result = await this.findOneAndUpdate(
+        const result = await this.tagAppModel.findOneAndUpdate(
             { _id },
             { ...updateTagAppDto, ...options, updatedBy: userId },
         );
@@ -73,11 +72,13 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
         app: Types.ObjectId,
         thisId?: Types.ObjectId,
     ) {
-        const tagApp = await this.findOne({
-            tag,
-            app,
-            _id: { $ne: thisId },
-        }).exec();
+        const tagApp = await this.tagAppModel
+            .findOne({
+                tag,
+                app,
+                _id: { $ne: thisId },
+            })
+            .exec();
 
         if (tagApp) {
             throw new BadRequestException('Tag App already exists');
@@ -89,16 +90,18 @@ export class TagAppsService extends BaseService<TagAppDocument, TagApp> {
         position: number,
         thisId?: Types.ObjectId,
     ) {
-        const tagApp = await this.findOne({
-            tag,
-            position,
-            _id: { $ne: thisId },
-        }).exec();
+        const tagApp = await this.tagAppModel
+            .findOne({
+                tag,
+                position,
+                _id: { $ne: thisId },
+            })
+            .exec();
 
         if (tagApp) {
             position++;
 
-            const _tagApp = await this.findOneAndUpdate(
+            const _tagApp = await this.tagAppModel.findOneAndUpdate(
                 { _id: tagApp._id },
                 { position },
             );

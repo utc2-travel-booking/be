@@ -1,32 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { BaseService } from 'src/base/service/_base.service';
+import { Types } from 'mongoose';
+import { BaseService } from 'src/base/service/base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { compareToday } from 'src/utils/helper';
 import { ActionType } from './constants';
-import {
-    UserAppHistory,
-    UserAppHistoryDocument,
-} from './entities/user-app-histories.entity';
+import { UserAppHistoryDocument } from './entities/user-app-histories.entity';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class UserAppHistoriesService extends BaseService<
-    UserAppHistoryDocument,
-    UserAppHistory
-> {
+export class UserAppHistoriesService extends BaseService<UserAppHistoryDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.USER_APP_HISTORY)
-        private readonly userAppHistoryDocument: Model<UserAppHistoryDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.USER_APP_HISTORY)
+        private readonly userAppHistoryDocument: ExtendedModel<UserAppHistoryDocument>,
     ) {
-        super(
-            userAppHistoryDocument,
-            UserAppHistory,
-            COLLECTION_NAMES.USER_APP_HISTORY,
-            moduleRef,
-        );
+        super(userAppHistoryDocument);
     }
 
     async createUserAppHistory(
@@ -34,18 +22,19 @@ export class UserAppHistoriesService extends BaseService<
         userId: Types.ObjectId,
         action?: ActionType,
     ) {
-        const userAppHistory = await this.findOne({
-            app: new Types.ObjectId(appId.toString()),
-            createdBy: new Types.ObjectId(userId.toString()),
-            action,
-        })
+        const userAppHistory = await this.userAppHistoryDocument
+            .findOne({
+                app: new Types.ObjectId(appId.toString()),
+                createdBy: new Types.ObjectId(userId.toString()),
+                action,
+            })
             .autoPopulate(false)
             .exec();
 
         if (userAppHistory) {
             const history: any = userAppHistory;
             const date = history.updatedAt;
-            await this.updateOne(
+            await this.userAppHistoryDocument.updateOne(
                 { _id: userAppHistory._id },
                 {
                     updatedAt: new Date(),
@@ -54,7 +43,7 @@ export class UserAppHistoriesService extends BaseService<
             return !compareToday(date);
         }
 
-        await this.create({
+        await this.userAppHistoryDocument.create({
             app: new Types.ObjectId(appId.toString()),
             createdBy: userId,
             action,

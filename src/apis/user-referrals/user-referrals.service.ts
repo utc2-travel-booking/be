@@ -18,14 +18,14 @@ import { UserDocument } from '../users/entities/user.entity';
 import { UserService } from '../users/user.service';
 import { MissionService } from './../mission/mission.service';
 import { UserReferralDocument } from './entities/user-referrals.entity';
-import { InjectModelExtend } from '@libs/super-core';
+import { ExtendedInjectModel } from '@libs/super-core';
 import { BaseService } from 'src/base/service/base.service';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
 export class UserReferralsService extends BaseService<UserReferralDocument> {
     constructor(
-        @InjectModelExtend(COLLECTION_NAMES.USER_REFERRAL)
+        @ExtendedInjectModel(COLLECTION_NAMES.USER_REFERRAL)
         private readonly userReferralModel: ExtendedModel<UserReferralDocument>,
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
@@ -119,7 +119,7 @@ export class UserReferralsService extends BaseService<UserReferralDocument> {
             return 0;
         }
 
-        const userTransaction = await this.userTransactionService.create({
+        const userTransaction = await this.userTransactionService.model.create({
             createdBy: new Types.ObjectId(userId),
             type,
             amount,

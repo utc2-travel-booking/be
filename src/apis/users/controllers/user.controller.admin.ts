@@ -21,6 +21,7 @@ import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperDelete } from '@libs/super-core/decorators/super-delete.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('users')
 @Resource('users')
@@ -37,10 +38,8 @@ export class UserControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async ban(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.userService.ban(_ids, user);
         return result;
     }
@@ -50,29 +49,22 @@ export class UserControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async unBan(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
         const result = await this.userService.unBan(_ids, user);
         return result;
     }
 
     @SuperGet({ route: 'me' })
     @SuperAuthorize(PERMISSION.GET)
-    async getMe(@Req() req: { user: UserPayload }) {
-        const { user } = req;
-
+    async getMe(@Me() user: UserPayload) {
         const result = await this.userService.getMe(user);
         return result;
     }
 
     @SuperPut({ route: 'me', dto: UpdateMeDto })
     @SuperAuthorize(PERMISSION.PUT)
-    async updateMe(
-        @Body() updateMeDto: UpdateMeDto,
-        @Req() req: { user: UserPayload },
-    ) {
-        const { user } = req;
+    async updateMe(@Body() updateMeDto: UpdateMeDto, @Me() user: UserPayload) {
         return this.userService.updateMe(user, updateMeDto);
     }
 
@@ -101,10 +93,8 @@ export class UserControllerAdmin {
     @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createRoleDto: CreateUserDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.userService.createOne(createRoleDto, user);
         return result;
     }
@@ -115,10 +105,8 @@ export class UserControllerAdmin {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateUserDto: UpdateUserDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.userService.updateOneById(
             _id,
             updateUserDto,
@@ -133,10 +121,8 @@ export class UserControllerAdmin {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.userService.deletes(_ids, user);
         return result;
     }

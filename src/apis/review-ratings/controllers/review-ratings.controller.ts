@@ -17,6 +17,7 @@ import { SuperPost } from '@libs/super-core/decorators/super-post.decorator';
 import { SuperGet } from '@libs/super-core/decorators/super-get.decorator';
 import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decorator';
 import { PERMISSION, Resource } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('review-ratings')
 @Resource('review-ratings')
@@ -56,10 +57,8 @@ export class ReviewRatingController {
     @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createReviewRatingDto: CreateReviewRatingDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.reviewRatingService.createOne(
             createReviewRatingDto,
             user,

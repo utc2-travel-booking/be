@@ -36,7 +36,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDocument } from './entities/user.entity';
-import { InjectModelExtend } from '@libs/super-core';
+import { ExtendedInjectModel } from '@libs/super-core';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 import { BaseService } from 'src/base/service/base.service';
 import { ExtendedPagingDto } from 'src/pipes/page-result.dto.pipe';
@@ -48,7 +48,7 @@ export class UserService
     implements OnModuleInit
 {
     constructor(
-        @InjectModelExtend(COLLECTION_NAMES.USER)
+        @ExtendedInjectModel(COLLECTION_NAMES.USER)
         private readonly userModelExtend: ExtendedModel<UserDocument>,
         private readonly roleService: RolesService,
         private readonly superCacheService: SuperCacheService,
@@ -121,7 +121,7 @@ export class UserService
         lastOneMonth.setMonth(lastOneMonth.getMonth() - 1);
         lastOneMonth.setHours(0, 0, 0, 0);
 
-        const userTransactionToday = await this.userTransactionService
+        const userTransactionToday = await this.userTransactionService.model
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: today },
@@ -129,7 +129,7 @@ export class UserService
             })
             .exec();
 
-        const userTransactionYesterday = await this.userTransactionService
+        const userTransactionYesterday = await this.userTransactionService.model
             .find({
                 'createdBy._id': user._id,
                 createdAt: { $gte: yesterday, $lt: today },
@@ -137,13 +137,14 @@ export class UserService
             })
             .exec();
 
-        const userTransactionLastOneMonth = await this.userTransactionService
-            .find({
-                'createdBy._id': user._id,
-                createdAt: { $gte: lastOneMonth },
-                action,
-            })
-            .exec();
+        const userTransactionLastOneMonth =
+            await this.userTransactionService.model
+                .find({
+                    'createdBy._id': user._id,
+                    createdAt: { $gte: lastOneMonth },
+                    action,
+                })
+                .exec();
 
         result.today = userTransactionToday.reduce(
             (acc, cur) => acc + cur.amount,
@@ -169,7 +170,7 @@ export class UserService
         const { _id: userId } = userPayload;
         const mission = addPointForUserDto;
         const type = UserTransactionType.SUM;
-        const userTransactionThisApp = await this.userTransactionService
+        const userTransactionThisApp = await this.userTransactionService.model
             .findOne({
                 createdBy: new Types.ObjectId(userId),
                 'mission._id': mission._id,
@@ -191,7 +192,7 @@ export class UserService
         const { currentPoint = 0, _id } = user;
         const after = parseFloat(currentPoint.toString()) + mission.reward;
 
-        const userTransaction = await this.userTransactionService.create({
+        const userTransaction = await this.userTransactionService.model.create({
             createdBy: _id,
             type,
             amount: mission.reward,
@@ -230,7 +231,7 @@ export class UserService
         const { point, type, action, app, name, limit } = addPointForUserDto;
         const { name: appName } = appDocument;
 
-        const userTransactionThisApp = await this.userTransactionService
+        const userTransactionThisApp = await this.userTransactionService.model
             .findOne({
                 createdBy: new Types.ObjectId(userId),
                 app: new Types.ObjectId(app),
@@ -265,7 +266,7 @@ export class UserService
                 ? parseFloat(currentPoint.toString()) + point
                 : parseFloat(currentPoint.toString()) - point;
 
-        const userTransaction = await this.userTransactionService.create({
+        const userTransaction = await this.userTransactionService.model.create({
             createdBy: _id,
             type,
             amount: point,
@@ -321,7 +322,7 @@ export class UserService
 
         let avatar = null;
         if (photoUrl) {
-            avatar = await this.mediaService.create({
+            avatar = await this.mediaService.model.create({
                 name: `avatar-${id}`,
                 filePath: photoUrl,
                 filename: `avatar-${id}`,

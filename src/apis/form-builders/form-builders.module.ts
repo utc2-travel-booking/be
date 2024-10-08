@@ -1,15 +1,19 @@
-import { MongooseModule } from '@nestjs/mongoose';
 import { FormBuilderService } from './form-builders.service';
 import { Module } from '@nestjs/common';
 import { COLLECTION_NAMES } from 'src/constants';
-import { FormBuilderSchema } from './entities/form-builders.entity';
+import {
+    FormBuilder,
+    FormBuilderSchema,
+} from './entities/form-builders.entity';
+import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extended-mongoose.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([
+        ExtendedMongooseModule.forFeature([
             {
                 name: COLLECTION_NAMES.FORM_BUILDER,
                 schema: FormBuilderSchema,
+                entity: FormBuilder,
             },
         ]),
     ],

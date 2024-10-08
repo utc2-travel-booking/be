@@ -1,41 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { BaseService } from 'src/base/service/_base.service';
-import { Advertiser, AdvertiserDocument } from './entities/advertisers.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { AdvertiserDocument } from './entities/advertisers.entity';
 import { COLLECTION_NAMES } from 'src/constants';
-import { Model, Types } from 'mongoose';
-import { ModuleRef } from '@nestjs/core';
+import { Types } from 'mongoose';
 import { populateGroupBannerImageAggregate } from './common/populate-group-banner-image.aggregate';
+import { BaseService } from 'src/base/service/base.service';
+import { ExtendedInjectModel } from '@libs/super-core';
+import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
 
 @Injectable()
-export class AdvertisersService extends BaseService<
-    AdvertiserDocument,
-    Advertiser
-> {
+export class AdvertisersService extends BaseService<AdvertiserDocument> {
     constructor(
-        @InjectModel(COLLECTION_NAMES.ADVERTISER)
-        private readonly advertiserDocument: Model<AdvertiserDocument>,
-        moduleRef: ModuleRef,
+        @ExtendedInjectModel(COLLECTION_NAMES.ADVERTISER)
+        private readonly advertiserDocument: ExtendedModel<AdvertiserDocument>,
     ) {
-        super(
-            advertiserDocument,
-            Advertiser,
-            COLLECTION_NAMES.ADVERTISER,
-            moduleRef,
-        );
+        super(advertiserDocument);
     }
 
     async getOne(
         _id: Types.ObjectId,
         options?: Record<string, any>,
     ): Promise<any> {
-        const result = await this.findOne(
-            {
-                _id,
-                ...options,
-            },
-            populateGroupBannerImageAggregate,
-        ).exec();
+        const result = await this.advertiserDocument
+            .findOne(
+                {
+                    _id,
+                    ...options,
+                },
+                populateGroupBannerImageAggregate,
+            )
+            .exec();
 
         return result;
     }
