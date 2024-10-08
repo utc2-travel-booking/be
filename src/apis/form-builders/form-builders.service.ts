@@ -10,7 +10,7 @@ import { Model } from 'mongoose';
 import { CreateFormBuildersDto } from './dto/create-form-builders.dto';
 import { ModuleRef } from '@nestjs/core';
 import TelegramBot from 'node-telegram-bot-api';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 
 @Injectable()
 export class FormBuilderService extends BaseService<

@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { Types } from 'mongoose';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { WebsocketGateway } from 'src/packages/websocket/websocket.gateway';
 import { compareToday, hasOneHourPassed } from 'src/utils/helper';
 import { AppsService } from '../apps/apps.service';

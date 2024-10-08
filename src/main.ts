@@ -8,7 +8,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { useContainer } from 'class-validator';
-import { appSettings } from './configs/appsettings';
+import { appSettings } from './configs/app-settings';
 import compression from 'compression';
 
 async function bootstrap() {

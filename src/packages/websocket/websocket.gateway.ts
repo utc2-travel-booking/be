@@ -5,7 +5,7 @@ import {
     OnGatewayDisconnect,
     WebSocketServer,
 } from '@nestjs/websockets';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { Server, Socket } from 'socket.io';
 import { EVENT_NAME } from './constants';
 import { Types } from 'mongoose';

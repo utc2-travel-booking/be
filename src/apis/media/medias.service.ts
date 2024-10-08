@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { BaseService } from 'src/base/service/_base.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { UserPayload } from 'src/base/models/user-payload.model';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()

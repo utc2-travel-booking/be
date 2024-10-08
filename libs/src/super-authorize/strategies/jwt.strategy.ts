@@ -29,13 +29,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(req: Request, userPayload: UserPayload) {
         const { roleId, _id } = userPayload;
-        const permissions = await this.rolesService.findPermissionsByRole(
-            roleId,
-        );
 
-        const usersBannedInCache = await this.superCacheService.get<{
-            items: any[];
-        }>(UserCacheKey.USER_BANNED);
+        const [permissions, usersBannedInCache] = await Promise.all([
+            this.rolesService.findPermissionsByRole(roleId),
+            this.superCacheService.get<{
+                items: any[];
+            }>(UserCacheKey.USER_BANNED),
+        ]);
 
         if (usersBannedInCache?.items.some((item) => item === _id)) {
             throw new UnauthorizedException('User is banned');

@@ -1,38 +1,13 @@
-import { ModuleRef } from '@nestjs/core';
-import { Model, PipelineStage, Document, Expression } from 'mongoose';
-import { COLLECTION_NAMES } from 'src/constants';
+import { PipelineStage, Document, Expression } from 'mongoose';
 import { SGetCache } from '../../super-cache';
 import { ICustomQueryFindAll } from './interfaces/custom-query-find-all.interface';
 import { deleteAllLookup, sortPipelines } from '@libs/super-search';
+import { CustomQueryBaseService } from 'libs/src/super-core/services/base-query.service';
 
 export class CustomQueryFindAllService<T extends Document>
+    extends CustomQueryBaseService<T>
     implements ICustomQueryFindAll<T>
 {
-    private id: string;
-    private collectionName: string;
-    private model: Model<T>;
-    private _conditions: Record<string, any> = {};
-    private _pipeline: PipelineStage[] = [];
-    public static moduleRef: ModuleRef;
-    private _entity: new () => any;
-
-    constructor(
-        model: Model<T>,
-        entity: new () => any,
-        collectionName: string,
-        moduleRef: ModuleRef,
-        conditions: Record<string, any> = {},
-        pipeline: PipelineStage[] = [],
-    ) {
-        this.id = CustomQueryFindAllService.name;
-        CustomQueryFindAllService.moduleRef = moduleRef;
-        this.model = model;
-        this._conditions = conditions;
-        this._pipeline = pipeline;
-        this.collectionName = collectionName;
-        this._entity = entity;
-    }
-
     select(fields: Record<string, number>): this {
         if (!fields) {
             return this;

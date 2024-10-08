@@ -1,7 +1,7 @@
 import { RequestContext } from '@libs/super-request-context';
 import { findDocumentMultipleLanguage } from '../common/find.utils';
 import _ from 'lodash';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 
 export function FindWithMultipleLanguage() {
     return function (

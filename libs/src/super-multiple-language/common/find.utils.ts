@@ -1,6 +1,6 @@
 import { PipelineStage } from 'mongoose';
 import { TypeMetadataMultipleLanguageStorage } from '../storages/type-metadata.storage';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import _ from 'lodash';
 import { getSchemaMetadata } from '@libs/super-core';
 

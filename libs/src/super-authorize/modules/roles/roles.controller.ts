@@ -21,6 +21,7 @@ import { SuperAuthorize } from '@libs/super-authorize/decorators/authorize.decor
 import { RolesService } from './roles.service';
 import { Resource } from '@libs/super-authorize/decorators';
 import { PERMISSION } from '@libs/super-authorize';
+import { Me } from 'src/decorators/me.decorator';
 
 @Controller('admin/roles')
 @Resource('roles')
@@ -56,10 +57,8 @@ export class RolesController {
     @SuperAuthorize(PERMISSION.POST)
     async create(
         @Body() createRoleDto: CreateRoleDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.rolesService.createOne(
             createRoleDto,
             user,
@@ -74,10 +73,8 @@ export class RolesController {
     async update(
         @Param('id', ParseObjectIdPipe) _id: Types.ObjectId,
         @Body() updateRoleDto: UpdateRoleDto,
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.rolesService.updateOneById(
             _id,
             updateRoleDto,
@@ -92,10 +89,8 @@ export class RolesController {
     @ApiQuery({ name: 'ids', type: [String] })
     async deletes(
         @Query('ids', ParseObjectIdArrayPipe) _ids: Types.ObjectId[],
-        @Req() req: { user: UserPayload },
+        @Me() user: UserPayload,
     ) {
-        const { user } = req;
-
         const result = await this.rolesService.deletes(_ids, user);
         return result;
     }

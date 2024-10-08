@@ -1,9 +1,7 @@
-import { Expression } from 'mongoose';
+import { ICustomQueryBase } from './custom-query-base.interface';
 
-export interface ICustomQueryCountDocuments {
-    select(fields: Record<string, number>): this;
+export interface ICustomQueryCountDocuments extends ICustomQueryBase<any> {
     skip(value: number): this;
     limit(value: number): this;
-    sort(sort: Record<string, 1 | -1 | Expression.Meta>): this;
     exec(): Promise<number>;
 }

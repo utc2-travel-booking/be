@@ -7,7 +7,7 @@ import {
     Provider,
 } from '@nestjs/common';
 import AWS from 'aws-sdk';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 export const S3ServiceLib = 'lib:s3';
 
 export interface IUploadedMulterFile {

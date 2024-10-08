@@ -1,6 +1,6 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 
 export class CacheModuleConfig extends CacheModule {
     static registerAsync() {

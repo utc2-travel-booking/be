@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserPayload } from 'src/base/models/user-payload.model';
 import { JwtService } from '@nestjs/jwt';
-import { appSettings } from 'src/configs/appsettings';
+import { appSettings } from 'src/configs/app-settings';
 import { MissionService } from '../mission/mission.service';
 import { UserService } from '../users/user.service';
 
