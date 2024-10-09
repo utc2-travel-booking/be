@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MetadataModule } from '../metadata/metadata.module';
 import { appSettings } from 'src/configs/app-settings';
-import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
 import { LoginTelegramProviderStrategy } from 'src/strategies/login-telegram-provider.strategy';
 import { LoginTelegramMiniAppStrategy } from 'src/strategies/login-telegram-mini-app.strategy';
 import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
@@ -22,7 +21,6 @@ import { MissionModule } from '../mission/mission.module';
                 issuer: appSettings.jwt.issuer,
             },
         }),
-        SuperCacheModule,
         UserModule,
         RolesModule,
         MetadataModule,

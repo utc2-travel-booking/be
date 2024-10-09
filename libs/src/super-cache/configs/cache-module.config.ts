@@ -1,20 +1,20 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
-import { appSettings } from 'src/configs/app-settings';
+import { SuperCacheModuleOptions } from '../super-cache.module';
 
-export class CacheModuleConfig extends CacheModule {
-    static registerAsync() {
-        if (appSettings.redis.heathCheck) {
+export class CacheModuleConfig {
+    static registerAsync(superCacheOptions: SuperCacheModuleOptions) {
+        if (superCacheOptions.redis) {
             return CacheModule.registerAsync({
                 isGlobal: true,
                 useFactory: async () => ({
                     store: await redisStore({
                         socket: {
-                            host: appSettings.redis.host,
-                            port: appSettings.redis.port,
+                            host: superCacheOptions.redis?.host,
+                            port: superCacheOptions.redis?.port,
                         },
-                        username: appSettings.redis.username,
-                        password: appSettings.redis.password,
+                        username: superCacheOptions.redis?.username,
+                        password: superCacheOptions.redis?.password,
                     }),
                 }),
             });

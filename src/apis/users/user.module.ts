@@ -1,9 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
 import { UserService } from './user.service';
 import { COLLECTION_NAMES } from 'src/constants';
-import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
 import { MediaModule } from '../media/medias.module';
 import { UserTransactionModule } from '../user-transaction/user-transaction.module';
 import { MetadataModule } from '../metadata/metadata.module';
@@ -24,7 +22,6 @@ import { ExtendedMongooseModule } from '@libs/super-core/modules/mongoose/extend
         forwardRef(() => RolesModule),
         forwardRef(() => UserReferralsModule),
         forwardRef(() => AppsModule),
-        SuperCacheModule,
         MediaModule,
         UserTransactionModule,
         MetadataModule,

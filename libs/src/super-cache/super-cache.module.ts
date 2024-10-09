@@ -1,13 +1,27 @@
 import { SuperCacheService } from './super-cache.service';
-import { Module } from '@nestjs/common';
-import { SuperCacheEvent } from './event-handlers/super-cache.event';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { CacheModuleConfig } from './configs/cache-module.config';
-import { SuperCacheController } from './super-cache.controller';
+import { SuperCacheEvent } from './event-handlers/super-cache.event';
 
-@Module({
-    imports: [CacheModuleConfig.registerAsync()],
-    controllers: [SuperCacheController],
-    providers: [SuperCacheService, SuperCacheEvent],
-    exports: [SuperCacheService],
-})
-export class SuperCacheModule {}
+export interface SuperCacheModuleOptions {
+    redis?: {
+        host: string;
+        port: number;
+        username: string;
+        password: string;
+    };
+}
+
+@Global()
+@Module({})
+export class SuperCacheModule {
+    static forRoot(options: SuperCacheModuleOptions): DynamicModule {
+        return {
+            module: SuperCacheModule,
+            imports: [CacheModuleConfig.registerAsync(options)],
+            providers: [SuperCacheService, SuperCacheEvent],
+            exports: [SuperCacheService],
+            controllers: [],
+        };
+    }
+}
