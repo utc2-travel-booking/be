@@ -1,12 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Role, RoleDocument } from './entities/roles.entity';
-import { Model, Types } from 'mongoose';
+import { RoleDocument } from './entities/roles.entity';
+import { Types } from 'mongoose';
 import { COLLECTION_NAMES } from 'src/constants';
 import { SuperCacheService } from '@libs/super-cache/super-cache.service';
 import { RoleType } from './constants';
-import { ModuleRef } from '@nestjs/core';
-import { PermissionsService } from '@libs/super-authorize/modules/permissions/permissions.service';
 import { BaseService } from 'src/base/service/base.service';
 import { ExtendedInjectModel } from '@libs/super-core';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';

@@ -11,6 +11,7 @@ import { SeedsModule } from './packages/seeds/seeds.module';
 import { appSettings } from './configs/app-settings';
 import { AuditsModule } from './packages/audits/audits.module';
 import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-language.module';
+import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
 
 @Module({
     imports: [
@@ -36,6 +37,14 @@ import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-l
                 secret: appSettings.jwt.secret,
                 issuer: appSettings.jwt.issuer,
                 expiresIn: appSettings.jwt.expireIn,
+            },
+        }),
+        SuperCacheModule.forRoot({
+            redis: {
+                host: appSettings.redis.host,
+                port: appSettings.redis.port,
+                username: appSettings.redis.username,
+                password: appSettings.redis.password,
             },
         }),
     ],
