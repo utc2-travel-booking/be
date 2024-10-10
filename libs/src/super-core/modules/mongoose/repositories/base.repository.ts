@@ -22,6 +22,7 @@ import { CustomQueryFindOneService } from '@libs/super-core/services/custom-quer
 import { CustomQueryCountDocumentsService } from '@libs/super-core/services/custom-query-count-documents.service';
 import { AggregateRoot } from 'src/base/entities/aggregate-root.schema';
 import { ExtendedModel } from '@libs/super-core/interfaces/extended-model.interface';
+import _ from 'lodash';
 
 type AnyKeys<T> = { [P in keyof T]?: T[P] | any };
 
@@ -46,13 +47,14 @@ export class BaseRepositories<T extends AggregateRoot, E>
         filter: FilterQuery<ResultDoc>,
         pipeline: PipelineStage[] = [],
     ) {
+        const clonedPipeline = _.cloneDeep(pipeline);
         return new CustomQueryFindAllService(
             this.model,
             this.entity,
             this.collectionName,
             this.moduleRef,
             filter,
-            pipeline,
+            clonedPipeline,
         );
     }
 
@@ -62,13 +64,14 @@ export class BaseRepositories<T extends AggregateRoot, E>
         filter: FilterQuery<ResultDoc>,
         pipeline: PipelineStage[] = [],
     ) {
+        const clonedPipeline = _.cloneDeep(pipeline);
         return new CustomQueryFindOneService(
             this.model,
             this.entity,
             this.collectionName,
             this.moduleRef,
             filter,
-            pipeline,
+            clonedPipeline,
         );
     }
 
@@ -152,13 +155,14 @@ export class BaseRepositories<T extends AggregateRoot, E>
 
     @DynamicLookup()
     countDocuments(filter: FilterQuery<T>, pipeline: PipelineStage[] = []) {
+        const clonedPipeline = _.cloneDeep(pipeline);
         return new CustomQueryCountDocumentsService(
             this.model,
             this.entity,
             this.collectionName,
             this.moduleRef,
             filter,
-            pipeline,
+            clonedPipeline,
         );
     }
 
