@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # App
+  app:
+    container_name: ${NAME}-${ENV}-app
+    image: hub.playgroundvina.com/pg/${NAME}:${ENV}
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "3083:${PORT}"
+      - "3094:${WEBSOCKET_PORT}"
+    volumes:
+      - .env:/app/.env
+    networks:
+      - net
+  # Database
+  db:
+    image: mongo:7.0
+    container_name: ${NAME}-${ENV}-db
+    restart: always
+    expose:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - volume-db:/data/db
+    networks:
+      - net
+
+  # Redis
+  redis:
+    image: redis:6
+    container_name: ${NAME}-${ENV}-redis
+    restart: always
+    expose:
+      - 6379
+    networks:
+      - net
+
+volumes:
+  volume-db:
+    name: ${NAME}-${ENV}-db-data
+
+networks:
+  net:
+    name: ${NAME}-${ENV}-net

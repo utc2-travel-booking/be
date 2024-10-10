@@ -1,0 +1,100 @@
+[
+    {
+        "_id": {
+            "$oid": "66bb107bfe713900e234c2b3"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_USER_OPEN_APP",
+        "value": {
+            "isGlobal": true,
+            "reward": 10,
+            "limit": 10,
+            "name": "open"
+        },
+        "createdAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66bb108bfe713900e234c2b5"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_USER_COMMENT_APP",
+        "value": {
+            "isGlobal": true,
+            "reward": 10,
+            "limit": 10,
+            "name": "comment"
+        },
+        "createdAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66bb109cfe713900e234c2b8"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_USER_SHARE_APP",
+        "value": {
+            "isGlobal": true,
+            "reward": 10,
+            "limit": 10,
+            "name": "share"
+        },
+        "createdAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66bb109cfe713900e234c2b9"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_USER_GLOBAL",
+        "value": {
+            "reward": 10,
+            "limit": 100
+        },
+        "createdAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "updatedAt": {
+            "$date": "2024-08-13T06:48:41.265Z"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "66d92f118cef9487b78f9499"
+        },
+        "deletedAt": null,
+        "type": "AMOUNT_REWARD_REFERRAL",
+        "value": {
+            "isGlobal": true,
+            "reward": 100,
+            "limit": "",
+            "name": "referral"
+        },
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-09-05T03:10:45.691Z"
+        },
+        "updatedAt": {
+            "$date": "2024-09-05T03:10:45.691Z"
+        }
+    }
+]

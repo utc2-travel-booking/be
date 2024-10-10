@@ -1,0 +1,109 @@
+[
+    {
+        "_id": {
+            "$oid": "667940bbf2b6c4781339f664"
+        },
+        "deletedAt": null,
+        "name": "Super Admin",
+        "type": 100,
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-06-26T04:28:00.142Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-26T04:28:00.142Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "667b7b83462a35d0fbe5d251"
+        },
+        "deletedAt": null,
+        "name": "User",
+        "type": 1,
+        "permissions": [
+            {
+                "$oid": "667b7b39462a35d0fbe5d245"
+            },
+            {
+                "$oid": "667b7b39462a35d0fbe5d246"
+            },
+            {
+                "$oid": "667b7b39462a35d0fbe5d247"
+            },
+            {
+                "$oid": "667b7b39462a35d0fbe5d248"
+            },
+            {
+                "$oid": "66879ed3bb2099943bfeec49"
+            },
+            {
+                "$oid": "66879ed3bb2099943bfeec4a"
+            },
+            {
+                "$oid": "66879ed3bb2099943bfeec4b"
+            },
+            {
+                "$oid": "66879ed3bb2099943bfeec4c"
+            },
+            {
+                "$oid": "66ac3607ca5ae70c449940eb"
+            },
+            {
+                "$oid": "66ac3607ca5ae70c449940ec"
+            },
+            {
+                "$oid": "66ac3607ca5ae70c449940ed"
+            },
+            {
+                "$oid": "66ac3607ca5ae70c449940ee"
+            },
+            {
+                "$oid": "66ac363aca5ae70c449940ef"
+            },
+            {
+                "$oid": "66ac363aca5ae70c449940f0"
+            },
+            {
+                "$oid": "66ac363aca5ae70c449940f1"
+            },
+            {
+                "$oid": "66ac363aca5ae70c449940f2"
+            },
+            {
+                "$oid": "66ac4345ca5ae70c44994107"
+            },
+            {
+                "$oid": "66ac4345ca5ae70c44994108"
+            },
+            {
+                "$oid": "66ac4345ca5ae70c44994109"
+            },
+            {
+                "$oid": "66ac4345ca5ae70c4499410a"
+            },
+            {
+                "$oid": "66b4344d1f61e8783e8f8209"
+            },
+            {
+                "$oid": "66b4344d1f61e8783e8f820a"
+            },
+            {
+                "$oid": "66b4344d1f61e8783e8f820b"
+            },
+            {
+                "$oid": "66b4344d1f61e8783e8f820c"
+            },
+            {
+                "$oid": "66bef833f6db9ae776cce42f"
+            }
+        ],
+        "__v": 0,
+        "createdAt": {
+            "$date": "2024-06-26T04:28:00.309Z"
+        },
+        "updatedAt": {
+            "$date": "2024-06-26T04:28:00.309Z"
+        }
+    }
+]
