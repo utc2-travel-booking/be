@@ -26,6 +26,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
         default: 'Post',
         title: 'Name',
         required: true,
+        maxLength: 255,
     })
     @MaxLength(255)
     @IsString()
@@ -98,6 +99,7 @@ export class CreatePostDto extends PartialType(ExcludeDto) {
         description: 'Short description of the post',
         default: 'Short description',
         title: 'Short Description',
+        maxLength: 1000,
         cms: {
             widget: 'textarea',
         },

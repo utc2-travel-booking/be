@@ -20,6 +20,7 @@ export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
         type: String,
         description: 'Content of the review',
         default: 'Content',
+        maxLength: 1000,
     })
     @MaxLength(1000)
     @IsString()
@@ -30,6 +31,8 @@ export class CreateReviewRatingDto extends PartialType(ExcludeDto) {
         type: Number,
         description: 'Star of the review',
         default: 0,
+        maximum: 5,
+        minimum: 0,
     })
     @IsOptional()
     @Max(5)

@@ -22,6 +22,7 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
         default: 'Tag',
         required: true,
         title: 'Name Of Tag',
+        maxLength: 50,
     })
     @MaxLength(50)
     @IsString()
@@ -36,6 +37,7 @@ export class CreateTagDto extends PartialType(ExcludeDto) {
         cms: {
             widget: 'textarea',
         },
+        maxLength: 1000,
     })
     @MaxLength(1000)
     @IsString()

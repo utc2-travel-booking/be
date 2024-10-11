@@ -14,6 +14,7 @@ export class CreateFormBuildersDto {
         description:
             ' Type for this form builder. Available values: BUSINESS_INQUIRIES | LOOKING_FOR_SUPPORT | PARTNERSHIP',
         example: FormBuilderType.BUSINESS_INQUIRIES,
+        required: true,
     })
     @IsNotEmpty()
     @IsEnum(FormBuilderType)
@@ -23,6 +24,8 @@ export class CreateFormBuildersDto {
         type: String,
         description: 'Name of user fill in the form',
         example: 'Alex',
+        maxLength: 50,
+        required: true,
     })
     @IsNotEmpty()
     @IsString()
@@ -32,6 +35,7 @@ export class CreateFormBuildersDto {
     @SuperApiProperty({
         description: 'Email of user fill in the form',
         example: 'alex@gmail.com',
+        required: true,
     })
     @IsNotEmpty()
     @IsString()
@@ -41,6 +45,7 @@ export class CreateFormBuildersDto {
     @SuperApiProperty({
         description: 'Subject of user fill in the form',
         example: 'Feedback',
+        maxLength: 100,
     })
     @IsOptional()
     @IsString()
@@ -50,6 +55,7 @@ export class CreateFormBuildersDto {
     @SuperApiProperty({
         description: 'Message of user fill in the form',
         example: 'I really like your website.',
+        maxLength: 1000,
     })
     @IsOptional()
     @IsString()

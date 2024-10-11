@@ -22,6 +22,7 @@ export class SEOTagDto extends SEOTag {
         default: 'Post',
         title: 'Title',
         required: true,
+        maxLength: 255,
     })
     @MaxLength(255)
     @IsString()
@@ -50,6 +51,7 @@ export class CreatePagesDto extends PartialType(ExcludeDto) {
         default: 'Page',
         title: 'Name',
         required: true,
+        maxLength: 255,
     })
     @MaxLength(255)
     @IsString()

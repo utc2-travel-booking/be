@@ -89,6 +89,7 @@ export class CreateAdvertiserDto extends PartialType(ExcludeDto) {
         description: 'Name of the advertiser',
         default: 'Advertiser',
         title: 'Name Of Advertiser',
+        required: true,
     })
     @MaxLength(255)
     @IsString()

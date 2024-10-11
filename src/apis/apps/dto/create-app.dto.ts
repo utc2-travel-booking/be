@@ -21,6 +21,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
         type: String,
         required: true,
+        maxLength: 50,
         title: 'Name Of App',
     })
     @IsNotEmpty()
@@ -32,6 +33,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: String,
         default: 'https://example.com',
         required: true,
+        maxLength: 100,
         title: 'Url Of App',
     })
     @IsNotEmpty()
@@ -43,6 +45,7 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         type: String,
         default: 'Caption',
         required: true,
+        maxLength: 500,
         title: 'Caption Of App',
     })
     @IsNotEmpty()
@@ -120,12 +123,14 @@ export class CreateAppDto extends PartialType(ExcludeDto) {
         description: 'Short description of the app',
         default: 'Short description',
         title: 'Short Description Of App',
+        maxLength: 1000,
         cms: {
             widget: 'textarea',
         },
     })
     @MaxLength(1000)
     @IsString()
+    @IsOptional()
     shortDescription: string;
 
     @SuperApiProperty({
