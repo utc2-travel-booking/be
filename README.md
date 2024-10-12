@@ -1,34 +1,14 @@
-- yarn install -> yarn run start:dev
+## Search Image 
+* Gợi í địa chỉ du lịch thông qua text,img
+* data-base -> (img, textD, id_product)
+- step 1 : img -> text -> text + textD -> vector
+- step 2 : (id_product + vector) -> db
+
+* data-search
+- step 1: (img + textD) -> img -> text -> text + textD -> vector
 
 
--   [Authorize](#Authorize)
-    -   [SuperAuthorizeModule](#SuperAuthorizeModule)
-    -   [@Resource()](<#@Resource()>)
-        -   [@SuperAuthorize()](<#@SuperAuthorize(`method`)>)
+* flow search :
+- step 1: compare vector-input vs vector-db
+- step 2: return data in db -> top(5) [id_product]
 
-## Authorize
-
-### SuperAuthorizeModule
-
-```ts
-SuperAuthorizeModule.forRoot({
-    paths: ['admin', 'front'],
-    jwt: {
-        secret: appSettings.jwt.secret,
-        issuer: appSettings.jwt.issuer,
-        expiresIn: appSettings.jwt.expireIn,
-    },
-}),
-```
-
--   `paths`: Create permission for controller admin and front. In the future,
-    will refactor.
-
-### @Resource()
-
--   Use in controller to system create permission and authentication.
-
-#### @SuperAuthorize(`method`)
-
--   Use function in class controller, `method` is GET, POST, PUT, DELETE.
-    node_modules
