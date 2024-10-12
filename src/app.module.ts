@@ -40,12 +40,12 @@ import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
             },
         }),
         SuperCacheModule.forRoot({
-            redis: {
-                host: appSettings.redis.host,
-                port: appSettings.redis.port,
-                username: appSettings.redis.username,
-                password: appSettings.redis.password,
-            },
+            // redis: { off gpt
+            //     host: appSettings.redis.host,
+            //     port: appSettings.redis.port,
+            //     username: appSettings.redis.username,
+            //     password: appSettings.redis.password,
+            // },
         }),
     ],
     controllers: [],
