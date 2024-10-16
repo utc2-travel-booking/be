@@ -23,8 +23,9 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
         type: String,
         description: 'Name of the category',
         default: 'Category',
-        title: 'Name Of Category',
         required: true,
+        maxLength: 50,
+        title: 'Name Of Category',
     })
     @MaxLength(50)
     @IsString()
