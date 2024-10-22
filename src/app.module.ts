@@ -12,6 +12,7 @@ import { appSettings } from './configs/app-settings';
 import { AuditsModule } from './packages/audits/audits.module';
 import { MultipleLanguageModule } from '@libs/super-multiple-language/multiple-language.module';
 import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
+import { QdrantModule } from './packages/qdrant/qdrant.module';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { SuperCacheModule } from '@libs/super-cache/super-cache.module';
         SeedsModule,
         MultipleLanguageModule,
         AuditsModule,
+        QdrantModule,
         SuperAuthorizeModule.forRoot({
             paths: ['admin', 'front'],
             jwt: {

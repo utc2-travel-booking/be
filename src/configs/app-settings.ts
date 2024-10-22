@@ -26,7 +26,7 @@ export const appSettings = {
         secretKey: process.env.AWS_SECRET_ACCESS_KEY,
         bucket: process.env.AWS_BUCKET_NAME,
         folder: process.env.AWS_FOLDER_NAME_DEFAULT || 'marketplace',
-        region: process.env.AWS_REGION || 'us-east-1',
+        region: process.env.AWS_REGION || 'ap-southeast-1',
     },
     redis: {
         heathCheck: process.env.REDIS_HOST ? true : false,
@@ -34,5 +34,9 @@ export const appSettings = {
         port: Number(process.env.REDIS_PORT),
         username: process.env.REDIS_USERNAME,
         password: process.env.REDIS_PASSWORD,
+    },
+    qdrant: {
+        host: process.env.QDRANT_HOST,
+        collectionName: process.env.QDRANT_COLLECTION_NAME || 'app_rag',
     },
 };
