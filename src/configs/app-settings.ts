@@ -26,7 +26,7 @@ export const appSettings = {
         secretKey: process.env.AWS_SECRET_ACCESS_KEY,
         bucket: process.env.AWS_BUCKET_NAME,
         folder: process.env.AWS_FOLDER_NAME_DEFAULT || 'marketplace',
-        region: process.env.AWS_REGION,
+        region: process.env.AWS_REGION || 'us-east-1',
     },
     redis: {
         heathCheck: process.env.REDIS_HOST ? true : false,

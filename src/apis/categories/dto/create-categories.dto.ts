@@ -16,7 +16,6 @@ import { IsExist } from 'src/common/services/is-exist-constraint.service';
 import { COLLECTION_NAMES } from 'src/constants';
 import { convertStringToObjectId } from 'src/utils/helper';
 import { CategoryType } from '../constants';
-import { SEOTagDto } from 'src/apis/pages/dto/create-pages.dto';
 
 export class CreateCategoryDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
@@ -88,19 +87,4 @@ export class CreateCategoryDto extends PartialType(ExcludeDto) {
     @IsNumber()
     @IsOptional()
     position: number;
-
-    @SuperApiProperty({
-        type: SEOTagDto,
-        description: 'SEO tag of the page',
-        title: 'SEO Tag',
-        required: true,
-        default: {
-            title: 'Post',
-            description: 'Post',
-        },
-    })
-    @IsOptional()
-    @ValidateNested()
-    @Type(() => SEOTagDto)
-    seoTag: SEOTagDto;
 }
