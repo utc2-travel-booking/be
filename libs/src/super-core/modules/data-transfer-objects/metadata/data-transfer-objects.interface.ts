@@ -9,6 +9,9 @@ export interface DTOMetadataForm {
         widget: 'textarea' | null;
         form: DTOMetadata;
         enum: string[] | null;
+        maxLength?: number;
+        maximum?: number;
+        minimum?: number;
     };
 }
 

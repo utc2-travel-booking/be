@@ -34,6 +34,9 @@ export const addDtoProperties = (dto: new () => any) => {
             isShow: _.get(propertyData, 'cms.isShow', true),
             widget: _.get(propertyData, 'cms.widget', null),
             enum: _.get(propertyData, 'enum', null),
+            minimum: _.get(propertyData, 'minimum', null),
+            maximum: _.get(propertyData, 'maximum', null),
+            maxLength: _.get(propertyData, 'maxLength', null),
         };
 
         const type = _.get(propertyData, 'type');

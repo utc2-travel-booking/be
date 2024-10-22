@@ -33,7 +33,7 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
-            whitelist: false,
+            whitelist: true,
         }),
     );
     app.useGlobalInterceptors(new TransformInterceptor());
