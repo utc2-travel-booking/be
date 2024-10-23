@@ -48,6 +48,7 @@
         "lodash": "^4.17.21",
         "mongodb": "^6.9.0",
         "mongoose": "^8.7.0",
+        "openai": "^4.68.2",
         "passport": "^0.7.0",
         "passport-custom": "^1.1.1",
         "passport-http": "^0.3.0",

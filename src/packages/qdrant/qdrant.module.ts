@@ -1,9 +1,8 @@
-import { HttpModule } from '@nestjs/axios';
 import { QdrantService } from './qdrant.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-    imports: [HttpModule],
+    imports: [],
     controllers: [],
     providers: [QdrantService],
     exports: [QdrantService],

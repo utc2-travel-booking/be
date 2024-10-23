@@ -10,6 +10,8 @@ import { AuthController } from 'src/apis/auth/controllers/auth.controller';
 import { MediaController } from 'src/apis/media/controllers/medias.controller';
 import { MetadataController } from 'src/apis/metadata/controllers/metadata.controller';
 import { UserController } from 'src/apis/users/controllers/user.controller';
+import { AIModule } from 'src/apis/ai/ai.module';
+import { AIController } from 'src/apis/ai/controllers/ai.controller';
 
 @Module({
     imports: [
@@ -19,6 +21,7 @@ import { UserController } from 'src/apis/users/controllers/user.controller';
         AuthModule,
         CategoriesModule,
         MetadataModule,
+        AIModule,
     ],
     controllers: [
         UserController,
@@ -26,6 +29,7 @@ import { UserController } from 'src/apis/users/controllers/user.controller';
         AuthController,
         CategoriesController,
         MetadataController,
+        AIController,
     ],
     providers: [],
 })

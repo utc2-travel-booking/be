@@ -39,4 +39,7 @@ export const appSettings = {
         host: process.env.QDRANT_HOST,
         collectionName: process.env.QDRANT_COLLECTION_NAME || 'app_rag',
     },
+    openai: {
+        host: process.env.OPEN_AI_HOST,
+    },
 };

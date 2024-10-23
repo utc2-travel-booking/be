@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import {
     BadRequestException,
     Inject,
@@ -15,7 +14,7 @@ export class QdrantService {
     private readonly clientQdrant: QdrantClient;
     private readonly collectionName = appSettings.qdrant.collectionName;
 
-    constructor(private readonly httpService: HttpService) {
+    constructor() {
         this.clientQdrant = new QdrantClient({
             url: appSettings.qdrant.host,
         });
@@ -44,7 +43,7 @@ export class QdrantService {
 
                 await this.clientQdrant.createCollection(this.collectionName, {
                     vectors: {
-                        size: 128,
+                        size: 384,
                         distance: 'Cosine',
                     },
                 });
@@ -62,7 +61,7 @@ export class QdrantService {
             }
         }
     }
-    async addData(vector: number[], payload) {
+    async addData(vector: number[], payload: any) {
         try {
             const id = this.generateUniqueId();
             const response = await this.clientQdrant.upsert(
