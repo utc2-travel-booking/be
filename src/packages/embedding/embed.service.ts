@@ -1,7 +1,9 @@
+import { Type } from '@aws-sdk/client-s3';
 import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import OpenAI from 'openai';
 import { EmbeddingCreateParams } from 'openai/resources';
+import { TypeInputEmbed } from 'src/apis/ai/constant';
 import { appSettings } from 'src/configs/app-settings';
 
 @Injectable()
@@ -12,17 +14,27 @@ export class EmbedService {
     constructor() {
         this.clientOpenAI = new OpenAI({
             baseURL: appSettings.openai.host,
-            apiKey: 'simple_key',
+            apiKey: '',
         });
     }
 
-    async getEmbedding(text: string) {
+    async getEmbedding(input: string, type: TypeInputEmbed) {
         try {
-            const body: EmbeddingCreateParams = {
-                input: text,
-                model: 'laion/larger_clap_general',
-                encoding_format: 'float',
-            };
+            let body: EmbeddingCreateParams;
+            if (type === TypeInputEmbed.IMAGE) {
+                body = {
+                    input,
+                    model: 'laion/larger_clap_general',
+                    encoding_format: 'float',
+                };
+            } else {
+                body = {
+                    input,
+                    model: 'laion/larger_clap_general',
+                    encoding_format: 'float',
+                };
+            }
+
             const response = await this.clientOpenAI.embeddings.create(body);
             return response.data[0].embedding;
         } catch (error) {

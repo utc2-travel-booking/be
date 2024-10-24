@@ -3,7 +3,7 @@ import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ExcludeDto } from 'src/base/dto/exclude.dto';
 
-export class CreateAIDto extends PartialType(ExcludeDto) {
+export class QdrantDto extends PartialType(ExcludeDto) {
     @SuperApiProperty({
         type: String,
         required: true,
@@ -23,11 +23,11 @@ export class CreateAIDto extends PartialType(ExcludeDto) {
     textImg: string;
 
     @SuperApiProperty({
-        type: String,
+        type: Number,
         required: true,
         title: 'Array vector',
     })
     @IsNotEmpty()
     @IsOptional()
-    vectors: string;
+    vectors: number[];
 }

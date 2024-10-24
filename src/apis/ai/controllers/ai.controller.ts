@@ -7,6 +7,8 @@ import { PERMISSION, Resource, SuperAuthorize } from '@libs/super-authorize';
 import { SuperPost } from '@libs/super-core';
 import { AIService } from '../ai.service';
 import { EmbedTextDto } from '../dto/embed.dto';
+import { QdrantDto } from '../dto/qdrant.dto';
+import { TypeInputEmbed } from '../constant';
 
 @Controller('ais')
 @Resource('ais')
@@ -21,7 +23,18 @@ export class AIController {
     @SuperPost({ route: 'embed', dto: EmbedTextDto })
     @SuperAuthorize(PERMISSION.POST)
     async embed(@Body() embedTextDto: EmbedTextDto) {
-        const result = await this.aiService.embedding(embedTextDto.text);
+        const { text, urlImg, type } = embedTextDto;
+        const result = await this.aiService.embedding(text, type);
+        return result;
+    }
+
+    @SuperPost({ route: 'qdrant', dto: QdrantDto })
+    @SuperAuthorize(PERMISSION.POST)
+    async add(@Body() qdrantDto: QdrantDto) {
+        const result = await this.aiService.add(qdrantDto.vectors, {
+            urlImg: qdrantDto.urlImg,
+            textImg: qdrantDto.textImg,
+        });
         return result;
     }
 }

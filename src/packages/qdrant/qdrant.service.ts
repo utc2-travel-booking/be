@@ -22,8 +22,8 @@ export class QdrantService {
     async onModuleInit() {
         await this.checkAndCreateCollection();
     }
-    private generateUniqueId(): string {
-        return Math.random().toString(36).substr(2, 9);
+    private generateUniqueId(): number {
+        return Date.now() + Math.floor(Math.random() * 1000000);
     }
 
     private async checkAndCreateCollection() {
@@ -43,7 +43,7 @@ export class QdrantService {
 
                 await this.clientQdrant.createCollection(this.collectionName, {
                     vectors: {
-                        size: 384,
+                        size: 1,
                         distance: 'Cosine',
                     },
                 });
@@ -64,22 +64,23 @@ export class QdrantService {
     async addData(vector: number[], payload: any) {
         try {
             const id = this.generateUniqueId();
+
             const response = await this.clientQdrant.upsert(
                 this.collectionName,
                 {
                     points: [
                         {
                             id,
-                            payload,
                             vector,
+                            payload,
                         },
                     ],
                 },
             );
 
-            this.logger.debug(`Data added successfully: ${response}`);
+            return { id, vector, payload };
         } catch (error) {
-            this.logger.error(`Error adding data: ${error.message}`);
+            this.logger.error(`Error adding data: ${error}`);
             throw new BadRequestException(
                 `Could not add data: ${error.message}`,
             );

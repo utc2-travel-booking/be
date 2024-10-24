@@ -19,22 +19,19 @@
 
 -   1 clone the repo
 
-git clone https://github.com/michaelfeil/infinity git checkout tags/0.0.52 cd
-libs/infinity_emb
+-   git clone https://github.com/michaelfeil/infinity libs/infinity_emb
 
--   2 build download stage using docker buildx buildkit.
+-   2
 
-docker buildx build --target=production-with-download \
---build-arg MODEL_NAME=michaelfeil/bge-small-en-v1.5 --build-arg ENGINE=torch \
--f Dockerfile -t infinity-model-small .
+port=7997  
+model1=michaelfeil/bge-small-en-v1.5 model2=openai/clip-vit-base-patch32  
+volume=$PWD/data
 
--   3 write file docker-compose and run .
-
--   embedding from openai import OpenAI # pip install openai==1.51.0 client =
-    OpenAI(base_url="http://localhost:7997/") client.embeddings.create(
-    model="laion/larger_clap_general", input=[url_to_base64(url, "audio")], encoding_format="float",
-    extra_body={ "modality": "audio" } )
-
-client.embeddings.create( model="laion/larger_clap_general", input=["the
-sound of a beep", "the sound of a cat"], encoding_format="base64", # base64: optional
-high performance setting extra_body={ "modality": "text" } )
+docker run -it --gpus all \
+ -v $volume:/app/.cache \
+ -p $port:$port \
+ michaelf34/infinity:latest \  
+ v2 \  
+ --model-id $model1 \  
+ --model-id $model2 \  
+ --port $port

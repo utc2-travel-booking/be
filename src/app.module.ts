@@ -30,8 +30,8 @@ import { QdrantModule } from './packages/qdrant/qdrant.module';
         SuperCoreModule,
         CommonModule,
         SeedsModule,
-        MultipleLanguageModule,
-        AuditsModule,
+        // MultipleLanguageModule,
+        // AuditsModule,
         QdrantModule,
         SuperAuthorizeModule.forRoot({
             paths: ['admin', 'front'],
